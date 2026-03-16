@@ -182,8 +182,9 @@ async function doLogin(e) {
 
     // Store token and parent info
     localStorage.setItem('parent_token', data.token);
-    localStorage.setItem('parent_name', data.parent_name || '');
-    localStorage.setItem('parent_student_id', data.student_id || '');
+    localStorage.setItem('parent_name', data.name || data.parent_name || '');
+    localStorage.setItem('parent_student_id', data.studentId || data.student_id || '');
+    localStorage.setItem('parent_student_name', data.studentName || '');
 
     // Redirect to dashboard
     window.location.href = 'parent-dashboard.html';
