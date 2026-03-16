@@ -72,6 +72,14 @@ function translateSQL(rawSql, rawParams) {
   sql = sql.replace(/datetime\s*\(\s*'now'\s*,\s*'([^']+)'\s*,\s*'localtime'\s*\)/gi, (_, iv) => {
     return `to_char((NOW() + INTERVAL '${iv}') AT TIME ZONE 'Asia/Kolkata','YYYY-MM-DD HH24:MI:SS')`;
   });
+  // 3-arg: datetime('now', 'localtime', 'interval') → IST + interval (rbac.js form)
+  sql = sql.replace(/datetime\s*\(\s*'now'\s*,\s*'localtime'\s*,\s*'([^']+)'\s*\)/gi, (_, iv) => {
+    return `to_char((NOW() AT TIME ZONE 'Asia/Kolkata') + INTERVAL '${iv}','YYYY-MM-DD HH24:MI:SS')`;
+  });
+  // 3-arg dynamic: datetime('now', 'localtime', '-' || $N || ' unit')
+  sql = sql.replace(/datetime\s*\(\s*'now'\s*,\s*'localtime'\s*,\s*'-'\s*\|\|\s*(\$\d+)\s*\|\|\s*'([^']+)'\s*\)/gi, (_, param, unit) => {
+    return `to_char((NOW() AT TIME ZONE 'Asia/Kolkata') - (${param} || ' ${unit.trim()}')::interval,'YYYY-MM-DD HH24:MI:SS')`;
+  });
   sql = sql.replace(/datetime\s*\(\s*'now'\s*,\s*'localtime'\s*\)/gi, IST_TS);
   sql = sql.replace(/datetime\s*\(\s*'now'\s*\)/gi,                   IST_TS);
   sql = sql.replace(/date\s*\(\s*'now'\s*,\s*'localtime'\s*\)/gi,     IST_DT);
@@ -105,6 +113,12 @@ function translateSQL(rawSql, rawParams) {
   }
 
   // ── 9.  Inline SQLite comments  (-- text in multi-stmt exec)  are fine ───
+
+  // ── 10. GROUP BY completeness – ca.name must be in GROUP BY when selected ───
+  if (/\bca\.name\b/i.test(sql) && /\bSUM\s*\(/i.test(sql)) {
+    sql = sql.replace(/\bGROUP\s+BY\s+je\.account_code\b(?!\s*,\s*ca\.name)/gi,
+                      'GROUP BY je.account_code, ca.name');
+  }
 
   return { pgSql: sql, pgParams: params };
 }
