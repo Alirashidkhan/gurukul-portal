@@ -33,6 +33,24 @@ const pool = new Pool({
 
 pool.on('error', e => console.error('[pg-worker] pool error:', e.message));
 
+// ── In-process SELECT cache (TTL = 20 seconds) ───────────────────────────────
+// Eliminates redundant Neon round-trips for repeated read queries within the
+// same burst (e.g. dashboard auto-refresh, multiple API calls on page load).
+const _cache    = new Map();
+const CACHE_TTL = 20_000;     // 20 s — safe for near-real-time dashboards
+
+function cacheGet(key) {
+  const entry = _cache.get(key);
+  if (!entry) return undefined;
+  if (Date.now() > entry.expires) { _cache.delete(key); return undefined; }
+  return entry.data;
+}
+function cacheSet(key, data) {
+  if (_cache.size >= 500) { _cache.delete(_cache.keys().next().value); }
+  _cache.set(key, { data, expires: Date.now() + CACHE_TTL });
+}
+
+
 // ── SQL translator  (SQLite → PostgreSQL) ────────────────────────────────────
 function translateSQL(rawSql, rawParams) {
   let sql    = rawSql;
@@ -229,6 +247,18 @@ port.on('message', async (msg) => {
       if (!pgSql) {
         data = mode === 'get' ? null : mode === 'all' ? [] : { changes: 0, lastInsertRowid: 0 };
       } else {
+        // ── SELECT cache: only for pure read queries (get / all) ─────────
+        const isRead = (mode === 'get' || mode === 'all') && /^\s*SELECT\b/i.test(pgSql);
+        const cKey   = isRead ? mode + '|' + pgSql + '|' + JSON.stringify(pgParams) : null;
+        if (cKey) {
+          const hit = cacheGet(cKey);
+          if (hit !== undefined) {
+            port.postMessage({ id, data: hit, error: null });
+            Atomics.store(signal, 0, 1); Atomics.notify(signal, 0, 1);
+            return;
+          }
+        }
+
         // Add RETURNING id for INSERT/UPDATE/DELETE so we can get lastInsertRowid
         let execSql = pgSql;
         const isInsert = /^\s*INSERT\s/i.test(pgSql);
@@ -253,10 +283,13 @@ port.on('message', async (msg) => {
         } else if (mode === 'all') {
           data = result.rows;
         } else {
-          // run
+          // run — invalidate cache so stale reads don't linger
+          _cache.clear();
           const lid = result.rows?.[0]?.id ?? 0;
           data = { changes: result.rowCount || 0, lastInsertRowid: lid };
         }
+
+        if (cKey) cacheSet(cKey, data);
       }
     }
 
