@@ -100,6 +100,16 @@ src = src.replace(
   'console.log(`   DB     : PostgreSQL (${DATABASE_URL.replace(/:[^@]*@/, ":****@")})`);'
 );
 
+// ── 12.  Replace remaining DB_PATH refs (dbPath in stats handler, db label) ─────
+src = src.replace(
+  /db:\s*'SQLite \(node:sqlite built-in\)'/g,
+  "db: 'PostgreSQL (Neon.tech)'"
+);
+src = src.replace(
+  /dbPath:\s*DB_PATH/g,
+  "dbPath: DATABASE_URL.replace(/:[^@]*@/, ':****@')"
+);
+
 // ── Write output ─────────────────────────────────────────────────────────────
 fs.writeFileSync(DEST, src, 'utf8');
 
