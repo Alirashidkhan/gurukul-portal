@@ -82,7 +82,7 @@ function translateSQL(rawSql, rawParams) {
     const pgFmt = fmt
       .replace(/%Y/g, 'YYYY').replace(/%m/g, 'MM').replace(/%d/g, 'DD')
       .replace(/%H/g, 'HH24').replace(/%M/g, 'MI').replace(/%S/g, 'SS');
-    return `to_char(${col.trim()}, '${pgFmt}')`;
+    return `to_char(${col.trim()}::timestamp, '${pgFmt}')`;
   });
 
   // ── 6c. SQLite pragma functions → PostgreSQL equivalents ─────────────────
