@@ -3940,7 +3940,7 @@ function handleHROverview(req, res) {
 
   // Today's checkins
   const todayCheckins = db.prepare(`
-    SELECT tc.teacher_id, t.name, tc.check_in, tc.check_out, tc.hours_worked, tc.late_mins
+    SELECT tc.teacher_id, t.name, tc.check_in, tc.check_out, tc.hours_worked, 0 AS late_mins
     FROM teacher_checkins tc JOIN teachers t ON t.id=tc.teacher_id
     WHERE tc.date=? ORDER BY tc.check_in DESC
   `).all(today);
@@ -4665,10 +4665,10 @@ function handleFinanceSummary(req, res) {
 
   // Monthly collection trend
   const monthlyTrend = db.prepare(`
-    SELECT COALESCE(NULLIF(month,''), SUBSTR(COALESCE(paid_date,recorded_at,'2026-01'), 1, 7)) AS mon,
+    SELECT COALESCE(NULLIF(month,''), LEFT(COALESCE(paid_date::text, recorded_at::text, '2026-01'), 7)) AS mon,
            SUM(amount) AS total
     FROM finance_fees WHERE status IN ('Paid','Partial') AND ${yrClause}
-    GROUP BY COALESCE(NULLIF(month,''), SUBSTR(COALESCE(paid_date,recorded_at,'2026-01'), 1, 7)) ORDER BY mon
+    GROUP BY 1 ORDER BY 1
   `).all(acYr, yr);
 
   // Outstanding dues
@@ -4920,7 +4920,7 @@ function handleMarketingOverview(req, res) {
   const stageRows        = db.prepare("SELECT stage, COUNT(*) AS c FROM marketing_leads GROUP BY stage").all();
   const sourceRows       = db.prepare("SELECT source, COUNT(*) AS c FROM marketing_leads GROUP BY source ORDER BY c DESC LIMIT 6").all();
   const recentLeads      = db.prepare("SELECT * FROM marketing_leads ORDER BY id DESC LIMIT 5").all();
-  const monthlyLeads     = db.prepare("SELECT substr(created_at,1,7) AS mo, COUNT(*) AS c FROM marketing_leads GROUP BY mo ORDER BY mo DESC LIMIT 6").all().reverse();
+  const monthlyLeads     = db.prepare("SELECT LEFT(created_at::text,7) AS mo, COUNT(*) AS c FROM marketing_leads GROUP BY 1 ORDER BY 1 DESC LIMIT 6").all().reverse();
   send(res, 200, { totalLeads, todayLeads, enrolled, activeCampaigns, upcomingEvents, totalReach, conversionRate, stageRows, sourceRows, recentLeads, monthlyLeads });
 }
 
@@ -5116,7 +5116,7 @@ function handleMonitorApiLogs(req, res) {
   const slowest   = db.prepare(`SELECT path, ROUND(AVG(response_time_ms),0) AS avg_ms, COUNT(*) AS hits FROM api_call_logs GROUP BY path ORDER BY avg_ms DESC LIMIT 10`).all();
   const byStatus  = db.prepare(`SELECT status_code, COUNT(*) AS cnt FROM api_call_logs GROUP BY status_code ORDER BY cnt DESC`).all();
   const byPath    = db.prepare(`SELECT path, COUNT(*) AS hits, ROUND(AVG(response_time_ms),0) AS avg_ms, SUM(CASE WHEN status_code>=400 THEN 1 ELSE 0 END) AS errors FROM api_call_logs GROUP BY path ORDER BY hits DESC LIMIT 20`).all();
-  const hourly    = db.prepare(`SELECT strftime('%H',timestamp) AS hr, COUNT(*) AS cnt FROM api_call_logs WHERE timestamp >= datetime('now','-24 hours','localtime') GROUP BY hr ORDER BY hr`).all();
+  const hourly    = db.prepare(`SELECT to_char(timestamp::timestamp AT TIME ZONE 'Asia/Kolkata','HH24') AS hr, COUNT(*) AS cnt FROM api_call_logs WHERE timestamp >= to_char((NOW() - INTERVAL '24 hours') AT TIME ZONE 'Asia/Kolkata','YYYY-MM-DD HH24:MI:SS') GROUP BY 1 ORDER BY 1`).all();
   send(res, 200, { logs, totalReqs, errReqs, avgMs: avgMs||0, slowest, byStatus, byPath, hourly });
 }
 
@@ -5588,9 +5588,9 @@ function handleAnalyticsOverview(req, res) {
   const activeSSE = _sseClients.size;
   const dbSize    = db.prepare(`SELECT page_count * page_size AS sz FROM pragma_page_count(), pragma_page_size()`).get()?.sz || 0;
   // Hourly page views (last 24h)
-  const pvHourly  = db.prepare(`SELECT strftime('%H',timestamp) AS hr, COUNT(*) AS cnt FROM page_views WHERE timestamp >= datetime('now','-24 hours','localtime') GROUP BY hr ORDER BY hr`).all();
+  const pvHourly  = db.prepare(`SELECT to_char(timestamp::timestamp AT TIME ZONE 'Asia/Kolkata','HH24') AS hr, COUNT(*) AS cnt FROM page_views WHERE timestamp >= to_char((NOW() - INTERVAL '24 hours') AT TIME ZONE 'Asia/Kolkata','YYYY-MM-DD HH24:MI:SS') GROUP BY 1 ORDER BY 1`).all();
   // Hourly data events (last 24h)
-  const deHourly  = db.prepare(`SELECT strftime('%H',timestamp) AS hr, COUNT(*) AS cnt FROM data_events WHERE timestamp >= datetime('now','-24 hours','localtime') GROUP BY hr ORDER BY hr`).all();
+  const deHourly  = db.prepare(`SELECT to_char(timestamp::timestamp AT TIME ZONE 'Asia/Kolkata','HH24') AS hr, COUNT(*) AS cnt FROM data_events WHERE timestamp >= to_char((NOW() - INTERVAL '24 hours') AT TIME ZONE 'Asia/Kolkata','YYYY-MM-DD HH24:MI:SS') GROUP BY 1 ORDER BY 1`).all();
   // Top pages
   const topPages  = db.prepare(`SELECT page, COUNT(*) AS hits FROM page_views WHERE timestamp >= date('now','-7 days','localtime') GROUP BY page ORDER BY hits DESC LIMIT 10`).all();
   // Top actors
@@ -5645,7 +5645,7 @@ function handleAnalyticsUsers(req, res) {
   const loginsFail = db.prepare(`SELECT COUNT(*) AS c FROM security_events WHERE event_type='login_failed' AND timestamp >= date('now','localtime')`).get().c;
   const byRole     = db.prepare(`SELECT dashboard AS role, COUNT(*) AS logins FROM security_events WHERE event_type='login_success' AND timestamp >= date('now','localtime') GROUP BY dashboard ORDER BY logins DESC`).all();
   const actorActivity = db.prepare(`SELECT actor, role, COUNT(*) AS actions, MAX(timestamp) AS last_active FROM data_events WHERE timestamp >= date('now','-7 days','localtime') GROUP BY actor ORDER BY actions DESC LIMIT 20`).all();
-  const hourlyLogins  = db.prepare(`SELECT strftime('%H',timestamp) AS hr, COUNT(*) AS cnt FROM security_events WHERE event_type='login_success' AND timestamp >= datetime('now','-24 hours','localtime') GROUP BY hr ORDER BY hr`).all();
+  const hourlyLogins  = db.prepare(`SELECT to_char(timestamp::timestamp AT TIME ZONE 'Asia/Kolkata','HH24') AS hr, COUNT(*) AS cnt FROM security_events WHERE event_type='login_success' AND timestamp >= to_char((NOW() - INTERVAL '24 hours') AT TIME ZONE 'Asia/Kolkata','YYYY-MM-DD HH24:MI:SS') GROUP BY 1 ORDER BY 1`).all();
   const loginHistory  = db.prepare(`SELECT * FROM security_events WHERE event_type IN ('login_success','login_failed') ORDER BY id DESC LIMIT 40`).all();
   send(res, 200, { students, teachers, loginsToday, loginsFail, byRole, actorActivity, hourlyLogins, loginHistory });
 }

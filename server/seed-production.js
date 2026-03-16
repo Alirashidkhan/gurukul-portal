@@ -99,30 +99,52 @@ async function main() {
   console.log('✅ Payroll entries seeded');
 
   // ── FINANCE FEES ──────────────────────────────────────────────────────────
-  const studRes = await q(`SELECT id FROM students LIMIT 50`);
-  const studs = studRes ? studRes.rows : [];
+  // First check if fees already exist to avoid duplicates (no UNIQUE constraint)
+  const existingFees = await q(`SELECT COUNT(*) AS c FROM finance_fees`);
+  const existingFeeCount = existingFees ? parseInt(existingFees.rows[0].c) : 0;
+  console.log(`  ℹ finance_fees currently has ${existingFeeCount} records`);
 
-  const feeTypes = [
-    ['Tuition Fee', 8500],['Exam Fee', 1200],['Library Fee', 500],
-    ['Sports Fee', 800],['Lab Fee', 600]
-  ];
-  let feeCount = 0;
-  const feeMonths = ['2025-06','2025-07','2025-08','2025-09','2025-10','2025-11','2025-12','2026-01','2026-02','2026-03'];
-  for (const stu of studs) {
-    for (const [ft, amt] of feeTypes) {
-      for (const month of feeMonths.slice(0, 6)) {  // 6 months per student
-        const status = Math.random() > 0.12 ? 'Paid' : 'Pending';
-        const mm = month.replace('-','').slice(0,6);
-        const paid_date = status === 'Paid' ? `${month}-15` : '';
-        const receipt = status === 'Paid' ? `RCP${String(feeCount+10000)}` : '';
-        await q(`INSERT INTO finance_fees (student_id,fee_type,amount,academic_yr,month,paid_date,status,payment_mode,receipt_no,recorded_at)
-                 VALUES ($1,$2,$3,'2025-26',$4,$5,$6,'Cash',$7,NOW()) ON CONFLICT DO NOTHING`,
-          [stu.id, ft, amt, month, paid_date, status, receipt]);
-        feeCount++;
+  if (existingFeeCount < 100) {
+    // Fetch student IDs — with fallback to hardcoded IDs if query fails
+    let studIds = [];
+    const studRes = await q(`SELECT id FROM students ORDER BY id LIMIT 60`);
+    if (studRes && studRes.rows && studRes.rows.length > 0) {
+      studIds = studRes.rows.map(r => r.id);
+      console.log(`  ℹ Found ${studIds.length} students in DB: ${studIds.slice(0,5).join(', ')}...`);
+    } else {
+      // Fallback: use known student IDs from this school's seed
+      studIds = Array.from({length: 30}, (_, i) => 'STU' + String(i+1).padStart(3,'0'));
+      console.log(`  ⚠ Students query returned empty — using fallback IDs STU001-STU030`);
+    }
+
+    const feeTypes = [
+      ['Tuition Fee', 8500], ['Exam Fee', 1200], ['Library Fee', 500],
+      ['Sports Fee', 800],   ['Lab Fee', 600]
+    ];
+    const feeMonths = ['2025-06','2025-07','2025-08','2025-09','2025-10','2025-11',
+                       '2025-12','2026-01','2026-02','2026-03'];
+    let feeCount = 0;
+    let recNo = 10000;
+
+    for (const stuId of studIds) {
+      for (const [ft, amt] of feeTypes) {
+        for (const month of feeMonths) {
+          const isPaid = Math.random() > 0.15;
+          const status = isPaid ? 'Paid' : 'Pending';
+          const paid_date = isPaid ? `${month}-${String(10 + Math.floor(Math.random()*15)).padStart(2,'0')}` : '';
+          const receipt   = isPaid ? `RCP${String(++recNo)}` : '';
+          await q(`INSERT INTO finance_fees
+                   (student_id,fee_type,amount,academic_yr,month,paid_date,status,payment_mode,receipt_no,recorded_at)
+                   VALUES ($1,$2,$3,'2025-26',$4,$5,$6,'Cash',$7,NOW())`,
+            [stuId, ft, amt, month, paid_date, status, receipt]);
+          feeCount++;
+        }
       }
     }
+    console.log(`✅ Finance fees seeded (${feeCount} new records)`);
+  } else {
+    console.log(`✅ Finance fees already seeded (${existingFeeCount} records) — skipping`);
   }
-  console.log(`✅ Finance fees seeded (${feeCount} records)`);
 
   // ── DONATIONS ─────────────────────────────────────────────────────────────
   const donors = [
@@ -276,23 +298,130 @@ async function main() {
   console.log('✅ Announcements seeded');
 
   // ── LEAVE APPLICATIONS ─────────────────────────────────────────────────────
-  // Schema: teacher_id, leave_type, start_date, end_date, days, reason, status, approved_by, decided_at, applied_at
-  const leaves = [
-    ['TCH002','Sick Leave','2026-03-10','2026-03-11',2,'Fever','Approved','admin','2026-03-09'],
-    ['TCH004','Personal Leave','2026-03-05','2026-03-05',1,'Family function','Approved','admin','2026-03-04'],
-    ['TCH006','Casual Leave','2026-03-18','2026-03-18',1,'Personal work','Pending',null,null],
-    ['TCH001','Medical Leave','2026-02-20','2026-02-22',3,'Hospitalization','Approved','admin','2026-02-19'],
-    ['TCH007','Casual Leave','2026-03-20','2026-03-20',1,'Personal work','Pending',null,null],
-    ['TCH003','Casual Leave','2026-03-25','2026-03-25',1,'Personal work','Pending',null,null],
-    ['TCH005','Sick Leave','2026-03-12','2026-03-12',1,'Not well','Approved','admin','2026-03-11'],
-    ['TCH008','Personal Leave','2026-03-28','2026-03-28',1,'Family function','Pending',null,null],
-  ];
-  for (const [teacher_id,leave_type,start_date,end_date,days,reason,status,approved_by,decided_at] of leaves) {
-    await q(`INSERT INTO leave_applications (teacher_id,leave_type,start_date,end_date,days,reason,status,approved_by,decided_at,applied_at)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,NOW()) ON CONFLICT DO NOTHING`,
-      [teacher_id,leave_type,start_date,end_date,days,reason,status,approved_by,decided_at]);
+  // Actual schema: person_id, person_type, person_name, leave_type (sick/earned),
+  //                from_date, to_date, days, reason, status (Pending/Approved/Rejected),
+  //                admin_note, applied_at, decided_at
+  const existingLeaves = await q(`SELECT COUNT(*) AS c FROM leave_applications`);
+  if (!existingLeaves || parseInt(existingLeaves.rows[0].c) === 0) {
+    const leaves = [
+      ['TCH002','teacher','Priya Sharma',   'sick',  '2026-03-10','2026-03-11',2,'Fever',          'Approved','','2026-03-09','2026-03-09'],
+      ['TCH004','teacher','Anitha Rao',     'earned','2026-03-05','2026-03-05',1,'Family function', 'Approved','','2026-03-04','2026-03-04'],
+      ['TCH006','teacher','Meena Pillai',   'earned','2026-03-18','2026-03-18',1,'Personal work',   'Pending', '','2026-03-16',''],
+      ['TCH001','teacher','Rajesh Kumar',   'sick',  '2026-02-20','2026-02-22',3,'Hospitalization', 'Approved','','2026-02-19','2026-02-19'],
+      ['TCH007','teacher','Arun Menon',     'earned','2026-03-20','2026-03-20',1,'Personal work',   'Pending', '','2026-03-17',''],
+      ['TCH003','teacher','Suresh Nair',    'earned','2026-03-25','2026-03-25',1,'Personal work',   'Pending', '','2026-03-17',''],
+      ['TCH005','teacher','Vikram Shetty',  'sick',  '2026-03-12','2026-03-12',1,'Not well',        'Approved','','2026-03-11','2026-03-11'],
+      ['TCH008','teacher','Deepa Krishnan', 'earned','2026-03-28','2026-03-28',1,'Family function', 'Pending', '','2026-03-17',''],
+    ];
+    for (const [person_id,person_type,person_name,leave_type,from_date,to_date,days,reason,status,admin_note,applied_at,decided_at] of leaves) {
+      await q(`INSERT INTO leave_applications
+               (person_id,person_type,person_name,leave_type,from_date,to_date,days,reason,status,admin_note,applied_at,decided_at)
+               VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) ON CONFLICT DO NOTHING`,
+        [person_id,person_type,person_name,leave_type,from_date,to_date,days,reason,status,admin_note,applied_at,decided_at]);
+    }
+    console.log('✅ Leave applications seeded');
+  } else {
+    console.log('✅ Leave applications already exist — skipping');
   }
-  console.log('✅ Leave applications seeded');
+
+  // ── SUPPORT STAFF ─────────────────────────────────────────────────────────
+  // Needed for HR dashboard totalStaff count
+  const existingSupport = await q(`SELECT COUNT(*) AS c FROM support_staff`);
+  if (!existingSupport || parseInt(existingSupport.rows[0].c) === 0) {
+    const supportStaff = [
+      ['SS001','Ganesh Naik',       'Administration', 'Office Manager',     '9845010001','ganesh@gurukulhigh.edu',  '2018-04-01','Active','Full-time'],
+      ['SS002','Kavitha Srinivas',  'Administration', 'Receptionist',       '9845010002','kavitha@gurukulhigh.edu', '2020-06-15','Active','Full-time'],
+      ['SS003','Ramu Hegde',        'Maintenance',    'Head Peon',          '9845010003','','2017-08-01','Active','Full-time'],
+      ['SS004','Shanta Bai',        'Housekeeping',   'Cleaning Supervisor','9845010004','','2019-01-10','Active','Full-time'],
+      ['SS005','Prasad N',          'Security',       'Security Guard',     '9845010005','','2021-03-01','Active','Full-time'],
+      ['SS006','Kiran Kumar',       'Accounts',       'Accountant',         '9845010006','kiran@gurukulhigh.edu',   '2019-09-01','Active','Full-time'],
+      ['SS007','Sowmya Devi',       'Library',        'Librarian',          '9845010007','sowmya@gurukulhigh.edu',  '2020-07-01','Active','Full-time'],
+      ['SS008','Mahesh Transport',  'Transport',      'Transport Manager',  '9845010008','','2018-06-01','Active','Full-time'],
+      ['SS009','Nalini P',          'Canteen',        'Canteen Supervisor', '9845010009','','2022-01-01','Active','Part-time'],
+      ['SS010','Suresh Watchman',   'Security',       'Night Guard',        '9845010010','','2021-11-01','Active','Full-time'],
+    ];
+    for (const [id,name,department,designation,phone,email,joining_date,status,employment_type] of supportStaff) {
+      await q(`INSERT INTO support_staff (id,name,department,designation,phone,email,joining_date,status,employment_type)
+               VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) ON CONFLICT (id) DO NOTHING`,
+        [id,name,department,designation,phone,email,joining_date,status,employment_type]);
+    }
+    console.log('✅ Support staff seeded (10 records)');
+  } else {
+    console.log('✅ Support staff already exist — skipping');
+  }
+
+  // ── ATTENDANCE RECORDS ────────────────────────────────────────────────────
+  // Seed last 10 school days of attendance for students
+  const existingAtt = await q(`SELECT COUNT(*) AS c FROM attendance`);
+  const attCount = existingAtt ? parseInt(existingAtt.rows[0].c) : 0;
+  if (attCount < 50) {
+    let attStudIds = [];
+    const attStudRes = await q(`SELECT id FROM students ORDER BY id LIMIT 40`);
+    if (attStudRes && attStudRes.rows.length > 0) {
+      attStudIds = attStudRes.rows.map(r => r.id);
+    } else {
+      attStudIds = Array.from({length: 20}, (_, i) => 'STU' + String(i+1).padStart(3,'0'));
+    }
+    const schoolDays = ['2026-03-10','2026-03-11','2026-03-12','2026-03-13','2026-03-14',
+                        '2026-03-17','2026-02-24','2026-02-25','2026-02-26','2026-02-27'];
+    let attInserted = 0;
+    for (const date of schoolDays) {
+      for (const sid of attStudIds.slice(0, 30)) {
+        const status = Math.random() > 0.08 ? 'P' : 'A'; // 92% present
+        const res = await q(`INSERT INTO attendance (student_id, date, status, marked_by)
+                             VALUES ($1,$2,$3,'admin')
+                             ON CONFLICT (student_id, date) DO NOTHING`,
+          [sid, date, status]);
+        if (res && res.rowCount > 0) attInserted++;
+      }
+    }
+    console.log(`✅ Attendance seeded (${attInserted} records)`);
+  } else {
+    console.log(`✅ Attendance already seeded (${attCount} records) — skipping`);
+  }
+
+  // ── TEACHER CHECKINS ──────────────────────────────────────────────────────
+  const existingCheckins = await q(`SELECT COUNT(*) AS c FROM teacher_checkins`);
+  if (!existingCheckins || parseInt(existingCheckins.rows[0].c) === 0) {
+    const tcherIds = ['TCH001','TCH002','TCH003','TCH004','TCH005','TCH006','TCH007','TCH008'];
+    const checkDays = ['2026-03-17','2026-03-16','2026-03-13','2026-03-12','2026-03-11'];
+    for (const date of checkDays) {
+      for (const tid of tcherIds) {
+        const hrsWorked = 6 + Math.random() * 2;
+        await q(`INSERT INTO teacher_checkins (teacher_id, date, check_in, check_out, hours_worked)
+                 VALUES ($1,$2,'09:00','16:00',$3)
+                 ON CONFLICT (teacher_id, date) DO NOTHING`,
+          [tid, date, hrsWorked.toFixed(1)]);
+      }
+    }
+    console.log('✅ Teacher checkins seeded');
+  } else {
+    console.log('✅ Teacher checkins already exist — skipping');
+  }
+
+  // ── EXAMS ─────────────────────────────────────────────────────────────────
+  const existingExams = await q(`SELECT COUNT(*) AS c FROM exams`);
+  if (!existingExams || parseInt(existingExams.rows[0].c) === 0) {
+    const examsList = [
+      ['Unit Test 1 – Term 1','Unit Test','Term-1','6','A','2026-01-15','2026-01-15',25,10,'2025-26','Completed'],
+      ['Unit Test 1 – Term 1','Unit Test','Term-1','7','A','2026-01-15','2026-01-15',25,10,'2025-26','Completed'],
+      ['Unit Test 1 – Term 1','Unit Test','Term-1','8','A','2026-01-15','2026-01-15',25,10,'2025-26','Completed'],
+      ['Mid Term Exam Term-1', 'Mid Term', 'Term-1','6','A','2025-10-01','2025-10-07',100,35,'2025-26','Results Published'],
+      ['Mid Term Exam Term-1', 'Mid Term', 'Term-1','7','A','2025-10-01','2025-10-07',100,35,'2025-26','Results Published'],
+      ['Mid Term Exam Term-1', 'Mid Term', 'Term-1','8','A','2025-10-01','2025-10-07',100,35,'2025-26','Results Published'],
+      ['Final Exam 2025-26',   'Annual',   'Term-2','6','A','2026-04-05','2026-04-12',100,35,'2025-26','Upcoming'],
+      ['Final Exam 2025-26',   'Annual',   'Term-2','7','A','2026-04-05','2026-04-12',100,35,'2025-26','Upcoming'],
+      ['Final Exam 2025-26',   'Annual',   'Term-2','8','A','2026-04-05','2026-04-12',100,35,'2025-26','Upcoming'],
+    ];
+    for (const [name,exam_type,term,cls,section,start_date,end_date,total_marks,pass_marks,academic_yr,status] of examsList) {
+      await q(`INSERT INTO exams (name,exam_type,term,class,section,start_date,end_date,total_marks,pass_marks,academic_yr,status,created_by,created_at)
+               VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,'admin',NOW()) ON CONFLICT DO NOTHING`,
+        [name,exam_type,term,cls,section,start_date,end_date,total_marks,pass_marks,academic_yr,status]);
+    }
+    console.log('✅ Exams seeded');
+  } else {
+    console.log('✅ Exams already exist — skipping');
+  }
 
   // ── SECURITY EVENTS ───────────────────────────────────────────────────────
   const secEvents = [

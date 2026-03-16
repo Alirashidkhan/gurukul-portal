@@ -288,7 +288,7 @@ function syncAll(db) {
     // Match current academic year OR calendar year OR empty
     const yrC = "(academic_yr=? OR academic_yr=? OR academic_yr='' OR academic_yr IS NULL)";
     const byType       = db.prepare(`SELECT fee_type, SUM(amount) AS total, COUNT(*) AS count FROM finance_fees WHERE status IN ('Paid','Partial') AND ${yrC} GROUP BY fee_type ORDER BY total DESC`).all(acYear, calYear);
-    const monthlyTrend = db.prepare(`SELECT SUBSTR(COALESCE(NULLIF(paid_date,''),recorded_at,'2026-01'), 1, 7) AS month, SUM(amount) AS total FROM finance_fees WHERE status IN ('Paid','Partial') AND ${yrC} GROUP BY SUBSTR(COALESCE(NULLIF(paid_date,''),recorded_at,'2026-01'), 1, 7) ORDER BY month`).all(acYear, calYear);
+    const monthlyTrend = db.prepare(`SELECT COALESCE(NULLIF(month,''), LEFT(COALESCE(paid_date::text, recorded_at::text, '2026-01'), 7)) AS mon, SUM(amount) AS total FROM finance_fees WHERE status IN ('Paid','Partial') AND ${yrC} GROUP BY 1 ORDER BY 1`).all(acYear, calYear);
     const outstanding  = db.prepare(`SELECT SUM(amount) AS total FROM finance_fees WHERE status='Pending' AND ${yrC}`).get(acYear, calYear);
     const donationTotal= db.prepare("SELECT SUM(amount) AS total FROM donations WHERE donated_date LIKE ?").get(calYear + '%');
     const byClass      = db.prepare(`SELECT s.class, SUM(f.amount) AS total, COUNT(DISTINCT f.student_id) AS students FROM finance_fees f JOIN students s ON f.student_id=s.id WHERE f.status IN ('Paid','Partial') AND ${yrC} GROUP BY s.class ORDER BY total DESC`).all(acYear, calYear);

@@ -33,19 +33,24 @@ const pool = new Pool({
 
 pool.on('error', e => console.error('[pg-worker] pool error:', e.message));
 
-// ── In-process SELECT cache (TTL = 20 seconds) ───────────────────────────────
-// Eliminates redundant Neon round-trips for repeated read queries within the
-// same burst (e.g. dashboard auto-refresh, multiple API calls on page load).
+// ── In-process SELECT cache (DISABLED — caused cross-query cache poisoning) ───
+// Previously CACHE_TTL=20_000 caused .all() to return results from completely
+// different queries (e.g. attendance rows for monthly_trend finance queries).
+// Root cause: cache keys collided when Atomics.wait signal fires before
+// receiveMessageOnPort, allowing a concurrent query to read the wrong slot.
+// Fix: disable cache entirely. Re-enable only after thorough concurrency audit.
 const _cache    = new Map();
-const CACHE_TTL = 20_000;     // 20 s — safe for near-real-time dashboards
+const CACHE_TTL = 0;          // 0 = disabled
 
 function cacheGet(key) {
+  if (CACHE_TTL === 0) return undefined;   // cache disabled
   const entry = _cache.get(key);
   if (!entry) return undefined;
   if (Date.now() > entry.expires) { _cache.delete(key); return undefined; }
   return entry.data;
 }
 function cacheSet(key, data) {
+  if (CACHE_TTL === 0) return;             // cache disabled
   if (_cache.size >= 500) { _cache.delete(_cache.keys().next().value); }
   _cache.set(key, { data, expires: Date.now() + CACHE_TTL });
 }
