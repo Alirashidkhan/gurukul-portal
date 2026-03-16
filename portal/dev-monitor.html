@@ -1,0 +1,1586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Gurukul — Developer Monitor</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+:root{--bg:#0d1117;--bg2:#161b22;--bg3:#21262d;--bg4:#30363d;--border:#30363d;--text:#e6edf3;--text2:#8b949e;--text3:#6e7681;--blue:#58a6ff;--green:#3fb950;--yellow:#d29922;--orange:#f0883e;--red:#f85149;--purple:#bc8cff;--cyan:#39c5cf;--pink:#f778ba;--r:6px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;display:flex;flex-direction:column}
+code,.mono{font-family:'Cascadia Code','Fira Code',Consolas,monospace;font-size:12px}
+/* TOPBAR */
+#topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 16px;height:52px;display:flex;align-items:center;gap:14px;flex-shrink:0}
+#topbar .logo{font-weight:700;font-size:15px;color:var(--text);display:flex;align-items:center;gap:8px}
+#topbar .logo .badge{background:var(--blue);color:#000;font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px}
+#status-pill{display:flex;align-items:center;gap:6px;font-size:12px;padding:4px 10px;border-radius:20px;background:rgba(63,185,80,.12);border:1px solid rgba(63,185,80,.3);color:var(--green)}
+#status-pill .dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+#status-pill.offline{background:rgba(248,81,73,.12);border-color:rgba(248,81,73,.3);color:var(--red)}
+#status-pill.offline .dot{background:var(--red)}
+.spacer{flex:1}
+#uptime-display{font-size:12px;color:var(--text2);font-family:monospace}
+#refresh-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:5px 12px;border-radius:var(--r);cursor:pointer;font-size:12px;display:flex;align-items:center;gap:6px;transition:all .2s}
+#refresh-btn:hover{background:var(--bg4)}
+.spin{animation:spin 1s linear infinite}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+/* LOGIN */
+#login-panel{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9999;display:flex;align-items:center;justify-content:center}
+#login-box{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:36px;width:380px}
+#login-box h2{font-size:18px;margin-bottom:4px}
+#login-box p{color:var(--text2);font-size:13px;margin-bottom:24px}
+#login-box input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:var(--r);font-size:13px;margin-bottom:10px;outline:none}
+#login-box input:focus{border-color:var(--blue)}
+#login-btn{width:100%;background:var(--blue);color:#000;font-weight:600;padding:10px;border-radius:var(--r);border:none;cursor:pointer;font-size:13px}
+#login-err{color:var(--red);font-size:12px;margin-top:8px;display:none}
+/* LAYOUT */
+#app{display:flex;flex:1;overflow:hidden}
+#sidebar{width:200px;background:var(--bg2);border-right:1px solid var(--border);flex-shrink:0;overflow-y:auto;padding:12px 8px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:var(--r);cursor:pointer;font-size:13px;color:var(--text2);transition:all .15s;border:1px solid transparent;margin-bottom:2px}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:rgba(88,166,255,.1);border-color:rgba(88,166,255,.25);color:var(--blue)}
+.nav-item .icon{width:16px;text-align:center;font-size:14px}
+.nav-badge{margin-left:auto;background:var(--bg4);font-size:10px;padding:1px 6px;border-radius:10px;color:var(--text3)}
+.nav-badge.red{background:rgba(248,81,73,.2);color:var(--red)}
+.nav-badge.green{background:rgba(63,185,80,.2);color:var(--green)}
+.nav-section-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;padding:8px 10px 4px;margin-top:4px}
+#main{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.panel{display:none;height:100%;overflow-y:auto;padding:20px}
+.panel.active{display:block}
+/* COMMON */
+.panel-title{font-size:18px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+.panel-desc{color:var(--text2);font-size:13px;margin-bottom:20px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px}
+.grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px}
+.card-title{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.kpi-val{font-size:28px;font-weight:700;line-height:1}
+.kpi-sub{font-size:12px;color:var(--text2);margin-top:4px}
+.kpi-val.green{color:var(--green)}.kpi-val.blue{color:var(--blue)}.kpi-val.orange{color:var(--orange)}.kpi-val.red{color:var(--red)}.kpi-val.purple{color:var(--purple)}.kpi-val.cyan{color:var(--cyan)}
+.section-title{font-size:14px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;color:var(--text)}
+.section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;padding:8px 10px;font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid var(--border);background:var(--bg3)}
+td{padding:8px 10px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top}
+tr:hover td{background:rgba(255,255,255,.02);color:var(--text)}
+tr:last-child td{border-bottom:none}
+.method-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 6px;border-radius:3px;font-family:monospace}
+.method-badge.GET{background:rgba(63,185,80,.15);color:var(--green);border:1px solid rgba(63,185,80,.3)}
+.method-badge.POST{background:rgba(88,166,255,.15);color:var(--blue);border:1px solid rgba(88,166,255,.3)}
+.method-badge.PATCH{background:rgba(210,153,34,.15);color:var(--yellow);border:1px solid rgba(210,153,34,.3)}
+.method-badge.DELETE{background:rgba(248,81,73,.15);color:var(--red);border:1px solid rgba(248,81,73,.3)}
+.tag{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
+.tag.blue{background:rgba(88,166,255,.12);color:var(--blue);border:1px solid rgba(88,166,255,.25)}
+.tag.green{background:rgba(63,185,80,.12);color:var(--green);border:1px solid rgba(63,185,80,.25)}
+.tag.yellow{background:rgba(210,153,34,.12);color:var(--yellow);border:1px solid rgba(210,153,34,.25)}
+.tag.red{background:rgba(248,81,73,.12);color:var(--red);border:1px solid rgba(248,81,73,.3)}
+.tag.purple{background:rgba(188,140,255,.12);color:var(--purple);border:1px solid rgba(188,140,255,.25)}
+.tag.orange{background:rgba(240,136,62,.12);color:var(--orange);border:1px solid rgba(240,136,62,.25)}
+.tag.cyan{background:rgba(57,197,207,.12);color:var(--cyan);border:1px solid rgba(57,197,207,.25)}
+.tag.gray{background:var(--bg4);color:var(--text3);border:1px solid var(--border)}
+/* DB EXPLORER — Split Panel */
+#panel-dbexplorer.active{display:flex!important;flex-direction:column;padding:0!important;overflow:hidden!important}
+#dbe-header{padding:14px 20px 10px;border-bottom:1px solid var(--border);flex-shrink:0;background:var(--bg2)}
+#dbe-layout{display:flex;flex:1;overflow:hidden}
+#dbe-sidebar{width:270px;border-right:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;background:var(--bg2);flex-shrink:0}
+#dbe-search-wrap{padding:10px 12px;border-bottom:1px solid var(--border);flex-shrink:0}
+#dbe-search{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:var(--r);font-size:12px;outline:none}
+#dbe-search:focus{border-color:var(--blue)}
+#dbe-table-list{flex:1;overflow-y:auto;padding:6px 0}
+.dbe-domain-header{display:flex;align-items:center;gap:8px;padding:6px 10px;cursor:default;user-select:none;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.7px;margin-top:4px}
+.dbe-domain-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dbe-domain-count{margin-left:auto;font-size:10px;font-weight:400;color:var(--text3)}
+.dbe-table-item{display:flex;align-items:center;gap:8px;padding:5px 10px 5px 24px;cursor:pointer;font-size:12px;font-family:monospace;color:var(--text2);border-left:2px solid transparent;transition:all .1s}
+.dbe-table-item:hover{background:rgba(88,166,255,.06);color:var(--text)}
+.dbe-table-item.selected{background:rgba(88,166,255,.1);border-left-color:var(--blue);color:var(--blue)}
+.dbe-table-rows{margin-left:auto;font-size:10px;color:var(--text3);font-family:sans-serif;background:var(--bg3);padding:1px 6px;border-radius:8px;flex-shrink:0}
+.dbe-table-item.selected .dbe-table-rows{background:rgba(88,166,255,.15);color:var(--blue)}
+#dbe-detail{flex:1;overflow-y:auto;background:var(--bg)}
+#dbe-welcome{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text3);gap:8px}
+#dbe-table-view{padding:20px}
+.dbe-tbl-header{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:16px 20px;margin-bottom:16px}
+.dbe-tbl-name{font-family:monospace;font-size:18px;font-weight:700;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:10px}
+.dbe-tbl-stats{display:flex;gap:8px;flex-wrap:wrap}
+.dbe-stat{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:4px 10px;font-size:11px;color:var(--text2)}
+.dbe-stat strong{color:var(--text)}
+.dbe-section{margin-bottom:20px}
+.dbe-section-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.dbe-section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.dbe-col-table{width:100%;border-collapse:collapse;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;font-size:12px}
+.dbe-col-table th{padding:7px 12px;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.6px;background:var(--bg3);border-bottom:1px solid var(--border);text-align:left;white-space:nowrap}
+.dbe-col-table td{padding:7px 12px;border-bottom:1px solid rgba(48,54,61,.5);vertical-align:middle}
+.dbe-col-table tr:last-child td{border-bottom:none}
+.dbe-col-table tr.col-pk{background:rgba(240,136,62,.04)}
+.dbe-col-table tr.col-pk td:first-child{border-left:2px solid var(--orange)}
+.dbe-col-table tr.col-fk td:first-child{border-left:2px solid var(--purple)}
+.dbe-col-table tr:hover td{background:rgba(255,255,255,.025)}
+.col-num{color:var(--text3);font-family:monospace;font-size:11px;width:32px}
+.col-name-cell{font-family:monospace;color:var(--text);font-weight:500}
+.col-fk-hint{font-size:10px;color:var(--purple);display:block;margin-top:2px;cursor:pointer}
+.col-fk-hint:hover{text-decoration:underline}
+.type-badge{display:inline-block;font-family:monospace;font-size:10px;font-weight:700;padding:2px 7px;border-radius:3px}
+.type-badge.INTEGER,.type-badge.INT{background:rgba(88,166,255,.12);color:var(--blue)}
+.type-badge.TEXT,.type-badge.VARCHAR{background:rgba(110,118,129,.18);color:#8b949e}
+.type-badge.REAL,.type-badge.FLOAT,.type-badge.DOUBLE{background:rgba(210,153,34,.12);color:var(--yellow)}
+.type-badge.BLOB{background:rgba(188,140,255,.12);color:var(--purple)}
+.type-badge.NUMERIC,.type-badge.DECIMAL{background:rgba(57,197,207,.12);color:var(--cyan)}
+.key-badges{display:flex;gap:4px;flex-wrap:wrap}
+.key-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;line-height:1.4}
+.key-badge.PK{background:rgba(240,136,62,.2);color:var(--orange)}
+.key-badge.FK{background:rgba(188,140,255,.2);color:var(--purple)}
+.key-badge.IDX{background:rgba(63,185,80,.15);color:var(--green)}
+.key-badge.UQ{background:rgba(57,197,207,.15);color:var(--cyan)}
+.key-badge.NN{background:rgba(88,166,255,.12);color:var(--blue)}
+.idx-list{display:flex;flex-direction:column;gap:6px}
+.idx-card{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:8px 12px;display:flex;align-items:center;gap:10px;font-size:12px}
+.idx-name{font-family:monospace;color:var(--text);flex:1}
+.idx-cols{font-family:monospace;font-size:11px;color:var(--text2)}
+.fk-list{display:flex;flex-direction:column;gap:6px}
+.fk-card{background:var(--bg2);border:1px solid rgba(188,140,255,.2);border-radius:4px;padding:9px 14px;display:flex;align-items:center;gap:10px;font-size:12px;font-family:monospace}
+.fk-from-col{color:var(--text)}
+.fk-arrow{color:var(--purple);font-size:16px;flex-shrink:0}
+.fk-target{color:var(--purple);cursor:pointer}
+.fk-target:hover{text-decoration:underline dotted}
+/* ARCH */
+.arch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
+.arch-module{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;border-top:3px solid var(--blue);transition:transform .15s}
+.arch-module:hover{transform:translateY(-2px)}
+.arch-module-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.arch-module-icon{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.arch-module-name{font-weight:600;font-size:13px}
+.arch-module-auth{font-size:10px;color:var(--text3)}
+.arch-module-desc{font-size:12px;color:var(--text2);margin-bottom:10px;line-height:1.5}
+/* ROUTES */
+.route-search{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:9px 14px;border-radius:var(--r);font-size:13px;outline:none;margin-bottom:16px}
+.route-search:focus{border-color:var(--blue)}
+.route-filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.route-filter-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);padding:4px 12px;border-radius:20px;cursor:pointer;font-size:12px;transition:all .15s}
+.route-filter-btn:hover,.route-filter-btn.active{background:rgba(88,166,255,.12);border-color:rgba(88,166,255,.3);color:var(--blue)}
+.route-item{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:4px;margin-bottom:2px;transition:background .15s}
+.route-item:hover{background:var(--bg3)}
+.route-path{font-family:monospace;font-size:12px;color:var(--text);flex:1}
+/* LOGS */
+.log-wrap{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);max-height:380px;overflow-y:auto}
+.log-item{display:flex;align-items:center;gap:10px;padding:6px 10px;font-family:monospace;font-size:11px;border-bottom:1px solid var(--border)}
+.log-item:hover{background:var(--bg3)}
+.log-time{color:var(--text3);min-width:75px}
+.log-method{min-width:50px}
+.log-path{flex:1;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.log-status{min-width:38px;text-align:right;font-weight:600}
+.log-status.ok{color:var(--green)}.log-status.err{color:var(--red)}
+.log-ms{color:var(--text3);min-width:50px;text-align:right}
+/* SECURITY */
+.vuln-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:8px}
+.vuln-sev{font-size:10px;font-weight:700;text-transform:uppercase;padding:3px 8px;border-radius:3px;white-space:nowrap}
+.vuln-sev.critical{background:rgba(248,81,73,.2);color:var(--red)}
+.vuln-sev.high{background:rgba(240,136,62,.2);color:var(--orange)}
+.vuln-sev.medium{background:rgba(210,153,34,.2);color:var(--yellow)}
+.vuln-sev.low{background:rgba(88,166,255,.2);color:var(--blue)}
+.vuln-code{background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:7px 10px;font-family:monospace;font-size:11px;color:var(--orange);margin-top:8px;overflow-x:auto}
+/* CODE */
+.code-module{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);margin-bottom:8px;overflow:hidden}
+.code-module-head{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer}
+.code-module-head:hover{background:var(--bg3)}
+.code-line-range{font-family:monospace;font-size:11px;color:var(--text3);padding:2px 8px;background:var(--bg3);border-radius:3px}
+.code-module-body{padding:12px 14px;border-top:1px solid var(--border);display:none}
+.code-module-body.open{display:block}
+.dep-badge{display:inline-block;background:var(--bg3);border:1px solid var(--border);border-radius:3px;font-family:monospace;font-size:10px;padding:2px 7px;color:var(--text2);margin:2px}
+/* MERMAID overrides */
+.mermaid{background:var(--bg3)!important;border-radius:var(--r);padding:20px;margin-bottom:16px}
+.mermaid svg{max-width:100%;height:auto!important}
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
+.loading{color:var(--text3);font-size:13px;padding:30px;text-align:center}
+.mini-chip{font-size:10px;padding:1px 6px;border-radius:10px;background:var(--bg4);color:var(--text3);border:1px solid var(--border);font-family:monospace}
+.chevron{transition:transform .2s;display:inline-block}
+.chevron.open{transform:rotate(90deg)}
+</style>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#C9A227">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Gurukul ERP">
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-panel">
+  <div id="login-box">
+    <h2>🛠 Dev Monitor</h2>
+    <p>Gurukul School Management System — Developer Dashboard</p>
+    <input type="text" id="login-user" placeholder="Username" value="admin">
+    <input type="password" id="login-pass" placeholder="Password" value="gurukul@2026">
+    <button id="login-btn" onclick="doLogin()">Sign In</button>
+    <div id="login-err"></div>
+    <div style="margin-top:14px;font-size:11px;color:var(--text3)"><code>admin/gurukul@2026</code> &nbsp;·&nbsp; <code>audit/audit@2026</code> &nbsp;·&nbsp; <code>cyber/cyber@2026</code></div>
+  </div>
+</div>
+
+<!-- TOPBAR -->
+<div id="topbar">
+  <div class="logo"><span>🏫</span> Gurukul Dev Monitor <span class="badge">v2.0</span></div>
+  <div id="status-pill" class="offline"><div class="dot"></div><span id="status-text">Connecting…</span></div>
+  <span id="uptime-display"></span>
+  <div class="spacer"></div>
+  <span style="font-size:12px;color:var(--text3)">Auto-refresh 30s</span>
+  <button id="refresh-btn" onclick="refreshAll()"><span id="refresh-icon">↻</span> Refresh</button>
+</div>
+
+<div id="app">
+<!-- SIDEBAR -->
+<div id="sidebar">
+  <div class="nav-section-label">Live Metrics</div>
+  <div class="nav-item active" onclick="switchPanel('health')" id="nav-health"><span class="icon">📊</span> Server Health</div>
+  <div class="nav-item" onclick="switchPanel('dblive')" id="nav-dblive"><span class="icon">📈</span> DB Live Stats</div>
+  <div class="nav-item" onclick="switchPanel('logs')" id="nav-logs"><span class="icon">📋</span> API Logs <span class="nav-badge" id="badge-logs">0</span></div>
+  <div class="nav-item" onclick="switchPanel('security')" id="nav-security"><span class="icon">🔐</span> Security <span class="nav-badge red" id="badge-sec">0</span></div>
+  <div class="nav-section-label" style="margin-top:8px">Architecture</div>
+  <div class="nav-item" onclick="switchPanel('dbexplorer')" id="nav-dbexplorer"><span class="icon">🗄️</span> DB Explorer <span class="nav-badge green" id="badge-tables">58</span></div>
+  <div class="nav-item" onclick="switchPanel('routes')" id="nav-routes"><span class="icon">🔀</span> API Routes <span class="nav-badge" id="badge-routes">126</span></div>
+  <div class="nav-item" onclick="switchPanel('arch')" id="nav-arch"><span class="icon">🧩</span> Architecture</div>
+  <div class="nav-item" onclick="switchPanel('code')" id="nav-code"><span class="icon">📁</span> Code Map</div>
+</div>
+
+<div id="main">
+
+<!-- ══════════ SERVER HEALTH ══════════ -->
+<div class="panel active" id="panel-health">
+  <div class="panel-title">📊 Server Health</div>
+  <div class="panel-desc">Live runtime metrics — auto-refreshes every 30 seconds</div>
+  <div class="grid-5">
+    <div class="card"><div class="card-title">Status</div><div class="kpi-val green" id="kpi-status">● ONLINE</div><div class="kpi-sub">Node.js HTTP :3001</div></div>
+    <div class="card"><div class="card-title">Uptime</div><div class="kpi-val blue" id="kpi-uptime">—</div><div class="kpi-sub">since last restart</div></div>
+    <div class="card"><div class="card-title">Memory</div><div class="kpi-val" id="kpi-mem">—</div><div class="kpi-sub">Process RSS</div><svg id="gauge-mem" width="100%" height="46" style="margin-top:6px"></svg></div>
+    <div class="card"><div class="card-title">Total Requests</div><div class="kpi-val blue" id="kpi-reqs">—</div><div class="kpi-sub">all time</div></div>
+    <div class="card"><div class="card-title">Error Rate</div><div class="kpi-val" id="kpi-err">—</div><div class="kpi-sub">of all requests</div></div>
+  </div>
+  <div class="grid-4">
+    <div class="card"><div class="card-title">DB Size</div><div class="kpi-val purple" id="kpi-dbsize">—</div><div class="kpi-sub">gurukul.db (WAL mode)</div></div>
+    <div class="card"><div class="card-title">Active Routes</div><div class="kpi-val cyan" id="kpi-routes">—</div><div class="kpi-sub">seen in last hour</div></div>
+    <div class="card"><div class="card-title">Security Events</div><div class="kpi-val" id="kpi-secevt">—</div><div class="kpi-sub">last 1 hour</div></div>
+    <div class="card"><div class="card-title">Restarts</div><div class="kpi-val orange" id="kpi-restarts">—</div><div class="kpi-sub">since first boot</div></div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:20px">
+    <div class="card">
+      <div class="section-title">🔀 Traffic by HTTP Method</div>
+      <svg id="chart-method-donut" width="100%" height="180"></svg>
+    </div>
+    <div class="card">
+      <div class="section-title">📉 Status Code Distribution</div>
+      <svg id="chart-status-donut" width="100%" height="180"></svg>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:20px">
+    <div class="section-title">🏆 Top 10 Endpoints by Request Count</div>
+    <svg id="chart-top-endpoints" width="100%" height="220"></svg>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="section-title">🗄️ Key Table Row Counts</div>
+      <div id="db-counts-table" class="loading">Loading…</div>
+    </div>
+    <div class="card">
+      <div class="section-title">📡 System Information</div>
+      <table id="sysinfo-table">
+        <tr><td>Runtime</td><td class="mono" style="color:var(--green)">Node.js v22 (no npm in prod)</td></tr>
+        <tr><td>Database</td><td class="mono" style="color:var(--cyan)">SQLite — WAL + busy_timeout</td></tr>
+        <tr><td>HTTP Server</td><td class="mono" style="color:var(--blue)">node:http (raw, no Express)</td></tr>
+        <tr><td>Auth</td><td class="mono" style="color:var(--purple)">HS256 JWT + Admin Key</td></tr>
+        <tr><td>Port</td><td class="mono" style="color:var(--orange)">3001 (API + static)</td></tr>
+        <tr><td>First Start</td><td class="mono" id="first-start">—</td></tr>
+        <tr><td>Last Restart</td><td class="mono" id="last-restart">—</td></tr>
+        <tr><td>Heap Used</td><td class="mono" id="heap-used">—</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ DB LIVE STATS ══════════ -->
+<div class="panel" id="panel-dblive">
+  <div class="panel-title">📈 Database Live Stats</div>
+  <div class="panel-desc">Real-time row counts, storage, domain distribution, and entity relationships</div>
+  <div class="grid-4">
+    <div class="card"><div class="card-title">Total Tables</div><div class="kpi-val blue" id="dlive-tables">58</div><div class="kpi-sub">across 9 domain groups</div></div>
+    <div class="card"><div class="card-title">Total Rows</div><div class="kpi-val green" id="dlive-rows">—</div><div class="kpi-sub">all tables combined</div></div>
+    <div class="card"><div class="card-title">DB File Size</div><div class="kpi-val purple" id="dlive-size">—</div><div class="kpi-sub">WAL checkpoint: clean</div></div>
+    <div class="card"><div class="card-title">Integrity</div><div class="kpi-val green" id="dlive-integrity">ok</div><div class="kpi-sub">PRAGMA quick_check</div></div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:20px">
+    <div class="card">
+      <div class="section-title">🍩 Tables by Domain</div>
+      <svg id="chart-db-domain" width="100%" height="200"></svg>
+    </div>
+    <div class="card">
+      <div class="section-title">📊 Rows by Table (non-empty)</div>
+      <svg id="chart-db-rows" width="100%" height="200"></svg>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:20px">
+    <div class="section-title">🔗 Core Entity Relationship Diagram</div>
+    <div class="panel-desc" style="margin-bottom:12px">Primary relationships between the 6 core domain tables — students, teachers, finance, HR</div>
+    <div id="er-diagram-core" class="mermaid"></div>
+  </div>
+
+  <div class="card">
+    <div class="section-title">🔗 Finance Domain Relationships</div>
+    <div id="er-diagram-finance" class="mermaid"></div>
+  </div>
+</div>
+
+<!-- ══════════ API LOGS ══════════ -->
+<div class="panel" id="panel-logs">
+  <div class="panel-title">📋 API Call Logs</div>
+  <div class="panel-desc">Last 200 HTTP requests logged by the middleware — searchable and filterable</div>
+  <div class="grid-4" style="margin-bottom:16px">
+    <div class="card"><div class="card-title">Total Logged</div><div class="kpi-val blue" id="log-total">—</div></div>
+    <div class="card"><div class="card-title">Success (2xx)</div><div class="kpi-val green" id="log-ok">—</div></div>
+    <div class="card"><div class="card-title">Client Error (4xx)</div><div class="kpi-val yellow" id="log-4xx">—</div></div>
+    <div class="card"><div class="card-title">Server Error (5xx)</div><div class="kpi-val red" id="log-5xx">—</div></div>
+  </div>
+  <div class="grid-2" style="margin-bottom:16px">
+    <div class="card">
+      <div class="section-title">🍩 Status Code Split</div>
+      <svg id="chart-log-status" width="100%" height="160"></svg>
+    </div>
+    <div class="card">
+      <div class="section-title">🏆 Most Called Endpoints</div>
+      <svg id="chart-log-paths" width="100%" height="160"></svg>
+    </div>
+  </div>
+  <input class="route-search" id="log-search" placeholder="🔍  Filter by path, method, or status…" oninput="filterLogs()">
+  <div class="log-wrap" id="log-table-wrap"><div class="loading">Loading…</div></div>
+</div>
+
+<!-- ══════════ SECURITY ══════════ -->
+<div class="panel" id="panel-security">
+  <div class="panel-title">🔐 Security Monitor</div>
+  <div class="panel-desc">Vulnerability scan, security events, and auth coverage across all modules</div>
+
+  <div class="grid-4" style="margin-bottom:20px">
+    <div class="card"><div class="card-title">Critical</div><div class="kpi-val red" id="vuln-critical">—</div><div class="kpi-sub">SQL injection, eval()</div></div>
+    <div class="card"><div class="card-title">High</div><div class="kpi-val orange" id="vuln-high">—</div><div class="kpi-sub">Missing auth checks</div></div>
+    <div class="card"><div class="card-title">Medium</div><div class="kpi-val yellow" id="vuln-medium">—</div><div class="kpi-sub">CORS, headers</div></div>
+    <div class="card"><div class="card-title">Low</div><div class="kpi-val blue" id="vuln-low">—</div><div class="kpi-sub">Logging gaps</div></div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:20px">
+    <div class="card">
+      <div class="section-title">📊 Vulnerability Breakdown</div>
+      <svg id="chart-vuln-bar" width="100%" height="130"></svg>
+    </div>
+    <div class="card">
+      <div class="section-title">🛡️ Auth Coverage by Module</div>
+      <div id="auth-coverage-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:20px">
+    <div class="section-title">🔐 Authentication Flow</div>
+    <div id="auth-flow-diagram" class="mermaid"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="section-title">⚠️ Top Vulnerabilities</div>
+      <div id="vuln-list">Loading…</div>
+    </div>
+    <div class="card">
+      <div class="section-title">🚨 Recent Security Events</div>
+      <div id="sec-events-list">Loading…</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ DB EXPLORER ══════════ -->
+<div class="panel" id="panel-dbexplorer">
+  <div id="dbe-header">
+    <div class="panel-title" style="margin-bottom:2px">🗄️ Database Schema Explorer</div>
+    <div class="panel-desc" style="margin-bottom:0">Browse all 58 tables — columns, types, keys, indexes &amp; relationships</div>
+  </div>
+  <div id="dbe-layout">
+    <!-- LEFT: table list -->
+    <div id="dbe-sidebar">
+      <div id="dbe-search-wrap">
+        <input id="dbe-search" placeholder="🔍  Search tables or columns…" oninput="filterDB()">
+      </div>
+      <div id="dbe-table-list"><div class="loading">Loading schema…</div></div>
+    </div>
+    <!-- RIGHT: table detail -->
+    <div id="dbe-detail">
+      <div id="dbe-welcome">
+        <div style="font-size:44px">🗄️</div>
+        <div style="font-size:15px;font-weight:600;color:var(--text2)">Select a table to explore</div>
+        <div style="font-size:12px;color:var(--text3)">Click any table from the list on the left to see its full schema</div>
+      </div>
+      <div id="dbe-table-view" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ API ROUTES ══════════ -->
+<div class="panel" id="panel-routes">
+  <div class="panel-title">🔀 API Routes Reference</div>
+  <div class="panel-desc">All 126 endpoints — filter by module or HTTP method. Every route shows auth requirement and description.</div>
+
+  <div class="grid-2" style="margin-bottom:16px">
+    <div class="card">
+      <div class="section-title">🍩 Routes by Module</div>
+      <svg id="chart-routes-module" width="100%" height="180"></svg>
+    </div>
+    <div class="card">
+      <div class="section-title">📊 Routes by HTTP Method</div>
+      <svg id="chart-routes-method" width="100%" height="180"></svg>
+    </div>
+  </div>
+
+  <input class="route-search" id="route-search" placeholder="🔍  Search routes…" oninput="filterRoutes()">
+  <div class="route-filter-row" id="route-filters"></div>
+  <div id="route-count" style="font-size:12px;color:var(--text3);margin-bottom:12px">Loading…</div>
+  <div id="route-list">Loading…</div>
+</div>
+
+<!-- ══════════ ARCHITECTURE ══════════ -->
+<div class="panel" id="panel-arch">
+  <div class="panel-title">🧩 System Architecture</div>
+  <div class="panel-desc">C4 architecture model, request flow sequence, data flow, and module map — the complete picture of how this system is built</div>
+
+  <div class="section-title">🏗️ C4 Container Diagram — How the System is Structured</div>
+  <div class="card" style="margin-bottom:20px">
+    <div class="panel-desc" style="margin-bottom:12px">Shows every major component: portals, API server, database, email, and external integrations</div>
+    <div id="c4-container" class="mermaid"></div>
+  </div>
+
+  <div class="section-title">📡 Request Lifecycle — Step-by-Step Flow</div>
+  <div class="card" style="margin-bottom:20px">
+    <div class="panel-desc" style="margin-bottom:12px">What happens from the moment a browser sends a request to when it gets a response</div>
+    <div id="seq-request-flow" class="mermaid"></div>
+  </div>
+
+  <div class="section-title">🔐 Authentication Layers</div>
+  <div class="card" style="margin-bottom:20px">
+    <table>
+      <tr><th>Method</th><th>Used By</th><th>Token</th><th>Expiry</th><th>Credentials</th></tr>
+      <tr><td><span class="tag orange">Admin Key</span></td><td>Admin API, Analytics, Dev Schema</td><td class="mono">?key=gurukul-admin-2026</td><td>Never</td><td class="mono" style="color:var(--text3)">env: ADMIN_KEY</td></tr>
+      <tr><td><span class="tag blue">JWT Admin</span></td><td>Monitor, Admin Portal</td><td class="mono">Bearer JWT</td><td>8h</td><td class="mono" style="color:var(--text3)">admin / gurukul@2026</td></tr>
+      <tr><td><span class="tag green">JWT Finance</span></td><td>Finance, Accounting, Budget</td><td class="mono">Bearer JWT</td><td>8h</td><td class="mono" style="color:var(--text3)">finance / finance@2026</td></tr>
+      <tr><td><span class="tag purple">JWT HR</span></td><td>HR Module</td><td class="mono">Bearer JWT</td><td>8h</td><td class="mono" style="color:var(--text3)">hr / hr@2026</td></tr>
+      <tr><td><span class="tag cyan">JWT Marketing</span></td><td>Marketing Module</td><td class="mono">Bearer JWT</td><td>8h</td><td class="mono" style="color:var(--text3)">marketing / mkt@2026</td></tr>
+      <tr><td><span class="tag yellow">JWT Budget</span></td><td>Budget Dashboard</td><td class="mono">Bearer JWT</td><td>8h</td><td class="mono" style="color:var(--text3)">budget / budget@2026</td></tr>
+      <tr><td><span class="tag red">JWT Monitor</span></td><td>Monitor Dashboard</td><td class="mono">Bearer JWT</td><td>8h</td><td class="mono" style="color:var(--text3)">audit / audit@2026</td></tr>
+    </table>
+  </div>
+
+  <div class="section-title">🧩 Module Map</div>
+  <div class="arch-grid" id="arch-modules"></div>
+</div>
+
+<!-- ══════════ CODE MAP ══════════ -->
+<div class="panel" id="panel-code">
+  <div class="panel-title">📁 Code Architecture Map</div>
+  <div class="panel-desc">server.js is the entire backend — 8,133 lines, no npm dependencies in production, organized into 22 logical sections</div>
+
+  <div class="grid-3" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-title">Backend</div>
+      <div style="font-family:monospace;font-size:12px;line-height:1.8">
+        <div style="color:var(--blue)">server/</div>
+        <div style="padding-left:12px;color:var(--text2)">├── <span style="color:var(--green)">server.js</span> <span style="color:var(--text3)">(8,133 lines)</span></div>
+        <div style="padding-left:12px;color:var(--text2)">├── data/gurukul.db <span style="color:var(--text3)">(58 tables)</span></div>
+        <div style="padding-left:12px;color:var(--text2)">└── package.json <span style="color:var(--text3)">(zero deps)</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Frontend Portals (17 files)</div>
+      <div style="font-family:monospace;font-size:11px;line-height:1.7">
+        <span style="color:var(--yellow)">admin-dashboard.html</span><br>
+        <span style="color:var(--purple)">finance-dashboard.html</span><br>
+        <span style="color:var(--pink)">hr-dashboard.html</span><br>
+        <span style="color:var(--cyan)">budget-dashboard.html</span><br>
+        <span style="color:var(--blue)">analytics-dashboard.html</span><br>
+        <span style="color:var(--red)">monitor-dashboard.html</span><br>
+        <span style="color:var(--green)">dev-monitor.html ← you are here</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Zero npm Runtime Dependencies</div>
+      <div style="font-size:12px;line-height:2">
+        <span class="tag green">node:http</span> HTTP server<br>
+        <span class="tag blue">node:sqlite</span> DatabaseSync<br>
+        <span class="tag purple">node:crypto</span> JWT (HS256)<br>
+        <span class="tag yellow">node:url</span> URL parsing<br>
+        <span class="tag cyan">node:net/tls</span> SMTP sender<br>
+        <span class="tag orange">node:fs</span> Static + backups
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-bottom:20px">
+    <div class="section-title">📊 Lines of Code by Section</div>
+    <svg id="chart-code-lines" width="100%" height="280"></svg>
+  </div>
+
+  <div class="card" style="margin-bottom:20px">
+    <div class="section-title">🔗 Module Dependency Graph</div>
+    <div class="panel-desc" style="margin-bottom:12px">How the major modules relate to each other and the database</div>
+    <div id="dep-graph" class="mermaid"></div>
+  </div>
+
+  <div class="section-title">📑 Section Reference (click to expand)</div>
+  <div id="code-sections"></div>
+</div>
+
+</div><!-- /main -->
+</div><!-- /app -->
+
+<script>
+// ────────────────────────────────────────────────────────────────────────────
+// CONFIG & STATE
+// ────────────────────────────────────────────────────────────────────────────
+const BASE = window.location.origin.includes('3001') ? '' : '';
+let TOKEN = null, allLogs = [], allSchemaData = null, routeFilter = { group:'All', method:'All' };
+
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'dark',
+  themeVariables: { background: '#21262d', primaryColor: '#1a6fd4', primaryTextColor: '#e6edf3',
+    primaryBorderColor: '#30363d', lineColor: '#8b949e', secondaryColor: '#161b22',
+    tertiaryColor: '#0d1117', edgeLabelBackground: '#21262d', fontSize: '13px' }
+});
+
+// ────────────────────────────────────────────────────────────────────────────
+// SVG CHART HELPERS
+// ────────────────────────────────────────────────────────────────────────────
+function drawDonut(svgId, segments, opts={}) {
+  const el = document.getElementById(svgId); if (!el) return;
+  const W = el.getBoundingClientRect().width || 300, H = parseInt(el.getAttribute('height')) || 180;
+  const cx = W / 3, cy = H / 2, R = Math.min(cx, cy) - 12, r = R * 0.56;
+  const total = segments.reduce((s,x)=>s+x.val,0); if (!total) return;
+  let angle = -Math.PI / 2;
+  let paths = '';
+  segments.forEach(seg => {
+    const sweep = (seg.val / total) * Math.PI * 2;
+    const x1=cx+R*Math.cos(angle), y1=cy+R*Math.sin(angle);
+    const x2=cx+R*Math.cos(angle+sweep), y2=cy+R*Math.sin(angle+sweep);
+    const x3=cx+r*Math.cos(angle+sweep), y3=cy+r*Math.sin(angle+sweep);
+    const x4=cx+r*Math.cos(angle), y4=cy+r*Math.sin(angle);
+    const big = sweep > Math.PI ? 1 : 0;
+    paths += `<path d="M${x1},${y1} A${R},${R} 0 ${big},1 ${x2},${y2} L${x3},${y3} A${r},${r} 0 ${big},0 ${x4},${y4} Z" fill="${seg.color}" opacity=".85"/>`;
+    angle += sweep;
+  });
+  const center = opts.center || '';
+  let legend = '';
+  segments.forEach((seg, i) => {
+    const lx = cx * 2 + 10, ly = 20 + i * 22;
+    legend += `<rect x="${lx}" y="${ly-9}" width="10" height="10" rx="2" fill="${seg.color}"/>`;
+    legend += `<text x="${lx+14}" y="${ly}" fill="#8b949e" font-size="11">${seg.label} <tspan fill="#e6edf3" font-weight="600">${seg.val}</tspan></text>`;
+  });
+  el.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
+    ${paths}
+    <text x="${cx}" y="${cy+5}" text-anchor="middle" fill="#e6edf3" font-size="14" font-weight="700">${center}</text>
+    ${legend}
+  </svg>`;
+}
+
+function drawBarH(svgId, items, colorFn) {
+  const el = document.getElementById(svgId); if (!el) return;
+  const W = el.getBoundingClientRect().width || 400, H = parseInt(el.getAttribute('height')) || 200;
+  const maxVal = Math.max(...items.map(x=>x.val), 1);
+  const bH = Math.min(22, (H - 20) / Math.max(items.length,1) - 4);
+  const labelW = 140, gap = 4;
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">`;
+  items.forEach((item, i) => {
+    const y = 8 + i * (bH + gap);
+    const barW = Math.max(2, ((W - labelW - 60) * item.val / maxVal));
+    const col = colorFn ? colorFn(i, item) : '#58a6ff';
+    svg += `<text x="${labelW-4}" y="${y+bH/2+4}" text-anchor="end" fill="#8b949e" font-size="11" font-family="monospace">${item.label.length>18?item.label.slice(0,17)+'…':item.label}</text>`;
+    svg += `<rect x="${labelW}" y="${y}" width="${barW}" height="${bH}" rx="3" fill="${col}" opacity=".8"/>`;
+    svg += `<text x="${labelW+barW+5}" y="${y+bH/2+4}" fill="#e6edf3" font-size="11" font-weight="600">${item.val}</text>`;
+  });
+  svg += `</svg>`;
+  el.innerHTML = svg;
+}
+
+function drawGauge(svgId, pct, color) {
+  const el = document.getElementById(svgId); if (!el) return;
+  const W = el.getBoundingClientRect().width || 200, H = parseInt(el.getAttribute('height')) || 46;
+  const cx = W / 2, cy = H - 4, R = Math.min(cx - 8, H - 4);
+  const angle = Math.PI * pct / 100;
+  const ex = cx - R * Math.cos(angle), ey = cy - R * Math.sin(angle);
+  el.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">
+    <path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${cx+R},${cy}" fill="none" stroke="#30363d" stroke-width="6"/>
+    <path d="M${cx-R},${cy} A${R},${R} 0 0,1 ${ex},${ey}" fill="none" stroke="${color}" stroke-width="6" stroke-linecap="round"/>
+    <text x="${cx}" y="${cy-4}" text-anchor="middle" fill="${color}" font-size="11" font-weight="700">${pct}%</text>
+  </svg>`;
+}
+
+function drawBarV(svgId, items, opts={}) {
+  const el = document.getElementById(svgId); if (!el) return;
+  const W = el.getBoundingClientRect().width || 400, H = parseInt(el.getAttribute('height')) || 280;
+  const padB = 60, padT = 10, padL = 8, bW = Math.max(8, (W - padL * 2) / items.length - 4);
+  const maxVal = Math.max(...items.map(x=>x.val), 1);
+  let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}">`;
+  items.forEach((item, i) => {
+    const bH = Math.max(2, ((H - padB - padT) * item.val / maxVal));
+    const x = padL + i * ((W - padL * 2) / items.length) + 2;
+    const y = H - padB - bH;
+    const col = item.color || opts.color || '#58a6ff';
+    svg += `<rect x="${x}" y="${y}" width="${bW}" height="${bH}" rx="3" fill="${col}" opacity=".8"/>`;
+    svg += `<text x="${x+bW/2}" y="${H-padB+14}" text-anchor="middle" fill="#6e7681" font-size="9" transform="rotate(-35,${x+bW/2},${H-padB+14})">${item.label.slice(0,12)}</text>`;
+    if (item.val > 0) svg += `<text x="${x+bW/2}" y="${y-4}" text-anchor="middle" fill="#8b949e" font-size="10">${item.val}</text>`;
+  });
+  svg += `</svg>`;
+  el.innerHTML = svg;
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// AUTH
+// ────────────────────────────────────────────────────────────────────────────
+async function apiFetch(path, opts={}) {
+  const headers = { 'Content-Type':'application/json' };
+  if (TOKEN) headers['Authorization'] = 'Bearer ' + TOKEN;
+  const r = await fetch(BASE + path, { ...opts, headers });
+  return r.json();
+}
+
+async function doLogin() {
+  const u = document.getElementById('login-user').value, p = document.getElementById('login-pass').value;
+  const btn = document.getElementById('login-btn'); btn.textContent='Signing in…'; btn.disabled=true;
+  try {
+    const r = await fetch(BASE+'/api/monitor/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});
+    const d = await r.json();
+    if (d.token) { TOKEN=d.token; document.getElementById('login-panel').style.display='none'; initDashboard(); }
+    else { document.getElementById('login-err').textContent=d.error||'Login failed'; document.getElementById('login-err').style.display='block'; }
+  } catch(e) { document.getElementById('login-err').textContent='Cannot reach server at '+BASE; document.getElementById('login-err').style.display='block'; }
+  btn.textContent='Sign In'; btn.disabled=false;
+}
+document.getElementById('login-pass').addEventListener('keypress',e=>{if(e.key==='Enter')doLogin()});
+
+// ────────────────────────────────────────────────────────────────────────────
+// PANEL SWITCHING
+// ────────────────────────────────────────────────────────────────────────────
+let currentPanel = 'health';
+function switchPanel(name) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  document.getElementById('nav-'+name).classList.add('active');
+  currentPanel = name;
+  if (name==='dbexplorer' && !allSchemaData) loadSchema();
+  if (name==='dblive') { loadDBLive(); if (!allSchemaData) loadSchema(); }
+  if (name==='routes') { renderRouteCharts(); renderRoutes(); }
+  if (name==='arch') renderArch();
+  if (name==='code') { renderCode(); renderCodeChart(); }
+  if (name==='security') renderAuthCoverage();
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// INIT
+// ────────────────────────────────────────────────────────────────────────────
+async function initDashboard() {
+  renderStaticDiagrams();
+  await refreshAll();
+  setInterval(refreshAll, 30000);
+}
+
+async function refreshAll() {
+  const icon = document.getElementById('refresh-icon');
+  icon.className='spin'; icon.textContent='↻';
+  await Promise.all([loadHealth(), loadLogs(), loadSecurity()]);
+  if (currentPanel==='dblive') await loadDBLive();
+  icon.className=''; icon.textContent='↻';
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// STATIC MERMAID DIAGRAMS (rendered once)
+// ────────────────────────────────────────────────────────────────────────────
+function renderStaticDiagrams() {
+  const diagrams = {
+    'er-diagram-core': `erDiagram
+    students {
+        TEXT id PK
+        TEXT name
+        TEXT class
+        TEXT section
+        TEXT roll_no
+        TEXT parent_mobile
+    }
+    teachers {
+        TEXT id PK
+        TEXT name
+        TEXT subject
+        TEXT class_assigned
+        TEXT email
+    }
+    attendance {
+        INTEGER id PK
+        TEXT student_id FK
+        TEXT teacher_id FK
+        TEXT date
+        TEXT status
+    }
+    marks {
+        INTEGER id PK
+        TEXT student_id FK
+        TEXT teacher_id FK
+        TEXT subject
+        INTEGER marks_obtained
+        INTEGER max_marks
+    }
+    finance_fees {
+        INTEGER id PK
+        TEXT student_id FK
+        TEXT fee_type
+        REAL amount
+        TEXT status
+        TEXT academic_yr
+        TEXT paid_date
+    }
+    payroll_entries {
+        INTEGER id PK
+        TEXT staff_id FK
+        TEXT staff_type
+        TEXT month
+        REAL gross
+        REAL net_pay
+        TEXT status
+    }
+    students ||--o{ attendance : "attends"
+    teachers ||--o{ attendance : "marks"
+    students ||--o{ marks : "receives"
+    teachers ||--o{ marks : "enters"
+    students ||--o{ finance_fees : "pays"`,
+
+    'er-diagram-finance': `erDiagram
+    finance_fees {
+        INTEGER id PK
+        TEXT student_id FK
+        TEXT fee_type
+        REAL amount
+        TEXT status
+        TEXT academic_yr
+    }
+    fee_schedules {
+        INTEGER id PK
+        TEXT class
+        TEXT fee_type
+        REAL amount
+        TEXT academic_yr
+    }
+    journal_entries {
+        INTEGER id PK
+        TEXT date
+        TEXT voucher_no
+        TEXT account_code FK
+        REAL debit
+        REAL credit
+        TEXT source
+    }
+    chart_of_accounts {
+        TEXT code PK
+        TEXT name
+        TEXT type
+        TEXT category
+    }
+    payroll_entries {
+        INTEGER id PK
+        TEXT staff_id
+        TEXT month
+        REAL net_pay
+    }
+    department_budgets {
+        INTEGER id PK
+        TEXT dept_key
+        TEXT fiscal_year
+        REAL allocated_amount
+    }
+    budget_expenses {
+        INTEGER id PK
+        TEXT dept_key FK
+        TEXT fiscal_year
+        REAL amount
+        TEXT description
+    }
+    finance_fees ||--o{ journal_entries : "generates"
+    chart_of_accounts ||--o{ journal_entries : "classifies"
+    payroll_entries ||--o{ journal_entries : "creates"
+    department_budgets ||--o{ budget_expenses : "tracks"`,
+
+    'auth-flow-diagram': `flowchart LR
+    R([HTTP Request]) --> RL[Rate Limiter\n100 req/min/IP]
+    RL -->|blocked| E1([429 Too Many Requests])
+    RL -->|ok| C[CORS Headers]
+    C --> P[URL Parse\npathname+query]
+    P --> PUB{Public\nRoute?}
+    PUB -->|yes| H[Handler]
+    PUB -->|no| AM{Auth\nMethod}
+    AM -->|?key=...| AK{Admin Key\nMatch?}
+    AM -->|Bearer JWT| JV{JWT\nVerify HS256}
+    AK -->|fail| E2([401 Unauthorized])
+    JV -->|expired/invalid| E2
+    AK -->|pass| RO{Role\nCheck}
+    JV -->|pass| RO
+    RO -->|wrong role| E3([403 Forbidden])
+    RO -->|ok| H
+    H --> DB[(SQLite WAL)]
+    DB --> RS([JSON Response])`,
+
+    'c4-container': `graph TB
+    subgraph Browsers["🌐 Browser Clients"]
+        SA["Admin Browser"]
+        SF["Finance Browser"]
+        ST["Teacher Browser"]
+        SS["Student Browser"]
+    end
+    subgraph Server["⚙️ Node.js Server :3001"]
+        direction TB
+        RLM["Rate Limiter\n(in-memory Map)"]
+        CORS["CORS Middleware"]
+        SR["Static File Server\n(portal/*.html, css/, fonts/)"]
+        RT["Main Router\n(126 routes, if-else chain)"]
+        subgraph Modules["Business Logic Modules"]
+            AM["Admin Module\n35 endpoints"]
+            FM["Finance + Accounting\n34 endpoints"]
+            HM["HR Module\n28 endpoints"]
+            MM["Monitor Module\n8 endpoints"]
+            OT["Other Modules\n21 endpoints"]
+        end
+        AUTH["Auth Middleware\n(JWT HS256 + Admin Key)"]
+        SSE["SSE Bus\n(real-time streams)"]
+        SMTP["SMTP Sender\n(node:net/tls built-in)"]
+    end
+    subgraph Data["💾 Data Layer"]
+        DB[("SQLite Database\ngurukul.db\n58 tables\nWAL Mode")]
+        WAL["WAL File\n(.db-wal)\ncheckpointed every 5min"]
+    end
+    SA & SF & ST & SS --> RLM
+    RLM --> CORS --> SR
+    CORS --> RT
+    RT --> AUTH --> Modules
+    Modules --> DB
+    DB --- WAL
+    Modules --> SSE
+    Modules --> SMTP`,
+
+    'seq-request-flow': `sequenceDiagram
+    autonumber
+    participant C as Browser
+    participant RL as Rate Limiter
+    participant Router as Main Router
+    participant Auth as Auth Check
+    participant Handler as Handler Fn
+    participant DB as SQLite (WAL)
+    participant LOG as Log Middleware
+
+    C->>RL: HTTP Request (any endpoint)
+    RL->>RL: Check 100 req/min per IP
+    alt Rate limit exceeded
+        RL-->>C: 429 Too Many Requests
+    else OK
+        RL->>Router: Forward request
+        Router->>Router: Parse pathname + query string
+        alt Public route (login, health, static)
+            Router->>Handler: Call handler directly
+        else Protected route
+            Router->>Auth: Extract Bearer JWT or ?key=
+            Auth->>Auth: Verify HS256 signature + expiry
+            Auth->>Auth: Check role permissions
+            alt Auth fails
+                Auth-->>C: 401 / 403
+            else Auth OK
+                Auth->>Handler: Call handler with payload
+            end
+        end
+        Handler->>DB: SQL query (prepare + run)
+        DB-->>Handler: Result rows / affected count
+        Handler-->>C: JSON Response
+        Handler-->>LOG: setImmediate(log to api_call_logs)
+    end`,
+
+    'dep-graph': `graph LR
+    subgraph Core["🔧 Core Infrastructure"]
+        CFG["Config & Env Vars"]
+        JWT["JWT Helpers\nnode:crypto HS256"]
+        HTTP["HTTP Helpers\nsend(), parseBody()"]
+        RL["Rate Limiter\nin-memory Map"]
+        DB["DatabaseSync\nnode:sqlite WAL"]
+    end
+    subgraph Modules["📦 Feature Modules"]
+        STUD["Student Portal"]
+        TCH["Teacher Portal"]
+        PAR["Parent Portal"]
+        ADM["Admin Module"]
+        FIN["Finance Module"]
+        ACC["Accounting Module"]
+        HR["HR Module"]
+        MKT["Marketing Module"]
+        MON["Monitor Module"]
+        BUD["Budget Module"]
+        AC["Access Control"]
+    end
+    CFG --> JWT & DB & RL
+    JWT --> STUD & TCH & PAR & ADM & FIN & HR & MKT & MON & BUD
+    HTTP --> STUD & TCH & PAR & ADM & FIN & HR & MKT & MON & BUD
+    DB --> STUD & TCH & PAR & ADM & FIN & ACC & HR & MKT & MON & BUD & AC
+    FIN --> ACC
+    ADM --> AC`
+  };
+
+  Object.entries(diagrams).forEach(([id, def]) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    mermaid.render('svg-'+id, def).then(({svg}) => { el.innerHTML = svg; }).catch(e => {
+      el.innerHTML = `<div style="color:var(--red);padding:12px;font-size:12px">Diagram render error: ${e.message}</div>`;
+    });
+  });
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// SERVER HEALTH PANEL
+// ────────────────────────────────────────────────────────────────────────────
+async function loadHealth() {
+  try {
+    const [stats, storage, logs] = await Promise.all([
+      apiFetch('/api/monitor/stats'),
+      apiFetch('/api/analytics/storage?key=gurukul-admin-2026'),
+      apiFetch('/api/monitor/api-logs?limit=200')
+    ]);
+
+    document.getElementById('status-pill').className = '';
+    document.getElementById('status-text').textContent = '● ONLINE';
+    document.getElementById('kpi-status').textContent = '● ONLINE';
+    document.getElementById('kpi-status').className = 'kpi-val green';
+
+    const fmt = s => s>3600?Math.floor(s/3600)+'h '+Math.floor((s%3600)/60)+'m':Math.floor(s/60)+'m '+Math.floor(s%60)+'s';
+    document.getElementById('kpi-uptime').textContent = fmt(stats.uptime||0);
+    document.getElementById('uptime-display').textContent = 'Up: '+fmt(stats.uptime||0);
+
+    const mem = stats.memMB||0;
+    document.getElementById('kpi-mem').textContent = mem+' MB';
+    document.getElementById('kpi-mem').className = 'kpi-val '+(mem>200?'red':mem>100?'orange':'green');
+    drawGauge('gauge-mem', Math.min(100, Math.round(mem/300*100)), mem>200?'#f85149':mem>100?'#f0883e':'#3fb950');
+
+    document.getElementById('kpi-reqs').textContent = (stats.totalReqs||0).toLocaleString();
+    const errEl = document.getElementById('kpi-err');
+    errEl.textContent = (stats.errRate||0)+'%';
+    errEl.className = 'kpi-val '+(stats.errRate>10?'red':stats.errRate>5?'orange':'green');
+    document.getElementById('kpi-dbsize').textContent = storage.dbSizeMB+'MB';
+    document.getElementById('kpi-routes').textContent = stats.activePaths||'—';
+    const se = document.getElementById('kpi-secevt');
+    se.textContent = stats.secEvt1h||0;
+    se.className = 'kpi-val '+(stats.secEvt1h>5?'red':'yellow');
+    document.getElementById('kpi-restarts').textContent = stats.restartCount||0;
+    document.getElementById('first-start').textContent = stats.firstStart||'—';
+    document.getElementById('last-restart').textContent = stats.lastRestart||'—';
+    document.getElementById('heap-used').textContent = (stats.heapMB||0)+' MB';
+
+    // DB table counts (top 10)
+    const tc = (storage.tableCounts||[]).slice(0,10);
+    const maxR = Math.max(...tc.map(t=>t.rows),1);
+    let html = '<table><tr><th>Table</th><th>Rows</th><th></th></tr>';
+    tc.forEach(t => {
+      const pct = Math.round(t.rows/maxR*100);
+      html += `<tr><td class="mono" style="color:var(--blue)">${t.table}</td><td>${t.rows.toLocaleString()}</td><td style="width:100px"><div style="background:var(--bg3);height:6px;border-radius:3px"><div style="background:var(--blue);width:${pct}%;height:100%;border-radius:3px"></div></div></td></tr>`;
+    });
+    document.getElementById('db-counts-table').innerHTML = html + '</table>';
+
+    // Method donut
+    const logData = logs.logs||[];
+    const methods = {};
+    logData.forEach(l => { methods[l.method]=(methods[l.method]||0)+1; });
+    const mColors = {GET:'#3fb950',POST:'#58a6ff',PATCH:'#d29922',DELETE:'#f85149',OPTIONS:'#6e7681'};
+    drawDonut('chart-method-donut', Object.entries(methods).map(([k,v])=>({label:k,val:v,color:mColors[k]||'#8b949e'})), {center:logData.length});
+
+    // Status code donut
+    const s2=logData.filter(l=>l.status<300).length, s4=logData.filter(l=>l.status>=400&&l.status<500).length, s5=logData.filter(l=>l.status>=500).length;
+    drawDonut('chart-status-donut', [{label:'2xx OK',val:s2,color:'#3fb950'},{label:'4xx Error',val:s4,color:'#d29922'},{label:'5xx Error',val:s5,color:'#f85149'}], {center:'Requests'});
+
+    // Top endpoints bar
+    const pathCounts = {};
+    logData.forEach(l => { const p=(l.path||'/').split('?')[0]; pathCounts[p]=(pathCounts[p]||0)+1; });
+    const topPaths = Object.entries(pathCounts).sort((a,b)=>b[1]-a[1]).slice(0,10).map(([p,c])=>({label:p,val:c}));
+    const bColors = ['#58a6ff','#3fb950','#bc8cff','#f0883e','#39c5cf','#f778ba','#d29922','#f85149','#58a6ff','#3fb950'];
+    drawBarH('chart-top-endpoints', topPaths, (i)=>bColors[i%bColors.length]);
+
+    document.getElementById('badge-logs').textContent = logData.length;
+
+  } catch(e) {
+    document.getElementById('status-pill').className = 'offline';
+    document.getElementById('status-text').textContent = 'OFFLINE';
+  }
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// DB LIVE STATS PANEL
+// ────────────────────────────────────────────────────────────────────────────
+const DB_GROUPS_META = [
+  {label:'Core Academic',color:'#58a6ff',tables:['students','teachers','attendance','marks','academic_calendar','class_timetables','teacher_assignments','teacher_checkins','daily_reports','mock_tests']},
+  {label:'Admissions/Marketing',color:'#3fb950',tables:['admissions','marketing_leads','marketing_campaigns','marketing_events','marketing_social_posts']},
+  {label:'Finance',color:'#bc8cff',tables:['finance_fees','fees','class_fees','fee_schedules','fee_installments','installment_requests','donations','payment_vouchers','razorpay_orders']},
+  {label:'Accounting',color:'#39c5cf',tables:['chart_of_accounts','journal_entries','settlement_records']},
+  {label:'HR & Payroll',color:'#f778ba',tables:['support_staff','payroll_entries','payroll_structures','leave_applications','leave_balance','resignations','salary_requests','job_postings','job_applications']},
+  {label:'Budget',color:'#d29922',tables:['department_budgets','budget_expenses','hr_budget']},
+  {label:'Communication',color:'#f0883e',tables:['notifications','announcements','email_queue','email_templates','sms_log','ptm_meetings','documents']},
+  {label:'Security/System',color:'#f85149',tables:['security_events','api_call_logs','audit_log','data_events','page_views','server_meta','system_settings','biometric_access','biometric_logs','password_reset_log','password_resets']},
+  {label:'Holidays',color:'#3fb950',tables:['holidays']},
+];
+
+async function loadDBLive() {
+  if (!allSchemaData) await loadSchema();
+  const s = allSchemaData; if (!s) return;
+  const tables = Object.keys(s.tables);
+  const totalRows = tables.reduce((sum,t)=>sum+(s.tables[t].rows||0),0);
+
+  document.getElementById('dlive-tables').textContent = tables.length;
+  document.getElementById('dlive-rows').textContent = totalRows.toLocaleString();
+  document.getElementById('dlive-size').textContent = ((s.meta.dbSizeBytes||0)/1024/1024).toFixed(2)+'MB';
+  const intEl = document.getElementById('dlive-integrity');
+  intEl.textContent = s.meta.integrity;
+  intEl.className = 'kpi-val '+(s.meta.integrity==='ok'?'green':'red');
+
+  // Domain donut
+  const domainData = DB_GROUPS_META.map(g => ({
+    label: g.label.replace('/','/ '),
+    val: g.tables.filter(t=>s.tables[t]).length,
+    color: g.color
+  })).filter(d=>d.val>0);
+  drawDonut('chart-db-domain', domainData, {center:'58'});
+
+  // Row count bar
+  const nonEmpty = tables.map(t=>({label:t,val:s.tables[t].rows})).filter(t=>t.val>0).sort((a,b)=>b.val-a.val).slice(0,12);
+  drawBarH('chart-db-rows', nonEmpty, (i)=>['#58a6ff','#3fb950','#bc8cff','#f0883e','#39c5cf','#f778ba','#d29922','#f85149'][i%8]);
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// API LOGS PANEL
+// ────────────────────────────────────────────────────────────────────────────
+async function loadLogs() {
+  try {
+    const d = await apiFetch('/api/monitor/api-logs?limit=200');
+    allLogs = d.logs||[];
+    document.getElementById('badge-logs').textContent = allLogs.length;
+    renderLogs(allLogs);
+  } catch(e) {}
+}
+
+function renderLogs(logs) {
+  const ok=logs.filter(l=>l.status<400).length, e4=logs.filter(l=>l.status>=400&&l.status<500).length, e5=logs.filter(l=>l.status>=500).length;
+  document.getElementById('log-total').textContent = logs.length;
+  document.getElementById('log-ok').textContent = ok;
+  document.getElementById('log-4xx').textContent = e4;
+  document.getElementById('log-5xx').textContent = e5;
+
+  drawDonut('chart-log-status',[{label:'2xx',val:ok,color:'#3fb950'},{label:'4xx',val:e4,color:'#d29922'},{label:'5xx',val:e5,color:'#f85149'}],{center:logs.length});
+
+  const pc = {};
+  logs.forEach(l=>{const p=(l.path||'/').split('?')[0]; pc[p]=(pc[p]||0)+1;});
+  const top8 = Object.entries(pc).sort((a,b)=>b[1]-a[1]).slice(0,8).map(([p,c])=>({label:p,val:c}));
+  drawBarH('chart-log-paths', top8, (i)=>['#58a6ff','#3fb950','#bc8cff','#f0883e'][i%4]);
+
+  if (!logs.length) { document.getElementById('log-table-wrap').innerHTML='<div class="loading">No logs yet</div>'; return; }
+  let html = '';
+  logs.slice().reverse().forEach(l => {
+    const sc = l.status<400?'ok':'err';
+    html += `<div class="log-item"><span class="log-time">${(l.created_at||'').slice(11,19)}</span><span class="log-method"><span class="method-badge ${l.method||'GET'}">${l.method||'?'}</span></span><span class="log-path">${l.path||'/'}</span><span class="log-status ${sc}">${l.status||'?'}</span><span class="log-ms">${l.duration_ms?l.duration_ms+'ms':'—'}</span></div>`;
+  });
+  document.getElementById('log-table-wrap').innerHTML = html;
+}
+function filterLogs() {
+  const q=(document.getElementById('log-search')?.value||'').toLowerCase();
+  renderLogs(q?allLogs.filter(l=>(l.path||'').toLowerCase().includes(q)||(l.method||'').toLowerCase().includes(q)||String(l.status).includes(q)):allLogs);
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// SECURITY PANEL
+// ────────────────────────────────────────────────────────────────────────────
+async function loadSecurity() {
+  try {
+    const [vuln, events] = await Promise.all([apiFetch('/api/monitor/vuln-scan'), apiFetch('/api/monitor/security-events?limit=30')]);
+    const s = vuln.summary||{};
+    document.getElementById('vuln-critical').textContent = s.critical||0;
+    document.getElementById('vuln-high').textContent = s.high||0;
+    document.getElementById('vuln-medium').textContent = s.medium||0;
+    document.getElementById('vuln-low').textContent = s.low||0;
+    document.getElementById('badge-sec').textContent = events.events?.length||0;
+
+    drawBarH('chart-vuln-bar',[
+      {label:'Critical',val:s.critical||0},{label:'High',val:s.high||0},
+      {label:'Medium',val:s.medium||0},{label:'Low',val:s.low||0}
+    ], (i)=>['#f85149','#f0883e','#d29922','#58a6ff'][i]);
+
+    let vhtml = '';
+    (vuln.findings||[]).slice(0,5).forEach(f => {
+      vhtml += `<div class="vuln-item"><div style="display:flex;align-items:flex-start;gap:10px"><span class="vuln-sev ${f.severity}">${f.severity.toUpperCase()}</span><div><div style="font-weight:600;font-size:13px">${f.title}</div><div style="font-size:11px;color:var(--text3);font-family:monospace">${f.file}:${f.line}</div></div></div><div style="font-size:12px;color:var(--text2);margin-top:6px">${f.desc||''}</div>${f.code?`<div class="vuln-code">${esc(f.code)}</div>`:''}<div style="font-size:11px;color:var(--green);margin-top:6px">✓ ${f.fix||'Review manually'}</div></div>`;
+    });
+    document.getElementById('vuln-list').innerHTML = vhtml||'<div class="loading">No findings</div>';
+
+    let ehtml = '<table><tr><th>Time</th><th>Type</th><th>User</th><th>Severity</th></tr>';
+    (events.events||[]).slice(0,15).forEach(e => {
+      const cls = {critical:'red',high:'orange',medium:'yellow',info:''}[e.severity]||'';
+      ehtml += `<tr><td class="mono" style="font-size:10px">${(e.timestamp||'').slice(11,19)}</td><td style="font-size:12px">${e.event_type||''}</td><td class="mono" style="font-size:11px">${e.username||''}</td><td style="font-size:11px;font-weight:600;color:var(--${cls||'text3'})">${e.severity||''}</td></tr>`;
+    });
+    document.getElementById('sec-events-list').innerHTML = ehtml + '</table>';
+  } catch(e) {}
+}
+
+function renderAuthCoverage() {
+  const modules = [
+    {name:'Student Portal',  auth:'JWT',        level:'green'},
+    {name:'Teacher Portal',  auth:'JWT',        level:'green'},
+    {name:'Parent Portal',   auth:'JWT',        level:'green'},
+    {name:'Admin Module',    auth:'JWT+Key',    level:'green'},
+    {name:'Finance',         auth:'JWT',        level:'green'},
+    {name:'Accounting',      auth:'JWT',        level:'green'},
+    {name:'HR Module',       auth:'JWT',        level:'green'},
+    {name:'Budget',          auth:'JWT',        level:'green'},
+    {name:'Marketing',       auth:'JWT',        level:'green'},
+    {name:'Monitor',         auth:'JWT',        level:'green'},
+    {name:'Admissions',      auth:'Rate+Key',   level:'yellow'},
+    {name:'Static Files',    auth:'Public',     level:'orange'},
+  ];
+  const html = modules.map(m=>`<div style="background:var(--bg3);border:1px solid var(--border);border-radius:4px;padding:8px;font-size:11px"><div style="font-weight:600">${m.name}</div><div><span class="tag ${m.level}">${m.auth}</span></div></div>`).join('');
+  document.getElementById('auth-coverage-grid').innerHTML = html;
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// DB SCHEMA EXPLORER — split panel
+// ────────────────────────────────────────────────────────────────────────────
+let dbeSelectedTable = null;
+
+async function loadSchema() {
+  try {
+    allSchemaData = await apiFetch('/api/dev/schema?key=gurukul-admin-2026');
+    document.getElementById('badge-tables').textContent = Object.keys(allSchemaData.tables).length;
+    renderDBExplorer();
+  } catch(e) { document.getElementById('dbe-table-list').innerHTML='<div style="color:var(--red);padding:20px;font-size:12px">Schema load failed: '+e.message+'</div>'; }
+}
+
+function hexToRgb(hex) {
+  const r=parseInt(hex.slice(1,3),16), g=parseInt(hex.slice(3,5),16), b=parseInt(hex.slice(5,7),16);
+  return r+','+g+','+b;
+}
+
+function renderDBExplorer(filter='') {
+  if (!allSchemaData) return;
+  const schema = allSchemaData.tables;
+  filter = filter.toLowerCase().trim();
+  let html = '';
+  DB_GROUPS_META.forEach(g => {
+    const matching = g.tables.filter(name => {
+      const t = schema[name]; if (!t) return false;
+      if (!filter) return true;
+      return name.toLowerCase().includes(filter) || t.cols.some(c=>c.name.toLowerCase().includes(filter));
+    });
+    if (!matching.length) return;
+    const totalRows = matching.reduce((s,n)=>s+(schema[n]?.rows||0),0);
+    html += `<div class="dbe-domain">
+      <div class="dbe-domain-header">
+        <div class="dbe-domain-dot" style="background:${g.color}"></div>
+        <span>${g.label}</span>
+        <span class="dbe-domain-count">${matching.length}t · ${totalRows.toLocaleString()}r</span>
+      </div>`;
+    matching.forEach(name => {
+      const t = schema[name]; if (!t) return;
+      const sel = name === dbeSelectedTable ? ' selected' : '';
+      html += `<div class="dbe-table-item${sel}" id="dbe-item-${name}" onclick="selectTable('${name}')">
+        <span>${name}</span>
+        <span class="dbe-table-rows">${t.rows.toLocaleString()}</span>
+      </div>`;
+    });
+    html += '</div>';
+  });
+  document.getElementById('dbe-table-list').innerHTML = html || '<div class="loading">No matches</div>';
+  // Re-select if a table was previously selected and still visible
+  if (dbeSelectedTable) selectTable(dbeSelectedTable, true);
+}
+
+function selectTable(name, silent=false) {
+  if (!allSchemaData) return;
+  const schema = allSchemaData.tables;
+  const t = schema[name]; if (!t) return;
+  dbeSelectedTable = name;
+
+  // Highlight in sidebar
+  document.querySelectorAll('.dbe-table-item').forEach(el => el.classList.remove('selected'));
+  const item = document.getElementById('dbe-item-' + name);
+  if (item) { item.classList.add('selected'); if (!silent) item.scrollIntoView({block:'nearest'}); }
+
+  // Show detail pane
+  document.getElementById('dbe-welcome').style.display = 'none';
+  const view = document.getElementById('dbe-table-view');
+  view.style.display = 'block';
+
+  // Domain badge
+  const dm = DB_GROUPS_META.find(g => g.tables.includes(name));
+
+  // Build FK map: col → {table, to}
+  const fkMap = {};
+  t.fks.forEach(f => { fkMap[f.from] = f; });
+
+  // Build index map: col → {unique, name}
+  const idxMap = {};
+  t.indexes.forEach(idx => idx.cols.forEach(col => { if (!idxMap[col]) idxMap[col] = {unique:idx.unique, name:idx.name}; }));
+
+  let html = '';
+
+  // ── Header ──
+  const domainBadge = dm
+    ? `<span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;background:rgba(${hexToRgb(dm.color)},.12);color:${dm.color};border:1px solid ${dm.color}40">${dm.label}</span>`
+    : '';
+  html += `<div class="dbe-tbl-header">
+    <div class="dbe-tbl-name">
+      <span style="color:var(--text3);font-size:14px">📋</span> ${name}
+      ${domainBadge}
+    </div>
+    <div class="dbe-tbl-stats">
+      <div class="dbe-stat"><strong>${t.rows.toLocaleString()}</strong> rows</div>
+      <div class="dbe-stat"><strong>${t.cols.length}</strong> columns</div>
+      <div class="dbe-stat"><strong>${t.indexes.length}</strong> ${t.indexes.length===1?'index':'indexes'}</div>
+      <div class="dbe-stat"><strong>${t.fks.length}</strong> FK ${t.fks.length===1?'relation':'relations'}</div>
+    </div>
+  </div>`;
+
+  // ── Columns table ──
+  html += `<div class="dbe-section">
+    <div class="dbe-section-title">Columns <span style="font-weight:400;font-size:10px;color:var(--text3)">(${t.cols.length})</span></div>
+    <table class="dbe-col-table">
+      <thead><tr>
+        <th style="width:32px">#</th>
+        <th>Column Name</th>
+        <th style="width:110px">Type</th>
+        <th style="width:120px">Keys</th>
+        <th style="width:120px">Default</th>
+      </tr></thead>
+      <tbody>`;
+
+  t.cols.forEach((c, i) => {
+    const fk = fkMap[c.name];
+    const idx = idxMap[c.name];
+    const rowCls = c.pk ? 'col-pk' : (fk ? 'col-fk' : '');
+
+    // Normalise type for badge class
+    const rawType = (c.type||'TEXT').toUpperCase();
+    const typeKey = ['INTEGER','INT','TEXT','VARCHAR','REAL','FLOAT','DOUBLE','BLOB','NUMERIC','DECIMAL'].find(k => rawType.startsWith(k)) || 'TEXT';
+
+    const badges = [];
+    if (c.pk)  badges.push('<span class="key-badge PK">PK</span>');
+    if (fk)    badges.push('<span class="key-badge FK">FK</span>');
+    if (idx?.unique) badges.push('<span class="key-badge UQ">UQ</span>');
+    else if (idx)    badges.push('<span class="key-badge IDX">IDX</span>');
+    if (c.notNull && !c.pk) badges.push('<span class="key-badge NN">NN</span>');
+
+    const fkHint = fk
+      ? `<span class="col-fk-hint" onclick="selectTable('${fk.table}')">→ ${fk.table}.${fk.to}</span>`
+      : '';
+    const dflt = c.dflt != null
+      ? `<span style="font-family:monospace;font-size:11px;color:var(--text3)">${c.dflt}</span>`
+      : `<span style="color:var(--text3);font-size:11px">null</span>`;
+
+    html += `<tr class="${rowCls}">
+      <td class="col-num">${i+1}</td>
+      <td class="col-name-cell">${c.name}${fkHint}</td>
+      <td><span class="type-badge ${typeKey}">${rawType}</span></td>
+      <td><div class="key-badges">${badges.join('')}</div></td>
+      <td>${dflt}</td>
+    </tr>`;
+  });
+  html += '</tbody></table></div>';
+
+  // ── Indexes ──
+  if (t.indexes.length) {
+    html += `<div class="dbe-section">
+      <div class="dbe-section-title">Indexes <span style="font-weight:400;font-size:10px;color:var(--text3)">(${t.indexes.length})</span></div>
+      <div class="idx-list">`;
+    t.indexes.forEach(idx => {
+      html += `<div class="idx-card">
+        <span class="tag ${idx.unique?'cyan':'blue'}" style="flex-shrink:0">${idx.unique?'⊕ UNIQUE':'≡ INDEX'}</span>
+        <span class="idx-name">${idx.name}</span>
+        <span class="idx-cols">(${idx.cols.join(', ')})</span>
+      </div>`;
+    });
+    html += '</div></div>';
+  }
+
+  // ── Foreign Keys ──
+  if (t.fks.length) {
+    html += `<div class="dbe-section">
+      <div class="dbe-section-title">Foreign Key Relationships <span style="font-weight:400;font-size:10px;color:var(--text3)">(${t.fks.length})</span></div>
+      <div class="fk-list">`;
+    t.fks.forEach(f => {
+      html += `<div class="fk-card">
+        <span style="font-size:12px;color:var(--text3)">This table</span>
+        <span class="fk-from-col">.${f.from}</span>
+        <span class="fk-arrow">→</span>
+        <span class="fk-target" onclick="selectTable('${f.table}')" title="Click to open ${f.table}">${f.table}<span style="color:var(--text3)">.${f.to}</span></span>
+      </div>`;
+    });
+    html += '</div></div>';
+  }
+
+  view.innerHTML = html;
+}
+
+function filterDB() { renderDBExplorer(document.getElementById('dbe-search').value); }
+
+// ────────────────────────────────────────────────────────────────────────────
+// API ROUTES
+// ────────────────────────────────────────────────────────────────────────────
+const API_ROUTES = [
+  {group:'Auth',method:'POST',path:'/api/auth/login',auth:'Public',desc:'Student/teacher login → JWT'},
+  {group:'Auth',method:'POST',path:'/api/admin/login',auth:'Public',desc:'Admin login → JWT'},
+  {group:'Auth',method:'POST',path:'/api/finance/login',auth:'Public',desc:'Finance login → JWT'},
+  {group:'Auth',method:'POST',path:'/api/hr/login',auth:'Public',desc:'HR manager login → JWT'},
+  {group:'Auth',method:'POST',path:'/api/budget/login',auth:'Public',desc:'Budget officer login → JWT'},
+  {group:'Auth',method:'POST',path:'/api/monitor/login',auth:'Public',desc:'Monitor/audit login → JWT'},
+  {group:'Student',method:'GET',path:'/api/student/profile',auth:'JWT Student',desc:'Own student profile'},
+  {group:'Student',method:'GET',path:'/api/student/attendance',auth:'JWT Student',desc:'Own attendance records'},
+  {group:'Student',method:'GET',path:'/api/student/marks',auth:'JWT Student',desc:'Own exam marks'},
+  {group:'Student',method:'GET',path:'/api/student/fees',auth:'JWT Student',desc:'Own fee history'},
+  {group:'Student',method:'POST',path:'/api/student/pay-online',auth:'JWT Student',desc:'Submit online payment'},
+  {group:'Student',method:'GET',path:'/api/student/notifications',auth:'JWT Student',desc:'Student notifications'},
+  {group:'Teacher',method:'GET',path:'/api/teacher/students',auth:'JWT Teacher',desc:'Students in assigned class'},
+  {group:'Teacher',method:'POST',path:'/api/teacher/attendance',auth:'JWT Teacher',desc:'Mark student attendance'},
+  {group:'Teacher',method:'POST',path:'/api/teacher/marks',auth:'JWT Teacher',desc:'Enter exam marks'},
+  {group:'Teacher',method:'GET',path:'/api/teacher/summary',auth:'JWT Teacher',desc:'Class attendance summary'},
+  {group:'Teacher',method:'POST',path:'/api/teacher/checkin',auth:'JWT Teacher',desc:'Teacher punch-in'},
+  {group:'Teacher',method:'POST',path:'/api/teacher/checkout',auth:'JWT Teacher',desc:'Teacher punch-out'},
+  {group:'Teacher',method:'GET',path:'/api/teacher/salary',auth:'JWT Teacher',desc:'Own salary slips'},
+  {group:'Teacher',method:'POST',path:'/api/teacher/leave',auth:'JWT Teacher',desc:'Submit leave application'},
+  {group:'Parent',method:'GET',path:'/api/parent/child',auth:'JWT Parent',desc:'Child profile'},
+  {group:'Parent',method:'GET',path:'/api/parent/fees',auth:'JWT Parent',desc:'Child fee status'},
+  {group:'Parent',method:'GET',path:'/api/parent/ptm',auth:'JWT Parent',desc:'PTM meetings'},
+  {group:'Parent',method:'GET',path:'/api/parent/mock-tests',auth:'JWT Parent',desc:'Mock test results'},
+  {group:'Admin',method:'GET',path:'/api/admin/students',auth:'AdminKey/JWT',desc:'List all students'},
+  {group:'Admin',method:'POST',path:'/api/admin/students',auth:'AdminKey/JWT',desc:'Create student'},
+  {group:'Admin',method:'PATCH',path:'/api/admin/students/:id',auth:'AdminKey/JWT',desc:'Update student'},
+  {group:'Admin',method:'DELETE',path:'/api/admin/students/:id',auth:'AdminKey/JWT',desc:'Delete student'},
+  {group:'Admin',method:'PATCH',path:'/api/admin/students/:id/reset-password',auth:'AdminKey',desc:'Reset student password'},
+  {group:'Admin',method:'GET',path:'/api/admin/teachers',auth:'AdminKey/JWT',desc:'List teachers'},
+  {group:'Admin',method:'POST',path:'/api/admin/teachers',auth:'AdminKey/JWT',desc:'Create teacher'},
+  {group:'Admin',method:'PATCH',path:'/api/admin/teachers/:id',auth:'AdminKey/JWT',desc:'Update teacher'},
+  {group:'Admin',method:'PATCH',path:'/api/admin/teachers/:id/reset-password',auth:'AdminKey',desc:'Reset teacher password'},
+  {group:'Admin',method:'POST',path:'/api/admin/attendance',auth:'AdminKey',desc:'Bulk attendance entry'},
+  {group:'Admin',method:'GET',path:'/api/admin/stats',auth:'AdminKey',desc:'Dashboard stats'},
+  {group:'Admin',method:'GET',path:'/api/admin/leaves',auth:'AdminKey/JWT',desc:'Leave applications list'},
+  {group:'Admin',method:'POST',path:'/api/admin/leaves/:id/decide',auth:'AdminKey/JWT',desc:'Approve/reject leave'},
+  {group:'Admin',method:'POST',path:'/api/admin/payroll/run',auth:'AdminKey',desc:'Process monthly payroll'},
+  {group:'Admin',method:'GET',path:'/api/admin/performance',auth:'AdminKey',desc:'Performance analytics'},
+  {group:'Admin',method:'POST',path:'/api/admin/promote-students',auth:'AdminKey',desc:'Promote student class'},
+  {group:'Admin',method:'GET',path:'/api/admin/student/idcards',auth:'AdminKey',desc:'Generate student ID cards'},
+  {group:'Admin',method:'GET',path:'/api/admin/staff/idcards',auth:'AdminKey',desc:'Generate staff ID cards'},
+  {group:'Admin',method:'POST',path:'/api/admin/sync-sheets',auth:'AdminKey',desc:'Sync from Google Sheets'},
+  {group:'Admissions',method:'POST',path:'/api/admissions/submit',auth:'Public',desc:'Submit admission form'},
+  {group:'Admissions',method:'GET',path:'/api/admissions/list',auth:'AdminKey',desc:'List admissions'},
+  {group:'Admissions',method:'PATCH',path:'/api/admissions/:id/status',auth:'AdminKey',desc:'Update admission status'},
+  {group:'Finance',method:'GET',path:'/api/finance/summary',auth:'JWT Finance',desc:'Fee collection summary'},
+  {group:'Finance',method:'GET',path:'/api/finance/fees',auth:'JWT Finance',desc:'List fee records'},
+  {group:'Finance',method:'POST',path:'/api/finance/fees',auth:'JWT Finance',desc:'Record fee payment'},
+  {group:'Finance',method:'PATCH',path:'/api/finance/fees/:id',auth:'JWT Finance',desc:'Update fee record'},
+  {group:'Finance',method:'DELETE',path:'/api/finance/fees/:id',auth:'JWT Finance',desc:'Delete fee record'},
+  {group:'Finance',method:'GET',path:'/api/finance/defaulters',auth:'JWT Finance',desc:'Fee defaulters list'},
+  {group:'Finance',method:'GET',path:'/api/finance/fee-schedules',auth:'JWT Finance',desc:'Fee schedule by class'},
+  {group:'Finance',method:'GET',path:'/api/finance/donations',auth:'JWT Finance',desc:'Donations list'},
+  {group:'Finance',method:'POST',path:'/api/finance/donations',auth:'JWT Finance',desc:'Record donation'},
+  {group:'Finance',method:'GET',path:'/api/finance/installment-requests',auth:'JWT Finance',desc:'Installment requests'},
+  {group:'Finance',method:'GET',path:'/api/finance/stream',auth:'JWT Finance',desc:'SSE real-time fee stream'},
+  {group:'Accounting',method:'GET',path:'/api/accounting/summary',auth:'JWT Finance',desc:'Full year P&L summary'},
+  {group:'Accounting',method:'GET',path:'/api/accounting/coa',auth:'JWT Finance',desc:'Chart of accounts'},
+  {group:'Accounting',method:'GET',path:'/api/accounting/journal',auth:'JWT Finance',desc:'Journal entries'},
+  {group:'Accounting',method:'POST',path:'/api/accounting/journal',auth:'JWT Finance',desc:'Create journal entry'},
+  {group:'Accounting',method:'GET',path:'/api/accounting/trial-balance',auth:'JWT Finance',desc:'Trial balance'},
+  {group:'Accounting',method:'GET',path:'/api/accounting/balance-sheet',auth:'JWT Finance',desc:'Balance sheet'},
+  {group:'Accounting',method:'GET',path:'/api/accounting/income-statement',auth:'JWT Finance',desc:'Income statement'},
+  {group:'Accounting',method:'GET',path:'/api/accounting/ledger',auth:'JWT Finance',desc:'Account ledger'},
+  {group:'Accounting',method:'GET',path:'/api/accounting/audit-report',auth:'JWT Finance',desc:'Annual audit report'},
+  {group:'HR',method:'GET',path:'/api/hr/overview',auth:'JWT HR',desc:'HR dashboard overview'},
+  {group:'HR',method:'GET',path:'/api/hr/employees',auth:'JWT HR',desc:'All employees'},
+  {group:'HR',method:'PATCH',path:'/api/hr/employees/:type/:id',auth:'JWT HR',desc:'Update employee'},
+  {group:'HR',method:'GET',path:'/api/hr/payroll/history',auth:'JWT HR',desc:'Payroll run history'},
+  {group:'HR',method:'POST',path:'/api/hr/payroll/run',auth:'JWT HR',desc:'Process payroll for month'},
+  {group:'HR',method:'GET',path:'/api/hr/leaves',auth:'JWT HR',desc:'Leave applications'},
+  {group:'HR',method:'POST',path:'/api/hr/leaves/:id/decide',auth:'JWT HR',desc:'Approve/reject leave'},
+  {group:'HR',method:'GET',path:'/api/hr/recruitment/jobs',auth:'JWT HR',desc:'Job postings'},
+  {group:'HR',method:'POST',path:'/api/hr/recruitment/jobs',auth:'JWT HR',desc:'Create job posting'},
+  {group:'HR',method:'GET',path:'/api/hr/recruitment/applications',auth:'JWT HR',desc:'Job applications'},
+  {group:'HR',method:'GET',path:'/api/hr/attendance',auth:'JWT HR',desc:'Attendance register'},
+  {group:'HR',method:'GET',path:'/api/hr/settlement',auth:'JWT HR',desc:'Full & final settlements'},
+  {group:'HR',method:'GET',path:'/api/hr/budget',auth:'JWT HR',desc:'HR budget vs spend'},
+  {group:'Budget',method:'GET',path:'/api/budget/overview',auth:'JWT Budget',desc:'All departments budget'},
+  {group:'Budget',method:'POST',path:'/api/budget/allocate',auth:'JWT Budget',desc:'Set dept allocation'},
+  {group:'Budget',method:'GET',path:'/api/budget/dept/:key',auth:'JWT Budget',desc:'Single dept budget'},
+  {group:'Budget',method:'POST',path:'/api/budget/dept/:key/expenses',auth:'JWT Budget',desc:'Add dept expense'},
+  {group:'Budget',method:'DELETE',path:'/api/budget/expenses/:id',auth:'JWT Budget',desc:'Delete expense'},
+  {group:'Marketing',method:'GET',path:'/api/marketing/leads',auth:'JWT Marketing',desc:'Leads list'},
+  {group:'Marketing',method:'POST',path:'/api/marketing/leads',auth:'JWT Marketing',desc:'Create lead'},
+  {group:'Marketing',method:'GET',path:'/api/marketing/campaigns',auth:'JWT Marketing',desc:'Campaigns'},
+  {group:'Marketing',method:'POST',path:'/api/marketing/campaigns',auth:'JWT Marketing',desc:'Create campaign'},
+  {group:'Marketing',method:'GET',path:'/api/marketing/events',auth:'JWT Marketing',desc:'Events'},
+  {group:'Marketing',method:'GET',path:'/api/marketing/social',auth:'JWT Marketing',desc:'Social posts'},
+  {group:'Monitor',method:'GET',path:'/api/monitor/stats',auth:'JWT Monitor',desc:'System stats snapshot'},
+  {group:'Monitor',method:'GET',path:'/api/monitor/security-events',auth:'JWT Monitor',desc:'Security event log'},
+  {group:'Monitor',method:'GET',path:'/api/monitor/api-logs',auth:'JWT Monitor',desc:'API call log (200)'},
+  {group:'Monitor',method:'GET',path:'/api/monitor/vuln-scan',auth:'JWT Monitor',desc:'Vulnerability scan'},
+  {group:'Monitor',method:'POST',path:'/api/monitor/auto-fix',auth:'JWT Monitor',desc:'Apply auto-fix'},
+  {group:'Monitor',method:'GET',path:'/api/monitor/backups',auth:'JWT Monitor',desc:'List DB backups'},
+  {group:'Analytics',method:'GET',path:'/api/analytics/overview',auth:'AdminKey',desc:'Analytics overview'},
+  {group:'Analytics',method:'GET',path:'/api/analytics/storage',auth:'AdminKey',desc:'DB storage stats'},
+  {group:'Analytics',method:'GET',path:'/api/analytics/stream',auth:'AdminKey',desc:'SSE event stream'},
+  {group:'Access Control',method:'GET',path:'/api/admin/access/password-resets',auth:'AdminKey/JWT',desc:'Password reset audit log'},
+  {group:'Access Control',method:'GET',path:'/api/admin/access/biometric',auth:'AdminKey/JWT',desc:'Biometric access list'},
+  {group:'Access Control',method:'PATCH',path:'/api/admin/access/biometric',auth:'AdminKey/JWT',desc:'Block/unblock biometric'},
+  {group:'Access Control',method:'PATCH',path:'/api/admin/access/biometric/bulk-class',auth:'AdminKey/JWT',desc:'Bulk block class'},
+  {group:'Developer',method:'GET',path:'/api/dev/schema',auth:'AdminKey/JWT',desc:'Full DB schema JSON'},
+  {group:'Other',method:'GET',path:'/api/health',auth:'Public',desc:'Server health check'},
+  {group:'Other',method:'GET',path:'/api/academic-calendar',auth:'AdminKey',desc:'Academic calendar'},
+  {group:'Other',method:'GET',path:'/api/holidays',auth:'Public',desc:'Holiday list'},
+  {group:'Other',method:'GET',path:'/api/biometric/today',auth:'AdminKey',desc:"Today's biometric log"},
+  {group:'Other',method:'GET',path:'/api/email-templates',auth:'AdminKey',desc:'Email templates'},
+];
+
+function renderRouteCharts() {
+  const grpCounts = {}, mCounts = {};
+  API_ROUTES.forEach(r => { grpCounts[r.group]=(grpCounts[r.group]||0)+1; mCounts[r.method]=(mCounts[r.method]||0)+1; });
+  const gColors = ['#58a6ff','#3fb950','#bc8cff','#f0883e','#39c5cf','#f778ba','#d29922','#f85149','#58a6ff','#3fb950','#bc8cff','#f0883e'];
+  const grpData = Object.entries(grpCounts).sort((a,b)=>b[1]-a[1]).map(([k,v],i)=>({label:k,val:v,color:gColors[i%gColors.length]}));
+  const mColors = {GET:'#3fb950',POST:'#58a6ff',PATCH:'#d29922',DELETE:'#f85149'};
+  const mData = Object.entries(mCounts).map(([k,v])=>({label:k,val:v,color:mColors[k]||'#8b949e'}));
+  drawDonut('chart-routes-module', grpData, {center:API_ROUTES.length});
+  drawDonut('chart-routes-method', mData, {center:'Methods'});
+}
+
+function renderRoutes() {
+  const groups = ['All',...new Set(API_ROUTES.map(r=>r.group))];
+  const methods = ['All','GET','POST','PATCH','DELETE'];
+  let fhtml = '';
+  groups.forEach(g=>{ fhtml+=`<button class="route-filter-btn ${routeFilter.group===g?'active':''}" onclick="setRGF('${g}')">${g}</button>`; });
+  fhtml += '&nbsp;';
+  methods.forEach(m=>{ fhtml+=`<button class="route-filter-btn ${routeFilter.method===m?'active':''}" onclick="setRMF('${m}')">${m}</button>`; });
+  document.getElementById('route-filters').innerHTML = fhtml;
+  filterRoutes();
+}
+function setRGF(g){routeFilter.group=g;renderRoutes()}
+function setRMF(m){routeFilter.method=m;renderRoutes()}
+function filterRoutes() {
+  const q=(document.getElementById('route-search')?.value||'').toLowerCase();
+  const filtered = API_ROUTES.filter(r=>{
+    if(routeFilter.group!=='All'&&r.group!==routeFilter.group)return false;
+    if(routeFilter.method!=='All'&&r.method!==routeFilter.method)return false;
+    if(q&&!r.path.toLowerCase().includes(q)&&!r.desc.toLowerCase().includes(q))return false;
+    return true;
+  });
+  document.getElementById('route-count').textContent = `Showing ${filtered.length} of ${API_ROUTES.length} routes`;
+  const byGroup = {};
+  filtered.forEach(r=>{(byGroup[r.group]=byGroup[r.group]||[]).push(r);});
+  let html = '';
+  Object.entries(byGroup).forEach(([g,routes])=>{
+    html+=`<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;padding:8px 0 4px;color:var(--text3);display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border);margin-bottom:6px">${g} <span style="font-weight:400">(${routes.length})</span></div>`;
+    routes.forEach(r=>{html+=`<div class="route-item"><span class="method-badge ${r.method}">${r.method}</span><span class="route-path">${r.path}</span><span style="min-width:120px"><span class="tag gray">${r.auth}</span></span><span style="font-size:12px;color:var(--text3);flex:1;text-align:right">${r.desc}</span></div>`;});
+  });
+  document.getElementById('route-list').innerHTML = html||'<div class="loading">No routes match</div>';
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// ARCHITECTURE MODULE MAP
+// ────────────────────────────────────────────────────────────────────────────
+const MODULES = [
+  {name:'Student Portal',icon:'🎓',color:'#58a6ff',auth:'JWT Student',desc:'Login, profile, attendance, marks, fees, online payments, notifications.',tables:['students','attendance','marks','finance_fees','notifications'],routes:12},
+  {name:'Teacher Portal',icon:'📚',color:'#3fb950',auth:'JWT Teacher',desc:'Mark attendance, enter marks, leave requests, salary slips, check-in/out.',tables:['teachers','teacher_checkins','marks','attendance','leaves'],routes:18},
+  {name:'Parent Portal',icon:'👨‍👩‍👦',color:'#d29922',auth:'JWT Parent',desc:'Child info, fees, PTM scheduling, mock tests, announcements.',tables:['students','finance_fees','ptm_meetings','mock_tests'],routes:10},
+  {name:'Admin Module',icon:'⚙️',color:'#f0883e',auth:'Admin Key/JWT',desc:'Full control: student CRUD, teacher CRUD, attendance, admissions, promotions, ID cards.',tables:['students','teachers','admissions','attendance'],routes:35},
+  {name:'Finance Module',icon:'💰',color:'#bc8cff',auth:'JWT Finance',desc:'Fee collection, defaulters, installment plans, donations, Razorpay, SSE stream.',tables:['finance_fees','fee_schedules','donations','payment_vouchers'],routes:22},
+  {name:'Accounting',icon:'📒',color:'#39c5cf',auth:'JWT Finance',desc:'Double-entry accounting: COA, journal entries, trial balance, P&L, balance sheet.',tables:['chart_of_accounts','journal_entries'],routes:12},
+  {name:'HR Module',icon:'👥',color:'#f778ba',auth:'JWT HR',desc:'Employees, payroll engine, leaves, recruitment pipeline, settlements/gratuity.',tables:['support_staff','payroll_entries','payroll_structures','job_postings'],routes:28},
+  {name:'Budget Module',icon:'📊',color:'#d29922',auth:'JWT Budget',desc:'Department budgets, expense tracking, year-on-year comparison.',tables:['department_budgets','budget_expenses'],routes:6},
+  {name:'Marketing',icon:'📣',color:'#f0883e',auth:'JWT Marketing',desc:'Leads, campaigns, events, social posts, admission pipeline tracking.',tables:['marketing_leads','marketing_campaigns','marketing_events'],routes:14},
+  {name:'Monitor Module',icon:'🔐',color:'#f85149',auth:'JWT Monitor',desc:'Security events, API logs, vulnerability scanner, auto-fix, DB backups.',tables:['security_events','api_call_logs','server_meta'],routes:8},
+  {name:'Analytics',icon:'📡',color:'#58a6ff',auth:'Admin Key',desc:'Data events, page views, user analytics, storage stats, SSE real-time stream.',tables:['data_events','page_views'],routes:5},
+  {name:'Access Control',icon:'🛡️',color:'#3fb950',auth:'Admin JWT',desc:'Biometric block/unblock per user/class, password reset audit log.',tables:['biometric_access','biometric_logs','password_reset_log'],routes:5},
+];
+
+function renderArch() {
+  const colorMap={'JWT Student':'tag blue','JWT Teacher':'tag blue','JWT Parent':'tag blue','Admin Key/JWT':'tag orange','AdminKey/JWT':'tag orange','Admin JWT':'tag orange','JWT Finance':'tag purple','JWT HR':'tag pink','JWT Marketing':'tag orange','JWT Budget':'tag yellow','JWT Monitor':'tag red','Admin Key':'tag orange'};
+  let html='';
+  MODULES.forEach(m=>{
+    const ac=colorMap[m.auth]||'tag gray';
+    const tableHtml=m.tables.map(t=>`<span class="mini-chip">${t}</span>`).join('');
+    html+=`<div class="arch-module" style="border-top-color:${m.color}"><div class="arch-module-head"><div class="arch-module-icon" style="background:${m.color}22;color:${m.color}">${m.icon}</div><div><div class="arch-module-name">${m.name}</div><div class="arch-module-auth"><span class="${ac}">${m.auth}</span></div></div></div><div class="arch-module-desc">${m.desc}</div><div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px">${tableHtml}</div><div style="font-size:11px;color:var(--text3)">${m.routes} endpoints</div></div>`;
+  });
+  document.getElementById('arch-modules').innerHTML = html;
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// CODE MAP
+// ────────────────────────────────────────────────────────────────────────────
+const CODE_SECTIONS = [
+  {name:'Config & Env',lines:'18–49',lineCount:32,color:'#58a6ff',desc:'Port, JWT secret, admin key, SMTP config, all role credentials from env vars.',deps:['process.env','node:crypto']},
+  {name:'Rate Limiter',lines:'50–65',lineCount:16,color:'#3fb950',desc:'In-memory per-IP sliding window (100 req/min). No npm — just a Map.',deps:['Map']},
+  {name:'SMTP Email Sender',lines:'66–150',lineCount:85,color:'#f0883e',desc:'Built from scratch using node:net and node:tls only. Supports TLS/STARTTLS.',deps:['node:net','node:tls']},
+  {name:'Database Setup + WAL',lines:'162–310',lineCount:149,color:'#bc8cff',desc:'Opens SQLite with WAL mode, busy_timeout=5000, 32MB cache, startup checkpoint.',deps:['node:sqlite','DatabaseSync']},
+  {name:'Table Migrations',lines:'311–821',lineCount:511,color:'#39c5cf',desc:'CREATE TABLE IF NOT EXISTS for all 58 tables. Safe to re-run on every startup.',deps:['SQLite DDL']},
+  {name:'Data Seeding',lines:'1237–1433',lineCount:197,color:'#f778ba',desc:'Seeds staff, salary structures, 29 Karnataka holidays, teachers, prepared statements.',deps:['SQLite INSERT']},
+  {name:'Auth & JWT Helpers',lines:'1545–1698',lineCount:154,color:'#d29922',desc:'JWT sign/verify (HS256, no lib), HTTP send(), parseBody(), 7 auth middlewares, SSE bus.',deps:['node:crypto']},
+  {name:'Student Portal',lines:'1699–1774',lineCount:76,color:'#58a6ff',desc:'Login, profile, attendance, marks, fees, online payment. JWT protected.',deps:['DatabaseSync','JWT']},
+  {name:'Admissions',lines:'1775–1873',lineCount:99,color:'#3fb950',desc:'Public form submission + admin management. Rate limited. Status workflow.',deps:['DatabaseSync','Rate Limiter']},
+  {name:'Admin Module',lines:'1874–2564',lineCount:691,color:'#f0883e',desc:'35+ endpoints: student CRUD, teacher CRUD, bulk attendance, Sheets sync, ID cards.',deps:['DatabaseSync','JWT','AdminKey']},
+  {name:'Teacher Portal',lines:'2176–2564',lineCount:389,color:'#bc8cff',desc:'Attendance marking, marks entry, self check-in/out, CSV downloads, leave requests.',deps:['DatabaseSync','JWT']},
+  {name:'HR Module',lines:'3374–4141',lineCount:768,color:'#39c5cf',desc:'Full HR: employee management, payroll engine (gross/net/deductions), leave workflow, recruitment.',deps:['DatabaseSync','JWT HR']},
+  {name:'Finance Module',lines:'4129–4596',lineCount:468,color:'#f778ba',desc:'Fee schedules, recording payments, SSE stream, defaulters, installment plans, donations, Razorpay.',deps:['DatabaseSync','JWT Finance','SSE']},
+  {name:'Marketing Module',lines:'4597–4761',lineCount:165,color:'#d29922',desc:'Leads, campaigns, events, social posts CRUD. All JWT marketing protected.',deps:['DatabaseSync','JWT Marketing']},
+  {name:'Monitor Module',lines:'4762–5408',lineCount:647,color:'#f85149',desc:'Security events, API logs, system stats, 100+ pattern vuln scanner, auto-fix, backup/restore.',deps:['DatabaseSync','JWT Monitor','node:fs']},
+  {name:'Finance Accounting',lines:'7549–7913',lineCount:365,color:'#58a6ff',desc:'COA management, journal entries, trial balance, balance sheet, income statement, audit trail.',deps:['DatabaseSync','JWT Finance']},
+  {name:'Main Router',lines:'7090–7548',lineCount:459,color:'#3fb950',desc:'Single giant if-else router. 126+ route matches using pathname=== and regex.',deps:['URL parsing']},
+  {name:'Biometric + Timetable',lines:'7914–8057',lineCount:144,color:'#f0883e',desc:'Biometric punch-in/out, access block check. Timetable CRUD per class/section.',deps:['DatabaseSync']},
+  {name:'WAL + Graceful Shutdown',lines:'8059–8133',lineCount:75,color:'#bc8cff',desc:'Periodic WAL checkpoint (5min), integrity check (30min), SIGTERM/SIGINT graceful exit.',deps:['setInterval','process.on']},
+];
+
+function renderCodeChart() {
+  const items = CODE_SECTIONS.map(s=>({label:s.name,val:s.lineCount,color:s.color}));
+  drawBarH('chart-code-lines', items, (i,item)=>item.color);
+}
+
+function renderCode() {
+  const html = CODE_SECTIONS.map((s,i)=>`<div class="code-module">
+    <div class="code-module-head" onclick="toggleCodeSection(this)" style="border-left:3px solid ${s.color}">
+      <span class="chevron" style="color:var(--text3);font-size:10px">▶</span>
+      <span style="font-weight:600;font-size:13px;flex:1">${s.name}</span>
+      <span style="font-size:11px;color:var(--text3);margin-right:8px">${s.lineCount} lines</span>
+      <span class="code-line-range">lines ${s.lines}</span>
+    </div>
+    <div class="code-module-body">
+      <div style="font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:8px">${s.desc}</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:4px">Dependencies:</div>
+      <div>${s.deps.map(d=>`<span class="dep-badge">${d}</span>`).join('')}</div>
+    </div>
+  </div>`).join('');
+  document.getElementById('code-sections').innerHTML = html;
+}
+
+function toggleCodeSection(el) {
+  const b=el.nextElementSibling, ch=el.querySelector('.chevron'), open=b.classList.contains('open');
+  b.classList.toggle('open',!open); ch.textContent=open?'▶':'▼'; ch.classList.toggle('open',!open);
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+// ────────────────────────────────────────────────────────────────────────────
+// AUTO-LOGIN
+// ────────────────────────────────────────────────────────────────────────────
+(async()=>{
+  try {
+    const r = await fetch(BASE+'/api/monitor/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:'admin',password:'gurukul@2026'})});
+    const d = await r.json();
+    if(d.token){TOKEN=d.token;document.getElementById('login-panel').style.display='none';initDashboard();}
+  } catch(e){}
+})();
+</script>
+</body>
+</html>

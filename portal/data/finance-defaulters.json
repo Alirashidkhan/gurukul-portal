@@ -1,0 +1,56 @@
+{
+  "defaulters": [
+    {
+      "id": "STU004",
+      "name": "Divya Nair",
+      "class": "6",
+      "section": "A",
+      "parent_phone": "9980123456",
+      "expected": 15000,
+      "paid": 6000,
+      "balance": 9000
+    },
+    {
+      "id": "STU003",
+      "name": "Arjun Gowda",
+      "class": "9",
+      "section": "A",
+      "parent_phone": "9901234567",
+      "expected": 17000,
+      "paid": 8700,
+      "balance": 8300
+    },
+    {
+      "id": "STU001",
+      "name": "Rahul Kumar",
+      "class": "8",
+      "section": "A",
+      "parent_phone": "9876543210",
+      "expected": 16000,
+      "paid": 7800,
+      "balance": 8200
+    },
+    {
+      "id": "STU002",
+      "name": "Priya Sharma",
+      "class": "7",
+      "section": "B",
+      "parent_phone": "9845678901",
+      "expected": 15000,
+      "paid": 9100,
+      "balance": 5900
+    },
+    {
+      "id": "STU005",
+      "name": "Kiran Patel",
+      "class": "10",
+      "section": "A",
+      "parent_phone": "9741234567",
+      "expected": 18000,
+      "paid": 16000,
+      "balance": 2000
+    }
+  ],
+  "year": "2026",
+  "count": 5
+}

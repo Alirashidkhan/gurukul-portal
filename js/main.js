@@ -1,0 +1,2 @@
+if(document.readyState!=='loading'){tnp_ajax_init()}else{document.addEventListener("DOMContentLoaded",function(){tnp_ajax_init()})}
+function tnp_ajax_init(){document.querySelectorAll('form.tnp-ajax').forEach(el=>{el.addEventListener('submit',async function(ev){ev.preventDefault();ev.stopPropagation();const response=await fetch(newsletter_data.action_url+'?action=tnp&na=sa',{method:"POST",body:new FormData(this)});this.innerHTML=await response.text()})})}

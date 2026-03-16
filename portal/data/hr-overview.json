@@ -1,0 +1,62 @@
+{
+  "totalStaff": 12,
+  "totalTeachers": 5,
+  "totalSupport": 7,
+  "presentToday": 0,
+  "pendingLeaves": 0,
+  "openJobs": 0,
+  "newApplications": 0,
+  "payrollThisMonth": 0,
+  "deptTeachers": [
+    {
+      "department": "Languages",
+      "count": 2
+    },
+    {
+      "department": "Social Studies",
+      "count": 1
+    },
+    {
+      "department": "Science",
+      "count": 1
+    },
+    {
+      "department": "Mathematics",
+      "count": 1
+    }
+  ],
+  "deptSupport": [
+    {
+      "department": "Administration",
+      "count": 2
+    },
+    {
+      "department": "Transport",
+      "count": 1
+    },
+    {
+      "department": "Security",
+      "count": 1
+    },
+    {
+      "department": "Science",
+      "count": 1
+    },
+    {
+      "department": "Library",
+      "count": 1
+    },
+    {
+      "department": "Housekeeping",
+      "count": 1
+    }
+  ],
+  "recentLeaves": [],
+  "budget": {
+    "fiscal_year": "2026",
+    "allocated": 0,
+    "used": 0,
+    "remaining": 0,
+    "pct_used": 0
+  }
+}

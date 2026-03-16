@@ -1,0 +1,120 @@
+{
+  "books": [
+    {
+      "id": 9,
+      "title": "Chemistry for Class 12",
+      "author": "O.P. Tandon",
+      "isbn": "978-81-7847-105-0",
+      "category": "Textbook",
+      "total_copies": 5,
+      "available": 5,
+      "rack": "A5",
+      "added_on": "2026-03-16 05:52:11"
+    },
+    {
+      "id": 6,
+      "title": "English Grammar",
+      "author": "Wren & Martin",
+      "isbn": "978-81-219-0198-4",
+      "category": "Reference",
+      "total_copies": 6,
+      "available": 4,
+      "rack": "A3",
+      "added_on": "2026-03-16 04:21:15"
+    },
+    {
+      "id": 3,
+      "title": "History of Modern India",
+      "author": "Bipin Chandra",
+      "isbn": "978-81-250-1849-9",
+      "category": "History",
+      "total_copies": 3,
+      "available": 3,
+      "rack": "B1",
+      "added_on": "2026-03-16 04:21:15"
+    },
+    {
+      "id": 10,
+      "title": "Indian Constitution",
+      "author": "D.D. Basu",
+      "isbn": "978-81-8038-864-3",
+      "category": "Reference",
+      "total_copies": 3,
+      "available": 3,
+      "rack": "B2",
+      "added_on": "2026-03-16 05:52:11"
+    },
+    {
+      "id": 1,
+      "title": "Mathematics for Class 10",
+      "author": "R.D. Sharma",
+      "isbn": "978-81-219-0942-3",
+      "category": "Textbook",
+      "total_copies": 5,
+      "available": 4,
+      "rack": "A1",
+      "added_on": "2026-03-16 04:21:15"
+    },
+    {
+      "id": 7,
+      "title": "Physics for Class 12",
+      "author": "H.C. Verma",
+      "isbn": "978-81-7709-197-0",
+      "category": "Textbook",
+      "total_copies": 4,
+      "available": 3,
+      "rack": "A4",
+      "added_on": "2026-03-16 04:21:15"
+    },
+    {
+      "id": 2,
+      "title": "Science NCERT Class 9",
+      "author": "NCERT",
+      "isbn": "978-81-7450-602-3",
+      "category": "Textbook",
+      "total_copies": 4,
+      "available": 4,
+      "rack": "A2",
+      "added_on": "2026-03-16 04:21:15"
+    },
+    {
+      "id": 5,
+      "title": "The Alchemist",
+      "author": "Paulo Coelho",
+      "isbn": "978-0-06-231609-7",
+      "category": "Fiction",
+      "total_copies": 3,
+      "available": 3,
+      "rack": "C2",
+      "added_on": "2026-03-16 04:21:15"
+    },
+    {
+      "id": 8,
+      "title": "The Discovery of India",
+      "author": "Jawaharlal Nehru",
+      "isbn": "978-0-14-303353-2",
+      "category": "History",
+      "total_copies": 3,
+      "available": 3,
+      "rack": "B1",
+      "added_on": "2026-03-16 04:44:45"
+    },
+    {
+      "id": 4,
+      "title": "Wings of Fire",
+      "author": "A.P.J. Abdul Kalam",
+      "isbn": "978-81-7371-480-7",
+      "category": "Biography",
+      "total_copies": 2,
+      "available": 2,
+      "rack": "C1",
+      "added_on": "2026-03-16 04:21:15"
+    }
+  ],
+  "stats": {
+    "total": 10,
+    "available": 34,
+    "issued": 4,
+    "overdue": 0
+  }
+}

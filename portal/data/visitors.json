@@ -1,0 +1,48 @@
+{
+  "visitors": [
+    {
+      "id": 2,
+      "name": "Mr. Suresh Kumar",
+      "phone": "9876543210",
+      "purpose": "Parent Meeting",
+      "whom_to_meet": "Class Teacher - Class 8A",
+      "badge_no": "V31600",
+      "entry_time": "2026-03-16 05:52:11",
+      "exit_time": "",
+      "status": "In"
+    },
+    {
+      "id": 3,
+      "name": "Ms. Lakshmi Devi",
+      "phone": "9845678901",
+      "purpose": "Fee Payment",
+      "whom_to_meet": "Accounts Office",
+      "badge_no": "V31616",
+      "entry_time": "2026-03-16 05:52:11",
+      "exit_time": "",
+      "status": "In"
+    },
+    {
+      "id": 4,
+      "name": "Mr. Rajesh Patel",
+      "phone": "9900112233",
+      "purpose": "Admission Enquiry",
+      "whom_to_meet": "Principal",
+      "badge_no": "V31631",
+      "entry_time": "2026-03-16 05:52:11",
+      "exit_time": "",
+      "status": "In"
+    },
+    {
+      "id": 1,
+      "name": "Rashid Khan",
+      "phone": "9900112233",
+      "purpose": "Parent Meeting",
+      "whom_to_meet": "",
+      "badge_no": "V52990",
+      "entry_time": "2026-03-16 05:00:52",
+      "exit_time": "",
+      "status": "In"
+    }
+  ]
+}

@@ -1,0 +1,1639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Company Financials — The Gurukul High</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--navy:#0D1B5E;--green:#1E5631;--gold:#C9A227;--red:#dc3545;--orange:#f0a500;--teal:#0d6e6e;--muted:#666;--bg:#f4f6fb;--card:#fff;--border:#e2e6f0;--radius:12px;}
+body{font-family:'Poppins',sans-serif;font-size:13px;background:var(--bg);color:#222;min-height:100vh;}
+
+/* ── TOPBAR ── */
+.topbar{height:58px;background:var(--navy);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 20px;position:sticky;top:0;z-index:300;box-shadow:0 2px 12px rgba(0,0,0,.3);}
+.topbar-left{color:rgba(255,255,255,.5);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;display:flex;align-items:center;gap:10px;}
+.topbar-badge{background:rgba(201,162,39,.2);border:1px solid rgba(201,162,39,.5);color:#f0d060;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;}
+.topbar-center{display:flex;align-items:center;gap:10px;justify-content:center;}
+.topbar-center img{width:36px;height:36px;border-radius:8px;}
+.topbar-center .school-name{color:#fff;font-size:15px;font-weight:800;}
+.topbar-right{display:flex;align-items:center;gap:10px;justify-content:flex-end;}
+.yr-sel{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:8px;padding:5px 10px;font-family:'Poppins',sans-serif;font-size:12px;cursor:pointer;}
+.yr-sel option{background:var(--navy);}
+.topbar-btn{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px;}
+.topbar-btn:hover{background:rgba(255,255,255,.2);}
+.topbar-btn.danger{background:rgba(220,53,69,.2);border-color:rgba(220,53,69,.5);}
+
+/* ── TABS ── */
+.tabs-bar{background:#fff;border-bottom:2px solid var(--border);position:sticky;top:58px;z-index:200;overflow-x:auto;}
+.tabs-inner{display:flex;max-width:1600px;margin:0 auto;padding:0 16px;}
+.tab{display:flex;align-items:center;gap:6px;padding:12px 16px;font-size:12px;font-weight:600;color:#888;border-bottom:3px solid transparent;margin-bottom:-2px;cursor:pointer;white-space:nowrap;transition:all .2s;}
+.tab:hover{color:var(--navy);}
+.tab.active{color:var(--navy);border-bottom-color:var(--gold);font-weight:700;}
+.tab .ti{font-size:13px;}
+
+/* ── MAIN LAYOUT ── */
+.main{max-width:1600px;margin:0 auto;padding:20px 16px;}
+.tab-content{display:none;}
+.tab-content.active{display:block;}
+
+/* ── SECTION HEADER ── */
+.sec-hdr{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+.sec-hdr h2{font-size:16px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:8px;}
+.sec-hdr .spacer{flex:1;}
+.sec-hdr select,.sec-hdr input{background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:6px 12px;font-family:'Poppins',sans-serif;font-size:12px;color:#222;outline:none;}
+.sec-hdr select:focus,.sec-hdr input:focus{border-color:var(--navy);}
+.btn{border:1.5px solid var(--border);background:#fff;border-radius:8px;padding:7px 14px;font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;color:var(--navy);cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .2s;}
+.btn:hover{border-color:var(--navy);background:#f0f2fc;}
+.btn.primary{background:var(--navy);color:#fff;border-color:var(--navy);}
+.btn.success{background:#1e5631;color:#fff;border-color:#1e5631;}
+.btn.danger{background:var(--red);color:#fff;border-color:var(--red);}
+.btn.gold{background:var(--gold);color:#fff;border-color:var(--gold);}
+
+/* ── KPI CARDS ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;margin-bottom:24px;}
+.kpi-card{background:var(--card);border-radius:var(--radius);padding:16px;border:1.5px solid var(--border);position:relative;overflow:hidden;}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent,var(--navy));}
+.kpi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;}
+.kpi-val{font-size:22px;font-weight:800;color:var(--navy);line-height:1.1;}
+.kpi-sub{font-size:10px;color:var(--muted);margin-top:3px;}
+.kpi-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:28px;opacity:.08;color:var(--navy);}
+
+/* ── CHART BOXES ── */
+.charts-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:16px;margin-bottom:24px;}
+.chart-box{background:var(--card);border-radius:var(--radius);padding:18px;border:1.5px solid var(--border);}
+.chart-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+.chart-wrap{position:relative;height:220px;}
+
+/* ── CARDS ── */
+.card{background:var(--card);border-radius:var(--radius);border:1.5px solid var(--border);margin-bottom:18px;}
+.card-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.card-title{font-size:13px;font-weight:700;color:var(--navy);}
+.card-body{padding:18px;}
+
+/* ── TABLES ── */
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1.5px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{background:#f0f2fa;color:var(--navy);font-weight:700;padding:9px 14px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap;}
+td{padding:9px 14px;border-top:1px solid var(--border);vertical-align:middle;}
+tr:hover td{background:#fafbff;}
+.mono{font-family:'Courier New',monospace;font-size:12px;}
+
+/* ── TAGS ── */
+.tag{display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:2px 9px;font-size:10px;font-weight:700;white-space:nowrap;}
+.tag-green{background:#d4edda;color:#155724;}
+.tag-red{background:#f8d7da;color:#721c24;}
+.tag-blue{background:#cce5ff;color:#004085;}
+.tag-gold{background:#fff3cd;color:#856404;}
+.tag-grey{background:#e2e3e5;color:#383d41;}
+.tag-teal{background:#d1ecf1;color:#0c5460;}
+
+/* ── 2-col layout ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+@media(max-width:900px){.two-col,.three-col{grid-template-columns:1fr;}}
+
+/* ── LEDGER ── */
+.ledger-filter{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;align-items:center;}
+.ledger-filter select,.ledger-filter input{background:#fff;border:1.5px solid var(--border);border-radius:8px;padding:6px 10px;font-family:'Poppins',sans-serif;font-size:12px;outline:none;}
+.dr{color:#155724;font-weight:600;}
+.cr{color:#721c24;font-weight:600;}
+.running-bal.pos{color:#155724;font-weight:700;}
+.running-bal.neg{color:#721c24;font-weight:700;}
+
+/* ── TRIAL BALANCE ── */
+.tb-total{background:var(--navy);color:#fff;}
+.tb-total td{font-weight:800;font-size:13px;padding:10px 14px;}
+.tb-group{background:#f0f2fa;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--navy);}
+
+/* ── BALANCE SHEET ── */
+.bs-section{margin-bottom:20px;}
+.bs-section-title{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--navy);padding:8px 14px;background:#eef0fa;border-radius:8px;margin-bottom:8px;}
+.bs-row{display:flex;justify-content:space-between;padding:6px 14px;border-bottom:1px solid var(--border);}
+.bs-row:last-child{border-bottom:none;}
+.bs-row.subtotal{font-weight:700;background:#f8f9fc;border-radius:6px;}
+.bs-row.grand{background:var(--navy);color:#fff;border-radius:8px;font-weight:800;font-size:14px;}
+.bs-col{display:flex;gap:20px;}
+.bs-panel{background:var(--card);border:1.5px solid var(--border);border-radius:var(--radius);padding:18px;}
+.bs-panel-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--gold);}
+
+/* ── AUDIT ── */
+.audit-finding{border-left:4px solid var(--gold);padding:12px 16px;background:#fffdf0;border-radius:0 8px 8px 0;margin-bottom:10px;}
+.audit-finding.high{border-color:var(--red);background:#fff5f5;}
+.audit-finding.low{border-color:#1e5631;background:#f0f7f0;}
+.audit-finding-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+.audit-checklist{list-style:none;}
+.audit-checklist li{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:12px;}
+.audit-checklist li:last-child{border-bottom:none;}
+.chk-ok{color:#1e5631;font-size:16px;}
+.chk-warn{color:var(--orange);font-size:16px;}
+.chk-fail{color:var(--red);font-size:16px;}
+.kam-card{background:var(--card);border:1.5px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;}
+.kam-title{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:6px;display:flex;align-items:center;gap:7px;}
+.kam-body{font-size:12px;color:#444;line-height:1.6;}
+
+/* ── AUDIT REPORT PREVIEW ── */
+.audit-report-preview{background:#fff;border:1.5px solid var(--border);border-radius:var(--radius);padding:32px;font-family:'Times New Roman',serif;font-size:13px;line-height:1.7;color:#111;max-width:860px;margin:0 auto;}
+.ar-header{text-align:center;border-bottom:3px double #333;padding-bottom:16px;margin-bottom:20px;}
+.ar-title{font-size:20px;font-weight:bold;margin-bottom:4px;}
+.ar-sub{font-size:13px;color:#444;}
+.ar-section{margin:20px 0;}
+.ar-section-title{font-size:14px;font-weight:bold;text-decoration:underline;margin-bottom:8px;}
+.ar-para{margin-bottom:10px;text-align:justify;}
+.ar-sign{margin-top:30px;display:flex;justify-content:space-between;}
+.ar-sign-box{text-align:center;}
+.ar-obs-table{width:100%;border-collapse:collapse;margin:10px 0;}
+.ar-obs-table th{background:#eee;padding:8px;text-align:left;border:1px solid #ccc;font-size:12px;}
+.ar-obs-table td{padding:8px;border:1px solid #ccc;font-size:12px;vertical-align:top;}
+.opinion-box{background:#f0f7f0;border:2px solid #1e5631;border-radius:8px;padding:16px;margin:14px 0;}
+.opinion-box.modified{background:#fff8f0;border-color:#f0a500;}
+
+/* ── JOURNAL MODAL ── */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:#fff;border-radius:16px;width:min(760px,96vw);max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.modal-head{background:var(--navy);border-radius:16px 16px 0 0;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;}
+.modal-head-title{color:#fff;font-size:15px;font-weight:700;}
+.modal-close{background:none;border:none;color:#fff;font-size:20px;cursor:pointer;line-height:1;}
+.modal-body{padding:20px;}
+.fld{margin-bottom:14px;}
+.fld label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:5px;}
+.fld input,.fld select,.fld textarea{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:'Poppins',sans-serif;font-size:12px;background:#fff;outline:none;transition:border .2s;}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--navy);}
+.journal-lines{border:1.5px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:12px;}
+.jl-head{background:#f0f2fa;padding:7px 12px;display:grid;grid-template-columns:auto 80px 80px 36px;gap:8px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--navy);}
+.jl-row{padding:7px 12px;display:grid;grid-template-columns:auto 80px 80px 36px;gap:8px;border-top:1px solid var(--border);align-items:center;}
+.jl-row select,.jl-row input{width:100%;border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-family:'Poppins',sans-serif;font-size:12px;background:#fff;outline:none;}
+.jl-total{background:#f8f9fc;padding:7px 12px;display:grid;grid-template-columns:auto 80px 80px 36px;gap:8px;font-size:12px;font-weight:700;border-top:2px solid var(--border);}
+.jl-balance-ok{color:#1e5631;}
+.jl-balance-err{color:var(--red);}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--navy);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;font-weight:600;z-index:9999;transform:translateY(100px);opacity:0;transition:all .3s;pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.success{background:#1e5631;}
+.toast.error{background:var(--red);}
+
+/* ── CASH BOOK LAYOUT ── */
+.cashbook-wrap{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1.5px solid var(--border);border-radius:10px;overflow:hidden;}
+.cashbook-side{padding:0;}
+.cashbook-side-title{background:var(--navy);color:#fff;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:8px 14px;}
+.cashbook-side table{width:100%;border-collapse:collapse;font-size:11px;}
+.cashbook-side th{background:#f0f2fa;color:var(--navy);font-weight:700;padding:7px 10px;font-size:10px;text-transform:uppercase;}
+.cashbook-side td{padding:7px 10px;border-top:1px solid var(--border);}
+.cashbook-divider{width:1px;background:var(--border);}
+
+/* ── LOADING ── */
+.loading{text-align:center;padding:40px;color:var(--muted);}
+.loading i{font-size:24px;animation:spin 1s linear infinite;display:block;margin-bottom:10px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:36px;color:var(--muted);}
+.empty i{font-size:32px;margin-bottom:10px;display:block;opacity:.3;}
+
+/* ── AMOUNTS ── */
+.amt{font-family:'Courier New',monospace;font-weight:700;}
+.amt-pos{color:#1e5631;}
+.amt-neg{color:var(--red);}
+</style>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#C9A227">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Gurukul ERP">
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    Company Financials
+    <span class="topbar-badge"><i class="fa fa-balance-scale"></i> Accounting</span>
+  </div>
+  <div class="topbar-center">
+    <img src="/images/gurukul-logo.png" alt="">
+    <div class="school-name">The Gurukul High</div>
+  </div>
+  <div class="topbar-right">
+    <select class="yr-sel" id="globalYear" onchange="onYearChange()">
+      <option value="2026">FY 2026-27</option>
+      <option value="2025" selected>FY 2025-26</option>
+      <option value="2024">FY 2024-25</option>
+      <option value="2023">FY 2023-24</option>
+    </select>
+    <button class="topbar-btn" onclick="refreshAll()"><i class="fa fa-refresh"></i> Refresh</button>
+    <a href="/portal/admin-dashboard.html#finance" class="topbar-btn"><i class="fa fa-arrow-left"></i> Admin</a>
+    <button class="topbar-btn danger" onclick="doLogout()"><i class="fa fa-sign-out"></i> Logout</button>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs-bar">
+  <div class="tabs-inner">
+    <div class="tab active" onclick="switchTab('overview')"    id="tab-overview">   <i class="fa fa-tachometer ti"></i> Overview</div>
+    <div class="tab"        onclick="switchTab('ledger')"      id="tab-ledger">     <i class="fa fa-book ti"></i> General Ledger</div>
+    <div class="tab"        onclick="switchTab('books')"       id="tab-books">      <i class="fa fa-file-text-o ti"></i> Books of Accounts</div>
+    <div class="tab"        onclick="switchTab('trial')"       id="tab-trial">      <i class="fa fa-list-alt ti"></i> Trial Balance</div>
+    <div class="tab"        onclick="switchTab('balance')"     id="tab-balance">    <i class="fa fa-bank ti"></i> Balance Sheet</div>
+    <div class="tab"        onclick="switchTab('income')"      id="tab-income">     <i class="fa fa-line-chart ti"></i> Income & Expenditure</div>
+    <div class="tab"        onclick="switchTab('receipts')"    id="tab-receipts">   <i class="fa fa-exchange ti"></i> Receipts & Payments</div>
+    <div class="tab"        onclick="switchTab('journal')"     id="tab-journal">    <i class="fa fa-pencil-square-o ti"></i> Journal Entries</div>
+    <div class="tab"        onclick="switchTab('audit')"       id="tab-audit">      <i class="fa fa-shield ti"></i> Audit & Compliance</div>
+  </div>
+</div>
+
+<div class="main">
+
+<!-- ══ OVERVIEW ══ -->
+<div class="tab-content active" id="tc-overview">
+  <div class="sec-hdr">
+    <h2><i class="fa fa-tachometer"></i> Financial Overview</h2>
+    <div class="spacer"></div>
+    <button class="btn primary" onclick="loadOverview()"><i class="fa fa-refresh"></i> Refresh</button>
+  </div>
+  <div class="kpi-grid" id="ovKPIs">
+    <div class="loading"><i class="fa fa-spinner"></i>Loading…</div>
+  </div>
+  <div class="charts-row">
+    <div class="chart-box">
+      <div class="chart-title"><i class="fa fa-line-chart"></i> Monthly Fee Collections</div>
+      <div class="chart-wrap"><canvas id="chartMonthly"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title"><i class="fa fa-pie-chart"></i> Income vs Expenditure</div>
+      <div class="chart-wrap"><canvas id="chartIE"></canvas></div>
+    </div>
+    <div class="chart-box">
+      <div class="chart-title"><i class="fa fa-bar-chart"></i> Fee Type Breakdown</div>
+      <div class="chart-wrap"><canvas id="chartFeeType"></canvas></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-head"><i class="fa fa-arrow-down" style="color:#1e5631"></i><span class="card-title">Top Income Sources</span></div>
+      <div class="card-body">
+        <div class="tbl-wrap"><table id="tblTopIncome">
+          <tr><th>Source</th><th>Amount (₹)</th><th>% Share</th></tr>
+        </table></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-head"><i class="fa fa-arrow-up" style="color:#dc3545"></i><span class="card-title">Expenditure Summary</span></div>
+      <div class="card-body">
+        <div class="tbl-wrap"><table id="tblExpSummary">
+          <tr><th>Category</th><th>Amount (₹)</th></tr>
+        </table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ GENERAL LEDGER ══ -->
+<div class="tab-content" id="tc-ledger">
+  <div class="sec-hdr">
+    <h2><i class="fa fa-book"></i> General Ledger</h2>
+    <div class="spacer"></div>
+    <select id="ledgerAccount" onchange="loadLedger()"><option value="">All Accounts</option></select>
+    <input type="date" id="ledgerFrom" onchange="loadLedger()">
+    <input type="date" id="ledgerTo" onchange="loadLedger()">
+    <button class="btn primary" onclick="loadLedger()"><i class="fa fa-refresh"></i></button>
+    <button class="btn" onclick="exportLedgerCSV()"><i class="fa fa-download"></i> CSV</button>
+  </div>
+  <div id="ledgerContent"><div class="loading"><i class="fa fa-spinner"></i>Loading ledger…</div></div>
+</div>
+
+<!-- ══ BOOKS OF ACCOUNTS ══ -->
+<div class="tab-content" id="tc-books">
+  <div class="sec-hdr">
+    <h2><i class="fa fa-file-text-o"></i> Books of Accounts</h2>
+    <div class="spacer"></div>
+    <select id="booksView" onchange="loadBooks()">
+      <option value="cash">Cash Book</option>
+      <option value="fee">Fee Collection Register</option>
+      <option value="salary">Salary Journal</option>
+      <option value="donation">Donations Register</option>
+    </select>
+    <input type="date" id="booksFrom" onchange="loadBooks()">
+    <input type="date" id="booksTo" onchange="loadBooks()">
+    <button class="btn primary" onclick="loadBooks()"><i class="fa fa-refresh"></i></button>
+    <button class="btn" onclick="exportBooksCSV()"><i class="fa fa-download"></i> CSV</button>
+  </div>
+  <div id="booksContent"><div class="loading"><i class="fa fa-spinner"></i>Loading…</div></div>
+</div>
+
+<!-- ══ TRIAL BALANCE ══ -->
+<div class="tab-content" id="tc-trial">
+  <div class="sec-hdr">
+    <h2><i class="fa fa-list-alt"></i> Trial Balance</h2>
+    <div class="spacer"></div>
+    <input type="date" id="tbFrom" onchange="loadTrialBalance()">
+    <input type="date" id="tbTo" onchange="loadTrialBalance()">
+    <button class="btn primary" onclick="loadTrialBalance()"><i class="fa fa-refresh"></i></button>
+    <button class="btn" onclick="exportTBCSV()"><i class="fa fa-download"></i> CSV</button>
+    <button class="btn gold" onclick="printTrialBalance()"><i class="fa fa-print"></i> Print</button>
+  </div>
+  <div id="trialContent"><div class="loading"><i class="fa fa-spinner"></i>Computing trial balance…</div></div>
+</div>
+
+<!-- ══ BALANCE SHEET ══ -->
+<div class="tab-content" id="tc-balance">
+  <div class="sec-hdr">
+    <h2><i class="fa fa-bank"></i> Balance Sheet</h2>
+    <div class="spacer"></div>
+    <button class="btn primary" onclick="loadBalanceSheet()"><i class="fa fa-refresh"></i></button>
+    <button class="btn gold" onclick="exportBalanceSheetPDF()"><i class="fa fa-file-pdf-o"></i> Export PDF</button>
+  </div>
+  <div id="balanceContent"><div class="loading"><i class="fa fa-spinner"></i>Generating balance sheet…</div></div>
+</div>
+
+<!-- ══ INCOME & EXPENDITURE ══ -->
+<div class="tab-content" id="tc-income">
+  <div class="sec-hdr">
+    <h2><i class="fa fa-line-chart"></i> Income &amp; Expenditure Statement</h2>
+    <div class="spacer"></div>
+    <button class="btn primary" onclick="loadIncomeStatement()"><i class="fa fa-refresh"></i></button>
+    <button class="btn gold" onclick="exportIEPDF()"><i class="fa fa-file-pdf-o"></i> Export PDF</button>
+  </div>
+  <div id="incomeContent"><div class="loading"><i class="fa fa-spinner"></i>Loading…</div></div>
+</div>
+
+<!-- ══ RECEIPTS & PAYMENTS ══ -->
+<div class="tab-content" id="tc-receipts">
+  <div class="sec-hdr">
+    <h2><i class="fa fa-exchange"></i> Receipts &amp; Payments Account</h2>
+    <div class="spacer"></div>
+    <button class="btn primary" onclick="loadReceiptsPayments()"><i class="fa fa-refresh"></i></button>
+    <button class="btn" onclick="exportRPCSV()"><i class="fa fa-download"></i> CSV</button>
+  </div>
+  <div id="receiptsContent"><div class="loading"><i class="fa fa-spinner"></i>Loading…</div></div>
+</div>
+
+<!-- ══ JOURNAL ENTRIES ══ -->
+<div class="tab-content" id="tc-journal">
+  <div class="sec-hdr">
+    <h2><i class="fa fa-pencil-square-o"></i> Journal Entries</h2>
+    <div class="spacer"></div>
+    <input type="date" id="jeFrom" onchange="loadJournalEntries()">
+    <input type="date" id="jeTo" onchange="loadJournalEntries()">
+    <button class="btn primary" onclick="openJournalModal()"><i class="fa fa-plus"></i> New Entry</button>
+    <button class="btn" onclick="loadJournalEntries()"><i class="fa fa-refresh"></i></button>
+  </div>
+  <div id="journalContent"><div class="loading"><i class="fa fa-spinner"></i>Loading…</div></div>
+</div>
+
+<!-- ══ AUDIT & COMPLIANCE ══ -->
+<div class="tab-content" id="tc-audit">
+  <div class="sec-hdr">
+    <h2><i class="fa fa-shield"></i> Audit &amp; Compliance</h2>
+    <div class="spacer"></div>
+    <button class="btn primary" onclick="loadAudit()"><i class="fa fa-refresh"></i></button>
+    <button class="btn gold" onclick="generateAuditReport()"><i class="fa fa-file-pdf-o"></i> Generate Audit Report</button>
+  </div>
+
+  <!-- Sub-tabs -->
+  <div style="display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap;">
+    <button class="btn primary" id="abt-trail"   onclick="showAuditTab('trail')">  <i class="fa fa-history"></i> Audit Trail</button>
+    <button class="btn"         id="abt-checklist" onclick="showAuditTab('checklist')"><i class="fa fa-check-square-o"></i> Compliance Checklist</button>
+    <button class="btn"         id="abt-kams"    onclick="showAuditTab('kams')">   <i class="fa fa-star"></i> Key Audit Matters</button>
+    <button class="btn"         id="abt-obs"     onclick="showAuditTab('obs')">    <i class="fa fa-exclamation-triangle"></i> Observations</button>
+    <button class="btn"         id="abt-report"  onclick="showAuditTab('report')"  ><i class="fa fa-file-text-o"></i> Auditor's Report</button>
+  </div>
+
+  <div id="audit-trail-tab">
+    <div id="auditTrailContent"><div class="loading"><i class="fa fa-spinner"></i>Loading audit trail…</div></div>
+  </div>
+  <div id="audit-checklist-tab" style="display:none;">
+    <div id="auditChecklistContent"><div class="loading"><i class="fa fa-spinner"></i>Loading…</div></div>
+  </div>
+  <div id="audit-kams-tab" style="display:none;">
+    <div id="auditKAMsContent"><div class="loading"><i class="fa fa-spinner"></i>Loading…</div></div>
+  </div>
+  <div id="audit-obs-tab" style="display:none;">
+    <div id="auditObsContent"><div class="loading"><i class="fa fa-spinner"></i>Loading…</div></div>
+  </div>
+  <div id="audit-report-tab" style="display:none;">
+    <div id="auditReportContent"><div class="loading"><i class="fa fa-spinner"></i>Generating report preview…</div></div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<!-- JOURNAL MODAL -->
+<div class="modal-overlay" id="journalModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <span class="modal-head-title"><i class="fa fa-pencil-square-o"></i> New Journal Entry</span>
+      <button class="modal-close" onclick="closeJournalModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:14px;">
+        <div class="fld">
+          <label>Date</label>
+          <input type="date" id="jeDate">
+        </div>
+        <div class="fld">
+          <label>Voucher Type</label>
+          <select id="jeType">
+            <option value="Journal">Journal Voucher</option>
+            <option value="Payment">Payment Voucher</option>
+            <option value="Receipt">Receipt Voucher</option>
+            <option value="Contra">Contra Voucher</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label>Narration</label>
+          <input type="text" id="jeNarration" placeholder="Brief description…">
+        </div>
+      </div>
+      <div class="journal-lines">
+        <div class="jl-head"><div>Account</div><div>Dr (₹)</div><div>Cr (₹)</div><div></div></div>
+        <div id="jeLines"></div>
+        <div class="jl-total">
+          <div>Total <button class="btn" style="font-size:10px;padding:3px 8px;margin-left:8px;" onclick="addJELine()"><i class="fa fa-plus"></i> Add Line</button></div>
+          <div id="jeTotalDr">0.00</div>
+          <div id="jeTotalCr">0.00</div>
+          <div></div>
+        </div>
+      </div>
+      <div id="jeBalanceMsg" style="font-size:12px;font-weight:700;margin-bottom:12px;"></div>
+      <button class="btn primary" onclick="postJournal()" style="width:100%;justify-content:center;padding:10px;">
+        <i class="fa fa-check"></i> Post Journal Entry
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Relative API paths — works on any host (local or cloud)
+const DATA_PORT = '';
+const API = '/api';
+const ADMIN_KEY = localStorage.getItem('adminKey') || '';
+const FIN_TOKEN = localStorage.getItem('financeToken') || '';
+
+function authHeaders() {
+  const h = {};
+  if (FIN_TOKEN) h['Authorization'] = 'Bearer ' + FIN_TOKEN;
+  return h;
+}
+
+function apiUrl(path, extra) {
+  const nc = '_nc=' + Date.now();
+  const keyPart = ADMIN_KEY ? 'key=' + encodeURIComponent(ADMIN_KEY) : '';
+  const params = [keyPart, extra, nc].filter(Boolean).join('&');
+  return `${API}${path}?${params}`;
+}
+
+async function apiFetch(path, extra) {
+  const url = apiUrl(path, extra);
+  const r = await fetch(url, { headers: authHeaders() });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
+}
+
+// Auth check — show inline login if no session found
+let _adminKey = localStorage.getItem('adminKey') || '';
+let _finToken = localStorage.getItem('financeToken') || '';
+
+if (!_adminKey && !_finToken) {
+  document.body.innerHTML = `
+  <div style="min-height:100vh;background:#f4f6fb;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;">
+    <div style="background:#fff;border-radius:20px;padding:40px 36px;width:380px;box-shadow:0 12px 40px rgba(0,0,0,0.12);border:1.5px solid #e2e6f0;">
+      <div style="text-align:center;margin-bottom:28px;">
+        <div style="width:64px;height:64px;background:#0D1B5E;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:28px;color:#C9A227;">
+          <i class="fa fa-balance-scale"></i>
+        </div>
+        <div style="font-size:20px;font-weight:800;color:#0D1B5E;">Company Financials</div>
+        <div style="font-size:12px;color:#888;margin-top:4px;">The Gurukul High — Accounting Dashboard</div>
+      </div>
+      <div id="loginErr" style="display:none;background:#fff5f5;border:1px solid #f5c6cb;color:#721c24;padding:9px 14px;border-radius:8px;font-size:12px;margin-bottom:14px;"></div>
+      <div style="margin-bottom:14px;">
+        <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#666;margin-bottom:5px;">Username</label>
+        <input id="liUser" type="text" value="admin" style="width:100%;border:1.5px solid #e2e6f0;border-radius:8px;padding:10px 12px;font-family:'Poppins',sans-serif;font-size:13px;outline:none;" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div style="margin-bottom:20px;">
+        <label style="display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#666;margin-bottom:5px;">Password</label>
+        <input id="liPass" type="password" value="gurukul@2026" style="width:100%;border:1.5px solid #e2e6f0;border-radius:8px;padding:10px 12px;font-family:'Poppins',sans-serif;font-size:13px;outline:none;" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button onclick="doLogin()" style="width:100%;background:#0D1B5E;color:#fff;border:none;border-radius:10px;padding:12px;font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">
+        <i class="fa fa-sign-in"></i> Login &amp; Open Dashboard
+      </button>
+      <div style="text-align:center;margin-top:16px;font-size:11px;color:#aaa;">
+        Use admin (gurukul@2026) or finance (finance@2026)
+      </div>
+    </div>
+  </div>`;
+
+  window.doLogin = async function() {
+    const user = document.getElementById('liUser').value.trim();
+    const pass = document.getElementById('liPass').value.trim();
+    const err  = document.getElementById('loginErr');
+    err.style.display = 'none';
+    // Try admin first
+    if (user === 'admin') {
+      try {
+        const r = await fetch('/api/admin/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ username:user, password:pass }) });
+        const j = await r.json();
+        if (!r.ok) throw new Error(j.error || 'Invalid credentials');
+        localStorage.setItem('adminKey', j.adminKey || j.key || 'gurukul-admin-2026');
+        // Also store token if returned
+        if (j.token) localStorage.setItem('financeToken', j.token);
+        location.reload();
+      } catch(e) { err.textContent = e.message; err.style.display='block'; }
+    } else {
+      // Finance login
+      try {
+        const r = await fetch('/api/finance/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ username:user, password:pass }) });
+        const j = await r.json();
+        if (!r.ok) throw new Error(j.error || 'Invalid credentials');
+        localStorage.setItem('financeToken', j.token);
+        location.reload();
+      } catch(e) { err.textContent = e.message; err.style.display='block'; }
+    }
+  }
+}
+
+function doLogout() {
+  window.location.href = '/portal/admin-login.html';
+}
+
+let currentYear = document.getElementById('globalYear')?.value || '2025';
+let coaList = [];
+let auditData = null;
+
+function onYearChange() {
+  currentYear = document.getElementById('globalYear').value;
+  const active = document.querySelector('.tab.active')?.id?.replace('tab-','');
+  if (active) loadTab(active);
+}
+
+function fy(yr) { return `Apr ${yr} – Mar ${parseInt(yr)+1}`; }
+
+// ── FORMAT ────────────────────────────────────────────────────────────────────
+function fmt(n) {
+  const v = parseFloat(n) || 0;
+  return '₹' + Math.abs(v).toLocaleString('en-IN', { minimumFractionDigits:2, maximumFractionDigits:2 });
+}
+function fmtN(n) {
+  const v = parseFloat(n) || 0;
+  return v.toLocaleString('en-IN', { minimumFractionDigits:2, maximumFractionDigits:2 });
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-'+name)?.classList.add('active');
+  document.getElementById('tc-'+name)?.classList.add('active');
+  location.hash = name;
+  loadTab(name);
+}
+
+function loadTab(name) {
+  if (name === 'overview')  loadOverview();
+  if (name === 'ledger')    loadLedger();
+  if (name === 'books')     loadBooks();
+  if (name === 'trial')     loadTrialBalance();
+  if (name === 'balance')   loadBalanceSheet();
+  if (name === 'income')    loadIncomeStatement();
+  if (name === 'receipts')  loadReceiptsPayments();
+  if (name === 'journal')   loadJournalEntries();
+  if (name === 'audit')     loadAudit();
+}
+
+function refreshAll() {
+  const active = document.querySelector('.tab.active')?.id?.replace('tab-','');
+  if (active) loadTab(active);
+}
+
+// ── TOAST ─────────────────────────────────────────────────────────────────────
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+// ── COA ───────────────────────────────────────────────────────────────────────
+async function loadCOA() {
+  try {
+    const d = await apiFetch('/accounting/coa');
+    coaList = d.accounts || [];
+    const sel = document.getElementById('ledgerAccount');
+    if (sel) {
+      sel.innerHTML = '<option value="">All Accounts</option>';
+      let grp = '';
+      coaList.forEach(a => {
+        if (a.type !== grp) { sel.appendChild(Object.assign(document.createElement('optgroup'), { label: a.type })); grp = a.type; }
+        sel.appendChild(Object.assign(document.createElement('option'), { value: a.code, textContent: `${a.code} – ${a.name}` }));
+      });
+    }
+    // Also populate journal entry account selects
+    document.querySelectorAll('.je-account-sel').forEach(s => populateCOASelect(s));
+  } catch(e) { console.error(e); }
+}
+function populateCOASelect(sel) {
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">Select Account…</option>';
+  let grp = '';
+  coaList.forEach(a => {
+    if (a.type !== grp) { sel.appendChild(Object.assign(document.createElement('optgroup'), { label: a.type })); grp = a.type; }
+    sel.appendChild(Object.assign(document.createElement('option'), { value: a.code, textContent: `${a.code} – ${a.name}` }));
+  });
+  if (cur) sel.value = cur;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// OVERVIEW
+// ══════════════════════════════════════════════════════════════════════════════
+let chartMonthly, chartIE, chartFeeType;
+
+async function loadOverview() {
+  try {
+    const d = await apiFetch('/accounting/summary', `year=${currentYear}`);
+    // KPIs
+    const surplus = d.surplus || 0;
+    document.getElementById('ovKPIs').innerHTML = `
+      <div class="kpi-card" style="--accent:#1e5631">
+        <div class="kpi-label">Total Income</div>
+        <div class="kpi-val">${fmt(d.totalIncome)}</div>
+        <div class="kpi-sub">FY ${fy(currentYear)}</div>
+        <div class="kpi-icon"><i class="fa fa-arrow-down"></i></div>
+      </div>
+      <div class="kpi-card" style="--accent:#dc3545">
+        <div class="kpi-label">Total Expenditure</div>
+        <div class="kpi-val">${fmt(d.totalExpense)}</div>
+        <div class="kpi-sub">Salary + overheads</div>
+        <div class="kpi-icon"><i class="fa fa-arrow-up"></i></div>
+      </div>
+      <div class="kpi-card" style="--accent:${surplus>=0?'#1e5631':'#dc3545'}">
+        <div class="kpi-label">Net Surplus / (Deficit)</div>
+        <div class="kpi-val" style="color:${surplus>=0?'#1e5631':'#dc3545'}">${surplus>=0?'+':''}${fmt(surplus)}</div>
+        <div class="kpi-sub">Income – Expenditure</div>
+        <div class="kpi-icon"><i class="fa fa-balance-scale"></i></div>
+      </div>
+      <div class="kpi-card" style="--accent:#C9A227">
+        <div class="kpi-label">Fee Collected</div>
+        <div class="kpi-val">${fmt(d.feeTotal)}</div>
+        <div class="kpi-sub">Paid receipts</div>
+        <div class="kpi-icon"><i class="fa fa-inr"></i></div>
+      </div>
+      <div class="kpi-card" style="--accent:#f0a500">
+        <div class="kpi-label">Fee Outstanding</div>
+        <div class="kpi-val">${fmt(d.feePend)}</div>
+        <div class="kpi-sub">Pending / Partial</div>
+        <div class="kpi-icon"><i class="fa fa-clock-o"></i></div>
+      </div>
+      <div class="kpi-card" style="--accent:#0d6e6e">
+        <div class="kpi-label">Donations Received</div>
+        <div class="kpi-val">${fmt(d.donTotal)}</div>
+        <div class="kpi-sub">This fiscal year</div>
+        <div class="kpi-icon"><i class="fa fa-gift"></i></div>
+      </div>
+      <div class="kpi-card" style="--accent:#6f42c1">
+        <div class="kpi-label">Salary Disbursed</div>
+        <div class="kpi-val">${fmt(d.salaryTot)}</div>
+        <div class="kpi-sub">Net pay to staff</div>
+        <div class="kpi-icon"><i class="fa fa-users"></i></div>
+      </div>
+      <div class="kpi-card" style="--accent:#17a2b8">
+        <div class="kpi-label">PF + ESI</div>
+        <div class="kpi-val">${fmt((d.pfTot||0)+(d.esiTot||0))}</div>
+        <div class="kpi-sub">Statutory contributions</div>
+        <div class="kpi-icon"><i class="fa fa-shield"></i></div>
+      </div>
+    `;
+
+    // Monthly chart
+    const months = (d.monthTrend||[]).map(r => r.m);
+    const mVals  = (d.monthTrend||[]).map(r => parseFloat(r.total)||0);
+    if (chartMonthly) chartMonthly.destroy();
+    chartMonthly = new Chart(document.getElementById('chartMonthly'), {
+      type:'bar',
+      data:{ labels:months, datasets:[{ label:'Fee Collected (₹)', data:mVals, backgroundColor:'rgba(13,27,94,.7)', borderRadius:6 }] },
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ y:{ ticks:{ callback: v => '₹'+v.toLocaleString('en-IN') } } } }
+    });
+
+    // IE donut
+    if (chartIE) chartIE.destroy();
+    chartIE = new Chart(document.getElementById('chartIE'), {
+      type:'doughnut',
+      data:{ labels:['Income','Expenditure'], datasets:[{ data:[d.totalIncome||0,d.totalExpense||0], backgroundColor:['#1e5631','#dc3545'], borderWidth:0 }] },
+      options:{ responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{ position:'bottom' } } }
+    });
+
+    // Fee type breakdown
+    const rpData = await apiFetch('/accounting/receipts-payments', `year=${currentYear}`);
+    const ftLabels = (rpData.feeByType||[]).map(r=>r.fee_type);
+    const ftVals   = (rpData.feeByType||[]).map(r=>parseFloat(r.total)||0);
+    if (chartFeeType) chartFeeType.destroy();
+    chartFeeType = new Chart(document.getElementById('chartFeeType'), {
+      type:'bar',
+      data:{ labels:ftLabels, datasets:[{ data:ftVals, backgroundColor:['#0D1B5E','#1E5631','#C9A227','#dc3545','#f0a500','#17a2b8','#6f42c1','#0d6e6e'], borderRadius:6 }] },
+      options:{ indexAxis:'y', responsive:true, maintainAspectRatio:false, plugins:{ legend:{ display:false } }, scales:{ x:{ ticks:{ callback: v => '₹'+v.toLocaleString('en-IN') } } } }
+    });
+
+    // Income table
+    const totalInc = d.totalIncome || 1;
+    let incHtml = '';
+    (rpData.feeByType||[]).forEach(r => {
+      const pct = ((parseFloat(r.total)||0)/totalInc*100).toFixed(1);
+      incHtml += `<tr><td>${r.fee_type} Fee</td><td class="amt">${fmtN(r.total)}</td><td><span class="tag tag-green">${pct}%</span></td></tr>`;
+    });
+    if (d.donTotal>0) incHtml += `<tr><td>Donations</td><td class="amt">${fmtN(d.donTotal)}</td><td><span class="tag tag-teal">${((d.donTotal/totalInc)*100).toFixed(1)}%</span></td></tr>`;
+    incHtml += `<tr style="font-weight:800;background:#f0f2fa;"><td>Total</td><td class="amt">${fmtN(d.totalIncome)}</td><td>100%</td></tr>`;
+    document.getElementById('tblTopIncome').innerHTML = `<tr><th>Source</th><th>Amount (₹)</th><th>% Share</th></tr>${incHtml}`;
+
+    // Expense table
+    let expHtml = '';
+    if (d.salaryTot>0) expHtml += `<tr><td>Teaching & Staff Salary</td><td class="amt">${fmtN(d.salaryTot)}</td></tr>`;
+    if (d.pfTot>0)     expHtml += `<tr><td>PF Contribution (Employer)</td><td class="amt">${fmtN(d.pfTot)}</td></tr>`;
+    if (d.esiTot>0)    expHtml += `<tr><td>ESI Contribution (Employer)</td><td class="amt">${fmtN(d.esiTot)}</td></tr>`;
+    if (d.manualExp>0) expHtml += `<tr><td>Other Expenses (Manual)</td><td class="amt">${fmtN(d.manualExp)}</td></tr>`;
+    expHtml += `<tr style="font-weight:800;background:#f0f2fa;"><td>Total</td><td class="amt">${fmtN(d.totalExpense)}</td></tr>`;
+    document.getElementById('tblExpSummary').innerHTML = `<tr><th>Category</th><th>Amount (₹)</th></tr>${expHtml}`;
+
+  } catch(e) { document.getElementById('ovKPIs').innerHTML = `<div class="empty"><i class="fa fa-warning"></i>${e.message}</div>`; }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// GENERAL LEDGER
+// ══════════════════════════════════════════════════════════════════════════════
+async function loadLedger() {
+  const code = document.getElementById('ledgerAccount')?.value || '';
+  const from = document.getElementById('ledgerFrom')?.value || '';
+  const to   = document.getElementById('ledgerTo')?.value   || '';
+  const extra = `year=${currentYear}${code?'&code='+code:''}${from?'&from='+from:''}${to?'&to='+to:''}`;
+  document.getElementById('ledgerContent').innerHTML = '<div class="loading"><i class="fa fa-spinner"></i>Loading…</div>';
+  try {
+    const d = await apiFetch('/accounting/ledger', extra);
+    const entries = d.entries || [];
+    if (code) {
+      // Single account ledger view
+      const acct = coaList.find(a => a.code === code) || { name: code, type:'', normal_bal:'Dr' };
+      let runBal = 0;
+      let html = `<div class="card"><div class="card-head"><i class="fa fa-book"></i><span class="card-title">${acct.code} — ${acct.name}</span></div><div class="card-body">
+        <div class="tbl-wrap"><table>
+          <tr><th>Date</th><th>Voucher No</th><th>Type</th><th>Narration</th><th>Dr (₹)</th><th>Cr (₹)</th><th>Balance (₹)</th></tr>`;
+      entries.forEach(e => {
+        const dr = parseFloat(e.debit)||0, cr = parseFloat(e.credit)||0;
+        runBal += (acct.normal_bal==='Dr' ? dr-cr : cr-dr);
+        html += `<tr>
+          <td>${e.date}</td><td class="mono">${e.voucher_no||'—'}</td>
+          <td><span class="tag tag-blue">${e.voucher_type||'JV'}</span></td>
+          <td>${e.narration||''}</td>
+          <td class="dr">${dr>0?fmtN(dr):''}</td>
+          <td class="cr">${cr>0?fmtN(cr):''}</td>
+          <td class="${runBal>=0?'running-bal pos':'running-bal neg'}">${fmtN(Math.abs(runBal))} ${runBal>=0?'Dr':'Cr'}</td>
+        </tr>`;
+      });
+      html += `</table></div></div></div>`;
+      document.getElementById('ledgerContent').innerHTML = html || '<div class="empty"><i class="fa fa-inbox"></i>No entries found.</div>';
+    } else {
+      // All accounts grouped — build COA lookup from response (entries may lack account_name/type)
+      const coaMap = {};
+      (d.accounts || []).forEach(a => { coaMap[a.code] = a; });
+      const byAccount = {};
+      entries.forEach(e => {
+        const acctMeta = coaMap[e.account_code] || {};
+        if (!byAccount[e.account_code]) byAccount[e.account_code] = {
+          code: e.account_code,
+          name: e.account_name || acctMeta.name || e.account_code,
+          type: e.account_type || acctMeta.type || 'Other',
+          lines: []
+        };
+        byAccount[e.account_code].lines.push(e);
+      });
+      let html = '';
+      ['Asset','Liability','Equity','Income','Expense'].forEach(type => {
+        const accts = Object.values(byAccount).filter(a => a.type===type);
+        if (!accts.length) return;
+        html += `<div style="font-size:11px;font-weight:800;text-transform:uppercase;color:var(--navy);letter-spacing:1px;margin:18px 0 8px;padding-bottom:5px;border-bottom:2px solid var(--border);">${type} Accounts</div>`;
+        accts.forEach(a => {
+          const totalDr = a.lines.reduce((s,e) => s+(parseFloat(e.debit)||0), 0);
+          const totalCr = a.lines.reduce((s,e) => s+(parseFloat(e.credit)||0), 0);
+          html += `<div class="card" style="margin-bottom:12px;">
+            <div class="card-head" style="cursor:pointer;" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+              <i class="fa fa-book"></i>
+              <span class="card-title">${a.code} — ${a.name}</span>
+              <span class="spacer" style="flex:1;"></span>
+              <span class="tag tag-green">Dr: ${fmtN(totalDr)}</span>&nbsp;
+              <span class="tag tag-red">Cr: ${fmtN(totalCr)}</span>
+            </div>
+            <div class="card-body" style="display:none;">
+              <div class="tbl-wrap"><table>
+                <tr><th>Date</th><th>Voucher</th><th>Type</th><th>Narration</th><th>Dr (₹)</th><th>Cr (₹)</th></tr>
+                ${a.lines.map(e=>`<tr><td>${e.date}</td><td class="mono">${e.voucher_no||'—'}</td><td><span class="tag tag-blue">${e.voucher_type||'JV'}</span></td><td>${e.narration||''}</td><td class="dr">${parseFloat(e.debit)>0?fmtN(e.debit):''}</td><td class="cr">${parseFloat(e.credit)>0?fmtN(e.credit):''}</td></tr>`).join('')}
+              </table></div>
+            </div></div>`;
+        });
+      });
+      document.getElementById('ledgerContent').innerHTML = html || '<div class="empty"><i class="fa fa-inbox"></i>No entries in ledger.</div>';
+    }
+    window._ledgerData = d;
+  } catch(e) { document.getElementById('ledgerContent').innerHTML = `<div class="empty"><i class="fa fa-warning"></i>${e.message}</div>`; }
+}
+
+function exportLedgerCSV() {
+  const d = window._ledgerData;
+  if (!d) return;
+  const rows = [['Date','Voucher','Type','Narration','Account','Dr','Cr']];
+  (d.entries||[]).forEach(e => rows.push([e.date, e.voucher_no, e.voucher_type, e.narration, e.account_code, e.debit, e.credit]));
+  downloadCSV('ledger.csv', rows);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// BOOKS OF ACCOUNTS
+// ══════════════════════════════════════════════════════════════════════════════
+async function loadBooks() {
+  const view = document.getElementById('booksView')?.value || 'cash';
+  const from = document.getElementById('booksFrom')?.value || '';
+  const to   = document.getElementById('booksTo')?.value   || '';
+  document.getElementById('booksContent').innerHTML = '<div class="loading"><i class="fa fa-spinner"></i>Loading…</div>';
+  try {
+    if (view === 'cash') {
+      const d = await apiFetch('/accounting/ledger', `year=${currentYear}&code=1002${from?'&from='+from:''}${to?'&to='+to:''}`);
+      const entries = d.entries || [];
+      const receipts  = entries.filter(e => parseFloat(e.debit)>0);
+      const payments  = entries.filter(e => parseFloat(e.credit)>0);
+      const totRec = receipts.reduce((s,e)=>s+(parseFloat(e.debit)||0),0);
+      const totPay = payments.reduce((s,e)=>s+(parseFloat(e.credit)||0),0);
+      const html = `
+        <div class="card-head" style="padding:10px 0;"><span class="card-title">Cash/Bank Book (Account 1002 — Bank SBI)</span></div>
+        <div class="cashbook-wrap">
+          <div class="cashbook-side">
+            <div class="cashbook-side-title"><i class="fa fa-arrow-down"></i> Receipts (Dr)</div>
+            <table>
+              <tr><th>Date</th><th>Voucher</th><th>Narration</th><th>Amount (₹)</th></tr>
+              ${receipts.map(e=>`<tr><td>${e.date}</td><td class="mono">${e.voucher_no||'—'}</td><td>${e.narration||''}</td><td class="dr">${fmtN(e.debit)}</td></tr>`).join('')}
+              <tr style="font-weight:800;background:#f0f7f0;"><td colspan="3">Total Receipts</td><td class="dr">${fmtN(totRec)}</td></tr>
+            </table>
+          </div>
+          <div class="cashbook-divider"></div>
+          <div class="cashbook-side">
+            <div class="cashbook-side-title"><i class="fa fa-arrow-up"></i> Payments (Cr)</div>
+            <table>
+              <tr><th>Date</th><th>Voucher</th><th>Narration</th><th>Amount (₹)</th></tr>
+              ${payments.map(e=>`<tr><td>${e.date}</td><td class="mono">${e.voucher_no||'—'}</td><td>${e.narration||''}</td><td class="cr">${fmtN(e.credit)}</td></tr>`).join('')}
+              <tr style="font-weight:800;background:#fff5f5;"><td colspan="3">Total Payments</td><td class="cr">${fmtN(totPay)}</td></tr>
+            </table>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;padding:12px 0;gap:20px;font-size:13px;font-weight:700;">
+          <span>Closing Balance: <span class="amt-pos">${fmtN(totRec-totPay)}</span></span>
+        </div>`;
+      document.getElementById('booksContent').innerHTML = html;
+    } else if (view === 'fee') {
+      const d = await apiFetch('/accounting/ledger', `year=${currentYear}${from?'&from='+from:''}${to?'&to='+to:''}`);
+      const fees = (d.entries||[]).filter(e => e.source==='fee' && parseFloat(e.debit)>0);
+      let html = `<div class="tbl-wrap"><table>
+        <tr><th>Date</th><th>Receipt No</th><th>Student</th><th>Narration</th><th>Amount (₹)</th></tr>
+        ${fees.map(e=>`<tr><td>${e.date}</td><td class="mono">${e.voucher_no||'—'}</td><td></td><td>${e.narration||''}</td><td class="dr">${fmtN(e.debit)}</td></tr>`).join('')}
+        <tr style="font-weight:800;background:#f0f7f0;"><td colspan="4">Total</td><td class="dr">${fmtN(fees.reduce((s,e)=>s+(parseFloat(e.debit)||0),0))}</td></tr>
+      </table></div>`;
+      document.getElementById('booksContent').innerHTML = html;
+    } else if (view === 'salary') {
+      const d = await apiFetch('/accounting/ledger', `year=${currentYear}${from?'&from='+from:''}${to?'&to='+to:''}`);
+      const sal = (d.entries||[]).filter(e => e.source==='payroll');
+      let html = `<div class="tbl-wrap"><table>
+        <tr><th>Date</th><th>Voucher</th><th>Account</th><th>Narration</th><th>Dr (₹)</th><th>Cr (₹)</th></tr>
+        ${sal.map(e=>`<tr><td>${e.date}</td><td class="mono">${e.voucher_no||'—'}</td><td>${e.account_code}</td><td>${e.narration||''}</td><td class="dr">${parseFloat(e.debit)>0?fmtN(e.debit):''}</td><td class="cr">${parseFloat(e.credit)>0?fmtN(e.credit):''}</td></tr>`).join('')}
+      </table></div>`;
+      document.getElementById('booksContent').innerHTML = html;
+    } else {
+      const d = await apiFetch('/accounting/ledger', `year=${currentYear}&code=4008${from?'&from='+from:''}${to?'&to='+to:''}`);
+      const dons = (d.entries||[]).filter(e => e.source==='donation');
+      let html = `<div class="tbl-wrap"><table>
+        <tr><th>Date</th><th>Reference</th><th>Narration</th><th>Amount (₹)</th></tr>
+        ${dons.map(e=>`<tr><td>${e.date}</td><td class="mono">${e.voucher_no||'—'}</td><td>${e.narration||''}</td><td class="dr">${fmtN(e.credit)}</td></tr>`).join('')}
+        <tr style="font-weight:800;background:#f0f7f0;"><td colspan="3">Total</td><td class="dr">${fmtN(dons.reduce((s,e)=>s+(parseFloat(e.credit)||0),0))}</td></tr>
+      </table></div>`;
+      document.getElementById('booksContent').innerHTML = html;
+    }
+  } catch(e) { document.getElementById('booksContent').innerHTML = `<div class="empty"><i class="fa fa-warning"></i>${e.message}</div>`; }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// TRIAL BALANCE
+// ══════════════════════════════════════════════════════════════════════════════
+async function loadTrialBalance() {
+  const from = document.getElementById('tbFrom')?.value || '';
+  const to   = document.getElementById('tbTo')?.value   || '';
+  document.getElementById('trialContent').innerHTML = '<div class="loading"><i class="fa fa-spinner"></i>Computing…</div>';
+  try {
+    const d = await apiFetch('/accounting/trial-balance', `year=${currentYear}${from?'&from='+from:''}${to?'&to='+to:''}`);
+    window._tbData = d;
+    const rows = d.rows || [];
+    const groups = {};
+    rows.forEach(r => { if (!groups[r.type]) groups[r.type] = []; groups[r.type].push(r); });
+
+    let html = `<div class="tbl-wrap"><table>
+      <tr><th>Code</th><th>Account Name</th><th>Group</th><th style="text-align:right">Debit (₹)</th><th style="text-align:right">Credit (₹)</th></tr>`;
+    ['Asset','Liability','Equity','Income','Expense'].forEach(type => {
+      if (!groups[type]?.length) return;
+      html += `<tr class="tb-group"><td colspan="5">${type} Accounts</td></tr>`;
+      groups[type].forEach(r => {
+        html += `<tr>
+          <td class="mono">${r.code}</td>
+          <td>${r.name}</td>
+          <td><span class="tag tag-grey">${r.group_name}</span></td>
+          <td style="text-align:right" class="dr">${r.total_dr>0?fmtN(r.total_dr):''}</td>
+          <td style="text-align:right" class="cr">${r.total_cr>0?fmtN(r.total_cr):''}</td>
+        </tr>`;
+      });
+    });
+    html += `<tr class="tb-total">
+      <td colspan="3">GRAND TOTAL</td>
+      <td style="text-align:right">${fmtN(d.grand_dr)}</td>
+      <td style="text-align:right">${fmtN(d.grand_cr)}</td>
+    </tr></table></div>
+    <div style="margin-top:12px;text-align:right;font-size:12px;font-weight:700;">
+      ${d.balanced
+        ? '<span class="tag tag-green"><i class="fa fa-check"></i> Trial Balance is BALANCED</span>'
+        : `<span class="tag tag-red"><i class="fa fa-warning"></i> Difference: ₹${fmtN(Math.abs(d.grand_dr-d.grand_cr))}</span>`}
+    </div>`;
+    document.getElementById('trialContent').innerHTML = html;
+  } catch(e) { document.getElementById('trialContent').innerHTML = `<div class="empty"><i class="fa fa-warning"></i>${e.message}</div>`; }
+}
+
+function exportTBCSV() {
+  const d = window._tbData;
+  if (!d) return;
+  const rows = [['Code','Account','Group','Type','Debit','Credit']];
+  (d.rows||[]).forEach(r => rows.push([r.code, r.name, r.group_name, r.type, r.total_dr, r.total_cr]));
+  rows.push(['','GRAND TOTAL','','',d.grand_dr, d.grand_cr]);
+  downloadCSV('trial_balance.csv', rows);
+}
+
+function printTrialBalance() { window.print(); }
+
+// ══════════════════════════════════════════════════════════════════════════════
+// BALANCE SHEET
+// ══════════════════════════════════════════════════════════════════════════════
+async function loadBalanceSheet() {
+  document.getElementById('balanceContent').innerHTML = '<div class="loading"><i class="fa fa-spinner"></i>Generating…</div>';
+  try {
+    const d = await apiFetch('/accounting/balance-sheet', `year=${currentYear}`);
+    window._bsData = d;
+    const g = d.grouped || {};
+
+    function renderSection(type, label) {
+      const groups = g[type] || {};
+      let html = `<div class="bs-section"><div class="bs-section-title">${label}</div>`;
+      let typeTotal = 0;
+      Object.entries(groups).forEach(([grp, accts]) => {
+        html += `<div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:8px 14px 4px;">${grp}</div>`;
+        accts.forEach(a => {
+          if (Math.abs(a.balance) < 0.01) return;
+          html += `<div class="bs-row"><span>${a.code} — ${a.name}</span><span class="amt">${fmtN(a.balance)}</span></div>`;
+          typeTotal += a.balance;
+        });
+      });
+      const lbl = ['Asset','Expense'].includes(type) ? `Total ${label}` : `Total ${label}`;
+      html += `<div class="bs-row subtotal"><span><strong>${lbl}</strong></span><span class="amt"><strong>${fmtN(typeTotal)}</strong></span></div>`;
+      html += `</div>`;
+      return { html, total: typeTotal };
+    }
+
+    const assets = renderSection('Asset','Assets');
+    const liab   = renderSection('Liability','Liabilities');
+    const equity = renderSection('Equity','Capital & Reserves');
+    const surplus = d.surplus || 0;
+    const liabPlusSurplus = (d.totalLiab||0) + (d.totalEquity||0) + surplus;
+
+    const html = `
+      <div style="text-align:center;margin-bottom:20px;">
+        <div style="font-size:16px;font-weight:800;color:var(--navy);">BALANCE SHEET</div>
+        <div style="font-size:12px;color:var(--muted);">The Gurukul High, K.R. Nagar, Mysuru — As at 31 March ${parseInt(currentYear)+1}</div>
+        <div style="font-size:11px;color:var(--muted);">(As per ICAI Guidance Note for Non-Corporate Entities)</div>
+      </div>
+      <div class="two-col">
+        <div class="bs-panel">
+          <div class="bs-panel-title"><i class="fa fa-plus-square-o"></i> ASSETS</div>
+          ${assets.html}
+          <div class="bs-row grand"><span>Total Assets</span><span>${fmtN(d.totalAssets||0)}</span></div>
+        </div>
+        <div class="bs-panel">
+          <div class="bs-panel-title"><i class="fa fa-minus-square-o"></i> LIABILITIES &amp; CAPITAL</div>
+          ${liab.html}
+          ${equity.html}
+          <div class="bs-section"><div class="bs-section-title">Surplus / (Deficit)</div>
+            <div class="bs-row subtotal"><span>Net Surplus for the year</span><span class="amt ${surplus>=0?'amt-pos':'amt-neg'}">${fmtN(surplus)}</span></div>
+          </div>
+          <div class="bs-row grand"><span>Total Liabilities + Capital</span><span>${fmtN(liabPlusSurplus)}</span></div>
+        </div>
+      </div>
+      <div style="margin-top:16px;padding:12px;background:#fffdf0;border:1.5px solid #C9A227;border-radius:8px;font-size:11px;text-align:center;color:#856404;">
+        <i class="fa fa-info-circle"></i> Prepared under the accrual basis of accounting in accordance with applicable accounting standards. Figures are computer-generated.
+      </div>`;
+    document.getElementById('balanceContent').innerHTML = html;
+  } catch(e) { document.getElementById('balanceContent').innerHTML = `<div class="empty"><i class="fa fa-warning"></i>${e.message}</div>`; }
+}
+
+async function exportBalanceSheetPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p','mm','a4');
+  const d = window._bsData;
+  if (!d) { showToast('Load balance sheet first','error'); return; }
+  doc.setFontSize(16); doc.setFont('helvetica','bold');
+  doc.text('BALANCE SHEET', 105, 20, { align:'center' });
+  doc.setFontSize(11); doc.setFont('helvetica','normal');
+  doc.text('The Gurukul High, K.R. Nagar, Mysuru', 105, 28, { align:'center' });
+  doc.text(`As at 31 March ${parseInt(currentYear)+1}`, 105, 34, { align:'center' });
+  // Table data
+  const rows = [];
+  const g = d.grouped || {};
+  ['Asset','Liability','Equity'].forEach(t => {
+    Object.values(g[t]||{}).flat().forEach(a => {
+      if (Math.abs(a.balance) > 0.01)
+        rows.push([a.code, a.name, t, fmtN(a.balance)]);
+    });
+  });
+  rows.push(['','','Surplus', fmtN(d.surplus||0)]);
+  doc.autoTable({ startY:42, head:[['Code','Account','Type','Balance (₹)']], body:rows, theme:'grid', headStyles:{ fillColor:[13,27,94] } });
+  doc.save(`balance_sheet_${currentYear}.pdf`);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// INCOME & EXPENDITURE
+// ══════════════════════════════════════════════════════════════════════════════
+async function loadIncomeStatement() {
+  document.getElementById('incomeContent').innerHTML = '<div class="loading"><i class="fa fa-spinner"></i>Loading…</div>';
+  try {
+    const d = await apiFetch('/accounting/income-statement', `year=${currentYear}`);
+    window._ieData = d;
+    const income   = d.income   || [];
+    const expenses = d.expenses || [];
+
+    let incHtml = income.map(a => `<div class="bs-row"><span>${a.code} — ${a.name}</span><span class="amt amt-pos">${fmtN(a.amount)}</span></div>`).join('');
+    incHtml += `<div class="bs-row subtotal"><span><strong>Total Income</strong></span><span class="amt"><strong>${fmtN(d.totalIncome)}</strong></span></div>`;
+
+    let expHtml = expenses.map(a => `<div class="bs-row"><span>${a.code} — ${a.name}</span><span class="amt amt-neg">${fmtN(a.amount)}</span></div>`).join('');
+    expHtml += `<div class="bs-row subtotal"><span><strong>Total Expenditure</strong></span><span class="amt"><strong>${fmtN(d.totalExpense)}</strong></span></div>`;
+
+    const surplus = d.surplus || 0;
+    const html = `
+      <div style="text-align:center;margin-bottom:20px;">
+        <div style="font-size:16px;font-weight:800;color:var(--navy);">INCOME &amp; EXPENDITURE STATEMENT</div>
+        <div style="font-size:12px;color:var(--muted);">The Gurukul High — For the year ${fy(currentYear)}</div>
+      </div>
+      <div class="two-col">
+        <div class="bs-panel">
+          <div class="bs-panel-title"><i class="fa fa-arrow-down" style="color:#1e5631"></i> INCOME</div>
+          ${incHtml || '<div class="empty"><i class="fa fa-inbox"></i>No income entries</div>'}
+        </div>
+        <div class="bs-panel">
+          <div class="bs-panel-title"><i class="fa fa-arrow-up" style="color:#dc3545"></i> EXPENDITURE</div>
+          ${expHtml || '<div class="empty"><i class="fa fa-inbox"></i>No expense entries</div>'}
+        </div>
+      </div>
+      <div class="bs-row grand" style="margin-top:14px;border-radius:10px;padding:14px;">
+        <span>Net ${surplus>=0?'Surplus':'Deficit'} for the Year</span>
+        <span class="${surplus>=0?'amt-pos':'amt-neg'}" style="font-size:18px;font-weight:800;">${surplus>=0?'+':''}${fmtN(surplus)}</span>
+      </div>`;
+    document.getElementById('incomeContent').innerHTML = html;
+  } catch(e) { document.getElementById('incomeContent').innerHTML = `<div class="empty"><i class="fa fa-warning"></i>${e.message}</div>`; }
+}
+
+async function exportIEPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p','mm','a4');
+  const d = window._ieData;
+  if (!d) { showToast('Load statement first','error'); return; }
+  doc.setFontSize(16); doc.setFont('helvetica','bold');
+  doc.text('INCOME & EXPENDITURE STATEMENT', 105, 20, { align:'center' });
+  doc.setFontSize(11); doc.setFont('helvetica','normal');
+  doc.text(`The Gurukul High — ${fy(currentYear)}`, 105, 28, { align:'center' });
+  const rows = [];
+  (d.income||[]).forEach(a => rows.push([a.code, a.name, 'Income', fmtN(a.amount), '']));
+  (d.expenses||[]).forEach(a => rows.push([a.code, a.name, 'Expense', '', fmtN(a.amount)]));
+  rows.push(['','Surplus / (Deficit)','','',fmtN(d.surplus||0)]);
+  doc.autoTable({ startY:36, head:[['Code','Account','Type','Income (₹)','Expense (₹)']], body:rows, theme:'grid', headStyles:{ fillColor:[13,27,94] } });
+  doc.save(`ie_statement_${currentYear}.pdf`);
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// RECEIPTS & PAYMENTS
+// ══════════════════════════════════════════════════════════════════════════════
+async function loadReceiptsPayments() {
+  document.getElementById('receiptsContent').innerHTML = '<div class="loading"><i class="fa fa-spinner"></i>Loading…</div>';
+  try {
+    const d = await apiFetch('/accounting/receipts-payments', `year=${currentYear}`);
+    window._rpData = d;
+    const totalFees = (d.feeByType||[]).reduce((s,r)=>s+(parseFloat(r.total)||0),0);
+    const totalRec  = totalFees + (d.donations||0);
+    const totalSal  = (d.salaryByMonth||[]).reduce((s,r)=>s+(parseFloat(r.total)||0),0);
+    const totalPay  = totalSal + (d.pfPaid||0) + (d.esiPaid||0);
+
+    const html = `
+      <div style="text-align:center;margin-bottom:20px;">
+        <div style="font-size:16px;font-weight:800;color:var(--navy);">RECEIPTS &amp; PAYMENTS ACCOUNT</div>
+        <div style="font-size:12px;color:var(--muted);">The Gurukul High — ${fy(currentYear)}</div>
+      </div>
+      <div class="cashbook-wrap" style="border-radius:12px;overflow:hidden;">
+        <div class="cashbook-side">
+          <div class="cashbook-side-title"><i class="fa fa-arrow-down"></i> RECEIPTS</div>
+          <table>
+            <tr><th>Particulars</th><th>Amount (₹)</th></tr>
+            ${(d.feeByType||[]).map(r=>`<tr><td>${r.fee_type} Fee</td><td class="dr">${fmtN(r.total)}</td></tr>`).join('')}
+            ${d.donations>0?`<tr><td>Donations</td><td class="dr">${fmtN(d.donations)}</td></tr>`:''}
+            ${(d.manualReceipts||[]).map(r=>`<tr><td>${r.name}</td><td class="dr">${fmtN(r.total)}</td></tr>`).join('')}
+            <tr style="font-weight:800;background:#f0f7f0;"><td>Total Receipts</td><td class="dr">${fmtN(totalRec)}</td></tr>
+          </table>
+        </div>
+        <div class="cashbook-divider"></div>
+        <div class="cashbook-side">
+          <div class="cashbook-side-title"><i class="fa fa-arrow-up"></i> PAYMENTS</div>
+          <table>
+            <tr><th>Particulars</th><th>Amount (₹)</th></tr>
+            ${(d.salaryByMonth||[]).map(r=>`<tr><td>Salary — ${r.month}</td><td class="cr">${fmtN(r.total)}</td></tr>`).join('')}
+            ${d.pfPaid>0?`<tr><td>PF (Emp + Employer)</td><td class="cr">${fmtN(d.pfPaid)}</td></tr>`:''}
+            ${d.esiPaid>0?`<tr><td>ESI (Emp + Employer)</td><td class="cr">${fmtN(d.esiPaid)}</td></tr>`:''}
+            ${(d.manualPayments||[]).map(r=>`<tr><td>${r.name}</td><td class="cr">${fmtN(r.total)}</td></tr>`).join('')}
+            <tr style="font-weight:800;background:#fff5f5;"><td>Total Payments</td><td class="cr">${fmtN(totalPay)}</td></tr>
+          </table>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:14px;background:#f8f9fc;border-radius:8px;margin-top:12px;font-size:13px;font-weight:700;">
+        <span>Opening Cash Balance: <span class="amt-pos">₹0.00</span></span>
+        <span>Closing Cash Balance: <span class="amt-pos">${fmt(totalRec-totalPay)}</span></span>
+      </div>`;
+    document.getElementById('receiptsContent').innerHTML = html;
+  } catch(e) { document.getElementById('receiptsContent').innerHTML = `<div class="empty"><i class="fa fa-warning"></i>${e.message}</div>`; }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// JOURNAL ENTRIES
+// ══════════════════════════════════════════════════════════════════════════════
+async function loadJournalEntries() {
+  const from = document.getElementById('jeFrom')?.value || '';
+  const to   = document.getElementById('jeTo')?.value   || '';
+  document.getElementById('journalContent').innerHTML = '<div class="loading"><i class="fa fa-spinner"></i>Loading…</div>';
+  try {
+    const d = await apiFetch('/accounting/journal', `year=${currentYear}${from?'&from='+from:''}${to?'&to='+to:''}`);
+    const entries = d.entries || [];
+    if (!entries.length) { document.getElementById('journalContent').innerHTML = '<div class="empty"><i class="fa fa-inbox"></i>No manual journal entries yet. Use the "+ New Entry" button to post.</div>'; return; }
+    // Group by voucher
+    const byVoucher = {};
+    entries.forEach(e => { if (!byVoucher[e.voucher_no]) byVoucher[e.voucher_no] = { ...e, lines:[] }; byVoucher[e.voucher_no].lines.push(e); });
+    let html = `<div class="tbl-wrap"><table>
+      <tr><th>Date</th><th>Voucher No</th><th>Type</th><th>Narration</th><th>Account</th><th>Dr (₹)</th><th>Cr (₹)</th><th></th></tr>`;
+    Object.values(byVoucher).forEach((v,vi) => {
+      v.lines.forEach((l,li) => {
+        html += `<tr style="${li===0?'border-top:2px solid var(--border)':''}">
+          ${li===0?`<td rowspan="${v.lines.length}">${v.date}</td><td rowspan="${v.lines.length}" class="mono">${v.voucher_no}</td><td rowspan="${v.lines.length}"><span class="tag tag-blue">${v.voucher_type}</span></td><td rowspan="${v.lines.length}">${v.narration}</td>`:''}
+          <td>${l.account_code} — ${l.account_name||''}</td>
+          <td class="dr">${parseFloat(l.debit)>0?fmtN(l.debit):''}</td>
+          <td class="cr">${parseFloat(l.credit)>0?fmtN(l.credit):''}</td>
+          ${li===0?`<td rowspan="${v.lines.length}"><button class="btn danger" style="font-size:10px;padding:3px 8px;" onclick="deleteJournal(${l.id})"><i class="fa fa-trash"></i></button></td>`:''}
+        </tr>`;
+      });
+    });
+    html += '</table></div>';
+    document.getElementById('journalContent').innerHTML = html;
+  } catch(e) { document.getElementById('journalContent').innerHTML = `<div class="empty"><i class="fa fa-warning"></i>${e.message}</div>`; }
+}
+
+async function deleteJournal(id) {
+  if (!confirm('Delete this journal entry?')) return;
+  try {
+    const r = await fetch(apiUrl(`/accounting/journal/${id}`), { method:'DELETE', headers:authHeaders() });
+    if (!r.ok) throw new Error(await r.text());
+    showToast('Entry deleted','success');
+    loadJournalEntries();
+  } catch(e) { showToast(e.message,'error'); }
+}
+
+// Journal modal
+let jeLineCount = 0;
+function openJournalModal() {
+  jeLineCount = 0;
+  document.getElementById('jeLines').innerHTML = '';
+  document.getElementById('jeDate').value = new Date().toISOString().slice(0,10);
+  document.getElementById('jeNarration').value = '';
+  document.getElementById('jeBalanceMsg').innerHTML = '';
+  addJELine(); addJELine();
+  document.getElementById('journalModal').classList.add('open');
+}
+function closeJournalModal() { document.getElementById('journalModal').classList.remove('open'); }
+
+function addJELine() {
+  const id = jeLineCount++;
+  const row = document.createElement('div');
+  row.className = 'jl-row';
+  row.id = `jl-${id}`;
+  row.innerHTML = `
+    <select class="je-account-sel" onchange="updateJETotal()"><option value="">Select Account…</option></select>
+    <input type="number" step="0.01" placeholder="0.00" id="jl-dr-${id}" oninput="updateJETotal()">
+    <input type="number" step="0.01" placeholder="0.00" id="jl-cr-${id}" oninput="updateJETotal()">
+    <button onclick="this.closest('.jl-row').remove();updateJETotal();" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:14px;">×</button>`;
+  document.getElementById('jeLines').appendChild(row);
+  populateCOASelect(row.querySelector('.je-account-sel'));
+}
+
+function updateJETotal() {
+  const lines = document.querySelectorAll('.jl-row');
+  let dr=0, cr=0;
+  lines.forEach(l => {
+    dr += parseFloat(l.querySelector('input:nth-child(2)')?.value||0)||0;
+    cr += parseFloat(l.querySelector('input:nth-child(3)')?.value||0)||0;
+  });
+  document.getElementById('jeTotalDr').textContent = fmtN(dr);
+  document.getElementById('jeTotalCr').textContent = fmtN(cr);
+  const msg = document.getElementById('jeBalanceMsg');
+  if (Math.abs(dr-cr)<0.01 && dr>0) msg.innerHTML = '<span class="jl-balance-ok"><i class="fa fa-check-circle"></i> Balanced</span>';
+  else if (dr>0||cr>0) msg.innerHTML = `<span class="jl-balance-err"><i class="fa fa-warning"></i> Difference: ${fmtN(Math.abs(dr-cr))}</span>`;
+  else msg.innerHTML = '';
+}
+
+async function postJournal() {
+  const date     = document.getElementById('jeDate').value;
+  const vtype    = document.getElementById('jeType').value;
+  const narration= document.getElementById('jeNarration').value;
+  const lines    = [];
+  document.querySelectorAll('.jl-row').forEach(l => {
+    const code = l.querySelector('.je-account-sel')?.value;
+    const dr   = parseFloat(l.querySelector('input:nth-child(2)')?.value||0)||0;
+    const cr   = parseFloat(l.querySelector('input:nth-child(3)')?.value||0)||0;
+    if (code && (dr>0||cr>0)) lines.push({ account_code:code, debit:dr, credit:cr });
+  });
+  if (!date||lines.length<2) { showToast('Date and at least 2 lines required','error'); return; }
+  try {
+    const r = await fetch(apiUrl('/accounting/journal'), { method:'POST', headers:{ ...authHeaders(), 'Content-Type':'application/json' }, body: JSON.stringify({ date, voucher_type:vtype, narration, lines }) });
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error||'Failed');
+    showToast(`Posted: ${j.voucher_no}`, 'success');
+    closeJournalModal();
+    loadJournalEntries();
+  } catch(e) { showToast(e.message,'error'); }
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// AUDIT & COMPLIANCE
+// ══════════════════════════════════════════════════════════════════════════════
+let currentAuditTab = 'trail';
+
+function showAuditTab(name) {
+  ['trail','checklist','kams','obs','report'].forEach(t => {
+    document.getElementById(`audit-${t}-tab`).style.display = t===name?'block':'none';
+    const btn = document.getElementById(`abt-${t}`);
+    if (btn) { btn.className = t===name ? 'btn primary' : 'btn'; }
+  });
+  currentAuditTab = name;
+  loadAuditSubTab(name);
+}
+
+async function loadAudit() {
+  try {
+    auditData = await apiFetch('/accounting/audit-report', `year=${currentYear}`);
+    loadAuditSubTab(currentAuditTab);
+  } catch(e) { console.error(e); }
+}
+
+async function loadAuditSubTab(name) {
+  if (name === 'trail') await loadAuditTrail();
+  else if (!auditData) await loadAudit();
+  else renderAuditSubTab(name);
+}
+
+async function loadAuditTrail() {
+  document.getElementById('auditTrailContent').innerHTML = '<div class="loading"><i class="fa fa-spinner"></i>Loading audit trail…</div>';
+  try {
+    const d = await apiFetch('/accounting/audit-trail', `year=${currentYear}`);
+    const trail = d.trail || [];
+    if (!trail.length) { document.getElementById('auditTrailContent').innerHTML = '<div class="empty"><i class="fa fa-inbox"></i>No entries in audit trail.</div>'; return; }
+    const sourceTag = { fee:'tag-green', payroll:'tag-blue', audit_log:'tag-grey', donation:'tag-teal' };
+    let html = `<div class="tbl-wrap"><table>
+      <tr><th>Timestamp</th><th>Action</th><th>Entity</th><th>Reference</th><th>Details</th><th>User</th><th>Source</th></tr>
+      ${trail.map(r=>`<tr>
+        <td class="mono" style="font-size:11px;">${r.ts||''}</td>
+        <td><strong>${r.action}</strong></td>
+        <td>${r.entity||''}</td>
+        <td class="mono">${r.ref||''}</td>
+        <td style="max-width:280px;font-size:11px;">${r.detail||''}</td>
+        <td><span class="tag tag-grey">${r.user||'system'}</span></td>
+        <td><span class="tag ${sourceTag[r.source]||'tag-grey'}">${r.source}</span></td>
+      </tr>`).join('')}
+    </table></div>`;
+    document.getElementById('auditTrailContent').innerHTML = html;
+  } catch(e) { document.getElementById('auditTrailContent').innerHTML = `<div class="empty"><i class="fa fa-warning"></i>${e.message}</div>`; }
+}
+
+function renderAuditSubTab(name) {
+  if (!auditData) return;
+  if (name === 'checklist') {
+    const cl = auditData.checklist || [];
+    const html = `<div class="card"><div class="card-head"><i class="fa fa-check-square-o"></i><span class="card-title">Compliance Checklist — ${fy(currentYear)}</span></div>
+      <div class="card-body"><ul class="audit-checklist">
+        ${cl.map(item => {
+          const ok = item.status==='Compliant';
+          const na = item.status==='Not Applicable';
+          const icon = ok?'fa-check-circle':na?'fa-minus-circle':'fa-exclamation-circle';
+          const cls  = ok?'chk-ok':na?'chk-warn':'chk-fail';
+          return `<li><i class="fa ${icon} ${cls}"></i><span style="flex:1">${item.item}</span><span class="tag ${ok?'tag-green':na?'tag-grey':'tag-gold'}">${item.status}</span></li>`;
+        }).join('')}
+      </ul></div></div>`;
+    document.getElementById('auditChecklistContent').innerHTML = html;
+  } else if (name === 'kams') {
+    const kams = auditData.keyAuditMatters || [];
+    const html = kams.map((k,i) => `<div class="kam-card">
+      <div class="kam-title"><span style="background:var(--navy);color:#fff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;">${i+1}</span>${k.matter}</div>
+      <div class="kam-body"><strong>Audit Procedure:</strong> ${k.procedure}</div>
+    </div>`).join('');
+    document.getElementById('auditKAMsContent').innerHTML = html || '<div class="empty"><i class="fa fa-inbox"></i>No key audit matters.</div>';
+  } else if (name === 'obs') {
+    const obs = auditData.observations || [];
+    if (!obs.length) { document.getElementById('auditObsContent').innerHTML = '<div class="empty"><i class="fa fa-check-circle" style="color:#1e5631"></i>No material observations. Records appear complete and compliant.</div>'; return; }
+    const html = obs.map(o => `<div class="audit-finding ${o.severity==='High'?'high':o.severity==='Low'?'low':''}">
+      <div class="audit-finding-label"><span class="tag ${o.severity==='High'?'tag-red':o.severity==='Low'?'tag-green':'tag-gold'}">${o.severity}</span></div>
+      <div style="font-weight:700;margin:4px 0;">${o.finding}</div>
+      <div style="font-size:12px;color:#555;"><i class="fa fa-lightbulb-o"></i> <em>Recommendation:</em> ${o.recommendation}</div>
+    </div>`).join('');
+    document.getElementById('auditObsContent').innerHTML = html;
+  } else if (name === 'report') {
+    renderAuditReportPreview();
+  }
+}
+
+function renderAuditReportPreview() {
+  const d = auditData;
+  if (!d) return;
+  const today = new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'long', year:'numeric' });
+  const opinionCls = d.auditOpinion?.includes('Unmodified') ? '' : 'modified';
+  const obsRows = (d.observations||[]).map(o => `<tr><td>${o.severity}</td><td>${o.finding}</td><td>${o.recommendation}</td></tr>`).join('') || '<tr><td colspan="3">No material observations.</td></tr>';
+  const html = `<div class="audit-report-preview">
+    <div class="ar-header">
+      <div class="ar-title">INDEPENDENT AUDITOR'S REPORT</div>
+      <div class="ar-sub">To the Management of The Gurukul High, K.R. Nagar, Mysuru</div>
+    </div>
+
+    <div class="ar-section">
+      <div class="ar-section-title">Report on the Financial Statements</div>
+      <div class="ar-para">We have audited the accompanying financial statements of <strong>The Gurukul High, K.R. Nagar, Mysuru</strong> (an educational institution), which comprise the Balance Sheet as at 31 March ${parseInt(d.year)+1}, the Income and Expenditure Account for the year ended on that date, and the Receipts and Payments Account for the year then ended, and a summary of significant accounting policies and other explanatory information. The financial statements cover the period <strong>${d.period}</strong>.</div>
+    </div>
+
+    <div class="ar-section">
+      <div class="ar-section-title">Management's Responsibility for the Financial Statements</div>
+      <div class="ar-para">Management is responsible for the preparation of these financial statements that give a true and fair view of the financial position, financial performance and cash flows of the entity in accordance with the applicable Accounting Standards issued by the Institute of Chartered Accountants of India (ICAI) and relevant provisions of applicable laws. This responsibility includes the design, implementation and maintenance of internal control relevant to the preparation and presentation of the financial statements.</div>
+    </div>
+
+    <div class="ar-section">
+      <div class="ar-section-title">Auditor's Responsibility</div>
+      <div class="ar-para">Our responsibility is to express an opinion on these financial statements based on our audit. We conducted our audit in accordance with the Standards on Auditing issued by the ICAI. Those Standards require that we comply with ethical requirements and plan and perform the audit to obtain reasonable assurance about whether the financial statements are free from material misstatement. Materiality for this audit was set at <strong>₹${(d.materiality||0).toLocaleString('en-IN')}</strong> (0.5% of total income).</div>
+    </div>
+
+    <div class="ar-section">
+      <div class="ar-section-title">Key Audit Matters</div>
+      ${(d.keyAuditMatters||[]).map((k,i) => `<div style="margin-bottom:10px;"><strong>${i+1}. ${k.matter}</strong><br><span style="font-size:12px;">${k.procedure}</span></div>`).join('')}
+    </div>
+
+    <div class="ar-section">
+      <div class="ar-section-title">Audit Observations</div>
+      <table class="ar-obs-table">
+        <tr><th>Severity</th><th>Finding</th><th>Recommendation</th></tr>
+        ${obsRows}
+      </table>
+    </div>
+
+    <div class="ar-section">
+      <div class="ar-section-title">Financial Summary (${d.period})</div>
+      <table class="ar-obs-table">
+        <tr><th>Particulars</th><th>Amount (₹)</th></tr>
+        <tr><td>Total Fee Income</td><td>${(d.financials?.feeTotal||0).toLocaleString('en-IN',{minimumFractionDigits:2})}</td></tr>
+        <tr><td>Donations Received</td><td>${(d.financials?.donTotal||0).toLocaleString('en-IN',{minimumFractionDigits:2})}</td></tr>
+        <tr><td><strong>Total Income</strong></td><td><strong>${(d.financials?.totalIncome||0).toLocaleString('en-IN',{minimumFractionDigits:2})}</strong></td></tr>
+        <tr><td>Salary Disbursed</td><td>${(d.financials?.salaryTot||0).toLocaleString('en-IN',{minimumFractionDigits:2})}</td></tr>
+        <tr><td>PF Contribution</td><td>${(d.financials?.pfTot||0).toLocaleString('en-IN',{minimumFractionDigits:2})}</td></tr>
+        <tr><td>ESI Contribution</td><td>${(d.financials?.esiTot||0).toLocaleString('en-IN',{minimumFractionDigits:2})}</td></tr>
+        <tr><td><strong>Total Expenditure</strong></td><td><strong>${(d.financials?.totalExpense||0).toLocaleString('en-IN',{minimumFractionDigits:2})}</strong></td></tr>
+        <tr><td><strong>Net Surplus / (Deficit)</strong></td><td><strong>${(d.financials?.surplus||0).toLocaleString('en-IN',{minimumFractionDigits:2})}</strong></td></tr>
+        <tr><td>Outstanding Fee Receivable</td><td>${(d.financials?.pendingFees||0).toLocaleString('en-IN',{minimumFractionDigits:2})}</td></tr>
+      </table>
+    </div>
+
+    <div class="ar-section">
+      <div class="ar-section-title">Opinion</div>
+      <div class="opinion-box ${opinionCls}">
+        <strong>Opinion Type: ${d.auditOpinion}</strong><br><br>
+        In our opinion and to the best of our information and according to the explanations given to us, the aforesaid financial statements give the information required by the applicable accounting standards in the manner so required and give a true and fair view in conformity with the accounting principles generally accepted in India:
+        <ul style="margin:10px 0 0 20px;font-size:13px;">
+          <li>in the case of the Balance Sheet, of the state of affairs of the institution as at 31 March ${parseInt(d.year)+1};</li>
+          <li>in the case of the Income &amp; Expenditure Account, of the ${(d.financials?.surplus||0)>=0?'surplus':'deficit'} for the year ended on that date; and</li>
+          <li>in the case of the Receipts &amp; Payments Account, of the receipts and payments for the year ended on that date.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ar-sign">
+      <div class="ar-sign-box">
+        <div style="margin-top:30px;border-top:1px solid #333;padding-top:8px;">
+          <strong>For The Gurukul High</strong><br>
+          <em>Management / Authorised Signatory</em><br>
+          Date: ${today}
+        </div>
+      </div>
+      <div class="ar-sign-box">
+        <div style="margin-top:30px;border-top:1px solid #333;padding-top:8px;">
+          <strong>Statutory Auditor</strong><br>
+          <em>Chartered Accountant (ICAI)</em><br>
+          Place: Mysuru &nbsp;|&nbsp; Date: ${today}
+        </div>
+      </div>
+    </div>
+  </div>`;
+  document.getElementById('auditReportContent').innerHTML = html;
+}
+
+async function generateAuditReport() {
+  if (!auditData) await loadAudit();
+  const d = auditData;
+  if (!d) { showToast('Could not load audit data','error'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p','mm','a4');
+  const today = new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'long', year:'numeric' });
+  let y = 20;
+  const lm = 18, rm = 192, cw = rm - lm;
+
+  function hdr(text, size=14) {
+    doc.setFont('helvetica','bold'); doc.setFontSize(size);
+    doc.text(text, lm, y); y += size*0.5+4;
+  }
+  function para(text, size=10) {
+    doc.setFont('helvetica','normal'); doc.setFontSize(size);
+    const lines = doc.splitTextToSize(text, cw);
+    doc.text(lines, lm, y); y += lines.length * (size*0.42) + 3;
+  }
+  function line() { doc.setDrawColor(180); doc.line(lm, y, rm, y); y += 4; }
+  function pageCheck(need=30) { if (y > 270-need) { doc.addPage(); y = 20; } }
+
+  // Title
+  doc.setFillColor(13,27,94); doc.rect(0,0,210,40,'F');
+  doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(16);
+  doc.text("INDEPENDENT AUDITOR'S REPORT", 105, 18, {align:'center'});
+  doc.setFontSize(10); doc.setFont('helvetica','normal');
+  doc.text(`The Gurukul High, K.R. Nagar, Mysuru  |  ${d.period}`, 105, 28, {align:'center'});
+  doc.text(`Generated: ${today}  |  Opinion: ${d.auditOpinion}`, 105, 35, {align:'center'});
+  doc.setTextColor(0,0,0); y = 50;
+
+  hdr('1. Report on the Financial Statements');
+  para(`We have audited the accompanying financial statements of The Gurukul High, K.R. Nagar, Mysuru for the period ${d.period}. Total fee income: ₹${(d.financials?.feeTotal||0).toLocaleString('en-IN')}. Total expenditure: ₹${(d.financials?.totalExpense||0).toLocaleString('en-IN')}. Net Surplus: ₹${(d.financials?.surplus||0).toLocaleString('en-IN')}.`);
+  line();
+
+  pageCheck();
+  hdr('2. Materiality');
+  para(`Materiality threshold set at ₹${(d.materiality||0).toLocaleString('en-IN')} (0.5% of total income ₹${(d.financials?.totalIncome||0).toLocaleString('en-IN')}).`);
+  line();
+
+  pageCheck();
+  hdr('3. Key Audit Matters');
+  (d.keyAuditMatters||[]).forEach((k,i) => { pageCheck(20); para(`${i+1}. ${k.matter}: ${k.procedure}`); });
+  line();
+
+  pageCheck();
+  hdr('4. Financial Summary');
+  doc.autoTable({
+    startY: y,
+    head:[['Particulars','Amount (₹)']],
+    body:[
+      ['Total Fee Income', (d.financials?.feeTotal||0).toLocaleString('en-IN',{minimumFractionDigits:2})],
+      ['Donations Received', (d.financials?.donTotal||0).toLocaleString('en-IN',{minimumFractionDigits:2})],
+      ['Total Income', (d.financials?.totalIncome||0).toLocaleString('en-IN',{minimumFractionDigits:2})],
+      ['Salary Disbursed', (d.financials?.salaryTot||0).toLocaleString('en-IN',{minimumFractionDigits:2})],
+      ['PF + ESI Contributions', ((d.financials?.pfTot||0)+(d.financials?.esiTot||0)).toLocaleString('en-IN',{minimumFractionDigits:2})],
+      ['Total Expenditure', (d.financials?.totalExpense||0).toLocaleString('en-IN',{minimumFractionDigits:2})],
+      ['Net Surplus / (Deficit)', (d.financials?.surplus||0).toLocaleString('en-IN',{minimumFractionDigits:2})],
+      ['Outstanding Fee Receivable', (d.financials?.pendingFees||0).toLocaleString('en-IN',{minimumFractionDigits:2})],
+    ],
+    theme:'grid',
+    headStyles:{ fillColor:[13,27,94] },
+    margin:{ left:lm, right:18 }
+  });
+  y = doc.lastAutoTable.finalY + 8;
+
+  pageCheck();
+  hdr('5. Observations & Recommendations');
+  if (!d.observations?.length) { para('No material observations. All records appear complete and compliant.'); }
+  else {
+    doc.autoTable({
+      startY:y,
+      head:[['Severity','Finding','Recommendation']],
+      body:(d.observations||[]).map(o=>[o.severity, o.finding, o.recommendation]),
+      theme:'grid', headStyles:{ fillColor:[13,27,94] }, columnStyles:{ 1:{ cellWidth:70 }, 2:{ cellWidth:70 } },
+      margin:{ left:lm, right:18 }
+    });
+    y = doc.lastAutoTable.finalY + 8;
+  }
+
+  pageCheck();
+  hdr('6. Compliance Checklist');
+  doc.autoTable({
+    startY:y,
+    head:[['Item','Status']],
+    body:(d.checklist||[]).map(c=>[c.item, c.status]),
+    theme:'grid', headStyles:{ fillColor:[13,27,94] },
+    margin:{ left:lm, right:18 }
+  });
+  y = doc.lastAutoTable.finalY + 12;
+
+  pageCheck(50);
+  hdr('7. Opinion');
+  const opinionText = `In our opinion and to the best of our information and according to the explanations given to us, the aforesaid financial statements give a true and fair view of the state of affairs of the institution as at 31 March ${parseInt(d.year)+1}. Opinion: ${d.auditOpinion}.`;
+  doc.setFillColor(d.auditOpinion?.includes('Unmodified') ? 240:255, d.auditOpinion?.includes('Unmodified') ? 247:248, d.auditOpinion?.includes('Unmodified') ? 240:224);
+  doc.setDrawColor(30,86,49); doc.setLineWidth(0.5);
+  const ot = doc.splitTextToSize(opinionText, cw);
+  doc.roundedRect(lm-2, y-5, cw+4, ot.length*5+12, 3, 3, 'FD');
+  doc.setFont('helvetica','normal'); doc.setFontSize(10);
+  doc.text(ot, lm, y+3); y += ot.length*5+18;
+
+  // Signatures
+  if (y > 230) { doc.addPage(); y = 30; }
+  doc.setFont('helvetica','normal'); doc.setFontSize(10);
+  doc.line(lm, y+20, lm+70, y+20); doc.line(rm-70, y+20, rm, y+20);
+  doc.text('For The Gurukul High', lm, y+26); doc.text('Statutory Auditor (CA)', rm-20, y+26, {align:'right'});
+  doc.text('Management Signature', lm, y+32); doc.text(`Place: Mysuru | Date: ${today}`, rm-20, y+32, {align:'right'});
+
+  doc.save(`audit_report_${d.year}.pdf`);
+  showToast('Audit report PDF downloaded!', 'success');
+}
+
+// ── UTILITIES ─────────────────────────────────────────────────────────────────
+function downloadCSV(filename, rows) {
+  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv], { type:'text/csv' }));
+  a.download = filename;
+  a.click();
+}
+
+function exportBooksCSV() { showToast('Export from Ledger tab for full CSV', ''); }
+function exportRPCSV() {
+  const d = window._rpData;
+  if (!d) return;
+  const rows = [['Particulars','Receipts','Payments']];
+  (d.feeByType||[]).forEach(r => rows.push([r.fee_type+' Fee', r.total, '']));
+  if (d.donations>0) rows.push(['Donations', d.donations, '']);
+  (d.salaryByMonth||[]).forEach(r => rows.push([`Salary ${r.month}`, '', r.total]));
+  if (d.pfPaid>0) rows.push(['PF', '', d.pfPaid]);
+  if (d.esiPaid>0) rows.push(['ESI', '', d.esiPaid]);
+  downloadCSV('receipts_payments.csv', rows);
+}
+
+// ── REAL-TIME SYNC ────────────────────────────────────────────────────────────
+// BroadcastChannel: instantly refresh when finance/salary tabs record data
+(function() {
+  let bc;
+  try { bc = new BroadcastChannel('gurukul_finance'); } catch(_) {}
+  if (bc) {
+    bc.onmessage = function(ev) {
+      const d = ev.data || {};
+      const activeTab = document.querySelector('.tab.active')?.id?.replace('tab-','') || 'overview';
+      showToast('📡 ' + (d.label || 'Data updated') + ' — refreshing…', '');
+      // Targeted refresh: only reload sections affected by the change
+      if (d.type === 'payroll_updated') {
+        // Salary affects overview, ledger, trial, balance, income, receipts, journal, audit
+        loadTab(activeTab);
+        if (activeTab !== 'overview') loadOverview(); // keep KPI cards current
+      } else if (d.type === 'fees_updated') {
+        loadTab(activeTab);
+        if (activeTab !== 'overview') loadOverview();
+      } else {
+        loadTab(activeTab);
+      }
+    };
+  }
+
+  // Auto-poll every 30 seconds — keeps data fresh even if broadcasts are missed
+  setInterval(() => {
+    const activeTab = document.querySelector('.tab.active')?.id?.replace('tab-','') || 'overview';
+    loadTab(activeTab);
+  }, 30000);
+
+  // Refresh when user returns to this tab (e.g. after recording fees in another tab)
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      const activeTab = document.querySelector('.tab.active')?.id?.replace('tab-','') || 'overview';
+      loadTab(activeTab);
+    }
+  });
+})();
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+async function init() {
+  await loadCOA();
+  const hash = (location.hash||'').replace('#','').toLowerCase();
+  const valid = ['overview','ledger','books','trial','balance','income','receipts','journal','audit'];
+  if (hash && valid.includes(hash)) switchTab(hash);
+  else loadOverview();
+}
+
+init();
+</script>
+</body>
+</html>

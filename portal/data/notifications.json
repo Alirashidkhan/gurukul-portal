@@ -1,0 +1,12 @@
+{
+  "settings": {
+    "id": 1,
+    "provider": "msg91",
+    "api_key": "",
+    "sender": "GURUKL",
+    "enabled": 1,
+    "wa_token": "",
+    "wa_phone": "",
+    "updated_at": "2026-03-16 05:11:05"
+  }
+}

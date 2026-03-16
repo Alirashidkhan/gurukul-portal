@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Principal's Message – The Gurukul High, K.R. Nagar, Mysuru</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="css/font-awesome.css">
+	<link rel="stylesheet" href="css/all.css">
+	<link rel="stylesheet" href="css/elegant-font.css">
+	<style>
+		*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+		html{scroll-behavior:smooth;overflow-x:hidden;}
+		body{overflow-x:hidden!important;overflow-y:auto!important;}
+		body{font-family:'Poppins',sans-serif;font-size:15px;color:#444;background:#fff;line-height:1.8;}
+		a{text-decoration:none;color:inherit;}
+		:root{
+			--primary:#0D1B5E;
+			--primary-d:#091245;
+			--gold:#C9A227;
+			--gold-l:#E6C86A;
+			--dark:#060D2E;
+			--text:#444;
+			--light-bg:#f0f2f8;
+			--white:#ffffff;
+		}
+		.container{max-width:1200px;margin:0 auto;padding:0 20px;}
+
+		/* TOP BAR */
+		.top-bar{background:var(--dark);color:rgba(255,255,255,0.8);font-size:12px;padding:7px 0;}
+		.top-bar-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;justify-content:space-between;align-items:center;}
+		.top-bar-left{display:flex;gap:20px;align-items:center;}
+		.top-bar a:hover{color:var(--gold);}
+		.top-bar i{margin-right:6px;color:var(--gold);}
+		.top-bar-btn{background:var(--primary);color:#fff!important;padding:4px 14px;border-radius:4px;transition:background .2s;}
+		.top-bar-btn:hover{background:var(--gold)!important;color:#fff!important;}
+
+		/* NAV */
+		.navbar{background:rgba(255,255,255,0.97);box-shadow:0 2px 20px rgba(0,0,0,0.10);position:sticky;top:0;z-index:999;}
+		.nav-inner{max-width:1200px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:80px;}
+		.logo-wrap{display:flex;align-items:center;gap:14px;}
+		.logo-text-wrap{display:flex;flex-direction:column;}
+		.logo-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;color:var(--primary);line-height:1.1;}
+		.logo-tagline{font-size:9px;color:var(--gold);letter-spacing:1.2px;text-transform:uppercase;font-weight:600;white-space:nowrap;}
+		.nav-menu{display:flex;list-style:none;gap:4px;}
+		.nav-menu>li>a{padding:10px 14px;font-size:13px;font-weight:600;color:#333;border-radius:6px;transition:all .2s;letter-spacing:.3px;}
+		.nav-menu>li>a:hover,.nav-menu>li.active>a{color:var(--primary);background:rgba(13,27,94,0.06);}
+		.nav-menu li{position:relative;}
+		.dropdown{display:none;position:absolute;top:100%;left:0;background:#fff;min-width:200px;border-radius:10px;box-shadow:0 8px 30px rgba(0,0,0,0.12);border-top:3px solid var(--primary);padding:10px 0;list-style:none;z-index:1000;}
+		.dropdown.dd-open{display:block;}
+		.dropdown::before{content:'';position:absolute;top:-10px;left:0;right:0;height:10px;}
+		.dropdown li a{display:block;padding:9px 20px;font-size:13px;color:#444;transition:all .2s;}
+		.dropdown li a:hover{color:var(--primary);padding-left:24px;background:#f0f2f8;}
+		.nav-apply-btn{background:var(--primary);color:#fff!important;padding:10px 22px!important;border-radius:25px!important;font-weight:700!important;}
+		.nav-apply-btn:hover{background:var(--gold)!important;}
+		.hamburger{display:none;flex-direction:column;cursor:pointer;gap:5px;padding:8px;}
+		.hamburger span{width:24px;height:2px;background:#333;border-radius:2px;transition:all .3s;}
+
+		/* PAGE HERO BANNER */
+		.page-hero{
+			background:linear-gradient(135deg,#060D2E 0%,var(--primary) 60%,#091245 100%);
+			padding:70px 0 60px;
+			text-align:center;
+			position:relative;
+			overflow:hidden;
+		}
+		.page-hero::before{content:'';position:absolute;inset:0;background:url('images/bg-7.jpg') center/cover no-repeat;opacity:0.08;}
+		.page-hero-inner{position:relative;}
+		.breadcrumb{font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:14px;letter-spacing:1px;}
+		.breadcrumb a{color:var(--gold-l);}
+		.breadcrumb a:hover{color:#fff;}
+		.page-hero h1{font-family:'Playfair Display',serif;font-size:clamp(32px,5vw,52px);color:#fff;font-weight:700;line-height:1.2;}
+		.page-hero-line{width:60px;height:4px;background:linear-gradient(90deg,var(--primary),var(--gold));border-radius:2px;margin:18px auto 0;}
+
+		/* CONTENT SECTION */
+		.inner-section{padding:80px 0;}
+		.inner-section.alt{background:var(--light-bg);}
+		.section-label{display:inline-block;background:rgba(13,27,94,0.08);color:var(--primary);font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;padding:6px 16px;border-radius:20px;margin-bottom:16px;}
+		.section-title{font-family:'Playfair Display',serif;font-size:clamp(24px,3.5vw,38px);color:var(--dark);font-weight:700;line-height:1.3;margin-bottom:10px;}
+		.section-title span{color:var(--primary);}
+		.section-divider{width:50px;height:3px;background:linear-gradient(90deg,var(--primary),var(--gold));border-radius:2px;margin-bottom:28px;}
+		.lead-text{font-size:17px;line-height:1.9;color:#555;margin-bottom:24px;}
+		p{margin-bottom:18px;line-height:1.9;color:#555;}
+
+		/* CARDS */
+		.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:28px;margin-top:40px;}
+		.info-card{background:#fff;border-radius:16px;padding:32px 28px;box-shadow:0 4px 20px rgba(0,0,0,0.07);border-left:4px solid var(--primary);transition:transform .3s,box-shadow .3s;}
+		.info-card:hover{transform:translateY(-4px);box-shadow:0 10px 32px rgba(0,0,0,0.12);}
+		.info-card-icon{width:52px;height:52px;background:linear-gradient(135deg,var(--primary),var(--primary-d));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;color:#fff;margin-bottom:18px;}
+		.info-card h3{font-family:'Playfair Display',serif;font-size:18px;color:var(--dark);font-weight:700;margin-bottom:10px;}
+		.info-card p{font-size:14px;color:#666;line-height:1.7;margin:0;}
+
+		/* QUOTE BOX */
+		.quote-box{background:linear-gradient(135deg,var(--primary) 0%,var(--primary-d) 100%);border-radius:20px;padding:40px 48px;color:#fff;position:relative;margin:40px 0;}
+		.quote-box::before{content:'"';font-size:100px;color:rgba(255,255,255,0.12);position:absolute;top:-10px;left:24px;font-family:Georgia,serif;line-height:1;}
+		.quote-box blockquote{font-family:'Playfair Display',serif;font-size:clamp(17px,2.5vw,22px);line-height:1.7;font-style:italic;margin-bottom:16px;}
+		.quote-attr{font-size:13px;color:var(--gold-l);font-weight:600;letter-spacing:1px;}
+
+		/* TWO-COL LAYOUT */
+		.two-col{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;}
+		@media(max-width:768px){.two-col{grid-template-columns:1fr;gap:32px;}}
+
+		/* FACULTY CARD */
+		.faculty-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:28px;margin-top:40px;}
+		.faculty-card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.08);text-align:center;transition:transform .3s,box-shadow .3s;}
+		.faculty-card:hover{transform:translateY(-5px);box-shadow:0 12px 32px rgba(0,0,0,0.13);}
+		.faculty-avatar{width:100%;height:180px;background:linear-gradient(135deg,var(--primary),#091245);display:flex;align-items:center;justify-content:center;font-size:54px;color:rgba(255,255,255,0.6);}
+		.faculty-info{padding:20px;}
+		.faculty-info h3{font-size:15px;font-weight:700;color:var(--dark);margin-bottom:4px;}
+		.faculty-info .role{font-size:12px;color:var(--primary);font-weight:600;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+		.faculty-info .dept{font-size:12px;color:#888;}
+
+		/* CONTACT BAR (reused from index) */
+		.contact-bar{background:linear-gradient(135deg,var(--primary) 0%,#091245 100%);padding:50px 0;}
+		.contact-bar-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;}
+		.contact-bar-item{display:flex;align-items:flex-start;gap:18px;color:#fff;}
+		.contact-bar-item .icon-wrap{width:48px;height:48px;background:rgba(255,255,255,0.1);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;transition:background .2s;}
+		.contact-bar-item:hover .icon-wrap{background:var(--gold);color:#fff;}
+		.contact-bar-item h4{font-size:12px;color:rgba(255,255,255,0.65);margin-bottom:4px;letter-spacing:1px;text-transform:uppercase;}
+		.contact-bar-item p{font-size:14px;font-weight:600;}
+
+		/* FOOTER */
+		.footer{background:var(--dark);padding:70px 0 0;}
+		.footer-grid{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:48px;padding-bottom:50px;}
+		.footer-brand .footer-logo-name{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:#fff;margin-bottom:4px;}
+		.footer-brand .footer-logo-tagline{font-size:11px;color:var(--gold-l);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;}
+		.footer-brand p{font-size:13.5px;line-height:1.8;color:rgba(255,255,255,0.55);margin-bottom:24px;}
+		.footer-social{display:flex;gap:10px;}
+		.social-btn{width:36px;height:36px;background:rgba(255,255,255,0.08);border-radius:8px;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.7);font-size:14px;transition:all .2s;}
+		.social-btn:hover{background:var(--gold);color:#fff;}
+		.footer-col h4{font-size:13px;font-weight:700;color:#fff;letter-spacing:1px;text-transform:uppercase;margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.1);}
+		.footer-links{list-style:none;}
+		.footer-links li{margin-bottom:8px;}
+		.footer-links a{font-size:13px;color:rgba(255,255,255,0.55);transition:all .2s;display:flex;align-items:center;gap:6px;}
+		.footer-links a::before{content:'›';color:var(--gold);font-size:14px;}
+		.footer-links a:hover{color:var(--gold-l);padding-left:6px;}
+		.footer-contact-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:14px;}
+		.footer-contact-item i{color:var(--gold);font-size:14px;margin-top:3px;flex-shrink:0;}
+		.footer-contact-item span{font-size:13px;line-height:1.7;color:rgba(255,255,255,0.65);}
+		.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding:20px 0;display:flex;justify-content:space-between;align-items:center;}
+		.footer-bottom p{font-size:12px;color:rgba(255,255,255,0.4);}
+		.footer-bottom a{color:rgba(255,255,255,0.55);}
+		.footer-bottom a:hover{color:var(--gold-l);}
+		@media(max-width:992px){
+			.contact-bar-grid{grid-template-columns:1fr 1fr;}
+			.footer-grid{grid-template-columns:1fr 1fr;gap:36px;}
+			.page-hero h1{font-size:clamp(24px,4vw,40px);}
+		}
+		@media(max-width:768px){
+			.top-bar-inner{flex-direction:column;gap:6px;padding:8px 16px;}
+			.top-bar-left{flex-wrap:wrap;gap:8px;justify-content:center;font-size:12px;}
+			.top-bar-right{flex-wrap:wrap;gap:8px;justify-content:center;}
+			.nav-inner{padding:0 16px;}
+			.hamburger{display:flex;}
+			.nav-menu{display:none;}
+			.page-hero{padding:50px 20px;}
+			.page-hero h1{font-size:clamp(22px,6vw,36px);}
+			.two-col{grid-template-columns:1fr;gap:28px;}
+			.content-section{padding:40px 20px;}
+			.footer-grid{grid-template-columns:1fr 1fr;gap:24px;}
+		}
+		@media(max-width:480px){
+			.top-bar-left span:last-child{display:none;}
+			.page-hero{padding:36px 16px;}
+			.page-hero h1{font-size:clamp(20px,7vw,28px);}
+			.content-section{padding:32px 16px;}
+			.contact-bar-grid{grid-template-columns:1fr;}
+			.footer-grid{grid-template-columns:1fr;}
+			.footer-bottom{flex-direction:column;text-align:center;gap:6px;}
+		}
+		.nav-open .nav-menu{
+			display:flex;flex-direction:column;position:absolute;
+			top:72px;left:0;right:0;background:#fff;
+			padding:16px 20px;box-shadow:0 8px 30px rgba(0,0,0,0.15);
+			gap:0;z-index:1000;max-height:80vh;overflow-y:auto;
+		}
+		.nav-open .nav-menu>li{border-bottom:1px solid rgba(0,0,0,0.06);}
+		.nav-open .nav-menu>li>a{padding:12px 0;display:block;}
+		.nav-open .nav-menu .dropdown{
+			position:static;opacity:1;pointer-events:all;
+			transform:none;box-shadow:none;border:none;padding-left:16px;
+		}
+	</style>
+</head>
+<body>
+<!-- ===== TOP BAR ===== -->
+<div class="top-bar">
+	<div class="top-bar-inner">
+		<div class="top-bar-left">
+			<a href="mailto:info@gurukul.edu.in">
+				<i class="fa fa-envelope"></i> info@gurukul.edu.in
+			</a>
+			<a href="tel:+918212345678">
+				<i class="fa fa-phone"></i> +91 821-234-5678
+			</a>
+			<span><i class="fa fa-map-marker"></i> K.R. Nagar, Mysuru(D), Karnataka</span>
+		</div>
+		<div class="top-bar-right">
+			<a href="#">Alumni</a>
+			<a href="#">Calendar</a>
+			<a href="#">Parent Portal</a>
+			<a href="admission-form.html" class="top-bar-btn">Apply Now</a>
+		</div>
+	</div>
+</div>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="navbar" id="mainNav">
+	<div class="nav-inner">
+		<a href="#" class="logo-wrap">
+			<img src="images/gurukul-logo.png" alt="The Gurukul High Logo" style="height:68px;width:68px;border-radius:8px;box-shadow:0 2px 12px rgba(13,27,94,0.25);flex-shrink:0;">
+			<div class="logo-text-wrap">
+				<span class="logo-name">The Gurukul High</span>
+				<span class="logo-tagline" style="color:#C9A227;">Gurukula Vidya Samsthe · K.R. Nagar, Mysuru(D)</span>
+			</div>
+		</a>
+
+		<ul class="nav-menu" id="navMenu">
+			<li><a href="index.html">Home</a></li>
+			<li>
+				<a href="#about">About Us</a>
+				<ul class="dropdown">
+					<li><a href="index.html#about">Our Story</a></li>
+					<li><a href="vision-mission.html">Vision &amp; Mission</a></li>
+					<li><a href="principals-message.html">Principal's Message</a></li>
+					<li><a href="our-faculty.html">Our Faculty</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="index.html#programs">Academics</a>
+				<ul class="dropdown">
+					<li><a href="index.html#programs">Primary School (I–V)</a></li>
+					<li><a href="index.html#programs">Middle School (VI–VIII)</a></li>
+					<li><a href="index.html#programs">High School (IX–X)</a></li>
+					
+					<li><a href="index.html#programs">Curriculum Overview</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="index.html#facilities">Facilities</a>
+				<ul class="dropdown">
+					<li><a href="index.html#facilities">Science Labs</a></li>
+					<li><a href="index.html#facilities">Library & Resource Centre</a></li>
+					<li><a href="index.html#facilities">Sports Complex</a></li>
+					<li><a href="index.html#facilities">Computer Lab</a></li>
+					<li><a href="index.html#facilities">Arts & Music Studio</a></li>
+				</ul>
+			</li>
+			<li><a href="index.html#events">Events</a></li>
+			<li><a href="index.html#news">News</a></li>
+			<li><a href="index.html#contact">Contact</a></li>
+			<li><a href="admission-form.html" class="nav-apply-btn">Apply Now</a></li>
+		</ul>
+
+		<button class="mobile-menu-toggle" id="mobileToggle" aria-label="Toggle menu">
+			<span></span><span></span><span></span>
+		</button>
+	</div>
+</nav>
+<!-- PAGE HERO -->
+<section class="page-hero">
+	<div class="container page-hero-inner">
+		<div class="breadcrumb"><a href="index.html">Home</a> &rsaquo; About Us &rsaquo; Principal's Message</div>
+		<h1>Principal's Message</h1>
+		<div class="page-hero-line"></div>
+	</div>
+</section>
+
+<!-- PRINCIPAL'S MESSAGE CONTENT -->
+<section class="inner-section">
+	<div class="container">
+		<div class="two-col" style="align-items:start; gap:70px;">
+			<!-- Principal Photo -->
+			<div style="text-align:center;">
+				<div style="width:100%; max-width:360px; margin:0 auto; border-radius:20px; overflow:hidden; box-shadow:0 8px 32px rgba(13,27,94,0.18);">
+					<div style="height:380px; background:linear-gradient(135deg,#091245 0%,#0D1B5E 100%); display:flex; align-items:center; justify-content:center; font-size:90px; color:rgba(255,255,255,0.4);">👩‍🏫</div>
+					<div style="background:var(--primary); padding:20px; color:#fff; text-align:center;">
+						<h3 style="font-family:'Playfair Display',serif; font-size:20px; margin-bottom:4px;">Smt. Kamala Devi R.</h3>
+						<p style="font-size:12px; color:var(--gold-l); font-weight:600; letter-spacing:1px; text-transform:uppercase;">M.Ed., M.Phil. | Principal</p>
+						<p style="font-size:12px; color:rgba(255,255,255,0.6); margin-top:6px;">The Gurukul High, K.R. Nagar</p>
+					</div>
+				</div>
+				<!-- Credentials -->
+				<div style="margin-top:28px; background:var(--light-bg); border-radius:14px; padding:24px; text-align:left;">
+					<h4 style="font-size:13px; font-weight:700; color:var(--primary); margin-bottom:14px; letter-spacing:1px; text-transform:uppercase;">Qualifications &amp; Experience</h4>
+					<ul style="list-style:none; font-size:13px; color:#555; line-height:2;">
+						<li><i class="fa fa-check" style="color:var(--gold); margin-right:8px;"></i> M.Ed., Mysore University</li>
+						<li><i class="fa fa-check" style="color:var(--gold); margin-right:8px;"></i> M.Phil. in Education</li>
+						<li><i class="fa fa-check" style="color:var(--gold); margin-right:8px;"></i> 20+ Years in School Leadership</li>
+						<li><i class="fa fa-check" style="color:var(--gold); margin-right:8px;"></i> State Best Teacher Awardee</li>
+						<li><i class="fa fa-check" style="color:var(--gold); margin-right:8px;"></i> At Gurukul High since 2005</li>
+					</ul>
+				</div>
+			</div>
+			<!-- Message Text -->
+			<div>
+				<span class="section-label">A Word From Our Principal</span>
+				<h2 class="section-title">Dear Students, Parents<br>&amp; <span>Well-Wishers</span></h2>
+				<div class="section-divider"></div>
+				<p class="lead-text">Welcome to The Gurukul High — a place where every child is cherished, every dream is nurtured, and every success is celebrated.</p>
+				<p>It is my profound privilege and honour to serve as Principal of this wonderful institution. Since our founding in 1999, Gurukula Vidya Samsthe has stood as a beacon of quality education in K.R. Nagar, Mysuru — guided by our motto: <strong>Learn | Lead | Light</strong>.</p>
+				<p>We believe that the true purpose of education is not merely to prepare children for examinations, but to equip them with the values, skills, and wisdom they need to lead purposeful, meaningful lives. Our faculty, support staff, and management work tirelessly each day to make this a reality for every single student — from Nursery to Class X.</p>
+				<p>The Karnataka State Syllabus we follow ensures that our students are deeply grounded in local culture, language, and context, even as they develop the broader competencies to succeed in any walk of life.</p>
+				<p>To our students: be curious, be kind, and never stop learning. To our parents: thank you for trusting us with your most precious treasure. Together, we are building a brighter future — one child at a time.</p>
+				<div style="background:var(--light-bg); border-radius:14px; padding:28px; margin-top:28px; border-left:4px solid var(--primary);">
+					<p style="font-style:italic; font-size:16px; color:var(--dark); margin:0 0 12px;">"A school that educates the mind without educating the heart is no education at all. At The Gurukul High, we educate both."</p>
+					<div style="font-size:13px; font-weight:700; color:var(--primary);">— Smt. Kamala Devi R., Principal</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- MANAGEMENT MESSAGE -->
+<section class="inner-section alt">
+	<div class="container" style="max-width:860px;">
+		<div style="text-align:center; margin-bottom:40px;">
+			<span class="section-label">From the Management</span>
+			<h2 class="section-title" style="margin-top:8px;">Trustee's <span>Message</span></h2>
+			<div class="section-divider" style="margin:14px auto 0;"></div>
+		</div>
+		<div class="quote-box">
+			<blockquote>"Gurukula Vidya Samsthe was established in 1999 with a singular mission — to make excellent, value-based education accessible to the children of K.R. Nagar and the surrounding region. Twenty-six years on, we remain steadfast in that commitment. Every decision we make is guided by one question: what is best for our children?"</blockquote>
+			<div class="quote-attr">— Sri. Ramesh Kumar N., Chairman, Gurukula Vidya Samsthe</div>
+		</div>
+	</div>
+</section>
+<!-- ===== CONTACT BAR ===== -->
+<div class="contact-bar" id="contact">
+	<div class="container">
+		<div class="contact-bar-grid">
+			<div class="contact-bar-item">
+				<div class="icon-wrap"><i class="fa fa-map-marker"></i></div>
+				<div>
+					<h4>Our Address</h4>
+					<p>K.R. Nagar, Mysuru(D),<br>Karnataka – 571 602</p>
+				</div>
+			</div>
+			<div class="contact-bar-item">
+				<div class="icon-wrap"><i class="fa fa-phone"></i></div>
+				<div>
+					<h4>Call Us</h4>
+					<p>+91 821-234-5678</p>
+				</div>
+			</div>
+			<div class="contact-bar-item">
+				<div class="icon-wrap"><i class="fa fa-envelope"></i></div>
+				<div>
+					<h4>Email Us</h4>
+					<p>info@gurukul.edu.in<br>admissions@gurukul.edu.in</p>
+				</div>
+			</div>
+			<div class="contact-bar-item">
+				<div class="icon-wrap"><i class="fa fa-clock-o"></i></div>
+				<div>
+					<h4>School Timings</h4>
+					<p>Mon – Fri: 8:00 AM – 4:00 PM<br>Sat: 8:00 AM – 1:00 PM</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+	<div class="container">
+		<div class="footer-grid">
+			<div class="footer-brand">
+				<div class="footer-logo-name">The Gurukul High</div>
+				<div class="footer-logo-tagline">K.R. Nagar, Mysuru · Est. 1999</div>
+				<p>
+					Committed to nurturing young minds through a perfect blend of modern academics, traditional
+					values, and holistic character development. Proudly serving K.R. Nagar, Mysuru since 1999.
+				</p>
+				<div class="footer-social">
+					<a href="#" class="social-btn"><i class="fa fa-facebook"></i></a>
+					<a href="#" class="social-btn"><i class="fa fa-twitter"></i></a>
+					<a href="#" class="social-btn"><i class="fa fa-instagram"></i></a>
+					<a href="#" class="social-btn"><i class="fa fa-youtube-play"></i></a>
+					<a href="#" class="social-btn"><i class="fa fa-linkedin"></i></a>
+				</div>
+			</div>
+
+			<div class="footer-col">
+				<h4>Quick Links</h4>
+				<ul class="footer-links">
+					<li><a href="#about">About Us</a></li>
+					<li><a href="#programs">Academic Programs</a></li>
+					<li><a href="#facilities">Facilities</a></li>
+					<li><a href="#events">Events & Calendar</a></li>
+					<li><a href="#admissions">Admissions</a></li>
+					<li><a href="#">Alumni Network</a></li>
+					<li><a href="#">Parent Portal</a></li>
+				</ul>
+			</div>
+
+			<div class="footer-col">
+				<h4>Academics</h4>
+				<ul class="footer-links">
+					<li><a href="#programs">Primary School (I–V)</a></li>
+					<li><a href="#programs">Middle School (VI–VIII)</a></li>
+					<li><a href="#programs">High School (IX–X)</a></li>
+					
+					<li><a href="#">Examination Schedule</a></li>
+					<li><a href="#">Holiday Calendar</a></li>
+					<li><a href="#">State Board Affiliation Info</a></li>
+				</ul>
+			</div>
+
+			<div class="footer-col">
+				<h4>School Information</h4>
+				<div class="footer-contact-item">
+					<i class="fa fa-certificate"></i>
+					<span><strong>Affiliation:</strong> Karnataka State Board (KSEEB)</span>
+				</div>
+				<div class="footer-contact-item">
+					<i class="fa fa-hashtag"></i>
+					<span><strong>Board:</strong> Karnataka SSLC (Class X)</span>
+				</div>
+				<div class="footer-contact-item">
+					<i class="fa fa-graduation-cap"></i>
+					<span><strong>Classes:</strong> Nursery to Class X</span>
+				</div>
+				<div class="footer-contact-item">
+					<i class="fa fa-language"></i>
+					<span><strong>Medium:</strong> English</span>
+				</div>
+				<div class="footer-contact-item">
+					<i class="fa fa-calendar"></i>
+					<span><strong>Established:</strong> 1999</span>
+				</div>
+				<div class="footer-contact-item">
+					<i class="fa fa-building"></i>
+					<span><strong>Trust:</strong> Gurukula Vidya Samsthe</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="footer-bottom">
+			<p>© 2026 The Gurukul High, K.R. Nagar, Mysuru. All Rights Reserved.</p>
+			<p>Gurukula Vidya Samsthe, K.R. Nagar | <a href="#">Privacy Policy</a> | <a href="#">Terms of Use</a></p>
+		</div>
+	</div>
+</footer>
+<script>
+	// Mobile nav toggle
+	const hamburger = document.getElementById('hamburger');
+	const navMenu = document.getElementById('navMenu');
+	if(hamburger) hamburger.addEventListener('click', () => navMenu.classList.toggle('nav-open-mobile'));
+
+	// Dropdown hover with delay
+	document.querySelectorAll('.nav-menu > li').forEach(function(li) {
+		var timer;
+		var dd = li.querySelector('.dropdown');
+		if (!dd) return;
+		li.addEventListener('mouseenter', function() { clearTimeout(timer); dd.classList.add('dd-open'); });
+		li.addEventListener('mouseleave', function() { timer = setTimeout(function(){ dd.classList.remove('dd-open'); }, 180); });
+	});
+</script>
+</body>
+</html>

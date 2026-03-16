@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admissions Admin – The Gurukul High</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/font-awesome.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Poppins',sans-serif;background:#f0f2f8;min-height:100vh;}
+:root{--navy:#0D1B5E;--green:#C9A227;--green-l:#E6C86A;}
+
+.header{background:var(--navy);padding:0 24px;}
+.header-inner{max-width:1400px;margin:0 auto;height:64px;display:flex;align-items:center;justify-content:space-between;}
+.header-logo{display:flex;align-items:center;gap:12px;}
+.header-logo img{width:42px;height:42px;border-radius:8px;}
+.header-logo .name{font-size:16px;font-weight:700;color:#fff;}
+.header-logo .sub{font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:1px;}
+.back-btn{color:rgba(255,255,255,0.6);font-size:13px;display:flex;align-items:center;gap:6px;transition:color .2s;text-decoration:none;}
+.back-btn:hover{color:#fff;}
+
+.main{max-width:1400px;margin:0 auto;padding:28px 24px;}
+
+/* Key input */
+.key-wrap{background:#fff;border-radius:14px;padding:20px 24px;box-shadow:0 2px 12px rgba(0,0,0,0.06);margin-bottom:24px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.key-wrap label{font-size:13px;font-weight:700;color:var(--navy);white-space:nowrap;}
+.key-wrap input{flex:1;min-width:200px;border:1.5px solid #e0e0e0;border-radius:8px;padding:9px 14px;font-family:'Poppins',sans-serif;font-size:13px;outline:none;transition:border .2s;}
+.key-wrap input:focus{border-color:var(--green);}
+.key-wrap button{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:10px 22px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:background .2s;}
+.key-wrap button:hover{background:var(--green);}
+
+/* Stats */
+.stats-row{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:24px;}
+.stat-card{background:#fff;border-radius:12px;padding:16px 18px;box-shadow:0 2px 12px rgba(0,0,0,0.06);display:flex;align-items:center;gap:12px;cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.1);}
+.stat-card.active-filter{outline:2px solid var(--green);}
+.stat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.stat-card.total    .stat-icon{background:rgba(13,27,94,0.08);color:var(--navy);}
+.stat-card.pending  .stat-icon{background:rgba(255,193,7,0.12);color:#b58900;}
+.stat-card.review   .stat-icon{background:rgba(0,123,255,0.08);color:#0d6efd;}
+.stat-card.accepted .stat-icon{background:rgba(201,162,39,0.1);color:var(--green);}
+.stat-card.rejected .stat-icon{background:rgba(220,53,69,0.1);color:#dc3545;}
+.stat-card.today    .stat-icon{background:rgba(111,66,193,0.1);color:#6f42c1;}
+.stat-num{font-size:22px;font-weight:800;color:var(--navy);}
+.stat-lbl{font-size:11px;color:#999;margin-top:2px;}
+
+/* Status badges */
+.badge{display:inline-block;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;}
+.badge-pending  {background:rgba(255,193,7,0.15);color:#b58900;}
+.badge-review   {background:rgba(0,123,255,0.1);color:#0d6efd;}
+.badge-interview{background:rgba(111,66,193,0.1);color:#6f42c1;}
+.badge-accepted {background:rgba(201,162,39,0.1);color:var(--green);}
+.badge-rejected {background:rgba(220,53,69,0.1);color:#dc3545;}
+.badge-waitlist {background:rgba(108,117,125,0.1);color:#6c757d;}
+
+/* Table */
+.table-card{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);overflow:hidden;}
+.table-header{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-bottom:1px solid #f0f0f0;flex-wrap:wrap;gap:10px;}
+.table-title{font-size:15px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px;}
+.table-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.search-input{border:1.5px solid #e0e0e0;border-radius:8px;padding:8px 14px 8px 36px;font-family:'Poppins',sans-serif;font-size:13px;outline:none;width:220px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23aaa' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 10px center;}
+.search-input:focus{border-color:var(--green);}
+.export-btn{background:var(--green);color:#fff;border:none;border-radius:8px;padding:8px 16px;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s;}
+.export-btn:hover{background:#A67C00;}
+
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{background:#f8f9fc;color:var(--navy);font-weight:700;padding:11px 16px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;}
+td{padding:11px 16px;border-bottom:1px solid #f5f5f5;color:#555;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fafbff;}
+.app-id{font-family:monospace;font-weight:700;color:var(--navy);font-size:12px;}
+.name-cell{font-weight:600;color:#333;}
+.view-btn{background:none;border:1.5px solid var(--navy);color:var(--navy);border-radius:6px;padding:5px 10px;font-size:11px;font-weight:700;cursor:pointer;transition:all .2s;}
+.view-btn:hover{background:var(--navy);color:#fff;}
+.no-results{text-align:center;padding:40px;color:#aaa;font-size:14px;}
+
+/* Detail modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:1000;display:none;align-items:flex-start;justify-content:center;padding:30px 20px;overflow-y:auto;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:780px;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
+.modal-head{background:var(--navy);padding:20px 24px;border-radius:16px 16px 0 0;display:flex;align-items:center;justify-content:space-between;}
+.modal-head h3{color:#fff;font-size:16px;font-weight:700;}
+.modal-close{background:rgba(255,255,255,0.1);border:none;color:#fff;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .2s;}
+.modal-close:hover{background:rgba(255,255,255,0.2);}
+.modal-body{padding:24px;}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.detail-item .lbl{font-size:11px;color:#aaa;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:3px;}
+.detail-item .val{font-size:13px;font-weight:600;color:#333;}
+.detail-item.full{grid-column:span 2;}
+.section-title{font-size:12px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:1px;margin:18px 0 12px;padding-bottom:6px;border-bottom:2px solid #f0f0f0;}
+
+/* Status update section */
+.status-update-box{background:#f8f9fc;border-radius:10px;padding:16px;margin-top:20px;}
+.status-update-box h4{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px;}
+.status-btns{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
+.status-btn{border:none;border-radius:6px;padding:7px 14px;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .15s;opacity:0.85;}
+.status-btn:hover{opacity:1;transform:translateY(-1px);}
+.status-btn.s-pending  {background:rgba(255,193,7,0.15);color:#b58900;border:1.5px solid rgba(255,193,7,0.4);}
+.status-btn.s-review   {background:rgba(0,123,255,0.08);color:#0d6efd;border:1.5px solid rgba(0,123,255,0.3);}
+.status-btn.s-interview{background:rgba(111,66,193,0.1);color:#6f42c1;border:1.5px solid rgba(111,66,193,0.3);}
+.status-btn.s-accepted {background:rgba(201,162,39,0.1);color:var(--green);border:1.5px solid rgba(201,162,39,0.4);}
+.status-btn.s-rejected {background:rgba(220,53,69,0.1);color:#dc3545;border:1.5px solid rgba(220,53,69,0.3);}
+.status-btn.s-waitlist {background:rgba(108,117,125,0.1);color:#6c757d;border:1.5px solid rgba(108,117,125,0.3);}
+.note-input{width:100%;border:1.5px solid #e0e0e0;border-radius:8px;padding:8px 12px;font-family:'Poppins',sans-serif;font-size:13px;outline:none;resize:none;margin-top:6px;}
+.note-input:focus{border-color:var(--green);}
+.save-status-btn{background:var(--green);color:#fff;border:none;border-radius:8px;padding:9px 20px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer;margin-top:10px;transition:background .2s;}
+.save-status-btn:hover{background:#A67C00;}
+.save-status-btn:disabled{opacity:0.5;cursor:not-allowed;}
+.status-feedback{font-size:12px;margin-top:8px;display:none;}
+
+/* States */
+.loading-state{text-align:center;padding:60px;color:#aaa;}
+.loading-state .spinner{width:36px;height:36px;border:3px solid #e0e0e0;border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px;}
+.empty-state{text-align:center;padding:60px;color:#aaa;font-size:14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+@media(max-width:1024px){.stats-row{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:768px){
+  .stats-row{grid-template-columns:1fr 1fr;}
+  .detail-grid{grid-template-columns:1fr;}
+  .detail-item.full{grid-column:span 1;}
+  th:nth-child(5),td:nth-child(5),th:nth-child(6),td:nth-child(6){display:none;}
+}
+</style>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#C9A227">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Gurukul ERP">
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="header-logo">
+      <img src="/images/gurukul-logo.png" alt="Gurukul">
+      <div><div class="name">The Gurukul High</div><div class="sub">Admissions Admin Panel</div></div>
+    </div>
+    <a href="/portal/login.html" class="back-btn"><i class="fa fa-arrow-left"></i> Student Portal</a>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- Admin key input -->
+  <div class="key-wrap">
+    <label><i class="fa fa-lock" style="margin-right:6px;color:var(--green)"></i> Admin Key:</label>
+    <input type="password" id="adminKey" placeholder="Enter admin key" value="gurukul-admin-2026">
+    <button onclick="loadSubmissions()"><i class="fa fa-refresh"></i> &nbsp;Load Submissions</button>
+  </div>
+
+  <!-- Stats (click to filter) -->
+  <div class="stats-row" id="statsRow" style="display:none;">
+    <div class="stat-card total"    onclick="filterByStatus('')"          id="sc-all">     <div class="stat-icon"><i class="fa fa-users"></i></div><div><div class="stat-num" id="statTotal">0</div><div class="stat-lbl">All Applications</div></div></div>
+    <div class="stat-card pending"  onclick="filterByStatus('Pending Review')"  id="sc-pending">  <div class="stat-icon"><i class="fa fa-clock-o"></i></div><div><div class="stat-num" id="statPending">0</div><div class="stat-lbl">Pending Review</div></div></div>
+    <div class="stat-card review"   onclick="filterByStatus('Under Review')"    id="sc-review">   <div class="stat-icon"><i class="fa fa-eye"></i></div><div><div class="stat-num" id="statUnderReview">0</div><div class="stat-lbl">Under Review</div></div></div>
+    <div class="stat-card accepted" onclick="filterByStatus('Accepted')"        id="sc-accepted"> <div class="stat-icon"><i class="fa fa-check-circle"></i></div><div><div class="stat-num" id="statAccepted">0</div><div class="stat-lbl">Accepted</div></div></div>
+    <div class="stat-card rejected" onclick="filterByStatus('Rejected')"        id="sc-rejected"> <div class="stat-icon"><i class="fa fa-times-circle"></i></div><div><div class="stat-num" id="statRejected">0</div><div class="stat-lbl">Rejected</div></div></div>
+    <div class="stat-card today"    onclick="filterByStatus('__today__')"       id="sc-today">    <div class="stat-icon"><i class="fa fa-calendar"></i></div><div><div class="stat-num" id="statToday">0</div><div class="stat-lbl">Today</div></div></div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-card" id="tableCard" style="display:none;">
+    <div class="table-header">
+      <div class="table-title"><i class="fa fa-list" style="color:var(--green)"></i> &nbsp;Applications</div>
+      <div class="table-tools">
+        <input type="text" class="search-input" id="searchInput" placeholder="Search name, class, mobile…" oninput="applyFilters()">
+        <button class="export-btn" onclick="exportCSV()"><i class="fa fa-download"></i> Export CSV</button>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table id="subTable">
+        <thead>
+          <tr>
+            <th>App ID</th>
+            <th>Student Name</th>
+            <th>Class</th>
+            <th>Father's Mobile</th>
+            <th>Father's Name</th>
+            <th>Previous School</th>
+            <th>Submitted</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="loadingState" class="loading-state" style="display:none;"><div class="spinner"></div><p>Loading submissions…</p></div>
+  <div id="emptyState" class="empty-state" style="display:none;"><i class="fa fa-inbox" style="font-size:40px;display:block;margin-bottom:14px;"></i>No applications yet.</div>
+
+</div>
+
+<!-- Detail Modal -->
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">Application Detail</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+let allData = [];
+let currentStatusFilter = '';
+let currentDetailIdx = -1;
+let selectedNewStatus = '';
+
+// ── Status helpers ────────────────────────────────────────────────────────
+const STATUS_MAP = {
+  'Pending Review':       { cls:'badge-pending',   btnCls:'s-pending',   label:'Pending Review' },
+  'Under Review':         { cls:'badge-review',    btnCls:'s-review',    label:'Under Review' },
+  'Interview Scheduled':  { cls:'badge-interview', btnCls:'s-interview', label:'Interview Scheduled' },
+  'Accepted':             { cls:'badge-accepted',  btnCls:'s-accepted',  label:'Accepted' },
+  'Rejected':             { cls:'badge-rejected',  btnCls:'s-rejected',  label:'Rejected' },
+  'Waitlisted':           { cls:'badge-waitlist',  btnCls:'s-waitlist',  label:'Waitlisted' }
+};
+function badgeHtml(status) {
+  const info = STATUS_MAP[status] || STATUS_MAP['Pending Review'];
+  return `<span class="badge ${info.cls}">${info.label}</span>`;
+}
+
+// ── Load data ─────────────────────────────────────────────────────────────
+async function loadSubmissions() {
+  const key = document.getElementById('adminKey').value.trim();
+  if (!key) return alert('Enter admin key first');
+
+  document.getElementById('loadingState').style.display = 'block';
+  document.getElementById('tableCard').style.display    = 'none';
+  document.getElementById('statsRow').style.display     = 'none';
+  document.getElementById('emptyState').style.display   = 'none';
+
+  try {
+    // Use static JSON to bypass proxy cache
+    const res  = await fetch(`/portal/data/admissions.json?_t=${Date.now()}`);
+    const data = await res.json();
+    if (!res.ok) { alert(data.error || 'Error loading data'); document.getElementById('loadingState').style.display='none'; return; }
+
+    allData = (data.submissions || []).sort((a,b) => (b.submittedAt||'').localeCompare(a.submittedAt||''));
+    document.getElementById('loadingState').style.display = 'none';
+
+    if (!allData.length) { document.getElementById('emptyState').style.display='block'; return; }
+
+    updateStats();
+    document.getElementById('statsRow').style.display = 'grid';
+    document.getElementById('tableCard').style.display = 'block';
+    applyFilters();
+  } catch(e) {
+    document.getElementById('loadingState').style.display = 'none';
+    alert('Cannot connect to server. Make sure the server is running (node server/server.js).');
+  }
+}
+
+function updateStats() {
+  const today = new Date().toISOString().slice(0,10);
+  document.getElementById('statTotal').textContent      = allData.length;
+  document.getElementById('statPending').textContent    = allData.filter(s => s.status === 'Pending Review').length;
+  document.getElementById('statUnderReview').textContent= allData.filter(s => s.status === 'Under Review' || s.status === 'Interview Scheduled').length;
+  document.getElementById('statAccepted').textContent   = allData.filter(s => s.status === 'Accepted').length;
+  document.getElementById('statRejected').textContent   = allData.filter(s => s.status === 'Rejected').length;
+  document.getElementById('statToday').textContent      = allData.filter(s => s.submittedAt && s.submittedAt.startsWith(today)).length;
+}
+
+// ── Filters ───────────────────────────────────────────────────────────────
+function filterByStatus(status) {
+  currentStatusFilter = status;
+  document.querySelectorAll('.stat-card').forEach(c => c.classList.remove('active-filter'));
+  if (status === '') document.getElementById('sc-all').classList.add('active-filter');
+  else if (status === 'Pending Review') document.getElementById('sc-pending').classList.add('active-filter');
+  else if (status === 'Under Review') document.getElementById('sc-review').classList.add('active-filter');
+  else if (status === 'Accepted') document.getElementById('sc-accepted').classList.add('active-filter');
+  else if (status === 'Rejected') document.getElementById('sc-rejected').classList.add('active-filter');
+  else if (status === '__today__') document.getElementById('sc-today').classList.add('active-filter');
+  applyFilters();
+}
+
+function applyFilters() {
+  const q     = document.getElementById('searchInput').value.toLowerCase();
+  const today = new Date().toISOString().slice(0,10);
+  let filtered = allData.filter(s => {
+    if (currentStatusFilter === '__today__') {
+      if (!s.submittedAt || !s.submittedAt.startsWith(today)) return false;
+    } else if (currentStatusFilter) {
+      if (s.status !== currentStatusFilter) return false;
+    }
+    if (q) {
+      const haystack = (s.firstName+' '+s.lastName+' '+(s.gradeApplying||'')+' '+(s.fatherMobile||'')+' '+(s.id||'')).toLowerCase();
+      if (!haystack.includes(q)) return false;
+    }
+    return true;
+  });
+  renderTable(filtered);
+}
+
+// ── Render ────────────────────────────────────────────────────────────────
+function renderTable(data) {
+  const tbody = document.getElementById('tableBody');
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="9" class="no-results"><i class="fa fa-search" style="margin-right:8px;"></i>No matching applications found.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map((s) => {
+    const origIdx = allData.findIndex(a => a.id === s.id);
+    const dt = s.submittedAt ? new Date(s.submittedAt).toLocaleString('en-IN',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}) : '–';
+    return `<tr>
+      <td><span class="app-id">${s.id||'–'}</span></td>
+      <td><div class="name-cell">${s.firstName||''} ${s.lastName||''}</div></td>
+      <td>${s.gradeApplying||'–'}</td>
+      <td>${s.fatherMobile||'–'}</td>
+      <td>${s.fatherName||'–'}</td>
+      <td style="font-size:12px;color:#888">${s.prevSchool||'–'}</td>
+      <td style="font-size:12px;color:#aaa">${dt}</td>
+      <td>${badgeHtml(s.status||'Pending Review')}</td>
+      <td><button class="view-btn" onclick="showDetail(${origIdx})"><i class="fa fa-eye" style="margin-right:4px;"></i>View</button></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Detail modal ──────────────────────────────────────────────────────────
+function showDetail(idx) {
+  currentDetailIdx = idx;
+  selectedNewStatus = '';
+  const s = allData[idx];
+  document.getElementById('modalTitle').textContent = `${s.id} — ${s.firstName} ${s.lastName}`;
+
+  const statusBtns = Object.entries(STATUS_MAP).map(([key, info]) =>
+    `<button class="status-btn ${info.btnCls}" onclick="selectStatus('${key}',this)">${info.label}</button>`
+  ).join('');
+
+  document.getElementById('modalBody').innerHTML = `
+    <div class="section-title"><i class="fa fa-child" style="margin-right:6px;"></i>Student Details</div>
+    <div class="detail-grid">
+      <div class="detail-item"><div class="lbl">Application ID</div><div class="val">${s.id}</div></div>
+      <div class="detail-item"><div class="lbl">Submitted</div><div class="val">${s.submittedAt ? new Date(s.submittedAt).toLocaleString('en-IN') : '–'}</div></div>
+      <div class="detail-item"><div class="lbl">Full Name</div><div class="val">${s.firstName||''} ${s.lastName||''}</div></div>
+      <div class="detail-item"><div class="lbl">Date of Birth</div><div class="val">${s.dob||'–'}</div></div>
+      <div class="detail-item"><div class="lbl">Gender</div><div class="val">${s.gender||'–'}</div></div>
+      <div class="detail-item"><div class="lbl">Blood Group</div><div class="val">${s.bloodGroup||'–'}</div></div>
+      <div class="detail-item"><div class="lbl">Grade Applying For</div><div class="val">${s.gradeApplying||'–'}</div></div>
+      <div class="detail-item"><div class="lbl">Previous School</div><div class="val">${s.prevSchool||'–'}</div></div>
+      <div class="detail-item"><div class="lbl">Last Grade / Marks %</div><div class="val">${s.lastGrade||'–'} / ${s.lastPercentage||'–'}%</div></div>
+      <div class="detail-item"><div class="lbl">Current Status</div><div class="val" id="currentStatusBadge">${badgeHtml(s.status||'Pending Review')}</div></div>
+    </div>
+
+    <div class="section-title" style="margin-top:20px;"><i class="fa fa-users" style="margin-right:6px;"></i>Parent / Guardian Details</div>
+    <div class="detail-grid">
+      <div class="detail-item"><div class="lbl">Father's Name</div><div class="val">${s.fatherName||'–'}</div></div>
+      <div class="detail-item"><div class="lbl">Father's Mobile</div><div class="val"><a href="tel:${s.fatherMobile}" style="color:var(--green);text-decoration:none;">${s.fatherMobile||'–'}</a></div></div>
+      <div class="detail-item"><div class="lbl">Father's Email</div><div class="val">${s.fatherEmail ? `<a href="mailto:${s.fatherEmail}" style="color:var(--green);text-decoration:none;">${s.fatherEmail}</a>` : '–'}</div></div>
+      <div class="detail-item"><div class="lbl">Occupation</div><div class="val">${s.fatherOccupation||'–'}</div></div>
+      <div class="detail-item"><div class="lbl">Mother's Name</div><div class="val">${s.motherName||'–'}</div></div>
+      <div class="detail-item"><div class="lbl">Mother's Mobile</div><div class="val">${s.motherMobile ? `<a href="tel:${s.motherMobile}" style="color:var(--green);text-decoration:none;">${s.motherMobile}</a>` : '–'}</div></div>
+      <div class="detail-item full"><div class="lbl">Address</div><div class="val">${s.address||'–'}, ${s.city||''} – ${s.pin||''}</div></div>
+    </div>
+
+    ${s.reasonAdmission ? `
+    <div class="section-title" style="margin-top:20px;"><i class="fa fa-info-circle" style="margin-right:6px;"></i>Additional Info</div>
+    <div class="detail-grid">
+      <div class="detail-item full"><div class="lbl">Reason for Admission</div><div class="val">${s.reasonAdmission}</div></div>
+      <div class="detail-item"><div class="lbl">Heard About Us</div><div class="val">${s.hearAbout||'–'}</div></div>
+      ${s.statusNote ? `<div class="detail-item full"><div class="lbl">Last Note</div><div class="val">${s.statusNote}</div></div>` : ''}
+    </div>` : ''}
+
+    <div class="status-update-box">
+      <h4><i class="fa fa-edit" style="margin-right:6px;color:var(--green)"></i>Update Application Status</h4>
+      <div class="status-btns">${statusBtns}</div>
+      <textarea class="note-input" id="statusNote" rows="2" placeholder="Optional note (e.g. 'Interview on 15 March at 10am')"></textarea>
+      <br>
+      <button class="save-status-btn" id="saveStatusBtn" onclick="saveStatus()" disabled>
+        <i class="fa fa-save" style="margin-right:6px;"></i>Save Status
+      </button>
+      <div class="status-feedback" id="statusFeedback"></div>
+    </div>
+  `;
+}
+
+function selectStatus(status, btn) {
+  selectedNewStatus = status;
+  document.querySelectorAll('.status-btn').forEach(b => b.style.fontWeight = '700');
+  btn.style.outline = '2px solid currentColor';
+  btn.style.outlineOffset = '2px';
+  document.querySelectorAll('.status-btn').forEach(b => {
+    if (b !== btn) { b.style.outline = 'none'; b.style.opacity = '0.5'; }
+  });
+  document.getElementById('saveStatusBtn').disabled = false;
+}
+
+async function saveStatus() {
+  if (!selectedNewStatus || currentDetailIdx < 0) return;
+  const appId  = allData[currentDetailIdx].id;
+  const note   = document.getElementById('statusNote').value.trim();
+  const btn    = document.getElementById('saveStatusBtn');
+  const fb     = document.getElementById('statusFeedback');
+  const key    = document.getElementById('adminKey').value.trim();
+
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+
+  try {
+    const res = await fetch(`/api/admissions/${appId}/status?key=${encodeURIComponent(key)}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: selectedNewStatus, note })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Update failed');
+
+    // Update local data
+    allData[currentDetailIdx].status = selectedNewStatus;
+    allData[currentDetailIdx].statusNote = note;
+
+    // Refresh badge in modal
+    document.getElementById('currentStatusBadge').innerHTML = badgeHtml(selectedNewStatus);
+
+    // Refresh stats and table
+    updateStats();
+    applyFilters();
+
+    fb.style.display = 'block';
+    fb.style.color   = 'var(--green)';
+    fb.textContent   = '✅ Status updated successfully!';
+    btn.textContent  = '✓ Saved';
+    btn.style.background = '#A67C00';
+
+    setTimeout(() => {
+      fb.style.display = 'none';
+      btn.disabled     = false;
+      btn.textContent  = 'Save Status';
+      btn.style.background = '';
+      document.querySelectorAll('.status-btn').forEach(b => { b.style.outline='none'; b.style.opacity='1'; });
+      selectedNewStatus = '';
+    }, 3000);
+
+  } catch(e) {
+    fb.style.display = 'block';
+    fb.style.color   = '#dc3545';
+    fb.textContent   = '⚠️ ' + e.message;
+    btn.disabled     = false;
+    btn.innerHTML    = '<i class="fa fa-save" style="margin-right:6px;"></i>Save Status';
+  }
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  currentDetailIdx  = -1;
+  selectedNewStatus = '';
+}
+
+// ── CSV export ────────────────────────────────────────────────────────────
+function exportCSV() {
+  if (!allData.length) return;
+  const keys = ['id','submittedAt','status','firstName','lastName','dob','gender','gradeApplying','prevSchool','lastPercentage','fatherName','fatherMobile','fatherEmail','fatherOccupation','motherName','motherMobile','address','city','pin','hearAbout','reasonAdmission','statusNote'];
+  const rows = [keys.join(','), ...allData.map(s => keys.map(k => `"${(s[k]||'').toString().replace(/"/g,'""')}"`).join(','))];
+  const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = 'gurukul_admissions_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+}
+
+// ── Auto-load on page open ────────────────────────────────────────────────
+loadSubmissions();
+</script>
+</body>
+</html>

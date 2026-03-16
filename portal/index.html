@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portal Hub – The Gurukul High</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/font-awesome.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#0D1B5E;
+  --navy-d:#091245;
+  --gold:#C9A227;
+  --gold-l:#E6C86A;
+  --gold-d:#A67C00;
+}
+body{
+  font-family:'Poppins',sans-serif;
+  min-height:100vh;
+  background:var(--navy-d);
+  display:flex;flex-direction:column;
+  overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse at 10% 60%, rgba(201,162,39,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 20%, rgba(201,162,39,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 90%, rgba(13,27,94,0.6) 0%, transparent 60%);
+  pointer-events:none;z-index:0;
+}
+
+/* ── Header ── */
+header{
+  position:relative;z-index:10;
+  padding:16px 36px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid rgba(201,162,39,0.12);
+}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.logo img{width:42px;height:42px;border-radius:10px;object-fit:cover;border:1.5px solid rgba(201,162,39,0.28);}
+.logo .school-name{font-size:16px;font-weight:800;color:#fff;}
+.logo .school-sub{font-size:10px;color:rgba(255,255,255,0.32);text-transform:uppercase;letter-spacing:1.5px;margin-top:2px;}
+.hdr-right{display:flex;align-items:center;gap:8px;}
+.hdr-link{
+  color:rgba(255,255,255,0.45);font-size:12px;text-decoration:none;
+  display:flex;align-items:center;gap:6px;
+  border:1px solid rgba(255,255,255,0.1);
+  padding:7px 14px;border-radius:20px;
+  transition:all .2s;white-space:nowrap;
+}
+.hdr-link:hover{color:#fff;border-color:rgba(201,162,39,0.38);background:rgba(201,162,39,0.08);}
+.hdr-link.gold{background:rgba(201,162,39,0.12);border-color:rgba(201,162,39,0.3);color:var(--gold-l);}
+.hdr-link.gold:hover{background:rgba(201,162,39,0.2);}
+.hdr-link.teal{border-color:rgba(14,165,233,0.2);color:rgba(56,189,248,0.7);}
+.hdr-link.teal:hover{background:rgba(14,165,233,0.1);border-color:rgba(14,165,233,0.4);color:#38bdf8;}
+.hdr-link.green{border-color:rgba(110,231,183,0.2);color:rgba(110,231,183,0.7);}
+.hdr-link.green:hover{background:rgba(110,231,183,0.08);border-color:rgba(110,231,183,0.35);color:#6ee7b7;}
+.hdr-link.purple{border-color:rgba(167,139,250,0.2);color:rgba(167,139,250,0.7);}
+.hdr-link.purple:hover{background:rgba(124,58,237,0.1);border-color:rgba(167,139,250,0.35);color:#a78bfa;}
+.hdr-divider{width:1px;height:20px;background:rgba(255,255,255,0.08);margin:0 2px;}
+
+/* ── Live stats bar ── */
+.stats-bar{
+  position:relative;z-index:10;
+  display:flex;align-items:center;justify-content:center;gap:0;
+  border-bottom:1px solid rgba(255,255,255,0.05);
+  overflow:hidden;
+}
+.stat-item{
+  display:flex;align-items:center;gap:10px;
+  padding:14px 32px;
+  border-right:1px solid rgba(255,255,255,0.05);
+}
+.stat-item:last-child{border-right:none;}
+.stat-icon{
+  width:36px;height:36px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;flex-shrink:0;
+}
+.si-gold{background:rgba(201,162,39,0.12);color:var(--gold);}
+.si-blue{background:rgba(100,160,255,0.1);color:#7ab3ff;}
+.si-purple{background:rgba(167,139,250,0.12);color:#a78bfa;}
+.si-orange{background:rgba(251,146,60,0.12);color:#fb923c;}
+.stat-val{font-size:20px;font-weight:800;color:#fff;}
+.stat-lbl{font-size:10px;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.8px;margin-top:1px;}
+
+/* ── Hero ── */
+.hero{
+  position:relative;z-index:10;
+  text-align:center;
+  padding:44px 24px 32px;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(201,162,39,0.09);
+  border:1px solid rgba(201,162,39,0.2);
+  color:var(--gold-l);font-size:11px;font-weight:600;
+  padding:6px 18px;border-radius:20px;
+  letter-spacing:1.2px;text-transform:uppercase;
+  margin-bottom:16px;
+}
+.hero h1{
+  font-size:34px;font-weight:900;color:#fff;
+  line-height:1.2;margin-bottom:10px;letter-spacing:-0.5px;
+}
+.hero h1 span{
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold-l) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero p{font-size:14px;color:rgba(255,255,255,0.38);max-width:400px;margin:0 auto;line-height:1.7;}
+
+/* ── Section label ── */
+.section-label{
+  position:relative;z-index:10;
+  max-width:1060px;margin:0 auto 12px;padding:0 28px;
+  font-size:10.5px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:rgba(201,162,39,0.55);
+  display:flex;align-items:center;gap:10px;
+}
+.section-label::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,rgba(201,162,39,0.18),transparent);
+}
+
+/* ── Cards wrap ── */
+.cards-wrap{
+  position:relative;z-index:10;
+  max-width:1060px;margin:0 auto;
+  padding:0 28px 20px;
+  display:grid;gap:16px;
+}
+.cards-wrap.grid-3{grid-template-columns:repeat(3,1fr);}
+.cards-wrap.grid-2{grid-template-columns:repeat(2,1fr);}
+
+/* ── Portal card ── */
+.portal-card{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:18px;
+  padding:28px 26px 22px;
+  text-decoration:none;
+  display:flex;flex-direction:column;gap:14px;
+  transition:all .25s ease;
+  position:relative;overflow:hidden;
+  backdrop-filter:blur(8px);
+}
+/* glow overlay */
+.portal-card::before{
+  content:'';position:absolute;inset:0;opacity:0;transition:opacity .25s;border-radius:18px;
+}
+.card-admin::before   {background:linear-gradient(135deg,rgba(201,162,39,0.06) 0%,transparent 60%);}
+.card-teacher::before {background:linear-gradient(135deg,rgba(100,200,130,0.05) 0%,transparent 60%);}
+.card-student::before {background:linear-gradient(135deg,rgba(124,58,237,0.07) 0%,transparent 60%);}
+.card-admform::before {background:linear-gradient(135deg,rgba(217,119,6,0.07) 0%,transparent 60%);}
+.card-admadmin::before{background:linear-gradient(135deg,rgba(14,165,233,0.07) 0%,transparent 60%);}
+.portal-card:hover::before{opacity:1;}
+
+/* top accent bar */
+.portal-card::after{
+  content:'';position:absolute;top:0;left:16px;right:16px;height:1.5px;
+  border-radius:0 0 3px 3px;opacity:0;transition:opacity .25s;
+}
+.portal-card:hover::after{opacity:1;}
+.card-admin::after   {background:linear-gradient(90deg,transparent,rgba(201,162,39,0.7),transparent);}
+.card-teacher::after {background:linear-gradient(90deg,transparent,rgba(100,200,130,0.7),transparent);}
+.card-student::after {background:linear-gradient(90deg,transparent,rgba(124,58,237,0.7),transparent);}
+.card-admform::after {background:linear-gradient(90deg,transparent,rgba(217,119,6,0.7),transparent);}
+.card-admadmin::after{background:linear-gradient(90deg,transparent,rgba(14,165,233,0.7),transparent);}
+
+.portal-card:hover{
+  transform:translateY(-3px);
+  box-shadow:0 16px 40px rgba(0,0,0,0.35);
+}
+.card-admin:hover   {border-color:rgba(201,162,39,0.3);}
+.card-teacher:hover {border-color:rgba(100,200,130,0.3);}
+.card-student:hover {border-color:rgba(124,58,237,0.35);}
+.card-admform:hover {border-color:rgba(217,119,6,0.35);}
+.card-admadmin:hover{border-color:rgba(14,165,233,0.35);}
+.card-finance:hover  {border-color:rgba(34,197,94,0.35);}
+
+.card-finance::before{background:linear-gradient(135deg,rgba(34,197,94,0.07) 0%,transparent 60%);}
+.card-finance::after {background:linear-gradient(90deg,transparent,rgba(34,197,94,0.7),transparent);}
+.card-finance .card-icon {background:rgba(34,197,94,0.12);color:#4ade80;}
+.card-finance .card-label{color:rgba(74,222,128,0.65);}
+.card-finance .card-btn  {background:rgba(34,197,94,0.15);color:#4ade80;border:1px solid rgba(34,197,94,0.25);}
+.card-finance .card-btn:hover{background:rgba(34,197,94,0.28);}
+
+.card-top{display:flex;align-items:center;gap:12px;}
+.card-icon{
+  width:52px;height:52px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+}
+.card-admin .card-icon   {background:rgba(201,162,39,0.12);color:var(--gold);}
+.card-teacher .card-icon {background:rgba(100,200,130,0.12);color:#6ee7b7;}
+.card-student .card-icon {background:rgba(124,58,237,0.14);color:#a78bfa;}
+.card-admform .card-icon {background:rgba(217,119,6,0.12);color:#fbbf24;}
+.card-admadmin .card-icon{background:rgba(14,165,233,0.12);color:#38bdf8;}
+
+.card-label{font-size:10px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;margin-bottom:3px;}
+.card-admin .card-label   {color:rgba(201,162,39,0.65);}
+.card-teacher .card-label {color:rgba(110,231,183,0.65);}
+.card-student .card-label {color:rgba(167,139,250,0.65);}
+.card-admform .card-label {color:rgba(251,191,36,0.65);}
+.card-admadmin .card-label{color:rgba(56,189,248,0.65);}
+
+.card-title{font-size:19px;font-weight:800;color:#fff;line-height:1.2;}
+.card-desc{font-size:13px;color:rgba(255,255,255,0.38);line-height:1.7;flex:1;}
+
+.card-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  padding-top:14px;border-top:1px solid rgba(255,255,255,0.06);
+}
+.card-btn{
+  font-size:12px;font-weight:700;
+  padding:8px 18px;border-radius:24px;
+  display:inline-flex;align-items:center;gap:7px;
+  text-decoration:none;transition:all .2s;
+  letter-spacing:0.3px;
+}
+.card-admin .card-btn   {background:var(--gold);color:#1a1200;}
+.card-admin .card-btn:hover{background:var(--gold-l);box-shadow:0 4px 16px rgba(201,162,39,0.3);}
+.card-teacher .card-btn {background:rgba(110,231,183,0.15);color:#6ee7b7;border:1px solid rgba(110,231,183,0.25);}
+.card-teacher .card-btn:hover{background:rgba(110,231,183,0.25);}
+.card-student .card-btn {background:#7c3aed;color:#fff;}
+.card-student .card-btn:hover{background:#6d28d9;box-shadow:0 4px 14px rgba(124,58,237,0.35);}
+.card-admform .card-btn {background:#d97706;color:#fff;}
+.card-admform .card-btn:hover{background:#b45309;box-shadow:0 4px 14px rgba(217,119,6,0.3);}
+.card-admadmin .card-btn{background:rgba(14,165,233,0.15);color:#38bdf8;border:1px solid rgba(14,165,233,0.25);}
+.card-admadmin .card-btn:hover{background:rgba(14,165,233,0.25);}
+
+.card-arrow{
+  width:32px;height:32px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.07);
+  color:rgba(255,255,255,0.2);font-size:12px;
+  transition:all .25s;
+}
+.portal-card:hover .card-arrow{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);transform:translateX(2px);}
+
+/* ── Quick-access strip ── */
+.quick-strip{
+  position:relative;z-index:10;
+  max-width:1060px;margin:0 auto;
+  padding:0 28px 52px;
+  display:flex;gap:10px;flex-wrap:wrap;
+}
+.quick-link{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.07);
+  border-radius:10px;padding:10px 18px;
+  text-decoration:none;
+  font-size:12px;font-weight:600;color:rgba(255,255,255,0.45);
+  transition:all .2s;
+}
+.quick-link:hover{background:rgba(255,255,255,0.07);color:#fff;border-color:rgba(255,255,255,0.14);}
+.quick-link i{font-size:13px;}
+
+/* ── Footer ── */
+footer{
+  position:relative;z-index:10;
+  margin-top:auto;text-align:center;
+  padding:18px 24px;
+  border-top:1px solid rgba(255,255,255,0.05);
+  color:rgba(255,255,255,0.16);font-size:11.5px;letter-spacing:0.3px;
+}
+footer span{color:rgba(201,162,39,0.4);}
+.server-dot{
+  display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:#4ade80;margin-right:5px;vertical-align:middle;
+  animation:pulse 2s infinite;
+}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.4;}}
+
+/* ── Responsive ── */
+@media(max-width:860px){
+  .stats-bar{flex-wrap:wrap;}
+  .stat-item{flex:1;min-width:140px;justify-content:center;}
+  .cards-wrap.grid-3{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:640px){
+  header{padding:14px 18px;}
+  .hdr-right .hdr-link:not(.gold){display:none;}
+  .hero{padding:32px 18px 24px;}
+  .hero h1{font-size:26px;}
+  .stats-bar{display:none;}
+  .cards-wrap{grid-template-columns:1fr !important;padding:0 18px 16px;}
+  .section-label{padding:0 18px;}
+  .quick-strip{padding:0 18px 40px;}
+}
+</style>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#C9A227">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Gurukul ERP">
+</head>
+<body>
+
+<header>
+  <a class="logo" href="/">
+    <img src="/images/gurukul-logo.png" alt="">
+    <div>
+      <div class="school-name">The Gurukul High</div>
+      <div class="school-sub">K.R. Nagar, Mysuru</div>
+    </div>
+  </a>
+  <div class="hdr-right">
+    <a href="/portal/admin-login.html"      class="hdr-link gold"   target="_blank"><i class="fa fa-tachometer"></i> Admin</a>
+    <a href="/portal/teacher-login.html"    class="hdr-link green"  target="_blank"><i class="fa fa-users"></i> Teachers</a>
+    <a href="/portal/login.html"            class="hdr-link purple" target="_blank"><i class="fa fa-graduation-cap"></i> Students</a>
+    <a href="/portal/admissions-admin.html" class="hdr-link teal"   target="_blank"><i class="fa fa-folder-open-o"></i> Admissions</a>
+    <div class="hdr-divider"></div>
+    <a href="/index.html" class="hdr-link" target="_blank"><i class="fa fa-globe"></i> Website</a>
+  </div>
+</header>
+
+<!-- Live Stats Bar -->
+<div class="stats-bar" id="statsBar">
+  <div class="stat-item">
+    <div class="stat-icon si-gold"><i class="fa fa-graduation-cap"></i></div>
+    <div><div class="stat-val" id="statStudents">–</div><div class="stat-lbl">Students</div></div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-icon si-blue"><i class="fa fa-users"></i></div>
+    <div><div class="stat-val" id="statTeachers">–</div><div class="stat-lbl">Teachers</div></div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-icon si-purple"><i class="fa fa-check-square-o"></i></div>
+    <div><div class="stat-val" id="statToday">–</div><div class="stat-lbl">Marked Today</div></div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-icon si-orange"><i class="fa fa-file-text-o"></i></div>
+    <div><div class="stat-val" id="statAdm">–</div><div class="stat-lbl">Admissions</div></div>
+  </div>
+</div>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-badge"><i class="fa fa-star"></i> Gurukula Vidya Samsthe</div>
+  <h1>Staff &amp; Student<br><span>Portal Hub</span></h1>
+  <p>Your central access point for all dashboards, portals and services at The Gurukul High.</p>
+</div>
+
+<!-- Management Portals -->
+<div class="section-label" style="margin-top:4px;">Management &amp; Staff</div>
+<div class="cards-wrap grid-3">
+
+  <a class="portal-card card-admin" href="/portal/admin-login.html" target="_blank">
+    <div class="card-top">
+      <div class="card-icon"><i class="fa fa-tachometer"></i></div>
+      <div>
+        <div class="card-label">Management</div>
+        <div class="card-title">Admin Dashboard</div>
+      </div>
+    </div>
+    <div class="card-desc">Manage students, teachers, leaves, salary, attendance and admissions — all from one master dashboard.</div>
+    <div class="card-footer">
+      <span class="card-btn"><i class="fa fa-sign-in"></i> Open Admin</span>
+      <div class="card-arrow"><i class="fa fa-arrow-right"></i></div>
+    </div>
+  </a>
+
+  <a class="portal-card card-teacher" href="/portal/teacher-login.html" target="_blank">
+    <div class="card-top">
+      <div class="card-icon"><i class="fa fa-users"></i></div>
+      <div>
+        <div class="card-label">Faculty</div>
+        <div class="card-title">Teacher Portal</div>
+      </div>
+    </div>
+    <div class="card-desc">Mark attendance, apply for leaves, submit daily reports, check holidays and manage your class records.</div>
+    <div class="card-footer">
+      <span class="card-btn"><i class="fa fa-sign-in"></i> Teacher Login</span>
+      <div class="card-arrow"><i class="fa fa-arrow-right"></i></div>
+    </div>
+  </a>
+
+  <a class="portal-card card-admadmin" href="/portal/admissions-admin.html" target="_blank">
+    <div class="card-top">
+      <div class="card-icon"><i class="fa fa-folder-open-o"></i></div>
+      <div>
+        <div class="card-label">Enrolment</div>
+        <div class="card-title">Admissions Admin</div>
+      </div>
+    </div>
+    <div class="card-desc">Review, approve or reject incoming admission applications. Update statuses and add notes for each applicant.</div>
+    <div class="card-footer">
+      <span class="card-btn"><i class="fa fa-sign-in"></i> Open Portal</span>
+      <div class="card-arrow"><i class="fa fa-arrow-right"></i></div>
+    </div>
+  </a>
+
+</div>
+
+<!-- Finance -->
+<div class="section-label" style="margin-top:12px;">Finance</div>
+<div class="cards-wrap grid-2">
+
+  <a class="portal-card card-finance" href="/portal/finance-dashboard.html" target="_blank">
+    <div class="card-top">
+      <div class="card-icon"><i class="fa fa-bank"></i></div>
+      <div>
+        <div class="card-label">Finance Office</div>
+        <div class="card-title">Finance Dashboard</div>
+      </div>
+    </div>
+    <div class="card-desc">Record fee payments, manage donations, verify online payments, generate receipts and view collection reports.</div>
+    <div style="margin:10px 0;font-size:11px;color:rgba(255,255,255,0.3);">Login: <span style="color:#4ade80;font-weight:700;">finance</span> &nbsp;/&nbsp; <span style="color:#4ade80;font-weight:700;">finance@2026</span></div>
+    <div class="card-footer">
+      <span class="card-btn"><i class="fa fa-sign-in"></i> Finance Login</span>
+      <div class="card-arrow"><i class="fa fa-arrow-right"></i></div>
+    </div>
+  </a>
+
+  <a class="portal-card card-admin" href="/portal/admin-dashboard.html#finance" target="_blank">
+    <div class="card-top">
+      <div class="card-icon"><i class="fa fa-bar-chart"></i></div>
+      <div>
+        <div class="card-label">Admin View</div>
+        <div class="card-title">Finance Overview</div>
+      </div>
+    </div>
+    <div class="card-desc">View live finance summary, collection trends, fee records and donations directly in the Admin Dashboard.</div>
+    <div class="card-footer">
+      <span class="card-btn"><i class="fa fa-eye"></i> View in Admin</span>
+      <div class="card-arrow"><i class="fa fa-arrow-right"></i></div>
+    </div>
+  </a>
+
+  <a class="portal-card card-finance" href="/portal/finance-accounting.html" target="_blank">
+    <div class="card-top">
+      <div class="card-icon"><i class="fa fa-balance-scale"></i></div>
+      <div>
+        <div class="card-label">Accounting &amp; Audit</div>
+        <div class="card-title">Company Financials</div>
+      </div>
+    </div>
+    <div class="card-desc">General Ledger, Trial Balance, Balance Sheet, Income &amp; Expenditure, CA-style Audit Report — full double-entry accounting.</div>
+    <div class="card-footer">
+      <span class="card-btn"><i class="fa fa-line-chart"></i> Open Dashboard</span>
+      <div class="card-arrow"><i class="fa fa-arrow-right"></i></div>
+    </div>
+  </a>
+
+</div>
+
+<!-- Student & Admissions -->
+<div class="section-label" style="margin-top:12px;">Students &amp; Admissions</div>
+<div class="cards-wrap grid-2">
+
+  <a class="portal-card card-student" href="/portal/login.html" target="_blank">
+    <div class="card-top">
+      <div class="card-icon"><i class="fa fa-graduation-cap"></i></div>
+      <div>
+        <div class="card-label">Students</div>
+        <div class="card-title">Student Portal</div>
+      </div>
+    </div>
+    <div class="card-desc">View your attendance history, apply for leaves, check the holiday calendar and access your academic information securely.</div>
+    <div class="card-footer">
+      <span class="card-btn"><i class="fa fa-sign-in"></i> Student Login</span>
+      <div class="card-arrow"><i class="fa fa-arrow-right"></i></div>
+    </div>
+  </a>
+
+  <a class="portal-card card-teacher" href="/portal/parent-login.html" target="_blank">
+    <div class="card-top">
+      <div class="card-icon"><i class="fa fa-users"></i></div>
+      <div>
+        <div class="card-label">Parents</div>
+        <div class="card-title">Parent Portal</div>
+      </div>
+    </div>
+    <div class="card-desc">Track your child's attendance, marks, fees, and school announcements. Log in using your child's student credentials.</div>
+    <div class="card-footer">
+      <span class="card-btn"><i class="fa fa-sign-in"></i> Parent Login</span>
+      <div class="card-arrow"><i class="fa fa-arrow-right"></i></div>
+    </div>
+  </a>
+
+  <a class="portal-card card-admform" href="/admission-form.html" target="_blank">
+    <div class="card-top">
+      <div class="card-icon"><i class="fa fa-file-text-o"></i></div>
+      <div>
+        <div class="card-label">New Enrolment</div>
+        <div class="card-title">Apply for Admission</div>
+      </div>
+    </div>
+    <div class="card-desc">Apply for admission to The Gurukul High for the academic year 2026–2027. Fill in the online form to begin the enrolment process.</div>
+    <div class="card-footer">
+      <span class="card-btn"><i class="fa fa-edit"></i> Apply Now</span>
+      <div class="card-arrow"><i class="fa fa-arrow-right"></i></div>
+    </div>
+  </a>
+
+</div>
+
+<!-- Quick Access Links -->
+<div class="section-label" style="margin-top:8px;">Quick Access</div>
+<div class="quick-strip">
+  <a href="/index.html"            class="quick-link" target="_blank"><i class="fa fa-home"></i> School Website</a>
+  <a href="/about-us.html"         class="quick-link" target="_blank"><i class="fa fa-info-circle"></i> About Us</a>
+  <a href="/our-faculty.html"      class="quick-link" target="_blank"><i class="fa fa-user-circle-o"></i> Our Faculty</a>
+  <a href="/vision-mission.html"   class="quick-link" target="_blank"><i class="fa fa-eye"></i> Vision &amp; Mission</a>
+  <a href="/principals-message.html" class="quick-link" target="_blank"><i class="fa fa-comment-o"></i> Principal's Message</a>
+  <a href="/admission-form.html"   class="quick-link" target="_blank"><i class="fa fa-pencil-square-o"></i> Admission Form</a>
+</div>
+
+<footer>
+  <span class="server-dot"></span>
+  © 2026 <span>The Gurukul High</span> — Gurukula Vidya Samsthe, K.R. Nagar, Mysuru
+</footer>
+
+<script>
+// Load live stats silently
+(async function() {
+  try {
+    const res  = await fetch('/api/admin/stats?key=gurukul-admin-2026');
+    const data = await res.json();
+    if (res.ok) {
+      document.getElementById('statStudents').textContent = data.students   || 0;
+      document.getElementById('statTeachers').textContent = data.teachers   || 0;
+      document.getElementById('statToday').textContent    = data.markedToday|| 0;
+      document.getElementById('statAdm').textContent      = data.admissions || 0;
+    }
+  } catch(e) {
+    // Server offline — hide stats bar
+    document.getElementById('statsBar').style.display = 'none';
+  }
+})();
+</script>
+</body>
+</html>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').then(reg => {
+      console.log('Gurukul PWA: Service Worker registered', reg.scope);
+    }).catch(err => console.warn('SW registration failed:', err));
+  });
+}
+</script>

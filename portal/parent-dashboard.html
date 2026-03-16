@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parent Dashboard – The Gurukul High</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/font-awesome.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;overflow-x:hidden;}
+body{font-family:'Poppins',sans-serif;background:#f0f2f8;min-height:100vh;overflow-x:hidden;}
+a{text-decoration:none;color:inherit;}
+
+:root{
+  --navy:#0D1B5E; --navy-d:#060D2E; --green:#C9A227; --green-l:#E6C86A;
+  --text:#444; --light:#f0f2f8; --white:#fff;
+}
+
+/* ── Topbar ── */
+.topbar{background:var(--navy-d);color:#ccc;font-size:12px;padding:7px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;}
+.topbar span i{margin-right:5px;color:var(--green-l);}
+.topbar a{color:#ccc;transition:color .2s;}
+.topbar a:hover{color:var(--green-l);}
+
+/* ── Header ── */
+.header{background:linear-gradient(135deg,#0b1650 0%,#0D1B5E 60%,#122070 100%);padding:0 20px;box-shadow:0 4px 24px rgba(0,0,0,0.3);position:sticky;top:0;z-index:200;border-bottom:3px solid var(--green);}
+.header-inner{max-width:1200px;margin:0 auto;height:62px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 8px;}
+.header-left{display:flex;align-items:center;gap:12px;}
+.header-left .portal-tag{color:var(--green-l);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:2.5px;}
+.header-left .portal-school{color:rgba(255,255,255,0.55);font-size:10px;font-weight:500;}
+.header-logo{display:flex;align-items:center;gap:12px;justify-content:center;}
+.header-logo img{width:40px;height:40px;border-radius:8px;border:2px solid rgba(201,162,39,0.5);box-shadow:0 2px 10px rgba(0,0,0,0.25);}
+.header-logo-text .name{font-family:'Playfair Display',serif;font-size:17px;color:#fff;font-weight:700;line-height:1.2;}
+.header-logo-text .sub{display:none;}
+
+.header-right{display:flex;align-items:center;gap:12px;justify-content:flex-end;}
+.parent-chip{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);border-radius:30px;padding:6px 14px 6px 6px;}
+.parent-avatar{width:34px;height:34px;background:linear-gradient(135deg,var(--green),var(--green-l));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
+.parent-chip-name{font-size:12px;color:#fff;font-weight:600;}
+.parent-chip-role{font-size:10px;color:var(--green-l);font-weight:600;}
+.btn-logout{background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.22);color:rgba(255,255,255,0.85);padding:7px 15px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;}
+.btn-logout:hover{background:rgba(220,53,69,0.25);border-color:rgba(220,53,69,0.5);color:#ff8090;}
+.hamburger-btn{width:38px;height:38px;background:rgba(255,255,255,0.09);border:1.5px solid rgba(255,255,255,0.18);border-radius:10px;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:background .2s;flex-shrink:0;}
+.hamburger-btn:hover{background:rgba(255,255,255,0.22);}
+.parent-sidebar{transition:transform .3s cubic-bezier(0.4,0,0.2,1);}
+/* Backdrop shown on mobile when sidebar is open */
+.sidebar-backdrop{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.45);z-index:149;cursor:pointer;}
+/* Desktop: hamburger can hide/show sidebar */
+@media(min-width:769px){
+  body.sidebar-hidden .parent-sidebar{transform:translateX(-100%);}
+  body.sidebar-hidden .main{margin-left:0!important;}
+}
+/* Mobile: sidebar hidden by default, shown on toggle */
+@media(max-width:768px){
+  .parent-sidebar{transform:translateX(-100%);}
+  body.sidebar-mobile-open .parent-sidebar{transform:translateX(0);}
+  body.sidebar-mobile-open .sidebar-backdrop{display:block;}
+}
+
+/* ── Sidebar Layout ── */
+.dashboard-wrap{display:flex;min-height:calc(100vh - 65px);}
+.parent-sidebar{width:248px;min-width:248px;background:#0D1B5E;display:flex;flex-direction:column;padding:0 0 20px;overflow-y:auto;position:fixed;top:65px;left:0;height:calc(100vh - 65px);z-index:150;transition:transform .3s cubic-bezier(0.4,0,0.2,1);}
+.sidebar-section-title{font-size:12px;font-weight:800;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:1.5px;padding:14px 20px 6px;margin-top:4px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;transition:color .18s;}
+.sidebar-section-title:first-child{margin-top:0;}
+.sidebar-section-title:hover{color:rgba(255,255,255,0.65);}
+.sidebar-item{display:flex;align-items:center;gap:11px;padding:11px 20px;font-size:14px;font-weight:600;color:rgba(255,255,255,0.65);cursor:pointer;border:none;background:none;border-left:3px solid transparent;transition:all .18s;width:100%;text-align:left;font-family:'Poppins',sans-serif;}
+.sidebar-item:hover{background:rgba(255,255,255,0.08);color:#fff;}
+.sidebar-item.active{background:rgba(201,162,39,0.18);color:#C9A227;border-left-color:#C9A227;font-weight:700;}
+.sidebar-item i{width:16px;text-align:center;font-size:13px;flex-shrink:0;}
+
+/* ── Main Content ── */
+.main{flex:1;padding:22px 20px;min-width:0;overflow-x:hidden;margin-left:248px;transition:margin-left .3s cubic-bezier(0.4,0,0.2,1);}
+
+/* ── Tab panels ── */
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* ── Cards ── */
+.card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,0.06);margin-bottom:20px;}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
+.card-title{font-size:16px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px;}
+.card-title i{color:var(--green);}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+.badge-green{background:rgba(201,162,39,0.12);color:var(--green);}
+.badge-red{background:rgba(220,53,69,0.1);color:#dc3545;}
+.badge-yellow{background:rgba(255,193,7,0.15);color:#b58900;}
+.badge-blue{background:rgba(13,27,94,0.08);color:var(--navy);}
+
+/* ── Overview ── */
+.student-header{display:flex;gap:20px;align-items:flex-start;margin-bottom:24px;padding:20px;background:linear-gradient(135deg,rgba(13,27,94,0.05),rgba(201,162,39,0.05));border-radius:12px;border:1px solid rgba(13,27,94,0.1);}
+.student-photo{width:100px;height:100px;background:linear-gradient(135deg,var(--green),var(--green-l));border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:40px;flex-shrink:0;box-shadow:0 4px 12px rgba(0,0,0,0.1);}
+.student-details{flex:1;}
+.student-name{font-size:18px;font-weight:800;color:var(--navy);margin-bottom:2px;}
+.student-info{font-size:13px;color:#666;margin-bottom:3px;}
+.student-info strong{color:var(--navy);}
+
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.stat-card{background:var(--light);border-radius:10px;padding:16px;text-align:center;border-left:4px solid var(--green);}
+.stat-card .num{font-size:24px;font-weight:800;color:var(--navy);}
+.stat-card .lbl{font-size:11px;color:#888;margin-top:4px;text-transform:uppercase;letter-spacing:0.5px;}
+
+/* ── Attendance ── */
+.att-filters{display:flex;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.att-filters select{padding:8px 12px;border:1.5px solid #ddd;border-radius:8px;font-family:'Poppins',sans-serif;font-size:13px;color:#555;outline:none;transition:border .2s;}
+.att-filters select:focus{border-color:var(--navy);}
+
+.att-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.att-stat{background:var(--light);border-radius:10px;padding:16px;text-align:center;}
+.att-stat .n{font-size:28px;font-weight:800;color:var(--navy);}
+.att-stat .l{font-size:11px;color:#888;margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;}
+.att-stat.pct .n{color:var(--green);}
+
+.progress-bar{background:#e9ecef;border-radius:20px;height:8px;overflow:hidden;margin-bottom:20px;}
+.progress-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--green),var(--green-l));transition:width .8s ease;}
+
+.att-table{width:100%;border-collapse:collapse;font-size:13px;}
+.att-table th{background:var(--light);color:var(--navy);font-weight:700;padding:10px 14px;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;}
+.att-table td{padding:10px 14px;border-bottom:1px solid #f0f0f0;color:#555;}
+.att-table tr:last-child td{border-bottom:none;}
+.att-table tr:hover td{background:#fafafa;}
+.status-P{color:var(--green);font-weight:700;}
+.status-A{color:#dc3545;font-weight:700;}
+.status-L{color:#e8a000;font-weight:700;}
+
+/* ── Marks ── */
+.term-filter{margin-bottom:20px;}
+.term-filter select{padding:10px 14px;border:1.5px solid #ddd;border-radius:8px;font-family:'Poppins',sans-serif;font-size:13px;color:#555;outline:none;}
+.term-filter select:focus{border-color:var(--navy);}
+
+.marks-table{width:100%;border-collapse:collapse;font-size:13px;}
+.marks-table th{background:var(--light);color:var(--navy);font-weight:700;padding:10px 14px;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;}
+.marks-table td{padding:10px 14px;border-bottom:1px solid #f0f0f0;color:#555;}
+.marks-table tr:last-child td{border-bottom:none;}
+.marks-table tr:hover td{background:#fafafa;}
+
+.pct-green{color:var(--green);font-weight:700;}
+.pct-yellow{color:#e8a000;font-weight:700;}
+.pct-red{color:#dc3545;font-weight:700;}
+
+/* ── Fees ── */
+.fees-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
+.fee-stat{border-radius:12px;padding:18px 20px;display:flex;align-items:center;gap:14px;}
+.fee-stat.paid{background:rgba(201,162,39,0.08);border:1px solid rgba(201,162,39,0.2);}
+.fee-stat.pending{background:rgba(220,53,69,0.06);border:1px solid rgba(220,53,69,0.2);}
+.fee-stat.total{background:rgba(13,27,94,0.05);border:1px solid rgba(13,27,94,0.12);}
+.fee-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.fee-stat.paid .fee-icon{background:rgba(201,162,39,0.15);color:var(--green);}
+.fee-stat.pending .fee-icon{background:rgba(220,53,69,0.1);color:#dc3545;}
+.fee-stat.total .fee-icon{background:rgba(13,27,94,0.1);color:var(--navy);}
+.fee-stat .amt{font-size:22px;font-weight:800;color:var(--navy);}
+.fee-stat .lbl{font-size:12px;color:#888;margin-top:2px;}
+
+.fee-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px;}
+.fee-table th{background:var(--light);color:var(--navy);font-weight:700;padding:10px 14px;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;}
+.fee-table td{padding:12px 14px;border-bottom:1px solid #f0f0f0;color:#555;}
+.fee-table tr:last-child td{border-bottom:none;}
+.fee-table tr:hover td{background:#fafafa;}
+.paid-tag{color:var(--green);font-weight:700;}
+.pending-tag{color:#dc3545;font-weight:700;}
+.verifying-tag{color:#e8a000;font-weight:700;}
+
+/* ── Calendar ── */
+.calendar-list{list-style:none;}
+.calendar-item{display:flex;gap:14px;padding:14px;border-left:4px solid var(--green);background:var(--light);border-radius:8px;margin-bottom:12px;align-items:flex-start;}
+.calendar-date{flex-shrink:0;font-size:12px;font-weight:700;color:var(--green);min-width:70px;}
+.calendar-details{flex:1;}
+.calendar-event{font-size:14px;font-weight:600;color:var(--navy);margin-bottom:2px;}
+.calendar-type{font-size:11px;color:#888;}
+
+/* ── Announcements ── */
+.announcement-card{background:var(--light);border-radius:10px;padding:16px;margin-bottom:14px;border-left:4px solid var(--green);}
+.announcement-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;}
+.announcement-title{font-size:14px;font-weight:700;color:var(--navy);}
+.announcement-date{font-size:11px;color:#888;}
+.announcement-body{font-size:13px;color:#555;line-height:1.6;}
+
+/* ── Documents ── */
+.documents-list{list-style:none;}
+.document-item{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid #eee;border-radius:8px;margin-bottom:10px;background:#fafafa;transition:all .2s;}
+.document-item:hover{background:#f5f5f5;border-color:var(--green);}
+.document-icon{width:40px;height:40px;border-radius:8px;background:rgba(201,162,39,0.1);display:flex;align-items:center;justify-content:center;color:var(--green);font-size:18px;flex-shrink:0;}
+.document-details{flex:1;}
+.document-name{font-size:13px;font-weight:600;color:var(--navy);}
+.document-meta{font-size:11px;color:#888;}
+.document-link{color:var(--green);font-weight:600;cursor:pointer;transition:color .2s;}
+.document-link:hover{color:#A67C00;}
+
+/* ── Loading/Error ── */
+.loading-state{text-align:center;padding:60px 20px;color:#aaa;}
+.loading-state .spinner{width:36px;height:36px;border:3px solid #e0e0e0;border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px;}
+.error-state{background:rgba(220,53,69,0.06);border:1px solid rgba(220,53,69,0.2);border-radius:12px;padding:20px;text-align:center;color:#dc3545;font-size:14px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .main{margin-left:0;padding:16px;}
+  .parent-sidebar{width:170px;min-width:170px;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .fees-summary{grid-template-columns:1fr 1fr;}
+  .att-summary{grid-template-columns:repeat(2,1fr);}
+  .student-header{flex-direction:column;align-items:center;text-align:center;}
+  .topbar{justify-content:center;text-align:center;}
+}
+@media(max-width:480px){
+  .header-inner{height:62px;}
+  .header-logo img{width:40px;height:40px;}
+  .parent-chip-name{display:none;}
+  .parent-sidebar{width:170px;min-width:170px;}
+  .sidebar-item{padding:8px 12px;font-size:11px;}
+  .stats-grid{grid-template-columns:1fr;}
+  .fees-summary{grid-template-columns:1fr;}
+  .att-summary{grid-template-columns:1fr;}
+}
+/* ── Collapsible sidebar sections ── */
+.sidebar-section-title{font-size:11px;font-weight:800;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:1.5px;padding:14px 20px 6px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;transition:color .18s;}
+.sidebar-section-title:hover{color:rgba(255,255,255,0.65);}
+.sidebar-section-title .sst-arrow{font-size:9px;transition:transform .2s;color:rgba(255,255,255,0.3);}
+.sidebar-section-title.collapsed .sst-arrow{transform:rotate(-90deg);}
+.sidebar-section-items{overflow:hidden;max-height:999px;transition:max-height .28s ease;}
+.sidebar-section-items.collapsed{max-height:0;}
+/* ── Notifications Bell ── */
+.notif-bell{position:relative;display:inline-flex;}
+.notif-bell-btn{background:rgba(255,255,255,.12);border:none;border-radius:8px;color:#fff;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:background .2s;position:relative;}
+.notif-bell-btn:hover{background:rgba(255,255,255,.25);}
+.notif-badge{position:absolute;top:-5px;right:-5px;background:#f44336;color:#fff;font-size:9px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:none;align-items:center;justify-content:center;padding:0 3px;pointer-events:none;}
+.notif-badge.show{display:flex;}
+.notif-dropdown{position:absolute;top:calc(100% + 8px);right:0;width:300px;background:#1a1f2e;border:1px solid rgba(255,255,255,.12);border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.55);z-index:99999;display:none;overflow:hidden;}
+.notif-dropdown.open{display:block;}
+.notif-dd-header{padding:11px 15px;border-bottom:1px solid rgba(255,255,255,.09);display:flex;align-items:center;justify-content:space-between;}
+.notif-dd-header span{font-size:13px;font-weight:700;color:#e0e0e0;}
+.notif-dd-mark{font-size:11px;color:#64b5f6;cursor:pointer;background:none;border:none;padding:0;font-family:inherit;}
+.notif-scroll{max-height:280px;overflow-y:auto;}
+.notif-row{padding:10px 15px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;gap:9px;align-items:flex-start;}
+.notif-row.unread{background:rgba(100,181,246,.07);}
+.notif-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.notif-dot.info{background:#64b5f6;}.notif-dot.success{background:#66bb6a;}.notif-dot.warning{background:#ffb74d;}.notif-dot.danger,.notif-dot.urgent{background:#ef5350;}.notif-dot.announcement,.notif-dot.circular{background:#ab47bc;}
+.notif-body{flex:1;min-width:0;}
+.notif-ttl{font-size:12px;font-weight:600;color:#e0e0e0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.notif-sub{font-size:11px;color:#9e9e9e;margin-top:2px;line-height:1.4;}
+.notif-ago{font-size:10px;color:#616161;margin-top:3px;}
+.notif-empty-msg{padding:20px;text-align:center;color:#616161;font-size:12px;}
+/* ── Timetable ── */
+.tt-nav{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+.tt-nav-btn{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;}
+.tt-week-label{font-size:13px;font-weight:700;color:var(--navy);}
+.tt-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+.tt-day-card{background:var(--light);border-radius:10px;overflow:hidden;}
+.tt-day-head{padding:8px 12px;font-size:12px;font-weight:800;color:#fff;}
+.tt-period{padding:8px 12px;border-bottom:1px solid rgba(0,0,0,0.06);font-size:12px;}
+.tt-period:last-child{border-bottom:none;}
+.tt-subj{font-weight:700;color:var(--navy);}
+.tt-time{font-size:11px;color:#888;margin-top:2px;}
+.tt-teacher{font-size:11px;color:#aaa;margin-top:1px;}
+.tt-live{background:#dcfce7;border-radius:4px;font-size:9px;font-weight:800;color:#16a085;padding:1px 5px;margin-left:4px;}
+/* ── Biometric ── */
+.bio-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;}
+.bio-stat{background:var(--light);border-radius:10px;padding:14px;text-align:center;}
+.bio-stat .val{font-size:20px;font-weight:800;color:var(--navy);}
+.bio-stat .lbl{font-size:11px;color:#888;margin-top:4px;}
+.bio-log-table{width:100%;border-collapse:collapse;font-size:13px;}
+.bio-log-table th{background:var(--light);color:var(--navy);font-weight:700;padding:9px 12px;text-align:left;font-size:12px;text-transform:uppercase;}
+.bio-log-table td{padding:9px 12px;border-bottom:1px solid #f0f0f0;color:#555;}
+.bio-in{background:#dcfce7;color:#166534;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;}
+.bio-out{background:#fee2e2;color:#991b1b;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;}
+/* ── Holidays ── */
+.hol-list{display:flex;flex-direction:column;gap:10px;}
+.hol-item{display:flex;align-items:center;gap:14px;padding:12px 16px;background:var(--light);border-radius:10px;border-left:4px solid var(--green);}
+.hol-date{min-width:50px;text-align:center;}
+.hol-date .day{font-size:22px;font-weight:800;color:var(--navy);}
+.hol-date .mon{font-size:11px;color:#888;text-transform:uppercase;}
+.hol-info .name{font-size:14px;font-weight:700;color:var(--navy);}
+.hol-info .type{font-size:11px;color:#888;margin-top:2px;}
+.hol-national{border-left-color:var(--green);}
+.hol-state{border-left-color:#7c3aed;}
+.hol-school{border-left-color:#e67e22;}
+/* ── Poll bar ── */
+.poll-bar{display:flex;align-items:center;gap:8px;font-size:11px;color:#aaa;margin-top:10px;}
+.poll-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+/* ── Performance Monitor ── */
+.perf-top{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.perf-kpi{background:var(--light);border-radius:12px;padding:16px;text-align:center;border-left:4px solid var(--green);}
+.perf-kpi.danger{border-left-color:#dc3545;}
+.perf-kpi.warn{border-left-color:#e8a000;}
+.perf-kpi .num{font-size:26px;font-weight:800;color:var(--navy);}
+.perf-kpi .lbl{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-top:4px;}
+.perf-charts{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px;}
+.perf-chart-card{background:#fff;border-radius:12px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.06);}
+.perf-chart-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:12px;}
+.insights-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px;}
+.insight-card{background:var(--light);border-radius:10px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;}
+.insight-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.insight-icon.green{background:rgba(201,162,39,.15);color:var(--green);}
+.insight-icon.red{background:rgba(220,53,69,.1);color:#dc3545;}
+.insight-icon.blue{background:rgba(13,27,94,.08);color:var(--navy);}
+.insight-icon.orange{background:rgba(232,160,0,.12);color:#e8a000;}
+.insight-body .title{font-size:12px;font-weight:700;color:var(--navy);}
+.insight-body .desc{font-size:12px;color:#666;margin-top:3px;line-height:1.5;}
+.rank-table{width:100%;border-collapse:collapse;font-size:13px;}
+.rank-table th{background:var(--light);padding:9px 12px;text-align:left;font-weight:700;color:var(--navy);font-size:11px;text-transform:uppercase;}
+.rank-table td{padding:9px 12px;border-bottom:1px solid #f0f0f0;color:#555;}
+.rank-table tr:last-child td{border-bottom:none;}
+.rank-bar{height:8px;background:#e9ecef;border-radius:4px;overflow:hidden;width:100px;display:inline-block;vertical-align:middle;}
+.rank-fill{height:100%;border-radius:4px;background:var(--green);}
+.rank-fill.mid{background:#e8a000;} .rank-fill.low{background:#dc3545;}
+/* ── PTM ── */
+.ptm-tabs{display:flex;gap:8px;margin-bottom:18px;}
+.ptm-tab{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:var(--light);color:var(--navy);}
+.ptm-tab.active{background:var(--navy);color:#fff;}
+.ptm-card{background:var(--light);border-radius:12px;padding:16px;margin-bottom:12px;border-left:4px solid var(--green);}
+.ptm-card.completed{border-left-color:#22c55e;opacity:.85;}
+.ptm-card.cancelled{border-left-color:#dc3545;opacity:.7;}
+.ptm-card.requested{border-left-color:#e8a000;}
+.ptm-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:8px;}
+.ptm-date{font-size:12px;font-weight:700;color:var(--navy);}
+.ptm-status{font-size:10px;font-weight:800;text-transform:uppercase;padding:2px 8px;border-radius:20px;}
+.ptm-status.scheduled{background:rgba(13,27,94,.1);color:var(--navy);}
+.ptm-status.completed{background:rgba(34,197,94,.12);color:#166534;}
+.ptm-status.cancelled{background:rgba(220,53,69,.1);color:#dc3545;}
+.ptm-status.requested{background:rgba(232,160,0,.12);color:#b45309;}
+.ptm-title{font-size:14px;font-weight:700;color:var(--navy);}
+.ptm-details{font-size:12px;color:#666;margin-top:4px;}
+.ptm-notes{background:#fff;border-radius:8px;padding:10px 12px;margin-top:10px;font-size:12px;color:#444;border-left:3px solid var(--green);}
+.ptm-form{background:var(--light);border-radius:12px;padding:20px;margin-top:12px;}
+.ptm-form h4{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:14px;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
+.form-group label{font-size:12px;font-weight:600;color:var(--navy);}
+.form-group input,.form-group select,.form-group textarea{padding:8px 12px;border:1.5px solid #dde0e8;border-radius:8px;font-size:13px;font-family:inherit;outline:none;transition:border-color .2s;}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--green);}
+/* ── Mock Tests ── */
+.mock-list{display:flex;flex-direction:column;gap:12px;margin-bottom:20px;}
+.mock-card{background:var(--light);border-radius:12px;padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:transform .15s,box-shadow .15s;}
+.mock-card:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(0,0,0,.1);}
+.mock-icon{width:48px;height:48px;border-radius:12px;background:rgba(13,27,94,.08);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;color:var(--navy);}
+.mock-info{flex:1;}
+.mock-title{font-size:14px;font-weight:700;color:var(--navy);}
+.mock-meta{font-size:12px;color:#888;margin-top:3px;}
+.diff-easy{background:rgba(34,197,94,.12);color:#166534;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:800;}
+.diff-medium{background:rgba(232,160,0,.12);color:#b45309;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:800;}
+.diff-hard{background:rgba(220,53,69,.1);color:#dc3545;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:800;}
+.mock-builder{background:var(--light);border-radius:12px;padding:20px;margin-bottom:20px;display:none;}
+.mock-builder.open{display:block;}
+.q-row{background:#fff;border-radius:10px;padding:12px;margin-bottom:10px;border:1.5px solid #e9ecef;}
+.q-row-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.q-num{font-size:12px;font-weight:800;color:var(--navy);}
+.q-del{background:none;border:none;color:#dc3545;cursor:pointer;font-size:13px;}
+.q-type-options{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px;}
+.q-opt{padding:6px 8px;border:1.5px solid #dde0e8;border-radius:6px;font-size:12px;}
+/* ── Print Styles ── */
+@media print {
+  .topbar, .header, .parent-sidebar, .hamburger-btn, .btn-logout, .sidebar-backdrop, button {
+    display: none !important;
+  }
+  .main { margin-left: 0 !important; padding: 10px !important; }
+  .panel:not(.active) { display: none !important; }
+  .panel.active { display: block !important; }
+  .card { box-shadow: none !important; border: 1px solid #ddd !important; }
+  .marks-table, .att-table, .fee-table {
+    width: 100% !important; border-collapse: collapse !important;
+  }
+  .marks-table th, .marks-table td,
+  .att-table th, .att-table td,
+  .fee-table th, .fee-table td {
+    border: 1px solid #ccc !important; padding: 6px 8px !important; font-size: 11px !important;
+  }
+  .marks-table th, .att-table th, .fee-table th {
+    background: #f0f0f0 !important; font-weight: bold !important;
+  }
+  body::before {
+    content: "The Gurukul High — Parent Report";
+    display: block; font-size: 16px; font-weight: bold;
+    text-align: center; padding: 10px 0;
+    border-bottom: 2px solid #0D1B5E; margin-bottom: 16px;
+  }
+  body { background: white !important; color: #000 !important; }
+}
+</style>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#C9A227">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Gurukul ERP">
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <span><i class="fa fa-phone"></i> +91 821-234-5678 &nbsp;|&nbsp; <i class="fa fa-envelope"></i> info@gurukul.edu.in</span>
+  <span><i class="fa fa-map-marker"></i> K.R. Nagar, Mysuru(D), Karnataka</span>
+</div>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <div class="header-left">
+      <button class="hamburger-btn" onclick="toggleSidebar()" title="Toggle Sidebar"><i class="fa fa-bars"></i></button>
+      <span class="portal-tag"><i class="fa fa-user-shield"></i> Parent Portal</span>
+      <span class="portal-school">K.R. Nagar, Mysuru</span>
+    </div>
+    <div class="header-logo">
+      <img src="/images/gurukul-logo.png" alt="Gurukul Logo">
+      <div class="header-logo-text">
+        <div class="name">The Gurukul High</div>
+        <div class="sub">Empowering Minds, Shaping Futures</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <!-- Notification Bell -->
+      <div class="notif-bell" id="notifBell">
+        <button class="notif-bell-btn" onclick="toggleNotifDrop(event)" title="Notifications">
+          <i class="fa fa-bell"></i>
+          <span class="notif-badge" id="notifBadge"></span>
+        </button>
+        <div class="notif-dropdown" id="notifDropdown">
+          <div class="notif-dd-header">
+            <span>Notifications</span>
+            <button class="notif-dd-mark" onclick="markAllRead()">Mark all read</button>
+          </div>
+          <div class="notif-scroll" id="notifList">
+            <div class="notif-empty-msg">Loading...</div>
+          </div>
+        </div>
+      </div>
+      <div class="parent-chip">
+        <div class="parent-avatar" id="parentAvatar">P</div>
+        <div>
+          <div class="parent-chip-name" id="parentName">Parent</div>
+          <div class="parent-chip-role">Parent</div>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="doLogout()"><i class="fa fa-sign-out"></i> Logout</button>
+    </div>
+  </div>
+</header>
+
+<!-- Main Layout -->
+<div class="dashboard-wrap">
+  <!-- Mobile sidebar backdrop -->
+  <div class="sidebar-backdrop" onclick="toggleSidebar()"></div>
+  <!-- Sidebar -->
+  <aside class="parent-sidebar">
+    <!-- Overview (always visible) -->
+    <button class="sidebar-item active" id="si-overview" onclick="switchPanel('overview')"><i class="fa fa-home"></i> Overview</button>
+
+    <!-- Academics -->
+    <div class="sidebar-section-title" onclick="toggleSidebarSection(this)"><span>Academics</span><i class="fa fa-chevron-down sst-arrow"></i></div>
+    <div class="sidebar-section-items">
+      <button class="sidebar-item" id="si-attendance" onclick="switchPanel('attendance')"><i class="fa fa-calendar-check"></i> Attendance</button>
+      <button class="sidebar-item" id="si-marks" onclick="switchPanel('marks')"><i class="fa fa-chart-bar"></i> Marks</button>
+      <button class="sidebar-item" id="si-report-card" onclick="switchPanel('report-card')"><i class="fa fa-file-text"></i> Report Cards</button>
+      <button class="sidebar-item" id="si-timetable" onclick="switchPanel('timetable')"><i class="fa fa-table"></i> Timetable</button>
+      <button class="sidebar-item" id="si-performance" onclick="switchPanel('performance')"><i class="fa fa-chart-line"></i> Performance</button>
+      <button class="sidebar-item" id="si-ptm" onclick="switchPanel('ptm')"><i class="fa fa-users"></i> Parent-Teacher</button>
+      <button class="sidebar-item" id="si-mock-tests" onclick="switchPanel('mock-tests')"><i class="fa fa-file-alt"></i> Mock Tests</button>
+    </div>
+
+    <!-- Finance -->
+    <div class="sidebar-section-title" onclick="toggleSidebarSection(this)"><span>Finance</span><i class="fa fa-chevron-down sst-arrow"></i></div>
+    <div class="sidebar-section-items">
+      <button class="sidebar-item" id="si-fees" onclick="switchPanel('fees')"><i class="fa fa-rupee"></i> Fees</button>
+    </div>
+
+    <!-- School -->
+    <div class="sidebar-section-title" onclick="toggleSidebarSection(this)"><span>School</span><i class="fa fa-chevron-down sst-arrow"></i></div>
+    <div class="sidebar-section-items">
+      <button class="sidebar-item" id="si-calendar" onclick="switchPanel('calendar')"><i class="fa fa-calendar-alt"></i> Calendar</button>
+      <button class="sidebar-item" id="si-holidays" onclick="switchPanel('holidays')"><i class="fa fa-star"></i> Holidays</button>
+      <button class="sidebar-item" id="si-announcements" onclick="switchPanel('announcements')"><i class="fa fa-bell"></i> Announcements</button>
+      <button class="sidebar-item" id="si-documents" onclick="switchPanel('documents')"><i class="fa fa-folder"></i> Documents</button>
+    </div>
+
+    <div style="flex:1;"></div>
+    <button class="sidebar-item" onclick="doLogout()" style="color:rgba(220,53,69,0.8);"><i class="fa fa-sign-out"></i> Logout</button>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- Overview Panel -->
+    <div id="overview" class="panel active">
+      <div class="card">
+        <div class="student-header">
+          <div class="student-photo" id="studentAvatar">S</div>
+          <div class="student-details">
+            <div class="student-name" id="studentName">Loading...</div>
+            <div class="student-info"><strong>Class:</strong> <span id="studentClass">-</span></div>
+            <div class="student-info"><strong>Section:</strong> <span id="studentSection">-</span></div>
+            <div class="student-info"><strong>DOB:</strong> <span id="studentDOB">-</span></div>
+            <div class="student-info"><strong>Parent:</strong> <span id="studentParent">-</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="num" id="statAttendance">-</div>
+          <div class="lbl">Attendance %</div>
+        </div>
+        <div class="stat-card">
+          <div class="num" id="statSubjects">-</div>
+          <div class="lbl">Subjects</div>
+        </div>
+        <div class="stat-card">
+          <div class="num" id="statFeesPaid">-</div>
+          <div class="lbl">Fees Paid</div>
+        </div>
+        <div class="stat-card">
+          <div class="num" id="statUpcoming">-</div>
+          <div class="lbl">Upcoming Events</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Attendance Panel -->
+    <div id="attendance" class="panel">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fa fa-calendar-check"></i> Attendance</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button onclick="downloadParentAttendancePDF()" style="background:var(--navy);color:var(--green-l);border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;"><i class="fa fa-download"></i> Download PDF</button>
+            <button onclick="window.print()" style="background:#fff;color:var(--navy);border:1.5px solid var(--navy);border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;"><i class="fa fa-print"></i> Print</button>
+          </div>
+        </div>
+
+        <div class="att-filters">
+          <select id="monthSelect" onchange="loadAttendance()">
+            <option value="">Select Month</option>
+          </select>
+        </div>
+
+        <div class="att-summary">
+          <div class="att-stat pct">
+            <div class="n" id="attPercentage">-%</div>
+            <div class="l">Attendance %</div>
+          </div>
+          <div class="att-stat">
+            <div class="n" id="attPresent">0</div>
+            <div class="l">Present</div>
+          </div>
+          <div class="att-stat">
+            <div class="n" id="attAbsent">0</div>
+            <div class="l">Absent</div>
+          </div>
+          <div class="att-stat">
+            <div class="n" id="attLeave">0</div>
+            <div class="l">Leave</div>
+          </div>
+        </div>
+
+        <div class="progress-bar">
+          <div class="progress-fill" id="attProgressBar" style="width:0%"></div>
+        </div>
+
+        <table class="att-table">
+          <thead>
+            <tr><th>Date</th><th>Day</th><th>Status</th></tr>
+          </thead>
+          <tbody id="attTableBody">
+            <tr><td colspan="3" style="text-align:center;color:#aaa;">Select a month to view attendance</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Marks Panel -->
+    <div id="marks" class="panel">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fa fa-chart-bar"></i> Academic Performance</div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <span class="badge badge-blue" id="marksAvgBadge"></span>
+            <button onclick="downloadParentMarksPDF()" style="background:var(--navy);color:var(--green-l);border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;"><i class="fa fa-download"></i> Download PDF</button>
+            <button onclick="window.print()" style="background:#fff;color:var(--navy);border:1.5px solid var(--navy);border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;"><i class="fa fa-print"></i> Print</button>
+          </div>
+        </div>
+
+        <div class="term-filter">
+          <label>Select Term:</label>
+          <select id="termSelect" onchange="loadMarks()">
+            <option value="">All Terms</option>
+            <option value="Term-1">Term 1</option>
+            <option value="Term-2">Term 2</option>
+            <option value="Annual">Annual</option>
+          </select>
+        </div>
+
+        <table class="marks-table">
+          <thead>
+            <tr><th>Subject</th><th>Marks</th><th>Max Marks</th><th>Percentage</th><th>Grade</th></tr>
+          </thead>
+          <tbody id="marksTableBody">
+            <tr><td colspan="5" style="text-align:center;color:#aaa;">Loading marks data...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Fees Panel -->
+    <div id="fees" class="panel">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fa fa-rupee-sign"></i> Fee Status</div>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button onclick="downloadParentFeesPDF()" style="background:var(--navy);color:var(--green-l);border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;"><i class="fa fa-download"></i> Download PDF</button>
+            <button onclick="window.print()" style="background:#fff;color:var(--navy);border:1.5px solid var(--navy);border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;"><i class="fa fa-print"></i> Print</button>
+          </div>
+        </div>
+
+        <div class="fees-summary">
+          <div class="fee-stat total">
+            <div class="fee-icon"><i class="fa fa-money-bill"></i></div>
+            <div>
+              <div class="amt" id="feeTotal">₹0</div>
+              <div class="lbl">Total Fees</div>
+            </div>
+          </div>
+          <div class="fee-stat paid">
+            <div class="fee-icon"><i class="fa fa-check-circle"></i></div>
+            <div>
+              <div class="amt" id="feePaid">₹0</div>
+              <div class="lbl">Paid</div>
+            </div>
+          </div>
+          <div class="fee-stat pending">
+            <div class="fee-icon"><i class="fa fa-clock"></i></div>
+            <div>
+              <div class="amt" id="feePending">₹0</div>
+              <div class="lbl">Pending</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:24px;">
+          <h4 style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:14px;">Fee Records</h4>
+          <table class="fee-table">
+            <thead>
+              <tr><th>Description</th><th>Amount</th><th>Due Date</th><th>Status</th></tr>
+            </thead>
+            <tbody id="feeTableBody">
+              <tr><td colspan="4" style="text-align:center;color:#aaa;">Loading fee data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <h4 style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:14px;">Installment Plan</h4>
+          <table class="fee-table">
+            <thead>
+              <tr><th>Installment</th><th>Amount</th><th>Due Date</th><th>Status</th></tr>
+            </thead>
+            <tbody id="installmentTableBody">
+              <tr><td colspan="4" style="text-align:center;color:#aaa;">No installment data available</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Calendar Panel -->
+    <div id="calendar" class="panel">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fa fa-calendar-alt"></i> School Calendar</div>
+        </div>
+
+        <ul class="calendar-list" id="calendarList">
+          <li style="text-align:center;color:#aaa;padding:20px;">Loading calendar events...</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Announcements Panel -->
+    <div id="announcements" class="panel">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fa fa-bell"></i> School Announcements</div>
+        </div>
+
+        <div id="announcementsList" style="display:flex;flex-direction:column;gap:12px;">
+          <div style="text-align:center;color:#aaa;padding:20px;">Loading announcements...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Documents Panel -->
+    <div id="documents" class="panel">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fa fa-folder"></i> Documents</div>
+        </div>
+        <ul class="documents-list" id="documentsList">
+          <li style="text-align:center;color:#aaa;padding:20px;">Loading documents...</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Report Card Panel -->
+    <div id="report-card" class="panel">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fa fa-file-text"></i> Report Cards</div>
+        </div>
+
+        <div id="rcParentExamList" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;">
+          <div style="text-align:center;color:#aaa;padding:40px;grid-column:1/-1;"><div class="spinner" style="margin:0 auto 12px;"></div>Loading exams…</div>
+        </div>
+
+        <!-- Report Card View Modal -->
+        <div id="rcParentModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:2000;overflow-y:auto;padding:20px;" onclick="if(event.target===this)closeParentRC()">
+          <div style="max-width:800px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+            <div style="background:linear-gradient(135deg,#0D1B5E,#1a2d8a);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;">
+              <div style="color:#fff;font-size:15px;font-weight:700;"><i class="fa fa-file-text" style="color:#C9A227;margin-right:7px;"></i>Report Card</div>
+              <div style="display:flex;gap:8px;">
+                <button onclick="printParentRC()" style="background:#C9A227;color:#fff;border:none;border-radius:6px;padding:7px 14px;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer;"><i class="fa fa-print"></i> Print</button>
+                <button onclick="closeParentRC()" style="background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);border:none;border-radius:6px;padding:7px 12px;cursor:pointer;">✕</button>
+              </div>
+            </div>
+            <div id="rcParentPreview"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timetable Panel -->
+    <div id="timetable" class="panel">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fa fa-table"></i> Child's Timetable</div>
+          <button onclick="window.print()" style="background:#fff;color:var(--navy);border:1.5px solid var(--navy);border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;"><i class="fa fa-print"></i> Print</button>
+        </div>
+        <div class="tt-nav">
+          <button class="tt-nav-btn" onclick="pTTNavWeek(-1)"><i class="fa fa-chevron-left"></i> Prev</button>
+          <span class="tt-week-label" id="pTTWeekLabel">This week</span>
+          <button class="tt-nav-btn" onclick="pTTNavWeek(1)">Next <i class="fa fa-chevron-right"></i></button>
+        </div>
+        <div class="tt-grid" id="pTTGrid">
+          <div style="text-align:center;color:#aaa;padding:30px;grid-column:1/-1;">Loading timetable...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Performance Monitor Panel -->
+    <div id="performance" class="panel">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fa fa-chart-line"></i> Performance Monitor</div>
+          <button onclick="window.print()" style="background:#fff;color:var(--navy);border:1.5px solid var(--navy);border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;"><i class="fa fa-print"></i> Print</button>
+        </div>
+
+        <div class="perf-top">
+          <div class="perf-kpi" id="perfOverallKpi">
+            <div class="num" id="perfOverall">—%</div>
+            <div class="lbl">Overall Score</div>
+          </div>
+          <div class="perf-kpi warn">
+            <div class="num" id="perfAttendance">—%</div>
+            <div class="lbl">Attendance</div>
+          </div>
+          <div class="perf-kpi">
+            <div class="num" id="perfSubjects">—</div>
+            <div class="lbl">Subjects</div>
+          </div>
+          <div class="perf-kpi">
+            <div class="num" id="perfExams">—</div>
+            <div class="lbl">Total Exams</div>
+          </div>
+        </div>
+
+        <div class="perf-charts">
+          <div class="perf-chart-card">
+            <div class="perf-chart-title"><i class="fa fa-bar-chart" style="color:var(--green);margin-right:6px;"></i>Subject Performance</div>
+            <canvas id="subjChart" height="200"></canvas>
+          </div>
+          <div class="perf-chart-card">
+            <div class="perf-chart-title"><i class="fa fa-line-chart" style="color:var(--green);margin-right:6px;"></i>Term Trend</div>
+            <canvas id="termChart" height="200"></canvas>
+          </div>
+        </div>
+
+        <div class="insights-grid" id="perfInsights"></div>
+
+        <h4 style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:12px;margin-top:4px;">Subject Rankings</h4>
+        <table class="rank-table">
+          <thead><tr><th>#</th><th>Subject</th><th>Avg %</th><th>Progress</th><th>Exams</th></tr></thead>
+          <tbody id="perfRankBody"><tr><td colspan="5" style="text-align:center;color:#aaa;">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PTM Panel -->
+    <div id="ptm" class="panel">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fa fa-users"></i> Parent-Teacher Meetings</div>
+        </div>
+
+        <div class="ptm-tabs">
+          <button class="ptm-tab active" onclick="switchPTMTab('upcoming',this)">Upcoming</button>
+          <button class="ptm-tab" onclick="switchPTMTab('past',this)">Past Meetings</button>
+          <button class="ptm-tab" onclick="switchPTMTab('request',this)">Request Meeting</button>
+        </div>
+
+        <div id="ptm-upcoming">
+          <div id="ptmUpcomingList"><div style="text-align:center;color:#aaa;padding:30px;">Loading…</div></div>
+        </div>
+        <div id="ptm-past" style="display:none;">
+          <div id="ptmPastList"><div style="text-align:center;color:#aaa;padding:30px;">Loading…</div></div>
+        </div>
+        <div id="ptm-request" style="display:none;">
+          <div class="ptm-form">
+            <h4><i class="fa fa-calendar-plus" style="color:var(--green);margin-right:6px;"></i>Request a Meeting</h4>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Preferred Date</label>
+                <input type="date" id="ptmReqDate">
+              </div>
+              <div class="form-group">
+                <label>Preferred Time</label>
+                <input type="time" id="ptmReqTime" value="10:00">
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Subject / Teacher (Optional)</label>
+                <input type="text" id="ptmReqSubject" placeholder="e.g. Mathematics – Mr. Sharma">
+              </div>
+              <div class="form-group">
+                <label>Topic to Discuss</label>
+                <input type="text" id="ptmReqTopic" placeholder="e.g. Academic progress">
+              </div>
+            </div>
+            <div class="form-group" style="margin-bottom:14px;">
+              <label>Additional Notes</label>
+              <textarea id="ptmReqNotes" rows="3" placeholder="Any specific concerns or questions…" style="resize:vertical;"></textarea>
+            </div>
+            <button onclick="submitPTMRequest()" style="background:var(--navy);color:var(--green-l);border:none;border-radius:8px;padding:10px 22px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;"><i class="fa fa-paper-plane"></i> Submit Request</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mock Tests Panel -->
+    <div id="mock-tests" class="panel">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fa fa-file-alt"></i> Mock Tests &amp; Practice Papers</div>
+          <button onclick="toggleMockBuilder()" style="background:var(--navy);color:var(--green-l);border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;" id="mockBuilderToggleBtn"><i class="fa fa-plus"></i> Create Test</button>
+        </div>
+
+        <!-- Builder Form -->
+        <div class="mock-builder" id="mockBuilder">
+          <h4 style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:14px;"><i class="fa fa-pencil" style="color:var(--green);margin-right:6px;"></i>Create Practice Test</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Test Title</label>
+              <input type="text" id="mockTitle" placeholder="e.g. Chapter 5 Practice Test">
+            </div>
+            <div class="form-group">
+              <label>Subject</label>
+              <input type="text" id="mockSubject" placeholder="e.g. Mathematics">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Difficulty</label>
+              <select id="mockDifficulty">
+                <option value="Easy">Easy</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="Hard">Hard</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Time Limit (minutes)</label>
+              <input type="number" id="mockTimeLimit" value="30" min="5" max="180">
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+            <span style="font-size:13px;font-weight:700;color:var(--navy);">Questions</span>
+            <button onclick="addMockQuestion()" style="background:rgba(13,27,94,0.08);color:var(--navy);border:none;border-radius:6px;padding:5px 12px;font-size:12px;font-weight:700;cursor:pointer;"><i class="fa fa-plus"></i> Add Question</button>
+          </div>
+          <div id="mockQList"></div>
+          <div style="display:flex;gap:10px;margin-top:14px;">
+            <button onclick="createMockTest()" style="background:var(--green);color:#fff;border:none;border-radius:8px;padding:10px 22px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;"><i class="fa fa-save"></i> Save Test</button>
+            <button onclick="toggleMockBuilder()" style="background:#fff;color:var(--navy);border:1.5px solid var(--navy);border-radius:8px;padding:10px 22px;font-size:13px;font-weight:700;cursor:pointer;">Cancel</button>
+          </div>
+        </div>
+
+        <!-- Test List -->
+        <div style="margin-top:8px;">
+          <h4 style="font-size:13px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px;">Saved Tests</h4>
+          <div class="mock-list" id="mockList">
+            <div style="text-align:center;color:#aaa;padding:30px;">Loading tests…</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Holidays Panel -->
+    <div id="holidays" class="panel">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fa fa-star"></i> Upcoming Holidays</div>
+          <button onclick="window.print()" style="background:#fff;color:var(--navy);border:1.5px solid var(--navy);border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;"><i class="fa fa-print"></i> Print</button>
+        </div>
+        <div class="hol-list" id="holList">
+          <div style="text-align:center;color:#aaa;padding:30px;">Loading holidays...</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+const API_BASE = '';
+let currentStudentId = null;
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+  checkAuth();
+  loadProfile();
+  initializeMonths();
+});
+
+function checkAuth() {
+  const token = localStorage.getItem('parent_token');
+  const name = localStorage.getItem('parent_name');
+  if (!token) {
+    window.location.href = 'parent-login.html';
+    return;
+  }
+  if (name) {
+    document.getElementById('parentName').textContent = name.split(' ')[0];
+    document.getElementById('parentAvatar').textContent = name.charAt(0).toUpperCase();
+  }
+  currentStudentId = localStorage.getItem('parent_student_id');
+}
+
+function toggleSidebar() {
+  if (window.innerWidth <= 768) {
+    document.body.classList.toggle('sidebar-mobile-open');
+  } else {
+    document.body.classList.toggle('sidebar-hidden');
+  }
+}
+window.addEventListener('resize', function() {
+  if (window.innerWidth > 768) {
+    document.body.classList.remove('sidebar-mobile-open');
+  } else {
+    document.body.classList.remove('sidebar-hidden');
+  }
+  updateSidebarTop();
+});
+
+// Keep sidebar top flush with the real bottom of the header (accounts for topbar scrolling away)
+function updateSidebarTop() {
+  const header = document.querySelector('.header');
+  const sidebar = document.querySelector('.parent-sidebar');
+  if (!header || !sidebar) return;
+  const top = Math.max(0, Math.round(header.getBoundingClientRect().bottom));
+  sidebar.style.top = top + 'px';
+  sidebar.style.height = 'calc(100vh - ' + top + 'px)';
+}
+updateSidebarTop();
+window.addEventListener('scroll', updateSidebarTop, { passive: true });
+
+// ── Shared PDF helper ──
+function _makePDF(title, head, rows, filename) {
+  const { jsPDF } = window.jspdf || {};
+  if (!jsPDF) { alert('PDF library not loaded. Please try again.'); return; }
+  const doc = new jsPDF();
+  const pw = doc.internal.pageSize.getWidth();
+  // Header bar
+  doc.setFillColor(13, 27, 94);
+  doc.rect(0, 0, pw, 26, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(15); doc.setFont(undefined, 'bold');
+  doc.text('The Gurukul High', 14, 12);
+  doc.setFontSize(10); doc.setFont(undefined, 'normal');
+  doc.text(title, 14, 20);
+  // Student info
+  const sName = localStorage.getItem('parent_student_name') || document.getElementById('studentName')?.textContent || 'Student';
+  doc.setTextColor(50, 50, 50); doc.setFontSize(10);
+  doc.text(`Student: ${sName}   |   Date: ${new Date().toLocaleDateString('en-IN')}`, 14, 33);
+  // Table
+  doc.autoTable({
+    startY: 38,
+    head: [head],
+    body: rows,
+    theme: 'grid',
+    headStyles: { fillColor: [201, 162, 39], textColor: [0, 0, 0], fontStyle: 'bold', fontSize: 10 },
+    bodyStyles: { textColor: [30, 30, 30], fontSize: 9 },
+    alternateRowStyles: { fillColor: [240, 242, 248] },
+    margin: { left: 14, right: 14 }
+  });
+  doc.save(filename);
+}
+
+function downloadParentMarksPDF() {
+  const rows = [];
+  document.querySelectorAll('#marksTableBody tr').forEach(tr => {
+    const cells = [...tr.querySelectorAll('td')].map(td => td.textContent.trim());
+    if (cells.length >= 4) rows.push(cells);
+  });
+  if (!rows.length) { alert('No marks data to export.'); return; }
+  _makePDF('Academic Performance Report',
+    ['Subject', 'Marks', 'Max Marks', 'Percentage', 'Grade'],
+    rows, 'marks_report.pdf');
+}
+
+function downloadParentAttendancePDF() {
+  const rows = [];
+  document.querySelectorAll('#attTableBody tr').forEach(tr => {
+    const cells = [...tr.querySelectorAll('td')].map(td => td.textContent.trim());
+    if (cells.length >= 3) rows.push(cells);
+  });
+  if (!rows.length) { alert('No attendance data to export.'); return; }
+  const pct = document.getElementById('attPercentage')?.textContent || '';
+  _makePDF(`Attendance Report  ${pct}`,
+    ['Date', 'Day', 'Status'],
+    rows, 'attendance_report.pdf');
+}
+
+function downloadParentFeesPDF() {
+  const rows = [];
+  document.querySelectorAll('#feeTableBody tr').forEach(tr => {
+    const cells = [...tr.querySelectorAll('td')].map(td => td.textContent.trim());
+    if (cells.length >= 3) rows.push(cells);
+  });
+  if (!rows.length) { alert('No fee data to export.'); return; }
+  const total = document.getElementById('feeTotal')?.textContent || '';
+  const paid  = document.getElementById('feePaid')?.textContent || '';
+  const pend  = document.getElementById('feePending')?.textContent || '';
+  _makePDF(`Fee Report  |  Total: ${total}  Paid: ${paid}  Pending: ${pend}`,
+    ['Description', 'Amount', 'Due Date', 'Status'],
+    rows, 'fee_report.pdf');
+}
+
+function toggleSidebarSection(el) {
+  el.classList.toggle('collapsed');
+  const items = el.nextElementSibling;
+  if (items && items.classList.contains('sidebar-section-items')) {
+    items.classList.toggle('collapsed');
+  }
+}
+
+function switchPanel(panelId) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+  const panel = document.getElementById(panelId);
+  if (panel) panel.classList.add('active');
+  const si = document.getElementById('si-' + panelId);
+  if (si) si.classList.add('active');
+
+  // Stop fee polling when switching away
+  if (panelId !== 'fees') stopFeePolling();
+
+  if (panelId === 'overview')       loadProfile();
+  else if (panelId === 'attendance')  loadAttendance();
+  else if (panelId === 'marks')       loadMarks();
+  else if (panelId === 'fees')        { loadFees(); startFeePolling(); }
+  else if (panelId === 'calendar')    loadCalendar();
+  else if (panelId === 'announcements') loadAnnouncements();
+  else if (panelId === 'documents')   loadDocuments();
+  else if (panelId === 'timetable')   loadTimetable();
+  else if (panelId === 'holidays')    loadHolidays();
+  else if (panelId === 'performance') loadPerformance();
+  else if (panelId === 'ptm')         loadPTM();
+  else if (panelId === 'mock-tests')  loadMockTests();
+}
+
+async function makeRequest(endpoint, options = {}) {
+  const token = localStorage.getItem('parent_token');
+  const headers = {
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json',
+    ...options.headers
+  };
+  try {
+    const res = await fetch(`${API_BASE}${endpoint}`, {
+      ...options,
+      headers
+    });
+    if (res.status === 401) {
+      localStorage.clear();
+      window.location.href = 'parent-login.html';
+      return null;
+    }
+    return await res.json();
+  } catch (err) {
+    console.error('Request error:', err);
+    return null;
+  }
+}
+
+async function loadProfile() {
+  // Use static JSON to bypass proxy cache
+  let data = null;
+  try {
+    const r = await fetch(`/portal/data/parent-profile.json?_=${Date.now()}`);
+    data = await r.json();
+  } catch(e) { data = await makeRequest('/api/parent/profile'); }
+  if (!data) return;
+
+  const s = data.student || data;
+  const sDisplayName = s.name || s.student_name || 'Student';
+  localStorage.setItem('parent_student_name', sDisplayName);
+  document.getElementById('studentName').textContent = sDisplayName;
+  if (s.class) { const sec = s.section||''; _pStudentClass = sec ? s.class+'-'+sec : s.class; }
+  document.getElementById('studentClass').textContent = s.class || '-';
+  document.getElementById('studentSection').textContent = s.section || '-';
+  document.getElementById('studentDOB').textContent = s.dob || '-';
+  document.getElementById('studentParent').textContent = s.parent_name || '-';
+  document.getElementById('studentAvatar').textContent = (s.name || s.student_name || 'S').charAt(0).toUpperCase();
+
+  // Load stats from static JSON (bypass proxy cache)
+  try {
+    const attR = await fetch(`/portal/data/parent-attendance.json?_=${Date.now()}`);
+    const attData = await attR.json();
+    if (attData && attData.summary) {
+      const su = attData.summary;
+      document.getElementById('statAttendance').textContent = (su.pct || su.pctAll || 0) + '%';
+    }
+  } catch(e) {}
+
+  try {
+    const mR = await fetch(`/portal/data/parent-marks.json?_=${Date.now()}`);
+    const marksData = await mR.json();
+    if (marksData && marksData.marks) {
+      const subjectCount = marksData.subjectCount || [...new Set(marksData.marks.map(m => m.subject))].length;
+      document.getElementById('statSubjects').textContent = subjectCount;
+    }
+  } catch(e) {}
+
+  try {
+    const fR = await fetch(`/portal/data/parent-fees.json?_=${Date.now()}`);
+    const feesData = await fR.json();
+    if (feesData && feesData.fees) {
+      const paidCount = feesData.fees.filter(f => f.status === 'Paid').length;
+      document.getElementById('statFeesPaid').textContent = paidCount;
+    }
+  } catch(e) {}
+
+  try {
+    const cR = await fetch(`/portal/data/parent-calendar.json?_=${Date.now()}`);
+    const calData = await cR.json();
+    if (calData && calData.events) {
+      const today = new Date(); today.setHours(0,0,0,0);
+      const upcoming = calData.events.filter(e => {
+        const d = new Date(e.start_date || e.date); return d >= today;
+      }).length;
+      document.getElementById('statUpcoming').textContent = upcoming;
+    }
+  } catch(e) {}
+}
+
+function initializeMonths() {
+  const select = document.getElementById('monthSelect');
+  const today = new Date();
+  for (let i = 0; i < 12; i++) {
+    const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
+    const val = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+    const opt = document.createElement('option');
+    opt.value = val;
+    opt.textContent = d.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+    select.appendChild(opt);
+  }
+}
+
+async function loadAttendance() {
+  const month = document.getElementById('monthSelect').value;
+  if (!month) return;
+
+  // Use static JSON (bypass proxy cache); falls back to API
+  let data = null;
+  try {
+    const r = await fetch(`/portal/data/parent-attendance.json?_=${Date.now()}`);
+    const raw = await r.json();
+    // Filter attendance records for selected month
+    const allRecs = raw.allAttendance || raw.attendance || [];
+    const filtered = allRecs.filter(rec => rec.date && rec.date.startsWith(month));
+    const present = filtered.filter(r=>r.status==='P'||r.status==='Present').length;
+    const absent  = filtered.filter(r=>r.status==='A'||r.status==='Absent').length;
+    const leave   = filtered.filter(r=>r.status==='L'||r.status==='Leave').length;
+    const total   = filtered.length;
+    const pct     = total > 0 ? Math.round(present/total*100) : 0;
+    data = { attendance: filtered, summary: { present, absent, leave, total_days: total, pct, percentage: pct+'%' }};
+  } catch(e) { data = await makeRequest(`/api/parent/attendance?month=${month}`); }
+  if (!data) return;
+
+  const att = data.summary || {};
+  const pctVal = att.pct || (att.total_days > 0 ? Math.round((att.present / att.total_days) * 100) : 0);
+  document.getElementById('attPercentage').textContent = att.percentage || (pctVal + '%');
+  document.getElementById('attPresent').textContent = att.present || 0;
+  document.getElementById('attAbsent').textContent = att.absent || 0;
+  document.getElementById('attLeave').textContent = att.leave || 0;
+
+  const pct = pctVal || parseInt(att.percentage) || 0;
+  document.getElementById('attProgressBar').style.width = pct + '%';
+
+  const tbody = document.getElementById('attTableBody');
+  tbody.innerHTML = '';
+  const attRows = data.attendance || data.records || [];
+  if (attRows.length > 0) {
+    attRows.forEach(r => {
+      const tr = document.createElement('tr');
+      const dayName = new Date(r.date).toLocaleDateString('en-US', { weekday: 'short' });
+      const statusMap = {'P':'Present','A':'Absent','L':'Leave','Present':'Present','Absent':'Absent','Late':'Late'};
+      const statusLabel = statusMap[r.status] || r.status;
+      const statusClass = 'status-' + (r.status==='P'?'P':r.status==='A'?'A':r.status==='L'?'L':r.status);
+      tr.innerHTML = `<td>${r.date}</td><td>${dayName}</td><td class="${statusClass}">${statusLabel}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+}
+
+async function loadMarks() {
+  const term = document.getElementById('termSelect').value;
+  // Use static JSON (bypass proxy cache)
+  let data = null;
+  try {
+    const r = await fetch(`/portal/data/parent-marks.json?_=${Date.now()}`);
+    const raw = await r.json();
+    const filtered = term ? (raw.marks||[]).filter(m=>m.term===term) : (raw.marks||[]);
+    data = { marks: filtered };
+  } catch(e) { data = await makeRequest(`/api/parent/marks${term ? '?term='+term : ''}`); }
+  if (!data || !data.marks) return;
+
+  const tbody = document.getElementById('marksTableBody');
+  tbody.innerHTML = '';
+  const pcts = [];
+  data.marks.forEach(m => {
+    const pct = m.max_marks ? Math.round((m.marks / m.max_marks) * 100) : 0;
+    pcts.push(pct);
+    let pctClass = 'pct-red';
+    if (pct >= 75) pctClass = 'pct-green';
+    else if (pct >= 50) pctClass = 'pct-yellow';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td>${m.subject}</td><td>${m.marks}</td><td>${m.max_marks}</td><td class="${pctClass}">${pct}%</td><td>${m.grade || '-'}</td>`;
+    tbody.appendChild(tr);
+  });
+  // Show average
+  if (pcts.length) {
+    const avg = Math.round(pcts.reduce((a,b)=>a+b,0)/pcts.length);
+    const avgEl = document.getElementById('marksAvgBadge');
+    if (avgEl) avgEl.textContent = 'Avg: ' + avg + '%';
+  }
+}
+
+async function loadFees() {
+  // Use static JSON (bypass proxy cache)
+  let data = null;
+  try {
+    const r = await fetch(`/portal/data/parent-fees.json?_=${Date.now()}`);
+    data = await r.json();
+  } catch(e) { data = await makeRequest('/api/parent/fees'); }
+  if (!data) return;
+
+  const summary = data.summary || {};
+  document.getElementById('feeTotal').textContent = '₹' + (summary.total || 0);
+  document.getElementById('feePaid').textContent = '₹' + (summary.paid || 0);
+  document.getElementById('feePending').textContent = '₹' + (summary.pending || 0);
+
+  const feeBody = document.getElementById('feeTableBody');
+  feeBody.innerHTML = '';
+  const feeRecords = data.fees || data.records || [];
+  if (feeRecords.length > 0) {
+    feeRecords.forEach(r => {
+      const statusClass = r.status === 'Paid' ? 'paid-tag' : 'pending-tag';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${r.fee_type || r.description || '-'}</td><td>₹${r.amount}</td><td>${r.due_date || '-'}</td><td class="${statusClass}">${r.status || 'Pending'}</td>`;
+      feeBody.appendChild(tr);
+    });
+  }
+
+  const instBody = document.getElementById('installmentTableBody');
+  instBody.innerHTML = '';
+  if (data.installments && data.installments.length > 0) {
+    data.installments.forEach(inst => {
+      const statusClass = inst.status === 'Paid' ? 'paid-tag' : 'pending-tag';
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${inst.installment}</td><td>₹${inst.amount}</td><td>${inst.due_date}</td><td class="${statusClass}">${inst.status}</td>`;
+      instBody.appendChild(tr);
+    });
+  }
+}
+
+async function loadCalendar() {
+  let data = null;
+  try {
+    const r = await fetch(`/portal/data/parent-calendar.json?_=${Date.now()}`);
+    data = await r.json();
+  } catch(e) { data = await makeRequest('/api/parent/calendar'); }
+  if (!data || !data.events) return;
+
+  const list = document.getElementById('calendarList');
+  list.innerHTML = '';
+  if (data.events.length === 0) {
+    list.innerHTML = '<li style="text-align:center;color:#aaa;padding:20px;">No events available</li>';
+    return;
+  }
+
+  data.events.forEach(e => {
+    const li = document.createElement('li');
+    li.className = 'calendar-item';
+    const eventDate = e.start_date || e.date || '';
+    const eventType = e.event_type || e.type || 'Event';
+    li.innerHTML = `
+      <div class="calendar-date">${eventDate}</div>
+      <div class="calendar-details">
+        <div class="calendar-event">${e.title}</div>
+        <div class="calendar-type"><span class="badge badge-blue">${eventType}</span></div>
+      </div>
+    `;
+    list.appendChild(li);
+  });
+}
+
+async function loadAnnouncements() {
+  const data = await makeRequest('/api/parent/announcements');
+  if (!data || !data.announcements) return;
+
+  const container = document.getElementById('announcementsList');
+  container.innerHTML = '';
+  if (data.announcements.length === 0) {
+    container.innerHTML = '<div style="text-align:center;color:#aaa;padding:20px;">No announcements</div>';
+    return;
+  }
+
+  data.announcements.forEach(a => {
+    const div = document.createElement('div');
+    div.className = 'announcement-card';
+    div.innerHTML = `
+      <div class="announcement-header">
+        <div class="announcement-title">${a.title}</div>
+        <div class="announcement-date">${a.date || 'Today'}</div>
+      </div>
+      <div class="announcement-body">${a.message}</div>
+      <div style="margin-top:8px;"><span class="badge badge-blue">${a.type || 'General'}</span></div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+async function loadDocuments() {
+  if (!currentStudentId) return;
+  const data = await makeRequest(`/api/documents?owner_id=${currentStudentId}&owner_type=student`);
+  if (!data || !data.documents) return;
+
+  const list = document.getElementById('documentsList');
+  list.innerHTML = '';
+  if (data.documents.length === 0) {
+    list.innerHTML = '<li style="text-align:center;color:#aaa;padding:20px;">No documents available</li>';
+    return;
+  }
+
+  data.documents.forEach(doc => {
+    const li = document.createElement('li');
+    li.className = 'document-item';
+    li.innerHTML = `
+      <div class="document-icon"><i class="fa fa-file-pdf"></i></div>
+      <div class="document-details">
+        <div class="document-name">${doc.name}</div>
+        <div class="document-meta">${doc.type} • ${doc.upload_date}</div>
+      </div>
+      <a class="document-link" href="${API_BASE}/api/documents/file/${doc.filename}" download>
+        <i class="fa fa-download"></i> Download
+      </a>
+    `;
+    list.appendChild(li);
+  });
+}
+
+// ── Fee Polling ──────────────────────────────────────────────────────────────
+let _feePollingInterval = null;
+function startFeePolling() {
+  if (_feePollingInterval) return;
+  _feePollingInterval = setInterval(() => loadFees(), 15000);
+}
+function stopFeePolling() {
+  if (_feePollingInterval) { clearInterval(_feePollingInterval); _feePollingInterval = null; }
+}
+
+// ── Timetable ────────────────────────────────────────────────────────────────
+let _pTTWeekOffset = 0;
+let _pStudentClass = '';
+function pTTWeekMonday(offset) {
+  const d = new Date(); d.setHours(0,0,0,0);
+  const day = d.getDay(), diff = d.getDate() - day + (day === 0 ? -6 : 1);
+  d.setDate(diff + offset * 7);
+  return d.toISOString().slice(0,10);
+}
+function pTTNavWeek(dir) { _pTTWeekOffset += dir; loadTimetable(); }
+async function loadTimetable() {
+  const week = pTTWeekMonday(_pTTWeekOffset);
+  // Date range label
+  const from = new Date(week), to = new Date(week); to.setDate(to.getDate()+5);
+  document.getElementById('pTTWeekLabel').textContent =
+    from.toLocaleDateString('en-IN',{day:'numeric',month:'short'}) + ' – ' +
+    to.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+  // Fetch if we have class info
+  if (!_pStudentClass) {
+    // Try to get class from profile data
+    const cls = document.getElementById('studentClass')?.textContent;
+    const sec = document.getElementById('studentSection')?.textContent;
+    if (cls && cls !== '-') _pStudentClass = sec && sec !== '-' ? cls+'-'+sec : cls;
+  }
+  if (!_pStudentClass) {
+    document.getElementById('pTTGrid').innerHTML = '<div style="text-align:center;color:#aaa;padding:30px;grid-column:1/-1;">Student class info not loaded. Go to Overview first.</div>';
+    return;
+  }
+  const data = await makeRequest(`/api/parent/timetable?week=${week}`);
+  const grid = document.getElementById('pTTGrid');
+  if (!data || !data.timetable || !data.timetable.length) {
+    grid.innerHTML = '<div style="text-align:center;color:#aaa;padding:30px;grid-column:1/-1;"><i class="fa fa-calendar-times" style="font-size:32px;margin-bottom:8px;display:block;"></i>No timetable for this week</div>';
+    return;
+  }
+  const days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const colors = {'Monday':'#0D1B5E','Tuesday':'#7b2d8b','Wednesday':'#1a6b3a','Thursday':'#b45309','Friday':'#0369a1','Saturday':'#6b3a1a'};
+  const now = new Date();
+  const todayDay = now.toLocaleDateString('en-US',{weekday:'long'});
+  const grouped = {};
+  data.timetable.forEach(p => { (grouped[p.day_of_week] = grouped[p.day_of_week]||[]).push(p); });
+  grid.innerHTML = days.filter(d => grouped[d]).map(day => {
+    const isToday = day === todayDay && _pTTWeekOffset === 0;
+    const periods = grouped[day].map(p => {
+      const [sh,sm] = p.start_time.split(':').map(Number);
+      const [eh,em] = p.end_time.split(':').map(Number);
+      const nowMins = now.getHours()*60+now.getMinutes();
+      const sMin = sh*60+sm, eMin = eh*60+em;
+      const live = isToday && nowMins >= sMin && nowMins < eMin;
+      return `<div class="tt-period">
+        <div class="tt-subj">${p.subject}${live?'<span class="tt-live">LIVE</span>':''}</div>
+        <div class="tt-time">${p.start_time}–${p.end_time}</div>
+        ${p.teacher_name?`<div class="tt-teacher">${p.teacher_name}</div>`:''}
+      </div>`;
+    }).join('');
+    return `<div class="tt-day-card">
+      <div class="tt-day-head" style="background:${colors[day]||'#0D1B5E'};">${day}${isToday?' <small>(Today)</small>':''}</div>
+      ${periods}
+    </div>`;
+  }).join('') || '<div style="text-align:center;color:#aaa;padding:30px;grid-column:1/-1;">No classes scheduled</div>';
+}
+
+
+// ── Holidays ─────────────────────────────────────────────────────────────────
+async function loadHolidays() {
+  let data = null;
+  try {
+    const r = await fetch(`/portal/data/parent-holidays.json?_=${Date.now()}`);
+    data = await r.json();
+  } catch(e) { data = await makeRequest('/api/parent/holidays'); }
+  const list = document.getElementById('holList');
+  if (!data || !data.holidays || !data.holidays.length) {
+    list.innerHTML = '<div style="text-align:center;color:#aaa;padding:30px;"><i class="fa fa-sun" style="font-size:32px;margin-bottom:8px;display:block;"></i>No upcoming holidays</div>';
+    return;
+  }
+  const typeColor = {'National':'hol-national','State':'hol-state','state':'hol-state','national':'hol-national'};
+  list.innerHTML = data.holidays.map(h => {
+    const d = new Date(h.date);
+    const typeClass = typeColor[h.type] || 'hol-school';
+    return `<div class="hol-item ${typeClass}">
+      <div class="hol-date"><div class="day">${d.getDate()}</div><div class="mon">${d.toLocaleDateString('en-IN',{month:'short'})}</div></div>
+      <div class="hol-info">
+        <div class="name">${h.name || h.title}</div>
+        <div class="type">${h.type || 'Holiday'} &nbsp;·&nbsp; ${d.toLocaleDateString('en-IN',{weekday:'long'})}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Performance Monitor ───────────────────────────────────────────────────────
+let _perfCharts = {};
+async function loadPerformance() {
+  document.getElementById('perfOverall').textContent = '…';
+  let data = null;
+  try {
+    const r = await fetch(`/portal/data/parent-performance.json?_=${Date.now()}`);
+    const raw = await r.json();
+    const subjects = raw.subjects || [];
+    const overall_pct = raw.overallPct || 0;
+    let attendance_pct = 0;
+    try {
+      const ar = await fetch(`/portal/data/parent-attendance.json?_=${Date.now()}`);
+      const ad = await ar.json();
+      attendance_pct = (ad.summary && ad.summary.pctAll) || 0;
+    } catch(e2) {}
+    data = { subjects, overall_pct, attendance_pct, total_exams: subjects.reduce((a,s)=>(a+(s.exams?s.exams.length:0)),0), terms: [] };
+  } catch(e) { data = await makeRequest('/api/parent/performance'); }
+  if (!data) { document.getElementById('perfOverall').textContent = '—%'; return; }
+
+  const overallPct = data.overall_pct || 0;
+  document.getElementById('perfOverall').textContent = overallPct + '%';
+  document.getElementById('perfAttendance').textContent = (data.attendance_pct || 0) + '%';
+  document.getElementById('perfSubjects').textContent = (data.subjects || []).length;
+  document.getElementById('perfExams').textContent = data.total_exams || 0;
+
+  // Colour overall KPI by grade
+  const kpiEl = document.getElementById('perfOverallKpi');
+  if (kpiEl) kpiEl.className = 'perf-kpi' + (overallPct < 50 ? ' danger' : overallPct < 70 ? ' warn' : '');
+
+  const subjects = data.subjects || [];
+  const labels   = subjects.map(s => s.subject.length > 10 ? s.subject.slice(0,9) + '…' : s.subject);
+  const values   = subjects.map(s => s.avg_pct || 0);
+  const bgColors = values.map(v => v >= 75 ? 'rgba(201,162,39,0.82)' : v >= 50 ? 'rgba(232,160,0,0.82)' : 'rgba(220,53,69,0.82)');
+
+  // Subject bar chart
+  if (_perfCharts.subj) _perfCharts.subj.destroy();
+  const sc = document.getElementById('subjChart');
+  if (sc) {
+    _perfCharts.subj = new Chart(sc, {
+      type: 'bar',
+      data: { labels, datasets: [{ label: 'Avg %', data: values, backgroundColor: bgColors, borderRadius: 5 }] },
+      options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 100 }, x: { ticks: { font: { size: 10 } } } } }
+    });
+  }
+
+  // Term trend line chart
+  const terms = data.terms || [];
+  if (_perfCharts.term) _perfCharts.term.destroy();
+  const tc = document.getElementById('termChart');
+  if (tc) {
+    _perfCharts.term = new Chart(tc, {
+      type: 'line',
+      data: {
+        labels: terms.length ? terms.map(t => t.term || 'Term') : ['No data'],
+        datasets: [{ label: 'Average %', data: terms.map(t => t.avg_pct || 0), borderColor: '#0D1B5E', backgroundColor: 'rgba(13,27,94,0.08)', tension: 0.4, fill: true, pointBackgroundColor: '#C9A227', pointRadius: 5 }]
+      },
+      options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 100 } } }
+    });
+  }
+
+  // Insights
+  const best  = subjects.reduce((a, b) => (a.avg_pct || 0) >= (b.avg_pct || 0) ? a : b, {});
+  const worst = subjects.reduce((a, b) => (a.avg_pct || 0) <= (b.avg_pct || 0) ? a : b, {});
+  const trend = terms.length >= 2 ? (terms[terms.length-1].avg_pct || 0) - (terms[0].avg_pct || 0) : null;
+  const grade = overallPct >= 90 ? 'A+ — Excellent' : overallPct >= 75 ? 'A — Good' : overallPct >= 60 ? 'B — Average' : 'C — Needs Improvement';
+  const insightsEl = document.getElementById('perfInsights');
+  if (insightsEl) {
+    insightsEl.innerHTML = [
+      { icon: '🌟', cls: 'green',  title: 'Strength',       desc: best.subject  ? `Best in <strong>${best.subject}</strong> — ${best.avg_pct || 0}% average`                     : 'No data yet' },
+      { icon: '⚠️', cls: (worst.avg_pct||0) < 60 ? 'red' : 'orange', title: 'Needs Attention', desc: worst.subject ? `<strong>${worst.subject}</strong> needs work (${worst.avg_pct || 0}%)` : 'All subjects on track' },
+      { icon: trend === null ? '📊' : trend >= 0 ? '📈' : '📉', cls: trend === null ? 'blue' : trend >= 0 ? 'green' : 'red', title: 'Trend', desc: trend === null ? 'More term data needed' : `Score ${trend >= 0 ? 'improved' : 'declined'} by <strong>${Math.abs(Math.round(trend))}%</strong> across terms` },
+      { icon: '🎯', cls: 'blue', title: 'Predicted Grade', desc: grade }
+    ].map(ins => `<div class="insight-card"><div class="insight-icon ${ins.cls}">${ins.icon}</div><div class="insight-body"><div class="title">${ins.title}</div><div class="desc">${ins.desc}</div></div></div>`).join('');
+  }
+
+  // Rankings
+  const rankBody = document.getElementById('perfRankBody');
+  if (rankBody) {
+    rankBody.innerHTML = subjects.map((s, i) => {
+      const pct = s.avg_pct || 0;
+      const fillCls = pct >= 75 ? '' : pct >= 50 ? 'mid' : 'low';
+      return `<tr>
+        <td><strong>${i+1}</strong></td>
+        <td>${s.subject}</td>
+        <td class="${pct >= 75 ? 'pct-green' : pct >= 50 ? 'pct-yellow' : 'pct-red'}">${pct}%</td>
+        <td><div class="rank-bar"><div class="rank-fill ${fillCls}" style="width:${pct}%"></div></div></td>
+        <td>${s.count || 0}</td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="5" style="text-align:center;color:#aaa;padding:16px;">No marks data available</td></tr>';
+  }
+}
+
+// ── PTM ───────────────────────────────────────────────────────────────────────
+let _ptmData = [];
+let _ptmActiveTab = 'upcoming';
+
+function switchPTMTab(tab, btn) {
+  _ptmActiveTab = tab;
+  document.querySelectorAll('.ptm-tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  ['upcoming', 'past', 'request'].forEach(t => {
+    const el = document.getElementById('ptm-' + t);
+    if (el) el.style.display = t === tab ? '' : 'none';
+  });
+  if (tab !== 'request') _renderPTMLists();
+}
+
+function _renderPTMLists() {
+  const now = new Date();
+  const upcoming = _ptmData.filter(m => (m.status === 'scheduled' || m.status === 'requested') && new Date(m.scheduled_at.replace(' ','T')) >= now);
+  const past     = _ptmData.filter(m => m.status === 'completed' || m.status === 'cancelled' || (m.status === 'scheduled' && new Date(m.scheduled_at.replace(' ','T')) < now));
+
+  const renderList = (items, containerId) => {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    if (!items.length) {
+      el.innerHTML = '<div style="text-align:center;color:#aaa;padding:36px;"><i class="fa fa-calendar-times" style="font-size:32px;display:block;margin-bottom:10px;"></i>No meetings found</div>';
+      return;
+    }
+    el.innerHTML = items.map(m => {
+      const dt = new Date(m.scheduled_at.replace(' ','T'));
+      const dtStr = dt.toLocaleDateString('en-IN', { weekday:'short', year:'numeric', month:'short', day:'numeric' }) + ' at ' + dt.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+      const teacherLine = [m.teacher_name, m.teacher_subject].filter(Boolean).join(' · ');
+      return `<div class="ptm-card ${m.status}">
+        <div class="ptm-meta">
+          <span class="ptm-date"><i class="fa fa-calendar" style="margin-right:5px;"></i>${dtStr}</span>
+          <span class="ptm-status ${m.status}">${m.status.charAt(0).toUpperCase() + m.status.slice(1)}</span>
+        </div>
+        <div class="ptm-title">${m.title || 'Parent-Teacher Meeting'}</div>
+        ${teacherLine ? `<div class="ptm-details"><i class="fa fa-user" style="margin-right:4px;"></i>${teacherLine}</div>` : ''}
+        ${m.location ? `<div class="ptm-details" style="margin-top:3px;"><i class="fa fa-map-marker" style="margin-right:4px;"></i>${m.location}</div>` : ''}
+        ${m.admin_notes ? `<div class="ptm-notes"><strong><i class="fa fa-info-circle" style="margin-right:4px;"></i>School Notes:</strong> ${m.admin_notes}</div>` : ''}
+        ${m.parent_notes ? `<div class="ptm-notes" style="border-left-color:var(--navy);margin-top:6px;"><strong><i class="fa fa-pencil" style="margin-right:4px;"></i>Your Notes:</strong> ${m.parent_notes}</div>` : ''}
+        <div style="margin-top:10px;">
+          <button onclick="openPTMNotes(${m.id},${JSON.stringify(m.parent_notes||'')})" style="background:rgba(13,27,94,.08);color:var(--navy);border:none;border-radius:6px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;"><i class="fa fa-pencil"></i> ${m.parent_notes ? 'Edit Notes' : 'Add Notes'}</button>
+        </div>
+      </div>`;
+    }).join('');
+  };
+
+  renderList(upcoming, 'ptmUpcomingList');
+  renderList(past,     'ptmPastList');
+}
+
+async function loadPTM() {
+  const data = await makeRequest('/api/parent/ptm');
+  _ptmData = data?.meetings || [];
+  // Reset to upcoming tab
+  switchPTMTab(_ptmActiveTab, null);
+  _renderPTMLists();
+}
+
+function openPTMNotes(id, existing) {
+  const notes = prompt('Add / edit your meeting notes:', existing || '');
+  if (notes === null) return;
+  _savePTMNotes(id, notes);
+}
+
+async function _savePTMNotes(id, notes) {
+  const res = await makeRequest('/api/parent/ptm/' + id + '/notes', {
+    method: 'PATCH',
+    body: JSON.stringify({ parent_notes: notes })
+  });
+  if (res?.success) { loadPTM(); } else { alert('Failed to save notes. Please try again.'); }
+}
+
+async function submitPTMRequest() {
+  const date    = document.getElementById('ptmReqDate').value;
+  const time    = document.getElementById('ptmReqTime').value;
+  const subject = document.getElementById('ptmReqSubject').value.trim();
+  const topic   = document.getElementById('ptmReqTopic').value.trim();
+  const notes   = document.getElementById('ptmReqNotes').value.trim();
+  if (!date || !time) { alert('Please select a preferred date and time.'); return; }
+  const scheduled_at = date + ' ' + time + ':00';
+  const res = await makeRequest('/api/parent/ptm', {
+    method: 'POST',
+    body: JSON.stringify({ scheduled_at, title: topic || 'Parent-Teacher Meeting Request', teacher_subject: subject, parent_notes: notes, status: 'requested' })
+  });
+  if (res?.success) {
+    alert('Your meeting request has been submitted!');
+    ['ptmReqDate','ptmReqTime','ptmReqSubject','ptmReqTopic','ptmReqNotes'].forEach(id => { const el = document.getElementById(id); if (el) el.value = id==='ptmReqTime'?'10:00':''; });
+    switchPTMTab('upcoming', document.querySelector('.ptm-tab'));
+    loadPTM();
+  } else { alert('Failed to submit request. Please try again.'); }
+}
+
+// ── Mock Tests ────────────────────────────────────────────────────────────────
+let _mockQCount = 0;
+
+function toggleMockBuilder() {
+  const b   = document.getElementById('mockBuilder');
+  const btn = document.getElementById('mockBuilderToggleBtn');
+  const open = b.classList.toggle('open');
+  if (btn) btn.innerHTML = open ? '<i class="fa fa-times"></i> Cancel' : '<i class="fa fa-plus"></i> Create Test';
+  if (open && !document.getElementById('mockQList').children.length) addMockQuestion();
+}
+
+function addMockQuestion() {
+  _mockQCount++;
+  const div = document.createElement('div');
+  div.className = 'q-row';
+  div.innerHTML = `
+    <div class="q-row-head"><span class="q-num">Q${_mockQCount}</span><button class="q-del" onclick="this.closest('.q-row').remove()"><i class="fa fa-times"></i></button></div>
+    <input type="text" placeholder="Question text" style="width:100%;padding:7px 10px;border:1.5px solid #dde0e8;border-radius:6px;font-size:13px;font-family:inherit;margin-bottom:8px;" class="q-text">
+    <div class="q-type-options">
+      <input type="text" placeholder="Option A" class="q-opt q-a">
+      <input type="text" placeholder="Option B" class="q-opt q-b">
+      <input type="text" placeholder="Option C" class="q-opt q-c">
+      <input type="text" placeholder="Option D" class="q-opt q-d">
+    </div>
+    <div style="margin-top:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+      <label style="font-size:12px;color:#888;">Correct Answer:</label>
+      <select style="padding:4px 10px;border:1.5px solid #dde0e8;border-radius:6px;font-size:12px;font-family:inherit;" class="q-ans">
+        <option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option>
+      </select>
+      <label style="font-size:12px;color:#888;margin-left:10px;">Marks:</label>
+      <input type="number" value="1" min="1" style="width:52px;padding:4px 8px;border:1.5px solid #dde0e8;border-radius:6px;font-size:12px;" class="q-marks">
+    </div>`;
+  document.getElementById('mockQList').appendChild(div);
+}
+
+async function createMockTest() {
+  const title      = document.getElementById('mockTitle').value.trim();
+  const subject    = document.getElementById('mockSubject').value.trim();
+  const difficulty = document.getElementById('mockDifficulty').value;
+  const timeLimit  = parseInt(document.getElementById('mockTimeLimit').value) || 30;
+  if (!title || !subject) { alert('Please fill in the test title and subject.'); return; }
+
+  let totalMarks = 0;
+  const questions = [];
+  document.querySelectorAll('#mockQList .q-row').forEach((row, idx) => {
+    const text  = row.querySelector('.q-text')?.value.trim();
+    const a     = row.querySelector('.q-a')?.value.trim();
+    const b     = row.querySelector('.q-b')?.value.trim();
+    const c     = row.querySelector('.q-c')?.value.trim();
+    const d     = row.querySelector('.q-d')?.value.trim();
+    const ans   = row.querySelector('.q-ans')?.value || 'A';
+    const marks = parseInt(row.querySelector('.q-marks')?.value) || 1;
+    if (text) { questions.push({ num: idx+1, text, options: { A:a, B:b, C:c, D:d }, answer: ans, marks }); totalMarks += marks; }
+  });
+  if (!questions.length) { alert('Add at least one question before saving.'); return; }
+
+  const res = await makeRequest('/api/parent/mock-tests', {
+    method: 'POST',
+    body: JSON.stringify({ title, subject, difficulty, time_limit: timeLimit, questions, total_marks: totalMarks })
+  });
+  if (res?.success) {
+    alert('Practice test saved successfully!');
+    document.getElementById('mockTitle').value = '';
+    document.getElementById('mockSubject').value = '';
+    document.getElementById('mockQList').innerHTML = '';
+    _mockQCount = 0;
+    toggleMockBuilder();
+    loadMockTests();
+  } else { alert('Failed to save test. Please try again.'); }
+}
+
+async function loadMockTests() {
+  const data = await makeRequest('/api/parent/mock-tests');
+  const list  = document.getElementById('mockList');
+  const tests = data?.tests || [];
+  if (!tests.length) {
+    list.innerHTML = '<div style="text-align:center;color:#aaa;padding:40px;"><i class="fa fa-file-text-o" style="font-size:36px;display:block;margin-bottom:10px;"></i>No tests yet. Create your first practice test!</div>';
+    return;
+  }
+  const dc = { Easy: 'diff-easy', Medium: 'diff-medium', Hard: 'diff-hard' };
+  list.innerHTML = tests.map(t => `
+    <div class="mock-card">
+      <div class="mock-icon" onclick="viewMockTest(${t.id})"><i class="fa fa-file-alt"></i></div>
+      <div class="mock-info" onclick="viewMockTest(${t.id})" style="cursor:pointer;">
+        <div class="mock-title">${t.title}</div>
+        <div class="mock-meta">${t.subject} &nbsp;·&nbsp; <span class="${dc[t.difficulty]||'diff-medium'}">${t.difficulty}</span> &nbsp;·&nbsp; <i class="fa fa-clock-o"></i> ${t.time_limit} min &nbsp;·&nbsp; ${t.total_marks} marks</div>
+      </div>
+      <div style="display:flex;gap:6px;">
+        <button onclick="viewMockTest(${t.id})" style="background:rgba(13,27,94,.08);color:var(--navy);border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;" title="View test"><i class="fa fa-eye"></i></button>
+        <button onclick="printMockTest(${t.id})" style="background:rgba(13,27,94,.08);color:var(--navy);border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;" title="Print"><i class="fa fa-print"></i></button>
+      </div>
+    </div>`).join('');
+}
+
+async function viewMockTest(id) {
+  const data = await makeRequest('/api/parent/mock-tests/' + id);
+  if (!data?.test) { alert('Could not load test.'); return; }
+  const t  = data.test;
+  const qs = (typeof t.questions === 'string' ? JSON.parse(t.questions) : t.questions) || [];
+  const qHtml = qs.map((q, i) => `
+    <div style="margin-bottom:16px;padding:14px;background:var(--light);border-radius:8px;">
+      <div style="font-weight:700;color:var(--navy);margin-bottom:8px;">Q${i+1}. ${q.text} <span style="font-size:11px;color:#888;font-weight:500;">(${q.marks} mark${q.marks>1?'s':''})</span></div>
+      ${q.options ? Object.entries(q.options).map(([k,v]) => `<div style="font-size:13px;color:#555;padding:3px 0;">${k}. ${v}${k===q.answer?' <span style="color:var(--green);font-weight:800;">✓ Correct</span>':''}</div>`).join('') : ''}
+    </div>`).join('');
+  const modal = document.createElement('div');
+  modal.className = 'modal-overlay';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:9999;overflow-y:auto;display:flex;align-items:flex-start;justify-content:center;padding:30px 16px;';
+  modal.innerHTML = `
+    <div style="background:#fff;border-radius:16px;max-width:720px;width:100%;padding:28px;position:relative;">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:10px;">
+        <div>
+          <div style="font-size:18px;font-weight:800;color:var(--navy);">${t.title}</div>
+          <div style="font-size:13px;color:#888;margin-top:4px;">${t.subject} &nbsp;·&nbsp; ${t.difficulty} &nbsp;·&nbsp; ${t.time_limit} min &nbsp;·&nbsp; ${t.total_marks} marks</div>
+        </div>
+        <button onclick="this.closest('.modal-overlay').remove()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#888;flex-shrink:0;">✕</button>
+      </div>
+      ${qHtml || '<p style="color:#aaa;text-align:center;padding:20px;">No questions found.</p>'}
+      <div style="display:flex;gap:10px;margin-top:18px;">
+        <button onclick="printMockTest(${t.id})" style="background:var(--navy);color:var(--green-l);border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;"><i class="fa fa-print"></i> Print</button>
+        <button onclick="this.closest('.modal-overlay').remove()" style="background:#fff;color:var(--navy);border:1.5px solid var(--navy);border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;">Close</button>
+      </div>
+    </div>`;
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+  document.body.appendChild(modal);
+}
+
+async function printMockTest(id) {
+  const data = await makeRequest('/api/parent/mock-tests/' + id);
+  if (!data?.test) { alert('Could not load test.'); return; }
+  const t  = data.test;
+  const qs = (typeof t.questions === 'string' ? JSON.parse(t.questions) : t.questions) || [];
+  const win = window.open('', '_blank');
+  const qsHtml = qs.map((q, i) => `
+    <div style="margin-bottom:20px;page-break-inside:avoid;">
+      <p style="font-weight:bold;margin:0 0 8px;">${i+1}. ${q.text} <span style="font-size:11px;color:#888;">(${q.marks} mark${q.marks>1?'s':''})</span></p>
+      ${q.options ? Object.entries(q.options).map(([k,v]) => `<p style="margin:3px 0 3px 20px;">${k}. ${v||'____________'}</p>`).join('') : ''}
+    </div>`).join('');
+  win.document.write(`<!DOCTYPE html><html><head><title>${t.title}</title>
+  <style>body{font-family:Arial,sans-serif;margin:30px 40px;font-size:13px;color:#222;}
+  h1{color:#0D1B5E;font-size:18px;margin-bottom:4px;}
+  .meta{display:flex;gap:24px;font-size:12px;color:#666;margin-bottom:12px;}
+  hr{border:none;border-top:1px solid #ddd;margin:10px 0 16px;}
+  .ans-key{margin-top:30px;padding-top:14px;border-top:2px dashed #ccc;}
+  </style>  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#C9A227">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Gurukul ERP">
+</head><body>
+  <h1>${t.title}</h1>
+  <div class="meta"><span><b>Subject:</b> ${t.subject}</span><span><b>Difficulty:</b> ${t.difficulty}</span><span><b>Time:</b> ${t.time_limit} min</span><span><b>Total Marks:</b> ${t.total_marks}</span></div>
+  <hr/>
+  ${qsHtml}
+  <div class="ans-key"><b>Answer Key:</b> ${qs.map((q,i) => `Q${i+1}:${q.answer}`).join('  |  ')}</div>
+  <p style="font-size:11px;color:#aaa;text-align:center;margin-top:24px;">The Gurukul High — Practice Test</p>
+  </body></html>`);
+  win.document.close();
+  setTimeout(() => win.print(), 400);
+}
+
+// ── Notification Bell ─────────────────────────────────────────────────────────
+(function(){
+  let _nd=[], _unread=0, _open=false;
+  function nH(){ return {Authorization:'Bearer '+(localStorage.getItem('parent_token')||'')}; }
+  function ago(s){ if(!s) return ''; const sec=Math.round((Date.now()-new Date(s.replace(' ','T')))/1000); if(sec<60) return sec+'s ago'; if(sec<3600) return Math.round(sec/60)+'m ago'; if(sec<86400) return Math.round(sec/3600)+'h ago'; return Math.round(sec/86400)+'d ago'; }
+  function renderB(){ const b=document.getElementById('notifBadge'); if(!b) return; b.textContent=_unread>99?'99+':String(_unread); b.classList.toggle('show',_unread>0); }
+  function renderL(){ const el=document.getElementById('notifList'); if(!el) return; if(!_nd.length){el.innerHTML='<div class="notif-empty-msg">No notifications</div>';return;} el.innerHTML=_nd.map(n=>`<div class="notif-row${n.is_read?'':' unread'}"><div class="notif-dot ${n.type||'info'}"></div><div class="notif-body"><div class="notif-ttl">${n.title||''}</div><div class="notif-sub">${n.message||n.body||''}</div><div class="notif-ago">${ago(n.created_at)}</div></div></div>`).join(''); }
+  async function load(){ try{ const r=await fetch('/api/notifications',{headers:nH()}); if(!r.ok) return; const d=await r.json(); const ann=(d.announcements||[]).map(a=>({id:'a'+a.id,title:a.title,message:a.body,type:a.type||'announcement',is_read:1,created_at:a.created_at})); _nd=[...(d.notifications||[]),...ann].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,20); _unread=d.unread||0; renderB(); if(_open) renderL(); }catch(e){} }
+  window.toggleNotifDrop=function(e){ e.stopPropagation(); const dd=document.getElementById('notifDropdown'); _open=!_open; dd.classList.toggle('open',_open); if(_open){renderL();markAllRead();} };
+  window.markAllRead=async function(){ try{ await fetch('/api/notifications/read',{method:'POST',headers:{...nH(),'Content-Type':'application/json'}}); _nd.forEach(n=>n.is_read=1); _unread=0; renderB(); if(_open) renderL(); }catch(e){} };
+  document.addEventListener('click',function(e){ if(_open&&!document.getElementById('notifBell')?.contains(e.target)){_open=false;document.getElementById('notifDropdown')?.classList.remove('open');} });
+  load(); setInterval(load, 30000);
+})();
+
+function doLogout() {
+  if (confirm('Are you sure you want to logout?')) {
+    localStorage.clear();
+    window.location.href = 'parent-login.html';
+  }
+}
+
+// ═══════════════ PARENT REPORT CARDS ═══════════════
+let _prcData = null;
+
+function parentGrade(p) {
+  if (p>=90) return 'A+'; if (p>=80) return 'A'; if (p>=70) return 'B+';
+  if (p>=60) return 'B'; if (p>=50) return 'C'; if (p>=35) return 'D'; return 'F';
+}
+
+async function loadParentReportCards() {
+  const cont = document.getElementById('rcParentExamList');
+  if (!cont) return;
+  cont.innerHTML = '<div style="text-align:center;color:#aaa;padding:40px;grid-column:1/-1;"><div class="spinner" style="margin:0 auto 12px;"></div>Loading exams…</div>';
+  try {
+    const token = localStorage.getItem('parent_token') || '';
+    const [examR, marksR] = await Promise.all([
+      fetch('/api/exams', { headers: { Authorization: 'Bearer ' + token } }),
+      fetch('/api/parent/exam-marks', { headers: { Authorization: 'Bearer ' + token } })
+    ]);
+    const examData  = await examR.json();
+    const marksData = await marksR.json();
+    const exams    = (examData.exams || []).filter(e => e.status === 'Results Published' || e.status === 'Completed');
+    const allMarks = marksData.marks || [];
+    if (!exams.length) {
+      cont.innerHTML = '<div style="text-align:center;color:#aaa;padding:60px;grid-column:1/-1;font-size:13px;"><i class="fa fa-graduation-cap fa-2x" style="display:block;margin-bottom:12px;opacity:0.3;"></i>No report cards available yet. Results will appear here once published by school.</div>';
+      return;
+    }
+    const statusColor = { 'Results Published':'#8e44ad', 'Completed':'#e67e22' };
+    cont.innerHTML = exams.map(e => {
+      const examMarks = allMarks.filter(m => m.exam_id === e.id);
+      const tot   = examMarks.reduce((s,m) => s+m.marks, 0);
+      const totMax= examMarks.reduce((s,m) => s+m.max_marks, 0);
+      const pct   = totMax > 0 ? Math.round((tot/totMax)*100) : null;
+      const grade = pct !== null ? parentGrade(pct) : null;
+      return `<div onclick="openParentRC(${e.id})" style="background:#fff;border-radius:12px;padding:18px 20px;box-shadow:0 2px 10px rgba(0,0,0,0.07);cursor:pointer;transition:all .18s;border-left:4px solid ${statusColor[e.status]||'#999'};"
+        onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 6px 20px rgba(0,0,0,0.12)'"
+        onmouseout="this.style.transform='none';this.style.boxShadow='0 2px 10px rgba(0,0,0,0.07)'">
+        <div style="font-size:14px;font-weight:800;color:var(--navy);margin-bottom:4px;">${e.name}</div>
+        <div style="font-size:12px;color:#888;margin-bottom:10px;">${e.exam_type} · ${e.term} · ${e.class==='All'?'All Classes':'Class '+e.class}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+          ${pct !== null ? `<div style="display:flex;gap:12px;"><span style="font-size:13px;font-weight:700;color:${pct>=35?'#27ae60':'#e74c3c'};">${pct}%</span><span style="background:rgba(13,27,94,0.08);color:var(--navy);padding:2px 10px;border-radius:10px;font-size:12px;font-weight:700;">${grade}</span></div>` :
+          '<span style="font-size:12px;color:#aaa;">No marks yet</span>'}
+          <span style="background:${statusColor[e.status]||'#999'}22;color:${statusColor[e.status]||'#999'};padding:3px 10px;border-radius:10px;font-size:11px;font-weight:700;">${e.status}</span>
+        </div>
+        <div style="margin-top:12px;color:var(--green);font-size:12px;font-weight:600;display:flex;align-items:center;gap:5px;"><i class="fa fa-file-text"></i> View Report Card</div>
+      </div>`;
+    }).join('');
+  } catch(e) {
+    cont.innerHTML = `<div style="color:#e74c3c;padding:20px;grid-column:1/-1;">Error: ${e.message}</div>`;
+  }
+}
+
+async function openParentRC(examId) {
+  document.getElementById('rcParentPreview').innerHTML = '<div style="text-align:center;padding:50px;"><div class="spinner" style="margin:0 auto;"></div><p style="color:#888;margin-top:12px;">Loading your report card…</p></div>';
+  document.getElementById('rcParentModal').style.display = 'block';
+  try {
+    const token = localStorage.getItem('parent_token') || '';
+    const studentId = JSON.parse(atob(token.split('.')[1])).studentId || JSON.parse(atob(token.split('.')[1])).sub;
+    const r = await fetch(`/api/exam-marks/report-card?student_id=${studentId}&exam_id=${examId}`, {
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    const d = await r.json();
+    if (!r.ok) throw new Error(d.error || 'Error loading report card');
+    _prcData = d;
+    document.getElementById('rcParentPreview').innerHTML = buildParentRCHTML(d);
+  } catch(e) {
+    document.getElementById('rcParentPreview').innerHTML = `<div style="padding:40px;color:#e74c3c;text-align:center;">${e.message}</div>`;
+  }
+}
+
+function buildParentRCHTML(d) {
+  const { student, exam, marks, totalObtained, totalMax, percentage, grade, passed, rank, classSize } = d;
+  const passedColor = passed ? '#1e8449' : '#c0392b';
+  return `<div id="prc-printable" style="font-family:'Poppins',Arial,sans-serif;background:#fff;">
+    <div style="background:linear-gradient(135deg,#0D1B5E,#1a2d8a);color:#fff;padding:20px 28px;display:flex;align-items:center;gap:16px;">
+      <div style="width:50px;height:50px;background:#fff;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <img src="/images/gurukul-logo.png" alt="Logo" style="width:44px;height:44px;object-fit:contain;" onerror="this.parentNode.innerHTML='<span style=color:#0D1B5E;font-weight:800;font-size:20px>G</span>'">
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:18px;font-weight:800;">The Gurukul High</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.65);">K.R. Nagar, Mysuru</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:10px;color:rgba(255,255,255,0.6);">REPORT CARD</div>
+        <div style="font-size:13px;font-weight:700;color:#C9A227;">${exam.academic_yr||''}</div>
+      </div>
+    </div>
+    <div style="background:#C9A227;padding:8px 28px;font-size:14px;font-weight:700;color:#fff;">${exam.name} · ${exam.exam_type} · ${exam.term}</div>
+
+    <div style="padding:20px 28px;">
+      <div style="background:rgba(13,27,94,0.04);border-radius:10px;padding:16px;margin-bottom:20px;display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div><span style="font-size:10px;color:#888;font-weight:700;text-transform:uppercase;">Student</span><br><strong style="color:#0D1B5E;font-size:15px;">${student.name}</strong></div>
+        <div><span style="font-size:10px;color:#888;font-weight:700;text-transform:uppercase;">Class</span><br><strong style="color:#0D1B5E;">${student.class}${student.section?' – '+student.section:''}</strong></div>
+      </div>
+
+      <table style="width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px;">
+        <thead><tr style="background:#0D1B5E;color:#fff;">
+          <th style="padding:9px 12px;text-align:left;">Subject</th>
+          <th style="padding:9px 12px;text-align:center;">Marks</th>
+          <th style="padding:9px 12px;text-align:center;">Max</th>
+          <th style="padding:9px 12px;text-align:center;">%</th>
+          <th style="padding:9px 12px;text-align:center;">Grade</th>
+          <th style="padding:9px 12px;text-align:center;">Status</th>
+        </tr></thead>
+        <tbody>
+          ${marks.map((m,i)=>{
+            const p=Math.round((m.marks/m.max_marks)*100);
+            const ok=p>=(exam.pass_marks/exam.total_marks*100);
+            return `<tr style="background:${i%2?'#f8f9fc':'#fff'};border-bottom:1px solid #e8e8e8;">
+              <td style="padding:8px 12px;font-weight:600;color:#333;">${m.subject}</td>
+              <td style="padding:8px 12px;text-align:center;font-weight:700;">${m.marks}</td>
+              <td style="padding:8px 12px;text-align:center;color:#999;">${m.max_marks}</td>
+              <td style="padding:8px 12px;text-align:center;">${p}%</td>
+              <td style="padding:8px 12px;text-align:center;"><span style="background:rgba(13,27,94,0.08);color:#0D1B5E;padding:2px 8px;border-radius:8px;font-size:11px;font-weight:700;">${m.grade||parentGrade(p)}</span></td>
+              <td style="padding:8px 12px;text-align:center;"><span style="background:${ok?'rgba(39,174,96,0.1)':'rgba(231,76,60,0.1)'};color:${ok?'#27ae60':'#e74c3c'};padding:2px 8px;border-radius:8px;font-size:11px;font-weight:700;">${ok?'Pass':'Fail'}</span></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+        <tfoot><tr style="background:#0D1B5E;color:#fff;">
+          <td style="padding:10px 12px;font-weight:700;">TOTAL</td>
+          <td style="padding:10px 12px;text-align:center;font-weight:800;">${totalObtained}</td>
+          <td style="padding:10px 12px;text-align:center;">${totalMax}</td>
+          <td style="padding:10px 12px;text-align:center;font-weight:700;">${percentage}%</td>
+          <td style="padding:10px 12px;text-align:center;font-weight:800;">${grade}</td>
+          <td style="padding:10px 12px;text-align:center;"><span style="font-weight:700;">${passed?'PASS':'FAIL'}</span></td>
+        </tr></tfoot>
+      </table>
+
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">
+        <div style="background:rgba(13,27,94,0.05);border-radius:10px;padding:14px;text-align:center;">
+          <div style="font-size:24px;font-weight:800;color:#0D1B5E;">${percentage}%</div>
+          <div style="font-size:11px;color:#888;font-weight:600;">Percentage</div>
+        </div>
+        <div style="background:rgba(201,162,39,0.1);border-radius:10px;padding:14px;text-align:center;">
+          <div style="font-size:24px;font-weight:800;color:#C9A227;">${grade}</div>
+          <div style="font-size:11px;color:#888;font-weight:600;">Grade</div>
+        </div>
+        <div style="background:${passed?'rgba(39,174,96,0.08)':'rgba(231,76,60,0.08)'};border-radius:10px;padding:14px;text-align:center;">
+          <div style="font-size:20px;font-weight:800;color:${passedColor};">${passed?'PASS':'FAIL'}</div>
+          <div style="font-size:11px;color:#888;font-weight:600;">Result${rank?' · Rank #'+rank+'/'+classSize:''}</div>
+        </div>
+      </div>
+
+      <div style="text-align:center;font-size:11px;color:#aaa;padding-top:12px;border-top:1px solid #f0f0f0;">
+        Generated by Gurukul ERP · ${new Date().toLocaleDateString('en-IN')} · For queries contact school
+      </div>
+    </div>
+  </div>`;
+}
+
+function closeParentRC() { document.getElementById('rcParentModal').style.display = 'none'; }
+
+function printParentRC() {
+  const content = document.getElementById('rcParentPreview')?.innerHTML || '';
+  const w = window.open('', '_blank');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Report Card</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>*{box-sizing:border-box;margin:0;padding:0;}body{font-family:'Poppins',Arial,sans-serif;}@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}</style>
+      <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#C9A227">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Gurukul ERP">
+</head><body>${content}</body></html>`);
+  w.document.close();
+  setTimeout(() => w.print(), 600);
+}
+
+// Hook switchPanel to load report cards on first visit
+const _origSwitchPanel = switchPanel;
+switchPanel = function(name) {
+  _origSwitchPanel(name);
+  if (name === 'report-card') loadParentReportCards();
+};
+</script>
+</body>
+</html>

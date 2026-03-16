@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Google Sheets Setup – The Gurukul High</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Poppins',sans-serif;background:#f0f2f8;color:#333;padding:0 0 60px;}
+:root{--navy:#0D1B5E;--green:#C9A227;}
+
+.header{background:var(--navy);padding:20px 32px;display:flex;align-items:center;gap:14px;}
+.header img{width:44px;height:44px;border-radius:8px;}
+.header h1{color:#fff;font-size:18px;font-weight:700;}
+.header p{color:rgba(255,255,255,0.5);font-size:12px;text-transform:uppercase;letter-spacing:1px;}
+
+.wrap{max-width:800px;margin:0 auto;padding:32px 24px;}
+
+.card{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,0.06);padding:28px 32px;margin-bottom:24px;}
+.card h2{font-size:16px;font-weight:800;color:var(--navy);margin-bottom:6px;display:flex;align-items:center;gap:10px;}
+.step-num{background:var(--navy);color:#fff;width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
+.card p{font-size:13px;color:#666;line-height:1.7;margin-top:10px;}
+.card ol{margin:10px 0 0 18px;font-size:13px;color:#555;line-height:2;}
+.card li{margin-bottom:4px;}
+.card li b{color:var(--navy);}
+a{color:var(--green);text-decoration:none;}a:hover{text-decoration:underline;}
+
+pre{background:#1e1e2e;color:#cdd6f4;border-radius:10px;padding:18px 20px;font-size:13px;line-height:1.7;overflow-x:auto;margin-top:12px;}
+.kw{color:#cba6f7;}
+.str{color:#a6e3a1;}
+.fn{color:#89dceb;}
+.cm{color:#6c7086;font-style:italic;}
+
+.env-block{background:#f8f9fc;border:1.5px dashed #d0d5e8;border-radius:10px;padding:16px 20px;font-family:monospace;font-size:13px;line-height:1.9;margin-top:12px;color:#333;}
+.env-key{color:var(--navy);font-weight:700;}
+.env-val{color:var(--green);}
+.env-cm{color:#aaa;}
+
+.tip{background:rgba(201,162,39,0.07);border-left:4px solid var(--green);padding:12px 16px;border-radius:0 8px 8px 0;font-size:13px;color:#444;margin-top:14px;line-height:1.6;}
+.warn{background:rgba(255,193,7,0.08);border-left:4px solid #f0c040;padding:12px 16px;border-radius:0 8px 8px 0;font-size:13px;color:#555;margin-top:14px;line-height:1.6;}
+</style>
+</head>
+<body>
+<div class="header">
+  <img src="/images/gurukul-logo.png" alt="">
+  <div>
+    <h1>Google Sheets Integration Setup</h1>
+    <p>The Gurukul High · Admissions System</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2>How It Works</h2>
+    <p>When a parent submits the Admission Form on your website, the server saves the data to <b>data/admissions.json</b> locally. It also automatically sends a copy to your Google Sheet — so you can view all applications in a spreadsheet without logging into the admin panel.</p>
+    <p style="margin-top:8px;">This uses <b>Google Apps Script</b> (a free Google tool). No Google Cloud billing, no OAuth2 setup — just a small script you add to your Google Sheet once.</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="step-num">1</span> &nbsp;Create Your Google Sheet</h2>
+    <ol>
+      <li>Go to <a href="https://sheets.google.com" target="_blank">sheets.google.com</a> and create a new spreadsheet.</li>
+      <li>Name it <b>"Gurukul Admissions 2026–27"</b> (or anything you like).</li>
+      <li>Rename the first tab (sheet) to <b>Admissions</b>.</li>
+    </ol>
+    <div class="tip">💡 The script will automatically add a header row and all columns on the first submission.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="step-num">2</span> &nbsp;Add the Apps Script</h2>
+    <ol>
+      <li>In your Google Sheet, click <b>Extensions → Apps Script</b>.</li>
+      <li>Delete any existing code in the editor.</li>
+      <li>Paste the following script and click <b>Save (Ctrl+S)</b>:</li>
+    </ol>
+<pre><span class="cm">// Gurukul Admissions – Google Apps Script Web App
+// Paste this in Extensions → Apps Script, then deploy as web app</span>
+
+<span class="kw">const</span> SHEET_NAME = <span class="str">'Admissions'</span>;
+<span class="kw">const</span> HEADERS = [
+  <span class="str">'App ID'</span>, <span class="str">'Date &amp; Time'</span>, <span class="str">'Status'</span>,
+  <span class="str">'First Name'</span>, <span class="str">'Last Name'</span>, <span class="str">'Date of Birth'</span>,
+  <span class="str">'Gender'</span>, <span class="str">'Blood Group'</span>, <span class="str">'Grade Applying'</span>,
+  <span class="str">'Previous School'</span>, <span class="str">'Last %'</span>,
+  <span class="str">"Father's Name"</span>, <span class="str">"Father's Mobile"</span>, <span class="str">"Father's Email"</span>, <span class="str">"Father's Occupation"</span>,
+  <span class="str">"Mother's Name"</span>, <span class="str">"Mother's Mobile"</span>,
+  <span class="str">'Address'</span>, <span class="str">'City'</span>, <span class="str">'PIN'</span>,
+  <span class="str">'Heard About Us'</span>, <span class="str">'Reason'</span>
+];
+
+<span class="kw">function</span> <span class="fn">doPost</span>(e) {
+  <span class="kw">try</span> {
+    <span class="kw">const</span> d = JSON.<span class="fn">parse</span>(e.postData.contents);
+    <span class="kw">if</span> (d.action !== <span class="str">'addAdmission'</span>) <span class="kw">return</span> <span class="fn">ok</span>({ skipped: <span class="kw">true</span> });
+
+    <span class="kw">const</span> ss    = SpreadsheetApp.<span class="fn">getActiveSpreadsheet</span>();
+    <span class="kw">const</span> sheet = ss.<span class="fn">getSheetByName</span>(SHEET_NAME) || ss.<span class="fn">insertSheet</span>(SHEET_NAME);
+    <span class="kw">if</span> (sheet.<span class="fn">getLastRow</span>() === <span class="str">0</span>) sheet.<span class="fn">appendRow</span>(HEADERS);
+
+    <span class="kw">const</span> s = d.data;
+    sheet.<span class="fn">appendRow</span>([
+      s.id, s.submittedAt, s.status,
+      s.firstName, s.lastName, s.dob,
+      s.gender, s.bloodGroup, s.gradeApplying,
+      s.prevSchool, s.lastPercentage,
+      s.fatherName, s.fatherMobile, s.fatherEmail, s.fatherOccupation,
+      s.motherName, s.motherMobile,
+      s.address, s.city, s.pin,
+      s.hearAbout, s.reasonAdmission
+    ]);
+    <span class="kw">return</span> <span class="fn">ok</span>({ success: <span class="kw">true</span>, id: s.id });
+  } <span class="kw">catch</span>(err) {
+    <span class="kw">return</span> <span class="fn">ok</span>({ error: err.message });
+  }
+}
+
+<span class="kw">function</span> <span class="fn">ok</span>(data) {
+  <span class="kw">return</span> ContentService
+    .<span class="fn">createTextOutput</span>(JSON.<span class="fn">stringify</span>(data))
+    .<span class="fn">setMimeType</span>(ContentService.MimeType.JSON);
+}
+</pre>
+  </div>
+
+  <div class="card">
+    <h2><span class="step-num">3</span> &nbsp;Deploy as Web App</h2>
+    <ol>
+      <li>Click <b>Deploy → New deployment</b>.</li>
+      <li>Click the gear icon ⚙ next to <b>Select type</b> and choose <b>Web app</b>.</li>
+      <li>Set <b>Execute as</b> → <b>Me</b>.</li>
+      <li>Set <b>Who has access</b> → <b>Anyone</b>.</li>
+      <li>Click <b>Deploy</b>. Google will ask for permissions — click <b>Allow</b>.</li>
+      <li>Copy the <b>Web app URL</b> (looks like <code>https://script.google.com/macros/s/ABC123.../exec</code>).</li>
+    </ol>
+    <div class="warn">⚠️ Keep this URL private — anyone with it can add rows to your sheet. Don't share it publicly.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="step-num">4</span> &nbsp;Add the URL to Your Server</h2>
+    <p>Create a file called <b>.env</b> inside the <code>server/</code> folder (next to server.js). Add this line:</p>
+    <div class="env-block">
+      <span class="env-cm"># Paste your Apps Script Web App URL here:</span><br>
+      <span class="env-key">APPS_SCRIPT_URL</span>=<span class="env-val">https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec</span>
+    </div>
+    <p style="margin-top:14px;">Then restart the server:</p>
+    <pre><span class="kw">node</span> server/server.js</pre>
+    <p style="margin-top:10px;font-size:13px;color:#888;">The server reads .env automatically. From now on, every new admission form submission will appear in your Google Sheet within seconds.</p>
+    <div class="tip">✅ The server already supports this — no code changes needed. Just create .env and restart.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="step-num">5</span> &nbsp;Test It</h2>
+    <ol>
+      <li>Open <a href="/admission-form.html">the Admission Form</a> and submit a test application.</li>
+      <li>Check your Google Sheet — a new row should appear within 2–3 seconds.</li>
+      <li>If it doesn't appear, check the server console for any warning messages about the Apps Script URL.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>Optional: Load Portal Data from Google Sheets</h2>
+    <p>You can also keep student data (attendance, marks, fees) in Google Sheets and sync it to the portal. Set these in your .env file:</p>
+    <div class="env-block">
+      <span class="env-cm"># Student portal data (read from public Google Sheet)</span><br>
+      <span class="env-key">GOOGLE_SHEET_ID</span>=<span class="env-val">your_sheet_id_here</span><br>
+      <span class="env-key">GOOGLE_API_KEY</span>=<span class="env-val">your_google_api_key_here</span>
+    </div>
+    <p style="margin-top:12px;">Then call <code>POST /api/admin/sync-sheets</code> to pull data from the sheet into the portal's JSON files. The sheet must have tabs named <b>Students</b>, <b>Attendance</b>, <b>Marks</b>, <b>Fees</b> with the correct column headers.</p>
+    <div class="tip">💡 To get a Google API key: go to <a href="https://console.cloud.google.com" target="_blank">Google Cloud Console</a> → Enable Google Sheets API → Create API key → Restrict it to Sheets API only.</div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+{
+  "id": "T005",
+  "name": "Anand Murthy",
+  "username": "anand.murthy",
+  "email": "anand.murthy@gurukul.edu",
+  "phone": "9900005555",
+  "subject": "Hindi",
+  "dob": "",
+  "gender": "",
+  "blood_group": "",
+  "emergency_name": "",
+  "emergency_phone": "",
+  "address": "",
+  "bank_name": "",
+  "account_number": "",
+  "ifsc": "",
+  "account_type": "Savings",
+  "pan": "",
+  "uan": "",
+  "esi_number": "",
+  "employment_type": "Full-time",
+  "designation": "Teacher",
+  "department": "Languages",
+  "joining_date": "2021-04-01",
+  "status": "Active",
+  "assignments": [
+    {
+      "class": "7",
+      "section": "A",
+      "subject": "Hindi"
+    },
+    {
+      "class": "8",
+      "section": "A",
+      "subject": "Hindi"
+    }
+  ],
+  "payroll_structure": {
+    "id": 12,
+    "staff_id": "T005",
+    "staff_type": "teacher",
+    "basic": 25000,
+    "hra_pct": 40,
+    "da_pct": 5,
+    "transport": 1500,
+    "medical": 1250,
+    "pf_pct": 12,
+    "esi_pct": 0,
+    "tds": 500
+  },
+  "payroll_entries": []
+}

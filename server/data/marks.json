@@ -1,0 +1,804 @@
+{
+  "STU001": [
+    {
+      "subject": "Mathematics",
+      "exam": "Unit Test 1",
+      "marks": 22,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Science",
+      "exam": "Unit Test 1",
+      "marks": 14,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Social Studies",
+      "exam": "Unit Test 1",
+      "marks": 14,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "English",
+      "exam": "Unit Test 1",
+      "marks": 15,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Kannada",
+      "exam": "Unit Test 1",
+      "marks": 24,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Hindi",
+      "exam": "Unit Test 1",
+      "marks": 13,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Computer Science",
+      "exam": "Unit Test 1",
+      "marks": 20,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Mathematics",
+      "exam": "Mid Term",
+      "marks": 29,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Science",
+      "exam": "Mid Term",
+      "marks": 48,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Social Studies",
+      "exam": "Mid Term",
+      "marks": 28,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "English",
+      "exam": "Mid Term",
+      "marks": 30,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Kannada",
+      "exam": "Mid Term",
+      "marks": 32,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Hindi",
+      "exam": "Mid Term",
+      "marks": 41,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Computer Science",
+      "exam": "Mid Term",
+      "marks": 28,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Mathematics",
+      "exam": "Unit Test 2",
+      "marks": 17,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Science",
+      "exam": "Unit Test 2",
+      "marks": 16,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Social Studies",
+      "exam": "Unit Test 2",
+      "marks": 14,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "English",
+      "exam": "Unit Test 2",
+      "marks": 21,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Kannada",
+      "exam": "Unit Test 2",
+      "marks": 23,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Hindi",
+      "exam": "Unit Test 2",
+      "marks": 20,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Computer Science",
+      "exam": "Unit Test 2",
+      "marks": 14,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    }
+  ],
+  "STU002": [
+    {
+      "subject": "Mathematics",
+      "exam": "Unit Test 1",
+      "marks": 24,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Science",
+      "exam": "Unit Test 1",
+      "marks": 17,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Social Studies",
+      "exam": "Unit Test 1",
+      "marks": 17,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "English",
+      "exam": "Unit Test 1",
+      "marks": 24,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Kannada",
+      "exam": "Unit Test 1",
+      "marks": 15,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Hindi",
+      "exam": "Unit Test 1",
+      "marks": 15,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Mathematics",
+      "exam": "Mid Term",
+      "marks": 38,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Science",
+      "exam": "Mid Term",
+      "marks": 37,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Social Studies",
+      "exam": "Mid Term",
+      "marks": 36,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "English",
+      "exam": "Mid Term",
+      "marks": 41,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Kannada",
+      "exam": "Mid Term",
+      "marks": 41,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Hindi",
+      "exam": "Mid Term",
+      "marks": 34,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Mathematics",
+      "exam": "Unit Test 2",
+      "marks": 21,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Science",
+      "exam": "Unit Test 2",
+      "marks": 17,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Social Studies",
+      "exam": "Unit Test 2",
+      "marks": 23,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "English",
+      "exam": "Unit Test 2",
+      "marks": 17,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Kannada",
+      "exam": "Unit Test 2",
+      "marks": 21,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Hindi",
+      "exam": "Unit Test 2",
+      "marks": 20,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    }
+  ],
+  "STU003": [
+    {
+      "subject": "Mathematics",
+      "exam": "Unit Test 1",
+      "marks": 16,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Physics",
+      "exam": "Unit Test 1",
+      "marks": 19,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Chemistry",
+      "exam": "Unit Test 1",
+      "marks": 22,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Biology",
+      "exam": "Unit Test 1",
+      "marks": 24,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "English",
+      "exam": "Unit Test 1",
+      "marks": 16,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Kannada",
+      "exam": "Unit Test 1",
+      "marks": 14,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Social Science",
+      "exam": "Unit Test 1",
+      "marks": 16,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Mathematics",
+      "exam": "Mid Term",
+      "marks": 32,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Physics",
+      "exam": "Mid Term",
+      "marks": 36,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Chemistry",
+      "exam": "Mid Term",
+      "marks": 38,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Biology",
+      "exam": "Mid Term",
+      "marks": 33,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "English",
+      "exam": "Mid Term",
+      "marks": 28,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Kannada",
+      "exam": "Mid Term",
+      "marks": 30,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Social Science",
+      "exam": "Mid Term",
+      "marks": 28,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Mathematics",
+      "exam": "Unit Test 2",
+      "marks": 18,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Physics",
+      "exam": "Unit Test 2",
+      "marks": 24,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Chemistry",
+      "exam": "Unit Test 2",
+      "marks": 22,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Biology",
+      "exam": "Unit Test 2",
+      "marks": 22,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "English",
+      "exam": "Unit Test 2",
+      "marks": 17,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Kannada",
+      "exam": "Unit Test 2",
+      "marks": 15,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Social Science",
+      "exam": "Unit Test 2",
+      "marks": 22,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    }
+  ],
+  "STU004": [
+    {
+      "subject": "Mathematics",
+      "exam": "Unit Test 1",
+      "marks": 18,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Science",
+      "exam": "Unit Test 1",
+      "marks": 16,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Social Studies",
+      "exam": "Unit Test 1",
+      "marks": 23,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "English",
+      "exam": "Unit Test 1",
+      "marks": 20,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Kannada",
+      "exam": "Unit Test 1",
+      "marks": 20,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Hindi",
+      "exam": "Unit Test 1",
+      "marks": 16,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Mathematics",
+      "exam": "Mid Term",
+      "marks": 41,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Science",
+      "exam": "Mid Term",
+      "marks": 31,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Social Studies",
+      "exam": "Mid Term",
+      "marks": 35,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "English",
+      "exam": "Mid Term",
+      "marks": 29,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Kannada",
+      "exam": "Mid Term",
+      "marks": 49,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Hindi",
+      "exam": "Mid Term",
+      "marks": 29,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Mathematics",
+      "exam": "Unit Test 2",
+      "marks": 24,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Science",
+      "exam": "Unit Test 2",
+      "marks": 21,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Social Studies",
+      "exam": "Unit Test 2",
+      "marks": 14,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "English",
+      "exam": "Unit Test 2",
+      "marks": 24,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Kannada",
+      "exam": "Unit Test 2",
+      "marks": 19,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Hindi",
+      "exam": "Unit Test 2",
+      "marks": 21,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    }
+  ],
+  "STU005": [
+    {
+      "subject": "Mathematics",
+      "exam": "Unit Test 1",
+      "marks": 16,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Physics",
+      "exam": "Unit Test 1",
+      "marks": 20,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Chemistry",
+      "exam": "Unit Test 1",
+      "marks": 19,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Biology",
+      "exam": "Unit Test 1",
+      "marks": 18,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "English",
+      "exam": "Unit Test 1",
+      "marks": 21,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Kannada",
+      "exam": "Unit Test 1",
+      "marks": 23,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Social Science",
+      "exam": "Unit Test 1",
+      "marks": 23,
+      "maxMarks": 25,
+      "term": "Term 1",
+      "date": "2026-01-20"
+    },
+    {
+      "subject": "Mathematics",
+      "exam": "Mid Term",
+      "marks": 45,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Physics",
+      "exam": "Mid Term",
+      "marks": 40,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Chemistry",
+      "exam": "Mid Term",
+      "marks": 48,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Biology",
+      "exam": "Mid Term",
+      "marks": 36,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "English",
+      "exam": "Mid Term",
+      "marks": 41,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Kannada",
+      "exam": "Mid Term",
+      "marks": 34,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Social Science",
+      "exam": "Mid Term",
+      "marks": 45,
+      "maxMarks": 50,
+      "term": "Term 1",
+      "date": "2026-02-15"
+    },
+    {
+      "subject": "Mathematics",
+      "exam": "Unit Test 2",
+      "marks": 16,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Physics",
+      "exam": "Unit Test 2",
+      "marks": 22,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Chemistry",
+      "exam": "Unit Test 2",
+      "marks": 15,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Biology",
+      "exam": "Unit Test 2",
+      "marks": 15,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "English",
+      "exam": "Unit Test 2",
+      "marks": 20,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Kannada",
+      "exam": "Unit Test 2",
+      "marks": 24,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    },
+    {
+      "subject": "Social Science",
+      "exam": "Unit Test 2",
+      "marks": 14,
+      "maxMarks": 25,
+      "term": "Term 2",
+      "date": "2026-03-05"
+    }
+  ]
+}

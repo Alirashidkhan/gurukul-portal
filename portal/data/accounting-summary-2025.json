@@ -1,0 +1,28 @@
+{
+  "feeTotal": 47600,
+  "feePend": 5500,
+  "donTotal": 0,
+  "salaryTot": 0,
+  "pfTot": 0,
+  "esiTot": 0,
+  "manualExp": 0,
+  "totalIncome": 47600,
+  "totalExpense": 0,
+  "surplus": 47600,
+  "cashBal": 47600,
+  "monthTrend": [
+    {
+      "m": "2026-01",
+      "total": 38600
+    },
+    {
+      "m": "2026-02",
+      "total": 5100
+    },
+    {
+      "m": "2026-03",
+      "total": 3900
+    }
+  ],
+  "year": "2025"
+}

@@ -1,0 +1,21 @@
+[
+  {
+    "id": "APP0001",
+    "submittedAt": "2026-03-12T01:46:11.004Z",
+    "status": "Pending Review",
+    "firstName": "Anika",
+    "lastName": "Gowda",
+    "gradeApplying": "Nursery",
+    "fatherName": "Ravi Gowda",
+    "fatherMobile": "9876500001",
+    "motherName": "Suma Gowda",
+    "motherMobile": "9876500002",
+    "address": "12 Main Road",
+    "city": "K.R. Nagar",
+    "state": "Karnataka",
+    "pin": "571602",
+    "lastGrade": "NA",
+    "lastPercentage": "NA",
+    "prevSchool": "Home"
+  }
+]

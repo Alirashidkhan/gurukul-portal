@@ -1,0 +1,23 @@
+{
+  "name": "The Gurukul High – School ERP",
+  "short_name": "Gurukul ERP",
+  "description": "Complete School Management System for The Gurukul High, K.R. Nagar, Mysuru",
+  "start_url": "/portal/index.html",
+  "display": "standalone",
+  "background_color": "#0a1628",
+  "theme_color": "#C9A227",
+  "orientation": "any",
+  "icons": [
+    { "src": "/assets/images/logo.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/assets/images/logo.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "shortcuts": [
+    { "name": "Admin Dashboard", "url": "/portal/admin-dashboard.html", "description": "Open Admin Dashboard" },
+    { "name": "Teacher Portal",  "url": "/portal/teacher-login.html",   "description": "Teacher Login" },
+    { "name": "Student Portal",  "url": "/portal/login.html",           "description": "Student Login" },
+    { "name": "Parent Portal",   "url": "/portal/parent-login.html",    "description": "Parent Login" }
+  ],
+  "categories": ["education", "productivity"],
+  "lang": "en-IN",
+  "scope": "/"
+}

@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit & Footprint Dashboard — The Gurukul High</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --navy:#0d1b5e; --gold:#c9a227; --green:#27ae60;
+  --red:#e74c3c; --orange:#f39c12; --purple:#8e44ad;
+  --teal:#16a085; --blue:#2980b9;
+  --bg:#f2f4f9; --card:#fff;
+  --text:#1a1a2e; --muted:#8a8fa8;
+  --sidebar:220px;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;font-size:13px;background:var(--bg);color:var(--text);}
+
+/* LOGIN */
+#loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,var(--navy) 0%,#1a2f8c 60%,#0d4d3d 100%);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.login-box{background:#fff;border-radius:20px;padding:44px 40px;width:380px;box-shadow:0 24px 80px rgba(0,0,0,.4);}
+.login-logo{text-align:center;margin-bottom:28px;}
+.login-logo .school-name{font-size:18px;font-weight:800;color:var(--navy);margin-top:10px;}
+.login-logo .school-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+.login-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(139,0,0,.08);color:#8b0000;border:1px solid rgba(139,0,0,.2);border-radius:20px;padding:4px 14px;font-size:11px;font-weight:700;margin-bottom:22px;}
+.login-title{font-size:22px;font-weight:800;color:var(--navy);margin-bottom:6px;}
+.login-sub{font-size:12px;color:var(--muted);margin-bottom:24px;}
+.login-field{margin-bottom:16px;}
+.login-field label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.login-field input{width:100%;padding:11px 14px;border:1.5px solid #e2e5f0;border-radius:10px;font-size:13px;outline:none;transition:border .2s;}
+.login-field input:focus{border-color:var(--navy);}
+.btn-login{width:100%;padding:13px;background:linear-gradient(135deg,var(--navy),#1a2f8c);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:opacity .2s;}
+.btn-login:hover{opacity:.9;}
+.login-err{color:var(--red);font-size:12px;text-align:center;margin-top:12px;display:none;}
+
+/* LAYOUT */
+.app-layout{display:flex;min-height:100vh;}
+#sidebar{width:var(--sidebar);background:var(--navy);color:#fff;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;overflow-y:auto;}
+.sidebar-logo{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1);}
+.sidebar-logo .school-name{font-size:13px;font-weight:800;color:#fff;line-height:1.3;}
+.sidebar-logo .school-loc{font-size:10px;color:rgba(255,255,255,.5);margin-top:2px;}
+nav{flex:1;padding:12px 0;}
+.nav-section{padding:8px 16px 4px;font-size:9px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;transition:background .15s;border-left:3px solid transparent;font-size:12px;font-weight:500;color:rgba(255,255,255,.75);}
+.nav-item:hover{background:rgba(255,255,255,.07);color:#fff;}
+.nav-item.active{background:rgba(255,255,255,.12);color:#fff;border-left-color:var(--gold);}
+.nav-item .fa{width:16px;text-align:center;}
+.nav-item .badge{margin-left:auto;background:var(--red);color:#fff;font-size:9px;font-weight:800;padding:2px 6px;border-radius:10px;}
+.sidebar-footer{padding:16px;border-top:1px solid rgba(255,255,255,.1);}
+.sidebar-user{font-size:11px;color:rgba(255,255,255,.6);}
+.sidebar-user strong{display:block;font-size:12px;color:#fff;}
+.btn-logout{margin-top:8px;background:rgba(255,255,255,.1);color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:11px;cursor:pointer;width:100%;}
+.btn-logout:hover{background:rgba(255,255,255,.2);}
+
+.main-content{margin-left:var(--sidebar);flex:1;padding:24px;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.topbar h1{font-size:20px;font-weight:800;color:var(--navy);}
+.topbar p{font-size:12px;color:var(--muted);}
+.live-dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.live-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(39,174,96,.1);color:var(--green);border:1px solid rgba(39,174,96,.3);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;}
+
+/* TABS */
+.tabs{display:flex;gap:4px;background:var(--card);border-radius:12px;padding:6px;box-shadow:0 1px 4px rgba(0,0,0,.06);margin-bottom:20px;flex-wrap:wrap;}
+.tab-btn{padding:8px 16px;border:none;background:transparent;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:var(--muted);transition:all .15s;}
+.tab-btn.active{background:var(--navy);color:#fff;}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;}
+
+/* CARDS */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;margin-bottom:20px;}
+.kpi-card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.06);border-left:4px solid var(--navy);}
+.kpi-card.red{border-left-color:var(--red);}
+.kpi-card.green{border-left-color:var(--green);}
+.kpi-card.orange{border-left-color:var(--orange);}
+.kpi-card.purple{border-left-color:var(--purple);}
+.kpi-card.teal{border-left-color:var(--teal);}
+.kpi-val{font-size:26px;font-weight:800;color:var(--navy);}
+.kpi-lbl{font-size:11px;color:var(--muted);margin-top:4px;}
+.kpi-card.red .kpi-val{color:var(--red);}
+.kpi-card.orange .kpi-val{color:var(--orange);}
+.kpi-card.green .kpi-val{color:var(--green);}
+.kpi-card.purple .kpi-val{color:var(--purple);}
+
+/* TABLE */
+.card{background:var(--card);border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden;margin-bottom:16px;}
+.card-header{padding:14px 18px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+.card-title{font-size:13px;font-weight:700;color:var(--navy);}
+.filter-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.filter-row input,.filter-row select{padding:6px 10px;border:1.5px solid #e2e5f0;border-radius:8px;font-size:12px;outline:none;}
+.filter-row input:focus,.filter-row select:focus{border-color:var(--navy);}
+.btn-sm{padding:6px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:none;}
+.btn-navy{background:var(--navy);color:#fff;}
+.btn-red{background:var(--red);color:#fff;}
+.btn-green{background:var(--green);color:#fff;}
+.btn-orange{background:var(--orange);color:#fff;}
+.btn-sm:hover{opacity:.85;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{background:#f8f9fc;color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:10px 12px;text-align:left;}
+td{padding:10px 12px;border-bottom:1px solid #f4f4f8;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fafbff;}
+
+/* BADGES */
+.pill{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:20px;font-size:10px;font-weight:700;}
+.pill.success{background:rgba(39,174,96,.1);color:var(--green);}
+.pill.denied{background:rgba(231,76,60,.1);color:var(--red);}
+.pill.pending{background:rgba(243,156,18,.1);color:var(--orange);}
+.pill.approved{background:rgba(39,174,96,.1);color:var(--green);}
+.pill.rejected{background:rgba(231,76,60,.1);color:var(--red);}
+.pill.info{background:rgba(41,128,185,.1);color:var(--blue);}
+.action-pill{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;background:#f0f3ff;color:var(--navy);}
+
+/* FOOTPRINT TIMELINE */
+.timeline{padding:4px 0;}
+.timeline-item{display:flex;gap:12px;padding:10px 18px;border-bottom:1px solid #f4f4f8;}
+.timeline-item:last-child{border-bottom:none;}
+.tl-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;}
+.tl-icon.login{background:rgba(39,174,96,.12);color:var(--green);}
+.tl-icon.view{background:rgba(41,128,185,.12);color:var(--blue);}
+.tl-icon.edit{background:rgba(243,156,18,.12);color:var(--orange);}
+.tl-icon.delete{background:rgba(231,76,60,.12);color:var(--red);}
+.tl-icon.denied{background:rgba(231,76,60,.12);color:var(--red);}
+.tl-icon.export{background:rgba(142,68,173,.12);color:var(--purple);}
+.tl-icon.default{background:rgba(0,0,0,.05);color:var(--muted);}
+.tl-body{flex:1;}
+.tl-action{font-size:12px;font-weight:700;color:var(--text);}
+.tl-detail{font-size:11px;color:var(--muted);margin-top:2px;}
+.tl-meta{font-size:10px;color:var(--muted);margin-top:3px;display:flex;gap:10px;flex-wrap:wrap;}
+.tl-meta span{display:flex;align-items:center;gap:4px;}
+
+/* USER CARDS */
+.user-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+.user-card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.06);cursor:pointer;transition:box-shadow .15s;}
+.user-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.1);}
+.user-card-head{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.user-avatar{width:38px;height:38px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;flex-shrink:0;}
+.user-card-name{font-size:13px;font-weight:700;color:var(--text);}
+.user-card-role{font-size:10px;color:var(--muted);}
+.user-card-stats{display:flex;gap:12px;font-size:11px;color:var(--muted);}
+.user-card-stats strong{color:var(--text);}
+.online-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-right:4px;}
+.offline-dot{width:8px;height:8px;border-radius:50%;background:#ccc;display:inline-block;margin-right:4px;}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:40px 20px;color:var(--muted);}
+.empty .fa{font-size:36px;display:block;margin-bottom:12px;opacity:.3;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:16px;width:92%;max-width:700px;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;}
+.modal-header{padding:18px 20px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-size:14px;font-weight:800;color:var(--navy);}
+.modal-close{background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted);}
+.modal-body{padding:20px;overflow-y:auto;flex:1;}
+
+/* PAGINATION */
+.pagination{display:flex;align-items:center;gap:8px;padding:12px 18px;justify-content:flex-end;border-top:1px solid #f4f4f8;}
+.page-btn{padding:4px 10px;border:1.5px solid #e2e5f0;border-radius:6px;background:#fff;cursor:pointer;font-size:11px;}
+.page-btn.active{background:var(--navy);color:#fff;border-color:var(--navy);}
+.page-info{font-size:11px;color:var(--muted);}
+
+/* TOAST */
+#toast{position:fixed;bottom:20px;right:20px;background:var(--navy);color:#fff;padding:12px 20px;border-radius:10px;font-size:12px;z-index:9000;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;}
+#toast.show{opacity:1;transform:translateY(0);}
+#toast.error{background:var(--red);}
+#toast.success{background:var(--green);}
+
+@media(max-width:700px){#sidebar{display:none;}.main-content{margin-left:0;padding:12px;}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="24" fill="#0d1b5e"/><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="#c9a227" font-size="20" font-weight="900">G</text></svg>
+      <div class="school-name">The Gurukul High</div>
+      <div class="school-sub">K.R. Nagar, Mysuru</div>
+    </div>
+    <div style="text-align:center;margin-bottom:18px;">
+      <span class="login-badge"><i class="fa fa-shield"></i> Audit &amp; Security Dashboard</span>
+    </div>
+    <div class="login-title">Management Access</div>
+    <div class="login-sub">Principal / Super Admin only</div>
+    <div class="login-field"><label>Username</label><input type="text" id="loginUser" placeholder="admin" autocomplete="username"/></div>
+    <div class="login-field"><label>Password</label><input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password"/></div>
+    <button class="btn-login" onclick="doLogin()">Sign In</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app-layout" id="appLayout" style="display:none;">
+
+  <!-- SIDEBAR -->
+  <div id="sidebar">
+    <div class="sidebar-logo">
+      <div class="school-name">The Gurukul High</div>
+      <div class="school-loc">K.R. Nagar, Mysuru</div>
+    </div>
+    <nav>
+      <div class="nav-section">Audit &amp; Security</div>
+      <div class="nav-item active" onclick="showTab('overview')"><i class="fa fa-dashboard"></i> Overview</div>
+      <div class="nav-item" onclick="showTab('systemFeed')"><i class="fa fa-rss"></i> System Feed <span class="badge" id="feedBadge" style="display:none">!</span></div>
+      <div class="nav-item" onclick="showTab('auditLog')"><i class="fa fa-list-alt"></i> Audit Log</div>
+      <div class="nav-item" onclick="showTab('alerts')"><i class="fa fa-exclamation-triangle"></i> Alerts <span class="badge" id="alertBadge">0</span></div>
+      <div class="nav-item" onclick="showTab('footprint')"><i class="fa fa-user-secret"></i> User Footprint</div>
+      <div class="nav-section">Access Control</div>
+      <div class="nav-item" onclick="showTab('accessRequests')"><i class="fa fa-unlock-alt"></i> Access Requests <span class="badge" id="reqBadge">0</span></div>
+      <div class="nav-item" onclick="showTab('activeUsers')"><i class="fa fa-circle" style="color:var(--green);font-size:9px;"></i>&nbsp; Active Users</div>
+      <div class="nav-section">Settings</div>
+      <div class="nav-item" onclick="window.location.href='rbac-admin.html'"><i class="fa fa-users-cog fa-cog"></i> RBAC Admin</div>
+      <div class="nav-item" onclick="window.location.href='admin-dashboard.html'"><i class="fa fa-home"></i> Admin Home</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <strong id="sbUsername">–</strong>
+        <span id="sbRole">–</span>
+      </div>
+      <button class="btn-logout" onclick="logout()"><i class="fa fa-sign-out"></i> Logout</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-content">
+    <div class="topbar">
+      <div>
+        <h1><i class="fa fa-shield" style="color:var(--navy);margin-right:8px;"></i>Audit &amp; Footprint Dashboard</h1>
+        <p id="topbarSub">Loading...</p>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="live-badge"><span class="live-dot"></span> Live</span>
+        <button class="btn-sm btn-navy" onclick="refreshAll()"><i class="fa fa-refresh"></i> Refresh</button>
+      </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-overview"       onclick="showTab('overview')">Overview</button>
+      <button class="tab-btn"        id="tab-systemFeed"     onclick="showTab('systemFeed')">System Feed</button>
+      <button class="tab-btn"        id="tab-auditLog"       onclick="showTab('auditLog')">Audit Log</button>
+      <button class="tab-btn"        id="tab-alerts"         onclick="showTab('alerts')">Alerts</button>
+      <button class="tab-btn"        id="tab-footprint"      onclick="showTab('footprint')">User Footprint</button>
+      <button class="tab-btn"        id="tab-accessRequests" onclick="showTab('accessRequests')">Access Requests</button>
+      <button class="tab-btn"        id="tab-activeUsers"    onclick="showTab('activeUsers')">Active Users</button>
+    </div>
+
+    <!-- TAB: OVERVIEW -->
+    <div class="tab-pane active" id="pane-overview">
+      <div class="kpi-grid" id="kpiGrid">
+        <div class="kpi-card"><div class="kpi-val" id="kpiTotalToday">–</div><div class="kpi-lbl">Actions Today</div></div>
+        <div class="kpi-card red"><div class="kpi-val" id="kpiDeniedToday">–</div><div class="kpi-lbl">Denied Today</div></div>
+        <div class="kpi-card green"><div class="kpi-val" id="kpiActiveUsers">–</div><div class="kpi-lbl">Active Users (30m)</div></div>
+        <div class="kpi-card orange"><div class="kpi-val" id="kpiPendingReq">–</div><div class="kpi-lbl">Pending Requests</div></div>
+        <div class="kpi-card purple"><div class="kpi-val" id="kpiBlockedIPs">–</div><div class="kpi-lbl">Blocked IPs Today</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;" id="overviewPanels">
+        <div class="card">
+          <div class="card-header"><span class="card-title"><i class="fa fa-exclamation-triangle" style="color:var(--red);"></i> Recent Alerts</span></div>
+          <div id="overviewAlerts"><div class="empty"><i class="fa fa-check-circle"></i>No alerts</div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title"><i class="fa fa-unlock-alt" style="color:var(--orange);"></i> Pending Access Requests</span></div>
+          <div id="overviewRequests"><div class="empty"><i class="fa fa-inbox"></i>No pending requests</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: SYSTEM FEED -->
+    <div class="tab-pane" id="pane-systemFeed">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><i class="fa fa-rss"></i> Real-Time System Feed</span>
+          <div class="filter-row">
+            <span class="live-badge"><span class="live-dot"></span> Auto-refresh 10s</span>
+            <button class="btn-sm btn-navy" onclick="loadFeed()"><i class="fa fa-refresh"></i></button>
+          </div>
+        </div>
+        <div class="timeline" id="feedTimeline"><div class="empty"><i class="fa fa-spin fa-spinner"></i>Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- TAB: AUDIT LOG -->
+    <div class="tab-pane" id="pane-auditLog">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><i class="fa fa-list-alt"></i> Audit Log</span>
+          <div class="filter-row">
+            <input type="text"   id="fUsername" placeholder="Username" style="width:120px;">
+            <input type="text"   id="fModule"   placeholder="Module"   style="width:100px;">
+            <select id="fAction">
+              <option value="">All Actions</option>
+              <option>LOGIN</option><option>LOGIN_FAILED</option><option>VIEW</option>
+              <option>CREATE</option><option>EDIT</option><option>DELETE</option>
+              <option>EXPORT</option><option>DENIED</option><option>IP_BLOCKED</option>
+              <option>ACCESS_REQUEST_CREATED</option><option>ACCESS_REQUEST_APPROVED</option>
+            </select>
+            <select id="fResult">
+              <option value="">All Results</option>
+              <option value="success">Success</option>
+              <option value="denied">Denied</option>
+              <option value="error">Error</option>
+            </select>
+            <input type="date"   id="fFrom">
+            <input type="date"   id="fTo">
+            <button class="btn-sm btn-navy" onclick="loadAuditLog(1)"><i class="fa fa-search"></i> Search</button>
+            <button class="btn-sm" style="background:#f0f3ff;color:var(--navy);" onclick="exportAuditCSV()"><i class="fa fa-download"></i> CSV</button>
+          </div>
+        </div>
+        <table>
+          <thead><tr>
+            <th>Timestamp</th><th>User</th><th>Role</th><th>Action</th>
+            <th>Module</th><th>Resource</th><th>Details</th><th>IP</th><th>Result</th>
+          </tr></thead>
+          <tbody id="auditBody"><tr><td colspan="9" style="text-align:center;padding:24px;color:var(--muted);">Loading...</td></tr></tbody>
+        </table>
+        <div class="pagination" id="auditPagination"></div>
+      </div>
+    </div>
+
+    <!-- TAB: ALERTS -->
+    <div class="tab-pane" id="pane-alerts">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><i class="fa fa-exclamation-triangle" style="color:var(--red);"></i> Security Alerts</span>
+          <button class="btn-sm btn-navy" onclick="loadAlerts()"><i class="fa fa-refresh"></i> Refresh</button>
+        </div>
+        <div class="timeline" id="alertsTimeline"><div class="empty"><i class="fa fa-spin fa-spinner"></i>Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- TAB: USER FOOTPRINT -->
+    <div class="tab-pane" id="pane-footprint">
+      <div class="card" style="margin-bottom:16px;">
+        <div class="card-header">
+          <span class="card-title"><i class="fa fa-user-secret"></i> User Footprint</span>
+          <div class="filter-row">
+            <input type="text" id="fpUsername" placeholder="Enter username" style="width:160px;">
+            <select id="fpDays">
+              <option value="7">Last 7 days</option>
+              <option value="30" selected>Last 30 days</option>
+              <option value="90">Last 90 days</option>
+            </select>
+            <button class="btn-sm btn-navy" onclick="loadFootprint()"><i class="fa fa-search"></i> View</button>
+          </div>
+        </div>
+      </div>
+      <div id="footprintResult"></div>
+    </div>
+
+    <!-- TAB: ACCESS REQUESTS -->
+    <div class="tab-pane" id="pane-accessRequests">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><i class="fa fa-unlock-alt"></i> Access Requests (Finance Officer Historical Data)</span>
+          <div class="filter-row">
+            <select id="arStatus">
+              <option value="">All</option>
+              <option value="Pending">Pending</option>
+              <option value="Approved">Approved</option>
+              <option value="Rejected">Rejected</option>
+            </select>
+            <button class="btn-sm btn-navy" onclick="loadAccessRequests()"><i class="fa fa-refresh"></i></button>
+          </div>
+        </div>
+        <table>
+          <thead><tr>
+            <th>ID</th><th>Requested By</th><th>Module</th><th>Date Range</th>
+            <th>Reason</th><th>Status</th><th>Reviewed By</th><th>Expires At</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="accessReqBody"><tr><td colspan="9" style="text-align:center;padding:24px;color:var(--muted);">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB: ACTIVE USERS -->
+    <div class="tab-pane" id="pane-activeUsers">
+      <div class="card-header" style="background:var(--card);border-radius:14px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.06);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;">
+        <span class="card-title"><i class="fa fa-users" style="color:var(--green);"></i> Currently Active Users (last 30 minutes)</span>
+        <button class="btn-sm btn-navy" onclick="loadActiveUsers()"><i class="fa fa-refresh"></i> Refresh</button>
+      </div>
+      <div class="user-grid" id="activeUsersGrid"><div class="empty" style="grid-column:1/-1;"><i class="fa fa-spin fa-spinner"></i>Loading...</div></div>
+    </div>
+
+  </div><!-- /main-content -->
+</div><!-- /app-layout -->
+
+<!-- APPROVE MODAL -->
+<div class="modal-overlay" id="approveModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Approve Access Request</span>
+      <button class="modal-close" onclick="closeModal('approveModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text);margin-bottom:16px;" id="approveModalDesc"></p>
+      <div class="login-field">
+        <label>Grant Access Window (hours)</label>
+        <input type="number" id="approveHours" value="2" min="1" max="48" style="width:100%;">
+      </div>
+      <p style="font-size:11px;color:var(--muted);margin-bottom:16px;">After this window, the Finance Officer will automatically lose historical access.</p>
+      <div style="display:flex;gap:10px;">
+        <button class="btn-sm btn-green" style="flex:1;padding:10px;" onclick="submitApprove()"><i class="fa fa-check"></i> Approve</button>
+        <button class="btn-sm btn-red"   style="flex:1;padding:10px;" onclick="submitReject()"><i class="fa fa-times"></i> Reject</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const BASE = '/api';
+let token = '';
+let currentUser = '';
+let currentRole = '';
+let activeTab   = 'overview';
+let auditPage   = 1;
+let auditTotal  = 0;
+const PAGE_SIZE = 50;
+let _approveReqId = null;
+let _autoRefresh  = null;
+
+// ── Helpers ──────────────────────────────────────────────────────────────────
+function authHeaders() { return { 'Content-Type':'application/json', 'Authorization':'Bearer '+token }; }
+function toast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'show' + (type ? ' '+type : '');
+  setTimeout(() => t.className = '', 3000);
+}
+function fmt(ts) {
+  if (!ts) return '–';
+  return ts.replace('T',' ').slice(0,16);
+}
+function actionIcon(action) {
+  const map = { LOGIN:'sign-in', LOGIN_FAILED:'ban', LOGOUT:'sign-out', VIEW:'eye', CREATE:'plus',
+    EDIT:'pencil', DELETE:'trash', EXPORT:'download', DENIED:'lock', IP_BLOCKED:'ban',
+    ACCESS_REQUEST_CREATED:'unlock-alt', ACCESS_REQUEST_APPROVED:'check', ACCESS_REQUEST_REJECTED:'times',
+    ROLE_ASSIGNED:'user-plus', ROLE_REVOKED:'user-times', BIOMETRIC_EVENT:'fingerprint fa-id-badge' };
+  return map[action] || 'circle';
+}
+function actionClass(action, result) {
+  if (result === 'denied') return 'denied';
+  if (action === 'LOGIN') return 'login';
+  if (action === 'EXPORT') return 'export';
+  if (action === 'DELETE') return 'delete';
+  if (['EDIT','CREATE'].includes(action)) return 'edit';
+  if (action === 'VIEW') return 'view';
+  return 'default';
+}
+function resultPill(r) {
+  const map = { success:'success', denied:'denied', error:'denied', pending:'pending', approved:'approved', rejected:'rejected' };
+  return `<span class="pill ${map[r]||'info'}">${r||'–'}</span>`;
+}
+function roleBadge(r) {
+  const map = { super_admin:'#8b0000', principal:'#1a6091', admin:'#0d1b5e',
+    finance_officer:'#16a085', accountant:'#d35400', hr_manager:'#8e44ad',
+    teacher:'#27ae60', parent:'#7f8c8d' };
+  const c = map[r] || '#555';
+  return `<span style="background:${c}20;color:${c};padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;">${r||'–'}</span>`;
+}
+
+// ── LOGIN ─────────────────────────────────────────────────────────────────────
+async function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const err = document.getElementById('loginErr');
+  err.style.display = 'none';
+  try {
+    const r = await fetch(`${BASE}/admin/login`, { method:'POST',
+      headers:{'Content-Type':'application/json'}, body: JSON.stringify({username:u, password:p}) });
+    const d = await r.json();
+    if (!r.ok) { err.textContent = d.error||'Login failed'; err.style.display='block'; return; }
+    token = d.token;
+    currentUser = u;
+    currentRole = d.role || 'admin';
+    localStorage.setItem('audit_token', token);
+    localStorage.setItem('audit_user', u);
+    localStorage.setItem('audit_role', currentRole);
+    showApp();
+  } catch(e) { err.textContent = 'Server error'; err.style.display='block'; }
+}
+
+function showApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appLayout').style.display   = 'flex';
+  document.getElementById('sbUsername').textContent = currentUser;
+  document.getElementById('sbRole').textContent     = currentRole;
+  document.getElementById('topbarSub').textContent  = `Logged in as: ${currentUser} (${currentRole})  •  ${new Date().toLocaleString()}`;
+  startAutoRefresh();
+  refreshAll();
+}
+
+function logout() {
+  localStorage.removeItem('audit_token');
+  localStorage.removeItem('audit_user');
+  localStorage.removeItem('audit_role');
+  clearInterval(_autoRefresh);
+  location.reload();
+}
+
+// ── AUTO LOGIN if token present ──────────────────────────────────────────────
+const _saved = localStorage.getItem('audit_token');
+if (_saved) {
+  token       = _saved;
+  currentUser = localStorage.getItem('audit_user') || 'admin';
+  currentRole = localStorage.getItem('audit_role') || 'admin';
+  showApp();
+}
+
+document.addEventListener('keydown', e => { if (e.key==='Enter' && document.getElementById('loginScreen').style.display!=='none') doLogin(); });
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function showTab(name) {
+  activeTab = name;
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('pane-'+name)?.classList.add('active');
+  document.getElementById('tab-'+name)?.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.toggle('active', n.getAttribute('onclick')?.includes(name));
+  });
+  // Load on demand
+  if (name === 'systemFeed')     loadFeed();
+  if (name === 'auditLog')       loadAuditLog(1);
+  if (name === 'alerts')         loadAlerts();
+  if (name === 'accessRequests') loadAccessRequests();
+  if (name === 'activeUsers')    loadActiveUsers();
+}
+
+// ── AUTO REFRESH ─────────────────────────────────────────────────────────────
+function startAutoRefresh() {
+  clearInterval(_autoRefresh);
+  _autoRefresh = setInterval(() => {
+    loadStats();
+    if (activeTab === 'systemFeed')  loadFeed();
+    if (activeTab === 'activeUsers') loadActiveUsers();
+    if (activeTab === 'overview')    loadOverviewPanels();
+  }, 10000);
+}
+
+function refreshAll() {
+  loadStats();
+  loadOverviewPanels();
+  if (activeTab === 'systemFeed')     loadFeed();
+  if (activeTab === 'auditLog')       loadAuditLog(auditPage);
+  if (activeTab === 'alerts')         loadAlerts();
+  if (activeTab === 'accessRequests') loadAccessRequests();
+  if (activeTab === 'activeUsers')    loadActiveUsers();
+}
+
+// ── STATS (KPI bar) ──────────────────────────────────────────────────────────
+async function loadStats() {
+  try {
+    const r = await fetch(`${BASE}/rbac/audit-stats`, { headers: authHeaders() });
+    if (!r.ok) return;
+    const d = await r.json();
+    document.getElementById('kpiTotalToday').textContent = d.totalLogsToday ?? '–';
+    document.getElementById('kpiDeniedToday').textContent= d.deniedToday    ?? '–';
+    document.getElementById('kpiActiveUsers').textContent= d.activeUsers    ?? '–';
+    document.getElementById('kpiPendingReq').textContent = d.pendingRequests ?? '–';
+    document.getElementById('kpiBlockedIPs').textContent = d.blockedIPs     ?? '–';
+    const ab = document.getElementById('alertBadge');
+    ab.textContent = d.deniedToday || 0;
+    ab.style.display = d.deniedToday > 0 ? 'inline' : 'none';
+    const rb = document.getElementById('reqBadge');
+    rb.textContent = d.pendingRequests || 0;
+    rb.style.display = d.pendingRequests > 0 ? 'inline' : 'none';
+  } catch(e) {}
+}
+
+// ── OVERVIEW PANELS ───────────────────────────────────────────────────────────
+async function loadOverviewPanels() {
+  try {
+    const [ar, al] = await Promise.all([
+      fetch(`${BASE}/rbac/alerts?limit=5`,              { headers: authHeaders() }).then(r=>r.json()),
+      fetch(`${BASE}/rbac/access-requests?status=Pending&limit=5`, { headers: authHeaders() }).then(r=>r.json()),
+    ]);
+    // Alerts panel
+    const ael = document.getElementById('overviewAlerts');
+    if (ar.alerts?.length) {
+      ael.innerHTML = ar.alerts.map(a => `
+        <div class="timeline-item">
+          <div class="tl-icon denied"><i class="fa fa-ban"></i></div>
+          <div class="tl-body">
+            <div class="tl-action">${a.action} — ${a.username}</div>
+            <div class="tl-detail">${a.details||''}</div>
+            <div class="tl-meta"><span><i class="fa fa-clock-o"></i>${fmt(a.timestamp)}</span><span><i class="fa fa-globe"></i>${a.ip_address||'–'}</span></div>
+          </div>
+        </div>`).join('');
+    } else { ael.innerHTML = '<div class="empty"><i class="fa fa-check-circle"></i>No alerts</div>'; }
+    // Requests panel
+    const rel = document.getElementById('overviewRequests');
+    if (al.requests?.length) {
+      rel.innerHTML = al.requests.map(r => `
+        <div class="timeline-item">
+          <div class="tl-icon edit"><i class="fa fa-unlock-alt"></i></div>
+          <div class="tl-body">
+            <div class="tl-action">${r.requested_by} → ${r.module}</div>
+            <div class="tl-detail">${r.reason}</div>
+            <div class="tl-meta">
+              <span><i class="fa fa-calendar"></i>${r.date_from||'–'} to ${r.date_to||'–'}</span>
+              <button class="btn-sm btn-green" style="padding:2px 8px;font-size:10px;" onclick="openApproveModal(${r.id},'${r.requested_by}','${r.module}')">Approve</button>
+            </div>
+          </div>
+        </div>`).join('');
+    } else { rel.innerHTML = '<div class="empty"><i class="fa fa-inbox"></i>No pending requests</div>'; }
+  } catch(e) {}
+}
+
+// ── SYSTEM FEED ───────────────────────────────────────────────────────────────
+async function loadFeed() {
+  const el = document.getElementById('feedTimeline');
+  try {
+    const r = await fetch(`${BASE}/rbac/system-feed?limit=80`, { headers: authHeaders() });
+    const d = await r.json();
+    if (!d.feed?.length) { el.innerHTML = '<div class="empty"><i class="fa fa-inbox"></i>No activity yet</div>'; return; }
+    el.innerHTML = d.feed.map(a => `
+      <div class="timeline-item">
+        <div class="tl-icon ${actionClass(a.action,a.result)}"><i class="fa fa-${actionIcon(a.action)}"></i></div>
+        <div class="tl-body">
+          <div class="tl-action">
+            <strong>${a.username}</strong>
+            <span class="action-pill">${a.action}</span>
+            ${a.module ? `<span style="color:var(--muted);font-size:11px;">on ${a.module}</span>` : ''}
+            ${resultPill(a.result)}
+          </div>
+          <div class="tl-detail">${a.details||''}</div>
+          <div class="tl-meta">
+            <span><i class="fa fa-clock-o"></i>${fmt(a.timestamp)}</span>
+            <span><i class="fa fa-globe"></i>${a.ip_address||'–'}</span>
+            ${a.role_key ? `<span>${roleBadge(a.role_key)}</span>` : ''}
+          </div>
+        </div>
+      </div>`).join('');
+  } catch(e) { el.innerHTML = '<div class="empty"><i class="fa fa-warning"></i>Error loading feed</div>'; }
+}
+
+// ── AUDIT LOG ─────────────────────────────────────────────────────────────────
+async function loadAuditLog(page) {
+  auditPage = page || 1;
+  const tbody = document.getElementById('auditBody');
+  tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:20px;color:var(--muted);">Loading...</td></tr>';
+  const params = new URLSearchParams({
+    limit: PAGE_SIZE, offset: (auditPage-1)*PAGE_SIZE,
+    username: document.getElementById('fUsername')?.value||'',
+    module:   document.getElementById('fModule')?.value||'',
+    action:   document.getElementById('fAction')?.value||'',
+    result:   document.getElementById('fResult')?.value||'',
+    from:     document.getElementById('fFrom')?.value||'',
+    to:       document.getElementById('fTo')?.value||'',
+  });
+  Object.keys([...params]).forEach(k => { if (!params.get(k)) params.delete(k); });
+  try {
+    const r = await fetch(`${BASE}/rbac/audit-log?${params}`, { headers: authHeaders() });
+    const d = await r.json();
+    auditTotal = d.total || 0;
+    if (!d.logs?.length) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--muted);">No records found</td></tr>'; return; }
+    tbody.innerHTML = d.logs.map(l => `<tr>
+      <td style="white-space:nowrap;font-size:11px;">${fmt(l.timestamp)}</td>
+      <td><strong>${l.username}</strong></td>
+      <td>${roleBadge(l.role_key)}</td>
+      <td><span class="action-pill">${l.action}</span></td>
+      <td style="color:var(--blue);">${l.module||'–'}</td>
+      <td style="font-size:11px;">${l.resource_type||'–'} ${l.resource_id?'#'+l.resource_id:''}</td>
+      <td style="font-size:11px;max-width:200px;overflow:hidden;text-overflow:ellipsis;" title="${(l.details||'').replace(/"/g,'&quot;')}">${(l.details||'').slice(0,60)}</td>
+      <td style="font-size:11px;font-family:monospace;">${l.ip_address||'–'}</td>
+      <td>${resultPill(l.result)}</td>
+    </tr>`).join('');
+    renderPagination(auditTotal, auditPage, PAGE_SIZE, 'auditPagination', loadAuditLog);
+  } catch(e) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--red);">Error loading data</td></tr>'; }
+}
+
+function renderPagination(total, page, perPage, elId, loadFn) {
+  const el = document.getElementById(elId);
+  const pages = Math.ceil(total/perPage);
+  if (pages <= 1) { el.innerHTML=''; return; }
+  let html = `<span class="page-info">Showing ${(page-1)*perPage+1}–${Math.min(page*perPage,total)} of ${total}</span>`;
+  if (page > 1) html += `<button class="page-btn" onclick="(${loadFn.name})(${page-1})">‹ Prev</button>`;
+  for (let i=Math.max(1,page-2); i<=Math.min(pages,page+2); i++)
+    html += `<button class="page-btn${i===page?' active':''}" onclick="(${loadFn.name})(${i})">${i}</button>`;
+  if (page < pages) html += `<button class="page-btn" onclick="(${loadFn.name})(${page+1})">Next ›</button>`;
+  el.innerHTML = html;
+}
+
+function exportAuditCSV() {
+  const params = new URLSearchParams({
+    limit:9999,offset:0,
+    username:document.getElementById('fUsername').value||'',
+    module:document.getElementById('fModule').value||'',
+    action:document.getElementById('fAction').value||'',
+    result:document.getElementById('fResult').value||'',
+    from:document.getElementById('fFrom').value||'',
+    to:document.getElementById('fTo').value||'',
+  });
+  fetch(`${BASE}/rbac/audit-log?${params}`, {headers:authHeaders()}).then(r=>r.json()).then(d=>{
+    if (!d.logs) return;
+    const hdr = 'Timestamp,Username,Role,Action,Module,Resource,Details,IP,Result\n';
+    const rows = d.logs.map(l=>[l.timestamp,l.username,l.role_key,l.action,l.module,
+      (l.resource_type||'')+(l.resource_id?' #'+l.resource_id:''),
+      '"'+(l.details||'').replace(/"/g,'""')+'"',l.ip_address,l.result].join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = 'data:text/csv;charset=utf-8,'+encodeURIComponent(hdr+rows);
+    a.download = `audit-log-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  });
+}
+
+// ── ALERTS ────────────────────────────────────────────────────────────────────
+async function loadAlerts() {
+  const el = document.getElementById('alertsTimeline');
+  el.innerHTML = '<div class="empty"><i class="fa fa-spin fa-spinner"></i></div>';
+  try {
+    const r = await fetch(`${BASE}/rbac/alerts?limit=100`, { headers: authHeaders() });
+    const d = await r.json();
+    if (!d.alerts?.length) { el.innerHTML = '<div class="empty"><i class="fa fa-shield"></i>No security alerts — all clear</div>'; return; }
+    el.innerHTML = d.alerts.map(a => `
+      <div class="timeline-item">
+        <div class="tl-icon denied"><i class="fa fa-exclamation-triangle"></i></div>
+        <div class="tl-body">
+          <div class="tl-action">
+            <strong>${a.username}</strong>
+            <span class="action-pill" style="background:#fff0f0;color:var(--red);">${a.action}</span>
+            ${resultPill(a.result)}
+          </div>
+          <div class="tl-detail">${a.details||''}</div>
+          <div class="tl-meta">
+            <span><i class="fa fa-clock-o"></i>${fmt(a.timestamp)}</span>
+            <span><i class="fa fa-globe"></i>${a.ip_address||'–'}</span>
+            <span>${roleBadge(a.role_key)}</span>
+          </div>
+        </div>
+      </div>`).join('');
+  } catch(e) { el.innerHTML = '<div class="empty"><i class="fa fa-warning"></i>Error</div>'; }
+}
+
+// ── USER FOOTPRINT ────────────────────────────────────────────────────────────
+async function loadFootprint() {
+  const username = document.getElementById('fpUsername').value.trim();
+  const days     = document.getElementById('fpDays').value;
+  const el       = document.getElementById('footprintResult');
+  if (!username) { toast('Enter a username first','error'); return; }
+  el.innerHTML = '<div class="empty"><i class="fa fa-spin fa-spinner"></i> Loading footprint...</div>';
+  try {
+    const r = await fetch(`${BASE}/rbac/footprint/${encodeURIComponent(username)}?days=${days}`, { headers: authHeaders() });
+    const d = await r.json();
+    if (!r.ok) { el.innerHTML = `<div class="empty"><i class="fa fa-ban"></i>${d.error||'Not found'}</div>`; return; }
+    if (!d.footprint?.length) { el.innerHTML = '<div class="empty"><i class="fa fa-user-times"></i>No activity found for this user</div>'; return; }
+    const byDay = {};
+    d.footprint.forEach(f => {
+      const day = (f.timestamp||'').slice(0,10);
+      if (!byDay[day]) byDay[day] = [];
+      byDay[day].push(f);
+    });
+    let html = '';
+    for (const [day, items] of Object.entries(byDay).sort().reverse()) {
+      html += `<div class="card" style="margin-bottom:12px;">
+        <div class="card-header"><span class="card-title"><i class="fa fa-calendar"></i> ${day}</span><span style="font-size:11px;color:var(--muted);">${items.length} actions</span></div>
+        <div class="timeline">
+        ${items.map(a=>`<div class="timeline-item">
+          <div class="tl-icon ${actionClass(a.action,a.result)}"><i class="fa fa-${actionIcon(a.action)}"></i></div>
+          <div class="tl-body">
+            <div class="tl-action"><span class="action-pill">${a.action}</span> ${a.module?`<span style="color:var(--blue)">${a.module}</span>`:''} ${resultPill(a.result)}</div>
+            <div class="tl-detail">${a.details||''}</div>
+            <div class="tl-meta">
+              <span><i class="fa fa-clock-o"></i>${fmt(a.timestamp)}</span>
+              <span><i class="fa fa-globe"></i>${a.ip_address||'–'}</span>
+            </div>
+          </div>
+        </div>`).join('')}
+        </div>
+      </div>`;
+    }
+    el.innerHTML = html;
+  } catch(e) { el.innerHTML = '<div class="empty"><i class="fa fa-warning"></i>Error loading footprint</div>'; }
+}
+
+// ── ACCESS REQUESTS ───────────────────────────────────────────────────────────
+async function loadAccessRequests() {
+  const tbody = document.getElementById('accessReqBody');
+  tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:20px;color:var(--muted);">Loading...</td></tr>';
+  const status = document.getElementById('arStatus').value;
+  try {
+    const url = `${BASE}/rbac/access-requests${status?'?status='+status:''}`;
+    const r = await fetch(url, { headers: authHeaders() });
+    const d = await r.json();
+    if (!d.requests?.length) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--muted);">No requests found</td></tr>'; return; }
+    tbody.innerHTML = d.requests.map(r => {
+      const canAct = r.status === 'Pending';
+      return `<tr>
+        <td><strong>#${r.id}</strong></td>
+        <td>${r.requested_by}</td>
+        <td><span style="background:#e8f4fd;color:var(--blue);padding:2px 8px;border-radius:10px;font-size:11px;">${r.module}</span></td>
+        <td style="font-size:11px;">${r.date_from||'–'} → ${r.date_to||'–'}</td>
+        <td style="font-size:11px;max-width:200px;" title="${r.reason}">${(r.reason||'').slice(0,60)}</td>
+        <td>${resultPill(r.status?.toLowerCase()||'pending')}</td>
+        <td style="font-size:11px;">${r.reviewed_by||'–'}</td>
+        <td style="font-size:11px;">${r.expires_at||'–'}</td>
+        <td>
+          ${canAct
+            ? `<button class="btn-sm btn-green" onclick="openApproveModal(${r.id},'${r.requested_by}','${r.module}')">Approve</button>
+               <button class="btn-sm btn-red"   onclick="quickReject(${r.id})" style="margin-left:4px;">Reject</button>`
+            : '<span style="color:var(--muted);font-size:11px;">–</span>'}
+        </td>
+      </tr>`;
+    }).join('');
+  } catch(e) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--red);padding:20px;">Error</td></tr>'; }
+}
+
+function openApproveModal(id, user, module) {
+  _approveReqId = id;
+  document.getElementById('approveModalDesc').textContent = `Approving access request #${id} from ${user} for module: ${module}`;
+  document.getElementById('approveModal').classList.add('open');
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+async function submitApprove() {
+  const hours = parseInt(document.getElementById('approveHours').value)||2;
+  try {
+    const r = await fetch(`${BASE}/rbac/access-requests/${_approveReqId}/action`, {
+      method:'POST', headers: authHeaders(),
+      body: JSON.stringify({ action:'approve', window_hours: hours })
+    });
+    const d = await r.json();
+    closeModal('approveModal');
+    toast(d.message||'Request approved','success');
+    loadAccessRequests();
+    loadStats();
+    loadOverviewPanels();
+  } catch(e) { toast('Error approving request','error'); }
+}
+
+async function submitReject() {
+  const reason = prompt('Enter rejection reason (optional):') || '';
+  try {
+    const r = await fetch(`${BASE}/rbac/access-requests/${_approveReqId}/action`, {
+      method:'POST', headers: authHeaders(),
+      body: JSON.stringify({ action:'reject', reason })
+    });
+    const d = await r.json();
+    closeModal('approveModal');
+    toast(d.message||'Request rejected','error');
+    loadAccessRequests();
+    loadStats();
+  } catch(e) { toast('Error','error'); }
+}
+
+async function quickReject(id) {
+  const reason = prompt('Rejection reason:') || '';
+  try {
+    await fetch(`${BASE}/rbac/access-requests/${id}/action`, {
+      method:'POST', headers: authHeaders(),
+      body: JSON.stringify({ action:'reject', reason })
+    });
+    toast('Request rejected');
+    loadAccessRequests();
+    loadStats();
+  } catch(e) {}
+}
+
+// ── ACTIVE USERS ──────────────────────────────────────────────────────────────
+async function loadActiveUsers() {
+  const el = document.getElementById('activeUsersGrid');
+  try {
+    const r = await fetch(`${BASE}/rbac/active-users`, { headers: authHeaders() });
+    const d = await r.json();
+    if (!d.users?.length) {
+      el.innerHTML = '<div class="empty" style="grid-column:1/-1;"><i class="fa fa-users"></i>No active users in the last 30 minutes</div>';
+      return;
+    }
+    const now = new Date();
+    el.innerHTML = d.users.map(u => {
+      const lastSeen = new Date(u.last_seen);
+      const mins = Math.round((now - lastSeen) / 60000);
+      const initials = (u.username||'?').slice(0,2).toUpperCase();
+      return `<div class="user-card" onclick="viewUserFootprint('${u.username}')">
+        <div class="user-card-head">
+          <div class="user-avatar">${initials}</div>
+          <div>
+            <div class="user-card-name">${u.username}</div>
+            <div class="user-card-role">${roleBadge(u.role_key)}</div>
+          </div>
+          <div style="margin-left:auto;">${mins<5?'<span class="online-dot"></span>':'<span class="offline-dot"></span>'}</div>
+        </div>
+        <div class="user-card-stats">
+          <span><strong>${u.actions}</strong> actions</span>
+          <span>Last: ${mins}m ago</span>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-top:6px;font-family:monospace;">${u.ip_address||'–'}</div>
+      </div>`;
+    }).join('');
+  } catch(e) { el.innerHTML = '<div class="empty" style="grid-column:1/-1;"><i class="fa fa-warning"></i>Error loading</div>'; }
+}
+
+function viewUserFootprint(username) {
+  document.getElementById('fpUsername').value = username;
+  showTab('footprint');
+  loadFootprint();
+}
+</script>
+</body>
+</html>

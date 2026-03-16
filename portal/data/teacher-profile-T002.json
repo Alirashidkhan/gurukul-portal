@@ -1,0 +1,57 @@
+{
+  "id": "T002",
+  "name": "Priya Sharma",
+  "username": "priya.sharma",
+  "email": "priya.sharma@gurukul.edu",
+  "phone": "9900002222",
+  "subject": "English",
+  "dob": "",
+  "gender": "",
+  "blood_group": "",
+  "emergency_name": "",
+  "emergency_phone": "",
+  "address": "",
+  "bank_name": "",
+  "account_number": "",
+  "ifsc": "",
+  "account_type": "Savings",
+  "pan": "",
+  "uan": "",
+  "esi_number": "",
+  "employment_type": "Full-time",
+  "designation": "Teacher",
+  "department": "Languages",
+  "joining_date": "2021-07-01",
+  "status": "Active",
+  "assignments": [
+    {
+      "class": "7",
+      "section": "A",
+      "subject": "English"
+    },
+    {
+      "class": "7",
+      "section": "B",
+      "subject": "English"
+    },
+    {
+      "class": "8",
+      "section": "A",
+      "subject": "English"
+    }
+  ],
+  "payroll_structure": {
+    "id": 9,
+    "staff_id": "T002",
+    "staff_type": "teacher",
+    "basic": 25000,
+    "hra_pct": 40,
+    "da_pct": 5,
+    "transport": 1500,
+    "medical": 1250,
+    "pf_pct": 12,
+    "esi_pct": 0,
+    "tds": 500
+  },
+  "payroll_entries": []
+}

@@ -1,0 +1,76 @@
+{
+  "year": "2026",
+  "depts": [
+    {
+      "dept_key": "hr",
+      "dept_name": "Human Resources",
+      "fiscal_year": "2026",
+      "allocated": 0,
+      "spent": 0,
+      "remaining": 0,
+      "pct_used": 0,
+      "budget_ok": true,
+      "monthly_expenses": []
+    },
+    {
+      "dept_key": "marketing",
+      "dept_name": "Marketing",
+      "fiscal_year": "2026",
+      "allocated": 0,
+      "spent": 0,
+      "remaining": 0,
+      "pct_used": 0,
+      "budget_ok": true,
+      "monthly_expenses": []
+    },
+    {
+      "dept_key": "operations",
+      "dept_name": "Operations & Admin",
+      "fiscal_year": "2026",
+      "allocated": 0,
+      "spent": 0,
+      "remaining": 0,
+      "pct_used": 0,
+      "budget_ok": true,
+      "monthly_expenses": []
+    },
+    {
+      "dept_key": "academic",
+      "dept_name": "Academic & Teaching",
+      "fiscal_year": "2026",
+      "allocated": 0,
+      "spent": 0,
+      "remaining": 0,
+      "pct_used": 0,
+      "budget_ok": true,
+      "monthly_expenses": []
+    },
+    {
+      "dept_key": "it",
+      "dept_name": "IT & Infrastructure",
+      "fiscal_year": "2026",
+      "allocated": 0,
+      "spent": 0,
+      "remaining": 0,
+      "pct_used": 0,
+      "budget_ok": true,
+      "monthly_expenses": []
+    },
+    {
+      "dept_key": "transport",
+      "dept_name": "Transport",
+      "fiscal_year": "2026",
+      "allocated": 0,
+      "spent": 0,
+      "remaining": 0,
+      "pct_used": 0,
+      "budget_ok": true,
+      "monthly_expenses": []
+    }
+  ],
+  "totalAllocated": 0,
+  "totalSpent": 0,
+  "totalRemaining": 0,
+  "overallPct": 0,
+  "monthly": []
+}

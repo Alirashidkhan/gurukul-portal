@@ -1,0 +1,14 @@
+{
+  "attendance": [],
+  "allAttendance": [],
+  "summary": {
+    "present": 0,
+    "absent": 0,
+    "leave": 0,
+    "total_days": 0,
+    "pct": 0,
+    "percentage": "0%",
+    "pctAll": 0
+  },
+  "error": "database disk image is malformed"
+}

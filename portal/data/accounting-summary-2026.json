@@ -1,0 +1,15 @@
+{
+  "feeTotal": 0,
+  "feePend": 0,
+  "donTotal": 0,
+  "salaryTot": 0,
+  "pfTot": 0,
+  "esiTot": 0,
+  "manualExp": 0,
+  "totalIncome": 0,
+  "totalExpense": 0,
+  "surplus": 0,
+  "cashBal": 0,
+  "monthTrend": [],
+  "year": "2026"
+}

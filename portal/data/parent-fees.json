@@ -1,0 +1,10 @@
+{
+  "fees": [],
+  "installments": [],
+  "summary": {
+    "total": 0,
+    "paid": 0,
+    "pending": 0
+  },
+  "error": "database disk image is malformed"
+}

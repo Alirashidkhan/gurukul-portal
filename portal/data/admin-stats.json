@@ -1,0 +1,37 @@
+{
+  "students": 5,
+  "teachers": 5,
+  "attendance": 240,
+  "markedToday": 0,
+  "marks": 100,
+  "fees": 30,
+  "admissions": 0,
+  "pendingAdmissions": 0,
+  "classCounts": [
+    {
+      "class": "10",
+      "section": "A",
+      "count": 1
+    },
+    {
+      "class": "6",
+      "section": "A",
+      "count": 1
+    },
+    {
+      "class": "7",
+      "section": "B",
+      "count": 1
+    },
+    {
+      "class": "8",
+      "section": "A",
+      "count": 1
+    },
+    {
+      "class": "9",
+      "section": "A",
+      "count": 1
+    }
+  ]
+}

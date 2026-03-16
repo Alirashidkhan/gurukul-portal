@@ -1,0 +1,34 @@
+{
+  "certificates": [
+    {
+      "id": 2,
+      "student_id": "STU001",
+      "type": "Bonafide",
+      "content": "This is to certify that Rahul Kumar (ID: STU001) is a bonafide student of The Gurukul High, K.R. Nagar, Mysuru, studying in Class 8-A during the academic year 2026-27. This certificate is issued on 16 March 2026 for the purpose of general use.",
+      "issued_by": "Principal",
+      "issued_on": "2026-03-16 05:52:11",
+      "serial_no": "CERT-2026-531647",
+      "student_name": "Rahul Kumar"
+    },
+    {
+      "id": 3,
+      "student_id": "STU002",
+      "type": "Character",
+      "content": "This is to certify that Priya Sharma (ID: STU002) has been a student of this institution. During their stay, their character and conduct have been Good. They are known to be honest, hardworking, and well-behaved. Issued on 16 March 2026.",
+      "issued_by": "Principal",
+      "issued_on": "2026-03-16 05:52:11",
+      "serial_no": "CERT-2026-531665",
+      "student_name": "Priya Sharma"
+    },
+    {
+      "id": 1,
+      "student_id": "STU001",
+      "type": "Bonafide",
+      "content": "This is to certify that Rahul Kumar (ID: STU001) is a bonafide student of The Gurukul High, K.R. Nagar, Mysuru, studying in Class 8-A during the academic year 2026-27. This certificate is issued on 16 March 2026 for the purpose of College Application.",
+      "issued_by": "Administrator",
+      "issued_on": "2026-03-16 05:00:52",
+      "serial_no": "CERT-2026-452995",
+      "student_name": "Rahul Kumar"
+    }
+  ]
+}

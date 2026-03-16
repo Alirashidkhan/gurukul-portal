@@ -1,0 +1,89 @@
+{
+  "year": "2026",
+  "total_collected": 47600,
+  "total_outstanding": 5500,
+  "total_donations": 0,
+  "by_type": [
+    {
+      "fee_type": "Tuition Fee",
+      "total": 28000,
+      "count": 5
+    },
+    {
+      "fee_type": "Exam Fee",
+      "total": 6600,
+      "count": 5
+    },
+    {
+      "fee_type": "Transport Fee",
+      "total": 5000,
+      "count": 2
+    },
+    {
+      "fee_type": "Board Exam Fee",
+      "total": 3000,
+      "count": 1
+    },
+    {
+      "fee_type": "Lab Fee",
+      "total": 2700,
+      "count": 2
+    },
+    {
+      "fee_type": "Sports Fee",
+      "total": 1400,
+      "count": 2
+    },
+    {
+      "fee_type": "Activity Fee",
+      "total": 600,
+      "count": 1
+    },
+    {
+      "fee_type": "Computer Fee",
+      "total": 300,
+      "count": 1
+    }
+  ],
+  "monthly_trend": [
+    {
+      "month": "2026-01",
+      "total": 38600
+    },
+    {
+      "month": "2026-02",
+      "total": 5100
+    },
+    {
+      "month": "2026-03",
+      "total": 3900
+    }
+  ],
+  "by_class": [
+    {
+      "class": "10",
+      "total": 16000,
+      "students": 1
+    },
+    {
+      "class": "7",
+      "total": 9100,
+      "students": 1
+    },
+    {
+      "class": "9",
+      "total": 8700,
+      "students": 1
+    },
+    {
+      "class": "8",
+      "total": 7800,
+      "students": 1
+    },
+    {
+      "class": "6",
+      "total": 6000,
+      "students": 1
+    }
+  ]
+}

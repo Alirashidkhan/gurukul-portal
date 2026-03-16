@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Admission Application Form – The Gurukul High, K.R. Nagar, Mysuru</title>
+	<link rel="stylesheet" href="css/font-awesome.css" type="text/css" media="all">
+	<link rel="stylesheet" href="css/all.css" type="text/css" media="all">
+	<!-- jsPDF for client-side PDF generation -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+	<!-- html2canvas for rendering form as PDF -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+	<style>
+		:root {
+			--primary: #0D1B5E;
+			--primary-d: #091245;
+			--gold: #C9A227;
+			--gold-l: #E6C86A;
+			--dark: #060D2E;
+			--text: #444;
+			--border: #ddd;
+			--bg: #f8f5f0;
+			--white: #fff;
+		}
+		*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+		html { scroll-behavior: smooth; overflow-x: hidden; }
+		body { overflow-x: hidden !important; overflow-y: auto !important; }
+		body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); }
+
+		/* ===== TOP HEADER ===== */
+		.page-header {
+			background: linear-gradient(135deg, var(--dark) 0%, #0D1B5E 60%, var(--primary-d) 100%);
+			padding: 0;
+		}
+		.top-bar {
+			background: rgba(0,0,0,0.25);
+			padding: 8px 0;
+			font-size: 13px;
+		}
+		.top-bar-inner {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 0 24px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			color: rgba(255,255,255,0.7);
+		}
+		.top-bar-inner a { color: rgba(255,255,255,0.7); text-decoration: none; }
+		.top-bar-inner a:hover { color: var(--gold-l); }
+		.header-content {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 36px 24px 40px;
+			display: flex;
+			align-items: center;
+			gap: 24px;
+		}
+		.header-emblem-wrap {
+			flex-shrink: 0;
+		}
+		.header-emblem {
+			width: 90px;
+			height: 90px;
+			border-radius: 10px;
+			box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+			display: block;
+		}
+		.header-text { color: #fff; }
+		.header-school { font-size: 28px; font-weight: 800; }
+		.header-location { font-size: 13px; color: var(--gold-l); letter-spacing: 2px; text-transform: uppercase; margin: 4px 0; }
+		.header-doc-title {
+			display: inline-block;
+			background: var(--primary);
+			color: #fff;
+			font-size: 15px;
+			font-weight: 700;
+			padding: 6px 20px;
+			border-radius: 4px;
+			margin-top: 10px;
+			letter-spacing: 1px;
+			text-transform: uppercase;
+		}
+
+		/* ===== ACTION BUTTONS ===== */
+		.action-bar {
+			background: #fff;
+			border-bottom: 1px solid var(--border);
+			padding: 14px 0;
+			position: sticky;
+			top: 0;
+			z-index: 100;
+			box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+		}
+		.action-bar-inner {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 0 24px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 12px;
+			flex-wrap: wrap;
+		}
+		.action-bar-info { font-size: 13px; color: #888; }
+		.action-bar-info span { color: var(--primary); font-weight: 700; }
+		.action-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+		.btn {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			padding: 10px 22px;
+			border-radius: 6px;
+			font-size: 14px;
+			font-weight: 700;
+			cursor: pointer;
+			border: none;
+			font-family: inherit;
+			transition: all .2s;
+			text-decoration: none;
+		}
+		.btn-primary {
+			background: var(--primary);
+			color: #fff;
+			box-shadow: 0 3px 12px rgba(13,27,94,0.3);
+		}
+		.btn-primary:hover { background: var(--primary-d); transform: translateY(-1px); }
+		.btn-gold {
+			background: var(--gold);
+			color: #fff;
+			box-shadow: 0 3px 12px rgba(201,162,39,0.3);
+		}
+		.btn-gold:hover { background: #2d6b28; transform: translateY(-1px); }
+		.btn-outline {
+			background: transparent;
+			color: var(--primary);
+			border: 2px solid var(--primary);
+		}
+		.btn-outline:hover { background: var(--primary); color: #fff; }
+		.btn-back {
+			background: transparent;
+			color: #777;
+			border: 1px solid #ddd;
+		}
+		.btn-back:hover { background: #f5f5f5; }
+
+		/* ===== MAIN FORM CONTAINER ===== */
+		.form-container {
+			max-width: 1000px;
+			margin: 36px auto;
+			padding: 0 24px 60px;
+		}
+
+		/* ===== FORM CARD ===== */
+		.form-card {
+			background: var(--white);
+			border-radius: 14px;
+			box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+			overflow: hidden;
+			margin-bottom: 24px;
+			border: 1px solid #ece8e4;
+		}
+		.form-card-header {
+			background: linear-gradient(135deg, var(--primary) 0%, #0D1B5E 100%);
+			color: #fff;
+			padding: 18px 28px;
+			display: flex;
+			align-items: center;
+			gap: 12px;
+		}
+		.form-card-header i { font-size: 20px; color: var(--gold-l); }
+		.form-card-header h2 { font-size: 17px; font-weight: 700; letter-spacing: .5px; }
+		.form-card-header span { font-size: 12px; color: rgba(255,255,255,0.7); margin-left: auto; }
+		.form-card-body { padding: 28px; }
+
+		/* ===== FORM FIELDS ===== */
+		.form-row {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 18px;
+			margin-bottom: 18px;
+		}
+		.form-row.col-2 { grid-template-columns: repeat(2, 1fr); }
+		.form-row.col-1 { grid-template-columns: 1fr; }
+		.form-row.col-4 { grid-template-columns: repeat(4, 1fr); }
+		.form-group { display: flex; flex-direction: column; gap: 6px; }
+		.form-group label {
+			font-size: 12px;
+			font-weight: 700;
+			color: #555;
+			letter-spacing: .5px;
+			text-transform: uppercase;
+		}
+		.form-group label .req { color: var(--primary); margin-left: 2px; }
+		.form-group input,
+		.form-group select,
+		.form-group textarea {
+			width: 100%;
+			border: 1.5px solid var(--border);
+			border-radius: 7px;
+			padding: 10px 13px;
+			font-size: 14px;
+			font-family: inherit;
+			color: var(--text);
+			background: #fff;
+			outline: none;
+			transition: border .2s, box-shadow .2s;
+		}
+		.form-group input:focus,
+		.form-group select:focus,
+		.form-group textarea:focus {
+			border-color: var(--primary);
+			box-shadow: 0 0 0 3px rgba(13,27,94,0.1);
+		}
+		.form-group textarea { resize: vertical; min-height: 80px; }
+		.form-group input::placeholder { color: #bbb; }
+		.form-group.photo-group {
+			align-items: center;
+			justify-content: center;
+		}
+		.photo-upload-box {
+			width: 120px;
+			height: 140px;
+			border: 2px dashed var(--border);
+			border-radius: 8px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			transition: border .2s;
+			background: #fafafa;
+			position: relative;
+			overflow: hidden;
+		}
+		.photo-upload-box:hover { border-color: var(--primary); }
+		.photo-upload-box i { font-size: 28px; color: #ccc; margin-bottom: 8px; }
+		.photo-upload-box span { font-size: 11px; color: #aaa; text-align: center; }
+		.photo-upload-box input[type="file"] {
+			position: absolute; inset: 0; opacity: 0; cursor: pointer;
+			width: 100%; height: 100%; border: none; padding: 0;
+		}
+		#photoPreview {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			position: absolute;
+			inset: 0;
+			border-radius: 6px;
+			display: none;
+		}
+		.field-note { font-size: 11px; color: #aaa; margin-top: 2px; }
+		.radio-group { display: flex; gap: 20px; align-items: center; padding: 10px 0; }
+		.radio-option { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+		.radio-option input[type="radio"] { accent-color: var(--primary); width: 16px; height: 16px; }
+		.radio-option label { font-size: 14px; color: var(--text); font-weight: 500; cursor: pointer; text-transform: none; letter-spacing: 0; }
+		.checkbox-group { display: flex; flex-wrap: wrap; gap: 12px 24px; }
+		.checkbox-item { display: flex; align-items: center; gap: 8px; }
+		.checkbox-item input[type="checkbox"] { accent-color: var(--primary); width: 15px; height: 15px; }
+		.checkbox-item label { font-size: 13px; color: var(--text); cursor: pointer; text-transform: none; letter-spacing: 0; }
+
+		/* ===== DECLARATION ===== */
+		.declaration-box {
+			background: #fffef5;
+			border: 1.5px solid #e8d5a0;
+			border-radius: 10px;
+			padding: 20px;
+			margin-top: 4px;
+			font-size: 13px;
+			line-height: 1.8;
+			color: #555;
+		}
+		.declaration-box strong { color: var(--dark); }
+
+		/* ===== SIGNATURE ROW ===== */
+		.signature-row {
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr;
+			gap: 24px;
+			margin-top: 28px;
+		}
+		.signature-box {
+			border-top: 1.5px solid #ccc;
+			padding-top: 10px;
+			text-align: center;
+			font-size: 12px;
+			color: #888;
+		}
+
+		/* ===== INSTRUCTIONS CARD ===== */
+		.instructions-card {
+			background: #fff8f0;
+			border-left: 4px solid var(--gold);
+			border-radius: 10px;
+			padding: 20px 24px;
+			margin-bottom: 24px;
+		}
+		.instructions-card h3 {
+			font-size: 14px;
+			color: var(--dark);
+			font-weight: 700;
+			margin-bottom: 10px;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+		.instructions-card h3 i { color: var(--gold); }
+		.instructions-card ul { padding-left: 16px; }
+		.instructions-card ul li { font-size: 13px; color: #666; margin-bottom: 6px; line-height: 1.6; }
+
+		/* ===== PROGRESS INDICATOR ===== */
+		.form-progress {
+			display: flex;
+			align-items: center;
+			gap: 0;
+			margin-bottom: 28px;
+			flex-wrap: wrap;
+		}
+		.progress-step {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			font-size: 12px;
+			font-weight: 600;
+			color: #bbb;
+			padding: 8px 16px 8px 0;
+		}
+		.progress-step.done { color: var(--primary); }
+		.progress-step .step-num {
+			width: 26px; height: 26px;
+			background: #eee;
+			border-radius: 50%;
+			display: flex; align-items: center; justify-content: center;
+			font-size: 12px; font-weight: 700;
+			flex-shrink: 0;
+		}
+		.progress-step.done .step-num { background: var(--primary); color: #fff; }
+		.progress-step::after {
+			content: '›';
+			font-size: 18px;
+			color: #ddd;
+			margin-left: 8px;
+		}
+		.progress-step:last-child::after { display: none; }
+
+		/* ===== FOOTER ===== */
+		.form-footer-bar {
+			background: var(--dark);
+			color: rgba(255,255,255,0.6);
+			text-align: center;
+			padding: 20px;
+			font-size: 13px;
+		}
+		.form-footer-bar a { color: var(--gold-l); }
+
+		/* ===== TOAST NOTIFICATION ===== */
+		.toast {
+			position: fixed;
+			bottom: 30px;
+			right: 30px;
+			background: #222;
+			color: #fff;
+			padding: 14px 24px;
+			border-radius: 8px;
+			font-size: 14px;
+			font-weight: 600;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			z-index: 9999;
+			box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+			transform: translateY(80px);
+			opacity: 0;
+			transition: all .35s;
+		}
+		.toast.show { transform: translateY(0); opacity: 1; }
+		.toast.success { background: #2e7d32; }
+		.toast.info { background: var(--primary); }
+		.toast i { font-size: 18px; }
+
+		/* ===== LOADING OVERLAY ===== */
+		.loading-overlay {
+			position: fixed;
+			inset: 0;
+			background: rgba(0,0,0,0.55);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			z-index: 9999;
+			display: none;
+		}
+		.loading-overlay.show { display: flex; }
+		.loading-box {
+			background: #fff;
+			border-radius: 16px;
+			padding: 40px 50px;
+			text-align: center;
+			box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+		}
+		.spinner {
+			width: 54px; height: 54px;
+			border: 5px solid #f0f0f0;
+			border-top: 5px solid var(--primary);
+			border-radius: 50%;
+			animation: spin .9s linear infinite;
+			margin: 0 auto 20px;
+		}
+		@keyframes spin { to { transform: rotate(360deg); } }
+		.loading-box h3 { font-size: 18px; color: var(--dark); font-weight: 700; margin-bottom: 6px; }
+		.loading-box p { font-size: 13px; color: #999; }
+
+		/* ===== RESPONSIVE ===== */
+		@media (max-width: 768px) {
+			.form-row { grid-template-columns: 1fr 1fr; }
+			.form-row.col-4 { grid-template-columns: 1fr 1fr; }
+			.signature-row { grid-template-columns: 1fr; }
+			.action-bar-inner { flex-direction: column; align-items: stretch; gap: 10px; }
+			.action-bar-inner .btn { width: 100%; justify-content: center; }
+			.page-header { padding: 16px 20px; }
+			.header-content { gap: 14px; }
+			.header-school { font-size: 22px; }
+			.header-location { font-size: 11px; }
+			.header-doc-title { font-size: 13px; }
+			.form-container { padding: 16px; }
+			.form-card { padding: 20px 16px; }
+			.top-bar-inner { flex-direction: column; gap: 6px; text-align: center; font-size: 12px; }
+		}
+		@media (max-width: 480px) {
+			.form-row,
+			.form-row.col-2,
+			.form-row.col-4 { grid-template-columns: 1fr; }
+			.header-emblem { width: 68px; height: 68px; }
+			.header-school { font-size: 18px; }
+			.header-location { letter-spacing: 0.5px; }
+			.form-container { padding: 10px; }
+			.form-card { padding: 16px 12px; }
+			.section-heading { font-size: 13px; }
+			.top-bar-left span { display: none; }
+		}
+
+		/* ===== PRINT STYLES ===== */
+		@media print {
+			.action-bar, .instructions-card, .toast, .loading-overlay { display: none !important; }
+			.form-container { margin: 0; padding: 0; }
+			.form-card { box-shadow: none; border: 1px solid #ccc; }
+		}
+	</style>
+</head>
+
+<body>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+	<div class="loading-box">
+		<div class="spinner"></div>
+		<h3>Generating PDF...</h3>
+		<p>Please wait while we prepare your document.</p>
+	</div>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast">
+	<i class="fa fa-check-circle"></i>
+	<span id="toastMsg">Done!</span>
+</div>
+
+<!-- ===== PAGE HEADER ===== -->
+<div class="page-header">
+	<div class="top-bar">
+		<div class="top-bar-inner">
+			<span><i class="fa fa-envelope" style="margin-right:6px;color:var(--gold-l)"></i> admissions@gurukul.edu.in &nbsp;|&nbsp; <i class="fa fa-phone" style="margin-right:6px;color:var(--gold-l)"></i> +91 821-234-5678</span>
+			<a href="index.html"><i class="fa fa-home" style="margin-right:5px;"></i> Back to Home</a>
+		</div>
+	</div>
+	<div class="header-content">
+		<div class="header-emblem-wrap"><img src="images/gurukul-logo.png" class="header-emblem" alt="The Gurukul High Logo"></div>
+		<div class="header-text">
+			<div class="header-school">The Gurukul High</div>
+			<div class="header-location">Gurukula Vidya Samsthe &nbsp;|&nbsp; K.R. Nagar, Mysuru(D) &nbsp;|&nbsp; Est. 1999 &nbsp;|&nbsp; Nursery to Class X</div>
+			<div class="header-doc-title">📋 Student Admission Application Form – 2026–27</div>
+		</div>
+	</div>
+</div>
+
+<!-- ===== STICKY ACTION BAR ===== -->
+<div class="action-bar">
+	<div class="action-bar-inner">
+		<div class="action-bar-info">
+			<span>Academic Year 2026–27</span> &nbsp;|&nbsp; Fill the form online, then download as PDF or submit
+		</div>
+		<div class="action-buttons">
+			<a href="index.html" class="btn btn-back"><i class="fa fa-arrow-left"></i> Back to Home</a>
+			<button class="btn btn-outline" onclick="downloadBlankForm()">
+				<i class="fa fa-file-pdf-o"></i> Download Blank Form
+			</button>
+			<button class="btn btn-gold" onclick="downloadFilledForm()">
+				<i class="fa fa-download"></i> Download Filled Form (PDF)
+			</button>
+			<button class="btn btn-primary" onclick="submitForm()">
+				<i class="fa fa-paper-plane"></i> Submit Application
+			</button>
+		</div>
+	</div>
+</div>
+
+<!-- ===== MAIN FORM ===== -->
+<div class="form-container">
+
+	<!-- Instructions -->
+	<div class="instructions-card">
+		<h3><i class="fa fa-info-circle"></i> Important Instructions for Applicants</h3>
+		<ul>
+			<li>Fill all fields marked with <strong style="color:var(--primary);">*</strong> (asterisk) — they are mandatory.</li>
+			<li>Use capital letters for names and proper format for dates (DD/MM/YYYY).</li>
+			<li>Upload a recent passport-size photograph of the student (JPG/PNG, max 1MB).</li>
+			<li>Once filled, click <strong>"Download Filled Form (PDF)"</strong> to save a copy for your records.</li>
+			<li>Click <strong>"Download Blank Form"</strong> if you prefer to fill and submit a printed copy in person.</li>
+			<li>For queries, contact Admissions Office: <strong>+91 821-234-5678</strong> or visit school Mon–Sat 8 AM – 1 PM.</li>
+		</ul>
+	</div>
+
+	<form id="admissionForm" novalidate>
+
+		<!-- SECTION 1: Student Details -->
+		<div class="form-card">
+			<div class="form-card-header">
+				<i class="fa fa-user-circle"></i>
+				<h2>Section 1 — Student Information</h2>
+				<span>All fields with * are mandatory</span>
+			</div>
+			<div class="form-card-body">
+				<div class="form-row" style="grid-template-columns: 1fr 1fr 140px;">
+					<div class="form-group">
+						<label>First Name <span class="req">*</span></label>
+						<input type="text" id="firstName" placeholder="e.g. Arjun" required>
+					</div>
+					<div class="form-group">
+						<label>Last Name <span class="req">*</span></label>
+						<input type="text" id="lastName" placeholder="e.g. Sharma" required>
+					</div>
+					<div class="form-group photo-group">
+						<div class="photo-upload-box" title="Click to upload photo">
+							<img id="photoPreview" src="" alt="Student Photo">
+							<i class="fa fa-camera" id="cameraIcon"></i>
+							<span id="photoLabel">Upload<br>Photo</span>
+							<input type="file" id="studentPhoto" accept="image/*" onchange="previewPhoto(this)">
+						</div>
+					</div>
+				</div>
+
+				<div class="form-row col-4">
+					<div class="form-group">
+						<label>Date of Birth <span class="req">*</span></label>
+						<input type="date" id="dob" required>
+					</div>
+					<div class="form-group">
+						<label>Gender <span class="req">*</span></label>
+						<select id="gender" required>
+							<option value="" disabled selected>Select</option>
+							<option>Male</option>
+							<option>Female</option>
+							<option>Other</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Nationality</label>
+						<input type="text" id="nationality" placeholder="Indian" value="Indian">
+					</div>
+					<div class="form-group">
+						<label>Blood Group</label>
+						<select id="bloodGroup">
+							<option value="" disabled selected>Select</option>
+							<option>A+</option><option>A-</option>
+							<option>B+</option><option>B-</option>
+							<option>O+</option><option>O-</option>
+							<option>AB+</option><option>AB-</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="form-group">
+						<label>Aadhar Number</label>
+						<input type="text" id="aadhar" placeholder="XXXX XXXX XXXX" maxlength="14">
+						<span class="field-note">Optional – for scholarship verification</span>
+					</div>
+					<div class="form-group">
+						<label>Mother Tongue</label>
+						<select id="motherTongue">
+							<option value="" disabled selected>Select language</option>
+							<option>Kannada</option>
+							<option>Telugu</option>
+							<option>Tamil</option>
+							<option>Hindi</option>
+							<option>English</option>
+							<option>Urdu</option>
+							<option>Marathi</option>
+							<option>Other</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Religion / Community</label>
+						<input type="text" id="religion" placeholder="e.g. Hindu, OBC">
+					</div>
+				</div>
+
+				<div class="form-row col-1">
+					<div class="form-group">
+						<label>Any Known Medical Conditions / Disabilities</label>
+						<textarea id="medicalInfo" placeholder="Mention any allergies, chronic conditions, or special needs (leave blank if none)"></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- SECTION 2: Academic Details -->
+		<div class="form-card">
+			<div class="form-card-header">
+				<i class="fa fa-graduation-cap"></i>
+				<h2>Section 2 — Academic Information</h2>
+			</div>
+			<div class="form-card-body">
+				<div class="form-row">
+					<div class="form-group">
+						<label>Grade Applying For <span class="req">*</span></label>
+						<select id="gradeApplying" required>
+							<option value="" disabled selected>Select Grade</option>
+							<option>Nursery</option>
+						<option>LKG</option>
+						<option>UKG</option>
+						<option>Grade I</option><option>Grade II</option><option>Grade III</option>
+							<option>Grade IV</option><option>Grade V</option><option>Grade VI</option>
+							<option>Grade VII</option><option>Grade VIII</option><option>Grade IX</option>
+							<option>Grade X</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Last Grade Completed <span class="req">*</span></label>
+						<select id="lastGrade" required>
+							<option value="" disabled selected>Select</option>
+							<option>Pre-KG (New Admission)</option>
+							<option>Grade I</option><option>Grade II</option><option>Grade III</option>
+							<option>Grade IV</option><option>Grade V</option><option>Grade VI</option>
+							<option>Grade VII</option><option>Grade VIII</option><option>Grade IX</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Percentage / Grade (Last Year) <span class="req">*</span></label>
+						<input type="text" id="lastPercentage" placeholder="e.g. 89% or A+" required>
+					</div>
+				</div>
+
+				<div class="form-row">
+					<div class="form-group">
+						<label>Previous School Name <span class="req">*</span></label>
+						<input type="text" id="prevSchool" placeholder="Full name of previous school" required>
+					</div>
+					<div class="form-group">
+						<label>Previous School Board</label>
+						<select id="prevBoard">
+							<option value="" disabled selected>Select Board</option>
+							<option>State Board (Karnataka)</option>
+							<option>ICSE</option>
+							<option>Karnataka State Board (SSLC)</option>
+							<option>IB</option>
+							<option>Other</option>
+							<option>N/A (New Admission)</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>Previous School City / District</label>
+						<input type="text" id="prevSchoolCity" placeholder="e.g. Mysore">
+					</div>
+				</div>
+
+				<div class="form-row col-2">
+					<div class="form-group">
+						<label>Reason for Seeking Admission</label>
+						<textarea id="reasonAdmission" placeholder="Why did you choose The Gurukul High?"></textarea>
+					</div>
+					<div class="form-group">
+						<label>Extracurricular Interests</label>
+						<div class="checkbox-group" style="margin-top:8px;">
+							<div class="checkbox-item"><input type="checkbox" id="ec1"><label for="ec1">Cricket / Sports</label></div>
+							<div class="checkbox-item"><input type="checkbox" id="ec2"><label for="ec2">Music / Dance</label></div>
+							<div class="checkbox-item"><input type="checkbox" id="ec3"><label for="ec3">Art / Drawing</label></div>
+							<div class="checkbox-item"><input type="checkbox" id="ec4"><label for="ec4">Drama / Theatre</label></div>
+							<div class="checkbox-item"><input type="checkbox" id="ec5"><label for="ec5">Debate / Quiz</label></div>
+							<div class="checkbox-item"><input type="checkbox" id="ec6"><label for="ec6">Mathematics</label></div>
+							<div class="checkbox-item"><input type="checkbox" id="ec7"><label for="ec7">Science Club</label></div>
+							<div class="checkbox-item"><input type="checkbox" id="ec8"><label for="ec8">Technology / Coding</label></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- SECTION 3: Father's Details -->
+		<div class="form-card">
+			<div class="form-card-header">
+				<i class="fa fa-male"></i>
+				<h2>Section 3 — Father's / Guardian 1 Details</h2>
+			</div>
+			<div class="form-card-body">
+				<div class="form-row">
+					<div class="form-group">
+						<label>Father's Full Name <span class="req">*</span></label>
+						<input type="text" id="fatherName" placeholder="Full name as per Aadhar" required>
+					</div>
+					<div class="form-group">
+						<label>Occupation <span class="req">*</span></label>
+						<input type="text" id="fatherOccupation" placeholder="e.g. Engineer, Teacher, Business" required>
+					</div>
+					<div class="form-group">
+						<label>Highest Qualification</label>
+						<select id="fatherQual">
+							<option value="" disabled selected>Select</option>
+							<option>Below 10th</option><option>SSLC / 10th</option>
+							<option>PUC / 12th</option><option>Diploma</option>
+							<option>Graduate</option><option>Post-Graduate</option>
+							<option>PhD / Doctorate</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-row">
+					<div class="form-group">
+						<label>Mobile Number <span class="req">*</span></label>
+						<input type="tel" id="fatherMobile" placeholder="+91 XXXXX XXXXX" required>
+					</div>
+					<div class="form-group">
+						<label>Email Address</label>
+						<input type="email" id="fatherEmail" placeholder="father@email.com">
+					</div>
+					<div class="form-group">
+						<label>Annual Income (approx.)</label>
+						<select id="fatherIncome">
+							<option value="" disabled selected>Select range</option>
+							<option>Below ₹2 Lakh</option>
+							<option>₹2–5 Lakh</option>
+							<option>₹5–10 Lakh</option>
+							<option>₹10–20 Lakh</option>
+							<option>Above ₹20 Lakh</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- SECTION 4: Mother's Details -->
+		<div class="form-card">
+			<div class="form-card-header">
+				<i class="fa fa-female"></i>
+				<h2>Section 4 — Mother's / Guardian 2 Details</h2>
+			</div>
+			<div class="form-card-body">
+				<div class="form-row">
+					<div class="form-group">
+						<label>Mother's Full Name <span class="req">*</span></label>
+						<input type="text" id="motherName" placeholder="Full name as per Aadhar" required>
+					</div>
+					<div class="form-group">
+						<label>Occupation</label>
+						<input type="text" id="motherOccupation" placeholder="e.g. Homemaker, Teacher, Doctor">
+					</div>
+					<div class="form-group">
+						<label>Mobile Number <span class="req">*</span></label>
+						<input type="tel" id="motherMobile" placeholder="+91 XXXXX XXXXX" required>
+					</div>
+				</div>
+				<div class="form-row col-2">
+					<div class="form-group">
+						<label>Email Address</label>
+						<input type="email" id="motherEmail" placeholder="mother@email.com">
+					</div>
+					<div class="form-group">
+						<label>Is Parent a Gurukul Alumni?</label>
+						<div class="radio-group">
+							<div class="radio-option"><input type="radio" name="alumni" id="alY" value="Yes"><label for="alY">Yes</label></div>
+							<div class="radio-option"><input type="radio" name="alumni" id="alN" value="No" checked><label for="alN">No</label></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- SECTION 5: Address -->
+		<div class="form-card">
+			<div class="form-card-header">
+				<i class="fa fa-map-marker"></i>
+				<h2>Section 5 — Address & Contact Details</h2>
+			</div>
+			<div class="form-card-body">
+				<div class="form-row col-1">
+					<div class="form-group">
+						<label>Residential Address <span class="req">*</span></label>
+						<textarea id="address" placeholder="House/Flat No., Street, Locality, Area" required></textarea>
+					</div>
+				</div>
+				<div class="form-row col-4">
+					<div class="form-group">
+						<label>City <span class="req">*</span></label>
+						<input type="text" id="city" placeholder="e.g. Mysore" required>
+					</div>
+					<div class="form-group">
+						<label>District</label>
+						<input type="text" id="district" placeholder="e.g. Mysore">
+					</div>
+					<div class="form-group">
+						<label>State <span class="req">*</span></label>
+						<input type="text" id="state" placeholder="Karnataka" value="Karnataka" required>
+					</div>
+					<div class="form-group">
+						<label>PIN Code <span class="req">*</span></label>
+						<input type="text" id="pin" placeholder="570010" maxlength="6" required>
+					</div>
+				</div>
+
+				<div class="form-row col-2">
+					<div class="form-group">
+						<label>Emergency Contact Name</label>
+						<input type="text" id="emergencyName" placeholder="Name of emergency contact">
+					</div>
+					<div class="form-group">
+						<label>Emergency Contact Number</label>
+						<input type="tel" id="emergencyPhone" placeholder="+91 XXXXX XXXXX">
+					</div>
+				</div>
+
+				<div class="form-row col-2">
+					<div class="form-group">
+						<label>Preferred Contact Time</label>
+						<select id="contactTime">
+							<option value="" disabled selected>Select time</option>
+							<option>Morning (8 AM – 12 PM)</option>
+							<option>Afternoon (12 PM – 4 PM)</option>
+							<option>Evening (4 PM – 7 PM)</option>
+							<option>Anytime</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label>How Did You Hear About Us?</label>
+						<select id="hearAbout">
+							<option value="" disabled selected>Select</option>
+							<option>Friend / Family Referral</option>
+							<option>Google / Online Search</option>
+							<option>School Banner / Hoarding</option>
+							<option>Newspaper Advertisement</option>
+							<option>School Open House</option>
+							<option>Social Media</option>
+							<option>Other</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- SECTION 6: Documents Checklist -->
+		<div class="form-card">
+			<div class="form-card-header">
+				<i class="fa fa-file-text"></i>
+				<h2>Section 6 — Documents to Submit at School</h2>
+			</div>
+			<div class="form-card-body">
+				<p style="font-size:13px; color:#777; margin-bottom:18px;">Please bring the following original documents (with photocopies) at the time of admission:</p>
+				<div class="checkbox-group" style="gap:14px 40px;">
+					<div class="checkbox-item"><input type="checkbox" id="d1"><label for="d1">Birth Certificate</label></div>
+					<div class="checkbox-item"><input type="checkbox" id="d2"><label for="d2">Previous School Transfer Certificate (TC)</label></div>
+					<div class="checkbox-item"><input type="checkbox" id="d3"><label for="d3">Previous School Mark Sheet / Report Card</label></div>
+					<div class="checkbox-item"><input type="checkbox" id="d4"><label for="d4">Student Aadhar Card</label></div>
+					<div class="checkbox-item"><input type="checkbox" id="d5"><label for="d5">Parent Aadhar Cards (both)</label></div>
+					<div class="checkbox-item"><input type="checkbox" id="d6"><label for="d6">4 Passport-size Photographs</label></div>
+					<div class="checkbox-item"><input type="checkbox" id="d7"><label for="d7">Caste / Community Certificate (if applicable)</label></div>
+					<div class="checkbox-item"><input type="checkbox" id="d8"><label for="d8">Medical Fitness Certificate (for Sports applicants)</label></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- SECTION 7: Declaration -->
+		<div class="form-card">
+			<div class="form-card-header">
+				<i class="fa fa-check-square"></i>
+				<h2>Section 7 — Declaration & Signature</h2>
+			</div>
+			<div class="form-card-body">
+				<div class="declaration-box">
+					<strong>Declaration by Parent / Guardian:</strong><br><br>
+					I / We hereby declare that all the information furnished in this application form is true, correct, and complete
+					to the best of my / our knowledge and belief. I / We understand that any false or misleading information will
+					result in the cancellation of the admission. I / We agree to abide by the rules and regulations of
+					<strong>The Gurukul High, K.R. Nagar, Mysuru</strong>, and undertake to pay all fees and dues as prescribed by the school
+					from time to time. I / We also agree to participate in the school's activities and support the educational
+					goals of the institution.
+				</div>
+
+				<div class="form-row col-2" style="margin-top:24px;">
+					<div class="form-group">
+						<label>Date of Application <span class="req">*</span></label>
+						<input type="date" id="appDate" required>
+					</div>
+					<div class="form-group">
+						<label>Place</label>
+						<input type="text" id="appPlace" placeholder="e.g. Mysore" value="Mysore">
+					</div>
+				</div>
+
+				<div class="signature-row">
+					<div class="signature-box">
+						<br><br><br>
+						Signature of Father / Guardian 1
+					</div>
+					<div class="signature-box">
+						<br><br><br>
+						Signature of Mother / Guardian 2
+					</div>
+					<div class="signature-box" style="border-top-color:var(--primary);">
+						<br><br><br>
+						<strong style="color:var(--primary);">For Office Use Only</strong><br>
+						Admission No. ____________<br>
+						Date: ____________________<br>
+						Principal's Signature
+					</div>
+				</div>
+
+				<div style="margin-top:28px; display:flex; gap:12px; justify-content:flex-end; flex-wrap:wrap;">
+					<button type="button" class="btn btn-outline" onclick="resetForm()">
+						<i class="fa fa-refresh"></i> Reset Form
+					</button>
+					<button type="button" class="btn btn-gold" onclick="downloadFilledForm()">
+						<i class="fa fa-download"></i> Download Filled Form (PDF)
+					</button>
+					<button type="button" class="btn btn-primary" onclick="submitForm()">
+						<i class="fa fa-paper-plane"></i> Submit Application
+					</button>
+				</div>
+			</div>
+		</div>
+
+	</form>
+</div>
+
+<!-- FOOTER -->
+<div class="form-footer-bar">
+	<p>© 2026 The Gurukul High, K.R. Nagar, Mysuru &nbsp;|&nbsp; Gurukula Vidya Samsthe | Est. 1999 &nbsp;|&nbsp;
+	<a href="index.html">Back to Website</a> &nbsp;|&nbsp;
+	Admissions Helpline: <strong style="color:var(--gold-l);">+91 821-234-5678</strong></p>
+</div>
+
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+	// Set today's date as default for application date
+	document.getElementById('appDate').value = new Date().toISOString().split('T')[0];
+
+	// ===== PHOTO PREVIEW =====
+	function previewPhoto(input) {
+		if (input.files && input.files[0]) {
+			const reader = new FileReader();
+			reader.onload = function(e) {
+				const preview = document.getElementById('photoPreview');
+				preview.src = e.target.result;
+				preview.style.display = 'block';
+				document.getElementById('cameraIcon').style.display = 'none';
+				document.getElementById('photoLabel').style.display = 'none';
+			};
+			reader.readAsDataURL(input.files[0]);
+		}
+	}
+
+	// ===== TOAST =====
+	function showToast(msg, type = 'success') {
+		const toast = document.getElementById('toast');
+		const toastMsg = document.getElementById('toastMsg');
+		toastMsg.textContent = msg;
+		toast.className = 'toast ' + type + ' show';
+		setTimeout(() => { toast.className = 'toast'; }, 4500);
+	}
+
+	// ===== RESET FORM =====
+	function resetForm() {
+		if (confirm('Are you sure you want to reset all form fields?')) {
+			document.getElementById('admissionForm').reset();
+			document.getElementById('photoPreview').style.display = 'none';
+			document.getElementById('cameraIcon').style.display = '';
+			document.getElementById('photoLabel').style.display = '';
+			document.getElementById('appDate').value = new Date().toISOString().split('T')[0];
+			showToast('Form has been reset.', 'info');
+		}
+	}
+
+	// ===== COLLECT FORM DATA =====
+	function getFormData() {
+		function val(id) {
+			const el = document.getElementById(id);
+			return el ? el.value.trim() : '';
+		}
+		const extras = [];
+		for (let i = 1; i <= 8; i++) {
+			const cb = document.getElementById('ec' + i);
+			if (cb && cb.checked) extras.push(cb.nextElementSibling.textContent);
+		}
+		const docs = [];
+		for (let i = 1; i <= 8; i++) {
+			const cb = document.getElementById('d' + i);
+			if (cb && cb.checked) docs.push(cb.nextElementSibling.textContent);
+		}
+		const alumniEl = document.querySelector('input[name="alumni"]:checked');
+		return {
+			firstName: val('firstName'),
+			lastName: val('lastName'),
+			dob: val('dob'),
+			gender: val('gender'),
+			nationality: val('nationality'),
+			bloodGroup: val('bloodGroup'),
+			aadhar: val('aadhar'),
+			motherTongue: val('motherTongue'),
+			religion: val('religion'),
+			medicalInfo: val('medicalInfo'),
+			gradeApplying: val('gradeApplying'),
+			lastGrade: val('lastGrade'),
+			lastPercentage: val('lastPercentage'),
+			prevSchool: val('prevSchool'),
+			prevBoard: val('prevBoard'),
+			prevSchoolCity: val('prevSchoolCity'),
+			reasonAdmission: val('reasonAdmission'),
+			extracurricular: extras.join(', ') || 'None selected',
+			fatherName: val('fatherName'),
+			fatherOccupation: val('fatherOccupation'),
+			fatherQual: val('fatherQual'),
+			fatherMobile: val('fatherMobile'),
+			fatherEmail: val('fatherEmail'),
+			fatherIncome: val('fatherIncome'),
+			motherName: val('motherName'),
+			motherOccupation: val('motherOccupation'),
+			motherMobile: val('motherMobile'),
+			motherEmail: val('motherEmail'),
+			parentAlumni: alumniEl ? alumniEl.value : 'No',
+			address: val('address'),
+			city: val('city'),
+			district: val('district'),
+			state: val('state'),
+			pin: val('pin'),
+			emergencyName: val('emergencyName'),
+			emergencyPhone: val('emergencyPhone'),
+			contactTime: val('contactTime'),
+			hearAbout: val('hearAbout'),
+			appDate: val('appDate'),
+			appPlace: val('appPlace'),
+			documents: docs,
+		};
+	}
+
+	// ===== GENERATE FILLED PDF (jsPDF) =====
+	function downloadFilledForm() {
+		const data = getFormData();
+		if (!data.firstName || !data.lastName || !data.gradeApplying || !data.fatherName || !data.motherName) {
+			showToast('Please fill in at least the required (*) fields before downloading.', 'info');
+			return;
+		}
+
+		showLoading(true);
+		setTimeout(() => {
+			try {
+				const { jsPDF } = window.jspdf;
+				const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+				const W = 210, ml = 18, mr = 18, contentW = W - ml - mr;
+				let y = 0;
+
+				// ---- Helper Functions ----
+				const newPage = () => { doc.addPage(); y = 20; };
+				const checkY = (needed) => { if (y + needed > 278) newPage(); };
+
+				// Colours
+				const PRIMARY = [13, 27, 94];
+				const GOLD = [61, 139, 55];
+				const DARK = [6, 13, 46];
+				const LIGHT = [240, 242, 248];
+				const WHITE = [255, 255, 255];
+				const GREY = [120, 120, 120];
+				const BORDER = [180, 195, 220];
+
+				// ---- HEADER ----
+				doc.setFillColor(...DARK);
+				doc.rect(0, 0, 210, 38, 'F');
+				doc.setFillColor(...PRIMARY);
+				doc.rect(0, 38, 210, 4, 'F');
+
+				// Emblem circle
+				doc.setFillColor(...PRIMARY);
+				doc.circle(22, 19, 12, 'F');
+				doc.setFillColor(...GOLD);
+				doc.circle(22, 19, 10, 'S');
+				doc.setFontSize(11); doc.setFont('helvetica', 'bold');
+				doc.setTextColor(...WHITE); doc.text('GH', 22, 23, { align: 'center' });
+
+				// School info
+				doc.setFontSize(16); doc.setFont('helvetica', 'bold');
+				doc.setTextColor(...WHITE); doc.text('THE GURUKUL HIGH', 38, 13);
+				doc.setFontSize(8); doc.setFont('helvetica', 'normal');
+				doc.setTextColor(...GOLD); doc.text('Gurukula Vidya Samsthe  |  K.R. Nagar, Mysuru(D)  |  Est. 1999  |  Nursery to Class X', 38, 19);
+				doc.setTextColor(200, 200, 200); doc.text('+91 821-234-5678  |  admissions@gurukul.edu.in', 38, 25);
+
+				// Doc title
+				doc.setFillColor(...PRIMARY);
+				doc.roundedRect(38, 29, 130, 8, 2, 2, 'F');
+				doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+				doc.setTextColor(...WHITE); doc.text('STUDENT ADMISSION APPLICATION FORM – ACADEMIC YEAR 2026–27', 103, 34, { align: 'center' });
+
+				y = 50;
+
+				// ---- SECTION HELPER ----
+				function sectionHeader(title, icon) {
+					checkY(14);
+					doc.setFillColor(...PRIMARY);
+					doc.roundedRect(ml, y, contentW, 10, 2, 2, 'F');
+					doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+					doc.setTextColor(...WHITE);
+					doc.text(title, ml + 4, y + 6.5);
+					y += 14;
+				}
+
+				function field(label, value, x, fieldY, w) {
+					doc.setFillColor(...LIGHT);
+					doc.roundedRect(x, fieldY, w, 13, 1, 1, 'F');
+					doc.setDrawColor(...BORDER);
+					doc.roundedRect(x, fieldY, w, 13, 1, 1, 'S');
+					doc.setFontSize(7); doc.setFont('helvetica', 'normal');
+					doc.setTextColor(...GREY); doc.text(label.toUpperCase(), x + 3, fieldY + 4.5);
+					doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+					doc.setTextColor(...DARK);
+					const v = value || '—';
+					const maxW = w - 6;
+					const lines = doc.splitTextToSize(v, maxW);
+					doc.text(lines[0] || v, x + 3, fieldY + 10);
+				}
+
+				function row3(l1, v1, l2, v2, l3, v3) {
+					checkY(16);
+					const cw = (contentW - 8) / 3;
+					field(l1, v1, ml, y, cw);
+					field(l2, v2, ml + cw + 4, y, cw);
+					field(l3, v3, ml + (cw + 4) * 2, y, cw);
+					y += 16;
+				}
+				function row2(l1, v1, l2, v2) {
+					checkY(16);
+					const cw = (contentW - 4) / 2;
+					field(l1, v1, ml, y, cw);
+					field(l2, v2, ml + cw + 4, y, cw);
+					y += 16;
+				}
+				function row1(l1, v1) {
+					checkY(16);
+					field(l1, v1, ml, y, contentW);
+					y += 16;
+				}
+
+				// ===== SECTION 1: STUDENT INFO =====
+				sectionHeader('SECTION 1 — STUDENT INFORMATION');
+
+				// Photo box
+				doc.setFillColor(240, 235, 230);
+				doc.roundedRect(ml + contentW - 32, y - 2, 30, 38, 2, 2, 'F');
+				doc.setDrawColor(...BORDER);
+				doc.roundedRect(ml + contentW - 32, y - 2, 30, 38, 2, 2, 'S');
+				const photoInput = document.getElementById('studentPhoto');
+				const photoPreview = document.getElementById('photoPreview');
+				if (photoPreview.src && photoPreview.style.display !== 'none') {
+					try {
+						doc.addImage(photoPreview.src, 'JPEG', ml + contentW - 31, y - 1, 28, 36);
+					} catch(e) {}
+				} else {
+					doc.setFontSize(7); doc.setFont('helvetica', 'normal');
+					doc.setTextColor(...GREY);
+					doc.text('STUDENT', ml + contentW - 17, y + 14, { align: 'center' });
+					doc.text('PHOTO', ml + contentW - 17, y + 18, { align: 'center' });
+				}
+
+				// Fields left of photo
+				const photoW = 36;
+				const leftW = contentW - photoW - 4;
+				const cw3 = (leftW - 8) / 3;
+
+				field('FIRST NAME', data.firstName, ml, y, cw3);
+				field('LAST NAME', data.lastName, ml + cw3 + 4, y, cw3);
+				field('DATE OF BIRTH', data.dob, ml + (cw3 + 4) * 2, y, cw3);
+				y += 16;
+				field('GENDER', data.gender, ml, y, cw3);
+				field('NATIONALITY', data.nationality, ml + cw3 + 4, y, cw3);
+				field('BLOOD GROUP', data.bloodGroup, ml + (cw3 + 4) * 2, y, cw3);
+				y += 16;
+				field('AADHAR NUMBER', data.aadhar, ml, y, cw3);
+				field('MOTHER TONGUE', data.motherTongue, ml + cw3 + 4, y, cw3);
+				field('RELIGION / COMMUNITY', data.religion, ml + (cw3 + 4) * 2, y, cw3);
+				y += 16;
+				row1('MEDICAL CONDITIONS / DISABILITIES', data.medicalInfo || 'None');
+
+				// ===== SECTION 2: ACADEMIC =====
+				sectionHeader('SECTION 2 — ACADEMIC INFORMATION');
+				row3('GRADE APPLYING FOR', data.gradeApplying, 'LAST GRADE COMPLETED', data.lastGrade, 'PERCENTAGE / GRADE (LAST YEAR)', data.lastPercentage);
+				row3('PREVIOUS SCHOOL NAME', data.prevSchool, 'PREVIOUS SCHOOL BOARD', data.prevBoard, 'PREVIOUS SCHOOL CITY', data.prevSchoolCity);
+				row2('REASON FOR SEEKING ADMISSION', data.reasonAdmission, 'EXTRACURRICULAR INTERESTS', data.extracurricular);
+
+				// ===== SECTION 3: FATHER =====
+				sectionHeader("SECTION 3 — FATHER'S / GUARDIAN 1 DETAILS");
+				row3("FATHER'S FULL NAME", data.fatherName, 'OCCUPATION', data.fatherOccupation, 'QUALIFICATION', data.fatherQual);
+				row3('MOBILE NUMBER', data.fatherMobile, 'EMAIL ADDRESS', data.fatherEmail, 'ANNUAL INCOME', data.fatherIncome);
+
+				// ===== SECTION 4: MOTHER =====
+				sectionHeader("SECTION 4 — MOTHER'S / GUARDIAN 2 DETAILS");
+				row3("MOTHER'S FULL NAME", data.motherName, 'OCCUPATION', data.motherOccupation, 'MOBILE NUMBER', data.motherMobile);
+				row2('EMAIL ADDRESS', data.motherEmail, 'PARENT IS GURUKUL ALUMNI?', data.parentAlumni);
+
+				// ===== SECTION 5: ADDRESS =====
+				sectionHeader('SECTION 5 — ADDRESS & CONTACT DETAILS');
+				row1('RESIDENTIAL ADDRESS', data.address);
+				row3('CITY / TOWN', data.city, 'DISTRICT', data.district, 'STATE', data.state);
+				row3('PIN CODE', data.pin, 'EMERGENCY CONTACT NAME', data.emergencyName, 'EMERGENCY CONTACT NUMBER', data.emergencyPhone);
+				row2('PREFERRED CONTACT TIME', data.contactTime, 'HOW DID YOU HEAR ABOUT US?', data.hearAbout);
+
+				// ===== SECTION 6: DOCS =====
+				checkY(20);
+				sectionHeader('SECTION 6 — DOCUMENTS TO SUBMIT');
+				doc.setFontSize(8); doc.setFont('helvetica', 'normal');
+				doc.setTextColor(...GREY);
+				doc.text('Documents checked below are to be submitted at the time of admission:', ml, y);
+				y += 7;
+				const docList = [
+					'Birth Certificate', 'Previous School TC', 'Mark Sheet / Report Card',
+					'Student Aadhar Card', 'Parent Aadhar Cards', '4 Passport Photos',
+					'Caste Certificate (if applicable)', 'Medical Fitness Certificate'
+				];
+				const cols = 2;
+				const docW = (contentW - 4) / cols;
+				for (let i = 0; i < docList.length; i++) {
+					const col = i % cols;
+					const row = Math.floor(i / cols);
+					if (col === 0 && i > 0) checkY(7);
+					const cx = ml + col * (docW + 4);
+					const cy = y + row * 7;
+					doc.setDrawColor(...PRIMARY);
+					doc.rect(cx, cy, 4, 4);
+					doc.setFontSize(8); doc.setFont('helvetica', 'normal');
+					doc.setTextColor(...DARK);
+					doc.text(docList[i], cx + 7, cy + 3.5);
+				}
+				y += Math.ceil(docList.length / cols) * 7 + 8;
+
+				// ===== SECTION 7: DECLARATION =====
+				checkY(60);
+				sectionHeader('SECTION 7 — DECLARATION & SIGNATURE');
+
+				doc.setFillColor(255, 252, 235);
+				doc.setDrawColor(200, 170, 80);
+				doc.roundedRect(ml, y, contentW, 28, 2, 2, 'FD');
+				doc.setFontSize(7.5); doc.setFont('helvetica', 'bold');
+				doc.setTextColor(...DARK); doc.text('DECLARATION BY PARENT / GUARDIAN:', ml + 4, y + 5);
+				doc.setFont('helvetica', 'normal'); doc.setTextColor(80, 80, 80);
+				const declText = 'I / We hereby declare that all the information furnished in this application form is true, correct and complete to the best of my / our knowledge. I / We understand that any false or misleading information will result in cancellation of admission. I / We agree to abide by all rules, regulations and fee structures of The Gurukul High, K.R. Nagar, Mysuru.';
+				const declLines = doc.splitTextToSize(declText, contentW - 8);
+				doc.text(declLines, ml + 4, y + 11);
+				y += 32;
+
+				checkY(35);
+				row2('DATE OF APPLICATION', data.appDate, 'PLACE', data.appPlace);
+
+				// Signature boxes
+				checkY(38);
+				const sigW = (contentW - 8) / 3;
+				const sigBoxes = [
+					{ label: "Father's / Guardian 1 Signature", x: ml },
+					{ label: "Mother's / Guardian 2 Signature", x: ml + sigW + 4 },
+					{ label: "Principal's Signature (Office Use)", x: ml + (sigW + 4) * 2 },
+				];
+				sigBoxes.forEach(sig => {
+					doc.setDrawColor(...BORDER);
+					doc.setFillColor(250, 250, 250);
+					doc.roundedRect(sig.x, y, sigW, 28, 2, 2, 'FD');
+					doc.setFontSize(7); doc.setFont('helvetica', 'normal');
+					doc.setTextColor(...GREY);
+					doc.text(sig.label, sig.x + sigW / 2, y + 25, { align: 'center' });
+				});
+				// "Office Use" highlight
+				doc.setFillColor(255, 245, 245);
+				doc.setDrawColor(...PRIMARY);
+				doc.roundedRect(ml + (sigW + 4) * 2, y, sigW, 28, 2, 2, 'FD');
+				doc.setFontSize(7); doc.setFont('helvetica', 'bold');
+				doc.setTextColor(...PRIMARY);
+				doc.text('FOR OFFICE USE ONLY', ml + (sigW + 4) * 2 + sigW / 2, y + 6, { align: 'center' });
+				doc.setFont('helvetica', 'normal'); doc.setTextColor(...GREY);
+				doc.text('Admission No: ________________', ml + (sigW + 4) * 2 + 4, y + 13);
+				doc.text('Date: _______________________', ml + (sigW + 4) * 2 + 4, y + 19);
+				y += 32;
+
+				// ---- FOOTER on every page ----
+				const totalPages = doc.getNumberOfPages();
+				for (let p = 1; p <= totalPages; p++) {
+					doc.setPage(p);
+					doc.setFillColor(...DARK);
+					doc.rect(0, 287, 210, 10, 'F');
+					doc.setFontSize(7); doc.setFont('helvetica', 'normal');
+					doc.setTextColor(180, 180, 180);
+					doc.text('The Gurukul High, K.R. Nagar, Mysuru  |  Gurukula Vidya Samsthe | Est. 1999  |  +91 821-234-5678', 105, 293, { align: 'center' });
+					doc.text(`Page ${p} of ${totalPages}`, 192, 293, { align: 'right' });
+				}
+
+				const name = (data.firstName + '_' + data.lastName).replace(/\s+/g, '_') || 'Student';
+				doc.save(`Gurukul_Admission_Form_${name}_2026-27.pdf`);
+				showLoading(false);
+				showToast('PDF downloaded successfully!', 'success');
+			} catch (err) {
+				console.error(err);
+				showLoading(false);
+				showToast('Error generating PDF. Please try again.', 'info');
+			}
+		}, 200);
+	}
+
+	// ===== DOWNLOAD BLANK FORM =====
+	function downloadBlankForm() {
+		showLoading(true);
+		setTimeout(() => {
+			try {
+				const { jsPDF } = window.jspdf;
+				const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+				const W = 210, ml = 18, mr = 18, contentW = W - ml - mr;
+				let y = 0;
+
+				const PRIMARY = [13, 27, 94];
+				const GOLD = [61, 139, 55];
+				const DARK = [6, 13, 46];
+				const LIGHT = [240, 242, 248];
+				const WHITE = [255, 255, 255];
+				const GREY = [100, 120, 150];
+				const BORDER = [180, 195, 220];
+
+				const newPage = () => { doc.addPage(); y = 20; };
+				const checkY = (needed) => { if (y + needed > 278) newPage(); };
+
+				// HEADER
+				doc.setFillColor(...DARK); doc.rect(0, 0, 210, 38, 'F');
+				doc.setFillColor(...PRIMARY); doc.rect(0, 38, 210, 4, 'F');
+				doc.setFillColor(...PRIMARY); doc.circle(22, 19, 12, 'F');
+				doc.setFillColor(...GOLD); doc.circle(22, 19, 10, 'S');
+				doc.setFontSize(11); doc.setFont('helvetica', 'bold');
+				doc.setTextColor(...WHITE); doc.text('GH', 22, 23, { align: 'center' });
+				doc.setFontSize(16); doc.setFont('helvetica', 'bold');
+				doc.setTextColor(...WHITE); doc.text('THE GURUKUL HIGH', 38, 13);
+				doc.setFontSize(8); doc.setFont('helvetica', 'normal');
+				doc.setTextColor(...GOLD); doc.text('Gurukula Vidya Samsthe  |  K.R. Nagar, Mysuru(D)  |  Est. 1999  |  Nursery to Class X', 38, 19);
+				doc.setTextColor(200, 200, 200); doc.text('+91 821-234-5678  |  admissions@gurukul.edu.in', 38, 25);
+				doc.setFillColor(...PRIMARY); doc.roundedRect(38, 29, 130, 8, 2, 2, 'F');
+				doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+				doc.setTextColor(...WHITE); doc.text('STUDENT ADMISSION APPLICATION FORM – ACADEMIC YEAR 2026–27', 103, 34, { align: 'center' });
+
+				y = 50;
+
+				function sectionHeader(title) {
+					checkY(14);
+					doc.setFillColor(...PRIMARY);
+					doc.roundedRect(ml, y, contentW, 10, 2, 2, 'F');
+					doc.setFontSize(9); doc.setFont('helvetica', 'bold');
+					doc.setTextColor(...WHITE); doc.text(title, ml + 4, y + 6.5);
+					y += 14;
+				}
+
+				function blankField(label, x, fx, w) {
+					doc.setFillColor(...LIGHT);
+					doc.roundedRect(x, fx, w, 14, 1, 1, 'F');
+					doc.setDrawColor(...BORDER);
+					doc.roundedRect(x, fx, w, 14, 1, 1, 'S');
+					doc.setFontSize(7); doc.setFont('helvetica', 'normal');
+					doc.setTextColor(...GREY); doc.text(label.toUpperCase(), x + 3, fx + 4.5);
+					// blank writing line
+					doc.setDrawColor(200, 195, 190);
+					doc.line(x + 3, fx + 11.5, x + w - 3, fx + 11.5);
+				}
+
+				function row3b(l1, l2, l3) {
+					checkY(17);
+					const cw = (contentW - 8) / 3;
+					blankField(l1, ml, y, cw);
+					blankField(l2, ml + cw + 4, y, cw);
+					blankField(l3, ml + (cw + 4) * 2, y, cw);
+					y += 17;
+				}
+				function row2b(l1, l2) {
+					checkY(17);
+					const cw = (contentW - 4) / 2;
+					blankField(l1, ml, y, cw);
+					blankField(l2, ml + cw + 4, y, cw);
+					y += 17;
+				}
+				function row1b(l1, h = 22) {
+					checkY(h + 3);
+					doc.setFillColor(...LIGHT);
+					doc.roundedRect(ml, y, contentW, h, 1, 1, 'F');
+					doc.setDrawColor(...BORDER); doc.roundedRect(ml, y, contentW, h, 1, 1, 'S');
+					doc.setFontSize(7); doc.setFont('helvetica', 'normal');
+					doc.setTextColor(...GREY); doc.text(l1.toUpperCase(), ml + 3, y + 4.5);
+					y += h + 3;
+				}
+				function row4b(l1, l2, l3, l4) {
+					checkY(17);
+					const cw = (contentW - 12) / 4;
+					blankField(l1, ml, y, cw);
+					blankField(l2, ml + cw + 4, y, cw);
+					blankField(l3, ml + (cw + 4) * 2, y, cw);
+					blankField(l4, ml + (cw + 4) * 3, y, cw);
+					y += 17;
+				}
+
+				// SECTION 1
+				sectionHeader('SECTION 1 — STUDENT INFORMATION');
+				// Photo box
+				const photoBoxX = ml + contentW - 32;
+				doc.setFillColor(242, 238, 234); doc.roundedRect(photoBoxX, y - 2, 30, 40, 2, 2, 'F');
+				doc.setDrawColor(...BORDER); doc.roundedRect(photoBoxX, y - 2, 30, 40, 2, 2, 'S');
+				doc.setFontSize(7); doc.setFont('helvetica', 'normal'); doc.setTextColor(...GREY);
+				doc.text('AFFIX', photoBoxX + 15, y + 12, { align: 'center' });
+				doc.text('PASSPORT', photoBoxX + 15, y + 17, { align: 'center' });
+				doc.text('PHOTO', photoBoxX + 15, y + 22, { align: 'center' });
+				doc.text('HERE', photoBoxX + 15, y + 27, { align: 'center' });
+				// Left fields
+				const pW = 36;
+				const lW = contentW - pW - 4;
+				const c3 = (lW - 8) / 3;
+				blankField('FIRST NAME', ml, y, c3);
+				blankField('LAST NAME', ml + c3 + 4, y, c3);
+				blankField('DATE OF BIRTH (DD/MM/YYYY)', ml + (c3 + 4) * 2, y, c3);
+				y += 17;
+				blankField('GENDER', ml, y, c3);
+				blankField('NATIONALITY', ml + c3 + 4, y, c3);
+				blankField('BLOOD GROUP', ml + (c3 + 4) * 2, y, c3);
+				y += 17;
+				blankField('AADHAR NUMBER', ml, y, c3);
+				blankField('MOTHER TONGUE', ml + c3 + 4, y, c3);
+				blankField('RELIGION / COMMUNITY', ml + (c3 + 4) * 2, y, c3);
+				y += 17;
+				row1b('MEDICAL CONDITIONS / DISABILITIES (IF ANY)');
+
+				// SECTION 2
+				sectionHeader('SECTION 2 — ACADEMIC INFORMATION');
+				row3b('GRADE APPLYING FOR *', 'LAST GRADE COMPLETED *', 'PERCENTAGE / GRADE (LAST YEAR) *');
+				row3b('PREVIOUS SCHOOL NAME *', 'PREVIOUS SCHOOL BOARD', 'PREVIOUS SCHOOL CITY');
+				row1b('REASON FOR SEEKING ADMISSION');
+				row1b('EXTRACURRICULAR INTERESTS / HOBBIES');
+
+				// SECTION 3
+				sectionHeader("SECTION 3 — FATHER'S / GUARDIAN 1 DETAILS");
+				row3b("FATHER'S FULL NAME *", 'OCCUPATION *', 'HIGHEST QUALIFICATION');
+				row3b('MOBILE NUMBER *', 'EMAIL ADDRESS', 'ANNUAL INCOME (APPROX.)');
+
+				// SECTION 4
+				sectionHeader("SECTION 4 — MOTHER'S / GUARDIAN 2 DETAILS");
+				row3b("MOTHER'S FULL NAME *", 'OCCUPATION', 'MOBILE NUMBER *');
+				row2b('EMAIL ADDRESS', 'IS PARENT A GURUKUL ALUMNI? (YES / NO)');
+
+				// SECTION 5
+				sectionHeader('SECTION 5 — ADDRESS & CONTACT DETAILS');
+				row1b('RESIDENTIAL ADDRESS *');
+				row4b('CITY / TOWN *', 'DISTRICT', 'STATE *', 'PIN CODE *');
+				row3b('EMERGENCY CONTACT NAME', 'EMERGENCY CONTACT NUMBER', 'PREFERRED CONTACT TIME');
+				row2b('HOW DID YOU HEAR ABOUT US?', 'APPLICATION DATE');
+
+				// SECTION 6
+				checkY(40);
+				sectionHeader('SECTION 6 — DOCUMENTS TO SUBMIT AT SCHOOL');
+				doc.setFontSize(8); doc.setFont('helvetica', 'normal');
+				doc.setTextColor(80, 80, 80);
+				doc.text('Please tick the documents you will bring at the time of admission:', ml, y);
+				y += 7;
+				const docs = [
+					'☐  Birth Certificate', '☐  Previous School Transfer Certificate (TC)',
+					'☐  Previous School Mark Sheet / Report Card', '☐  Student Aadhar Card',
+					'☐  Parent Aadhar Cards (both)', '☐  4 Passport-size Photographs',
+					'☐  Caste / Community Certificate (if applicable)', '☐  Medical Fitness Certificate'
+				];
+				const hw = (contentW - 4) / 2;
+				for (let i = 0; i < docs.length; i++) {
+					const c = i % 2, r = Math.floor(i / 2);
+					if (c === 0 && i > 0) checkY(7);
+					doc.setFontSize(8.5); doc.setFont('helvetica', 'normal'); doc.setTextColor(...DARK);
+					doc.text(docs[i], ml + c * (hw + 4), y + r * 7);
+				}
+				y += Math.ceil(docs.length / 2) * 7 + 8;
+
+				// SECTION 7
+				checkY(70);
+				sectionHeader('SECTION 7 — DECLARATION & SIGNATURE');
+				doc.setFillColor(255, 252, 235); doc.setDrawColor(200, 170, 80);
+				doc.roundedRect(ml, y, contentW, 28, 2, 2, 'FD');
+				doc.setFontSize(7.5); doc.setFont('helvetica', 'bold'); doc.setTextColor(...DARK);
+				doc.text('DECLARATION:', ml + 4, y + 5);
+				doc.setFont('helvetica', 'normal'); doc.setTextColor(80, 80, 80);
+				const decl = 'I / We hereby declare that all the information furnished in this form is true, correct and complete to the best of my / our knowledge. I / We agree to abide by all rules, regulations and fee structures of The Gurukul High, K.R. Nagar, Mysuru, and accept the decision of the school management regarding admission as final and binding.';
+				doc.text(doc.splitTextToSize(decl, contentW - 8), ml + 4, y + 11);
+				y += 32;
+
+				row2b('DATE OF APPLICATION', 'PLACE');
+
+				checkY(38);
+				const sw = (contentW - 8) / 3;
+				const sigs = [
+					{ t: "Father's / Guardian 1 Signature", x: ml },
+					{ t: "Mother's / Guardian 2 Signature", x: ml + sw + 4 },
+					{ t: 'Principal\'s Signature (Office Use)', x: ml + (sw + 4) * 2 },
+				];
+				sigs.forEach(s => {
+					doc.setFillColor(250, 250, 250); doc.setDrawColor(...BORDER);
+					doc.roundedRect(s.x, y, sw, 30, 2, 2, 'FD');
+					doc.setFontSize(7); doc.setFont('helvetica', 'normal'); doc.setTextColor(...GREY);
+					doc.text(s.t, s.x + sw / 2, y + 27, { align: 'center', maxWidth: sw - 4 });
+				});
+				// office use box
+				doc.setFillColor(255, 245, 245); doc.setDrawColor(...PRIMARY);
+				doc.roundedRect(ml + (sw + 4) * 2, y, sw, 30, 2, 2, 'FD');
+				doc.setFontSize(7); doc.setFont('helvetica', 'bold'); doc.setTextColor(...PRIMARY);
+				doc.text('FOR OFFICE USE ONLY', ml + (sw + 4) * 2 + sw / 2, y + 5, { align: 'center' });
+				doc.setFont('helvetica', 'normal'); doc.setTextColor(...GREY);
+				doc.text('Admission No: ________________', ml + (sw + 4) * 2 + 3, y + 11);
+				doc.text('Date: _______________________', ml + (sw + 4) * 2 + 3, y + 17);
+				doc.text("Principal's Sign: ____________", ml + (sw + 4) * 2 + 3, y + 23);
+				y += 34;
+
+				// Footer on every page
+				const totalPages = doc.getNumberOfPages();
+				for (let p = 1; p <= totalPages; p++) {
+					doc.setPage(p);
+					doc.setFillColor(...DARK); doc.rect(0, 287, 210, 10, 'F');
+					doc.setFontSize(7); doc.setFont('helvetica', 'normal'); doc.setTextColor(180, 180, 180);
+					doc.text('The Gurukul High, K.R. Nagar, Mysuru  |  Gurukula Vidya Samsthe | Est. 1999  |  +91 821-234-5678', 105, 293, { align: 'center' });
+					doc.text(`Page ${p} of ${totalPages}`, 192, 293, { align: 'right' });
+				}
+
+				doc.save('Gurukul_Blank_Admission_Form_2026-27.pdf');
+				showLoading(false);
+				showToast('Blank form downloaded!', 'success');
+			} catch(err) {
+				console.error(err);
+				showLoading(false);
+				showToast('Error generating PDF. Try again.', 'info');
+			}
+		}, 200);
+	}
+
+	// ===== LOADING HELPER =====
+	function showLoading(show) {
+		document.getElementById('loadingOverlay').style.display = show ? 'flex' : 'none';
+	}
+
+	// ===== SUBMIT FORM =====
+	function submitForm() {
+		const data = getFormData();
+		const required = [
+			{ id: 'firstName', label: 'First Name' },
+			{ id: 'lastName', label: 'Last Name' },
+			{ id: 'dob', label: 'Date of Birth' },
+			{ id: 'gender', label: 'Gender' },
+			{ id: 'gradeApplying', label: 'Grade Applying For' },
+			{ id: 'lastGrade', label: 'Last Grade Completed' },
+			{ id: 'lastPercentage', label: 'Last Year Percentage' },
+			{ id: 'prevSchool', label: 'Previous School Name' },
+			{ id: 'fatherName', label: "Father's Name" },
+			{ id: 'fatherOccupation', label: "Father's Occupation" },
+			{ id: 'fatherMobile', label: "Father's Mobile" },
+			{ id: 'motherName', label: "Mother's Name" },
+			{ id: 'motherMobile', label: "Mother's Mobile" },
+			{ id: 'address', label: 'Address' },
+			{ id: 'city', label: 'City' },
+			{ id: 'state', label: 'State' },
+			{ id: 'pin', label: 'PIN Code' },
+		];
+		let missing = [];
+		required.forEach(f => {
+			const el = document.getElementById(f.id);
+			if (!el || !el.value.trim()) {
+				missing.push(f.label);
+				if (el) el.style.borderColor = 'var(--primary)';
+				else if (el) el.style.borderColor = '';
+			} else {
+				if (el) el.style.borderColor = '';
+			}
+		});
+		if (missing.length > 0) {
+			showToast('Please fill: ' + missing.slice(0, 3).join(', ') + (missing.length > 3 ? '...' : ''), 'info');
+			document.getElementById(required.find(r => !document.getElementById(r.id)?.value.trim())?.id || 'firstName').scrollIntoView({ behavior: 'smooth', block: 'center' });
+			return;
+		}
+		// Submit to backend
+		showLoading(true);
+		fetch('/api/admissions/submit', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(data)
+		})
+		.then(r => r.json())
+		.then(result => {
+			showLoading(false);
+			if (result.success) {
+				showToast('✅ ' + result.message, 'success');
+				// Show application ID prominently
+				const banner = document.createElement('div');
+				banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#2e7d32;color:#fff;text-align:center;padding:18px 20px;font-size:15px;font-weight:700;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.3);';
+				banner.innerHTML = '✅ Application Submitted! Your Application ID: <span style="background:rgba(255,255,255,0.25);padding:3px 12px;border-radius:20px;margin-left:8px;">' + result.applicationId + '</span> &nbsp;— Please note this ID for follow-up.';
+				document.body.prepend(banner);
+				setTimeout(() => banner.remove(), 12000);
+				document.getElementById('admissionForm').reset();
+			} else {
+				showToast('Submission failed: ' + (result.error || 'Unknown error'), 'info');
+			}
+		})
+		.catch(() => {
+			showLoading(false);
+			showToast('⚠️ Could not connect to server. Please ensure the portal server is running, or contact school directly.', 'info');
+		});
+	}
+</script>
+
+</body>
+</html>

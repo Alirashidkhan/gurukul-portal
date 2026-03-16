@@ -1,0 +1,1882 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student Dashboard – The Gurukul High</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/font-awesome.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;overflow-x:hidden;}
+body{font-family:'Poppins',sans-serif;background:#f0f2f8;min-height:100vh;overflow-x:hidden;}
+a{text-decoration:none;color:inherit;}
+
+:root{
+  --navy:#0D1B5E; --navy-d:#060D2E; --green:#C9A227; --green-l:#E6C86A;
+  --text:#444; --light:#f0f2f8; --white:#fff;
+}
+
+/* ── Topbar ── */
+.topbar{background:var(--navy-d);color:#ccc;font-size:12px;padding:7px 20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;}
+.topbar span i{margin-right:5px;color:var(--green-l);}
+.topbar a{color:#ccc;transition:color .2s;}
+.topbar a:hover{color:var(--green-l);}
+
+/* ── Header ── */
+.header{background:linear-gradient(135deg,#0b1650 0%,#0D1B5E 60%,#122070 100%);padding:0 20px;box-shadow:0 4px 24px rgba(0,0,0,0.3);position:sticky;top:0;z-index:200;border-bottom:3px solid var(--green);}
+.header-inner{max-width:1200px;margin:0 auto;height:62px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 8px;}
+.header-left{display:flex;align-items:center;gap:12px;}
+.header-left .portal-tag{color:var(--green-l);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:2.5px;}
+.header-left .portal-school{color:rgba(255,255,255,0.55);font-size:10px;font-weight:500;}
+.header-logo{display:flex;align-items:center;gap:12px;justify-content:center;}
+.header-logo img{width:40px;height:40px;border-radius:8px;border:2px solid rgba(201,162,39,0.5);box-shadow:0 2px 10px rgba(0,0,0,0.25);}
+.header-logo-text .name{font-family:'Playfair Display',serif;font-size:17px;color:#fff;font-weight:700;line-height:1.2;}
+.header-logo-text .sub{display:none;}
+
+.header-right{display:flex;align-items:center;gap:12px;justify-content:flex-end;}
+.student-chip{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.18);border-radius:30px;padding:6px 14px 6px 6px;}
+.student-avatar{width:34px;height:34px;background:linear-gradient(135deg,var(--green),var(--green-l));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;box-shadow:0 2px 8px rgba(0,0,0,0.2);}
+.student-chip-name{display:none;}
+.student-chip-class{font-size:10px;color:var(--green-l);font-weight:600;}
+.btn-logout{background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.22);color:rgba(255,255,255,0.85);padding:7px 15px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px;}
+.btn-logout:hover{background:rgba(220,53,69,0.25);border-color:rgba(220,53,69,0.5);color:#ff8090;}
+.hamburger-btn{width:38px;height:38px;background:rgba(255,255,255,0.09);border:1.5px solid rgba(255,255,255,0.18);border-radius:10px;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:background .2s;flex-shrink:0;}
+.hamburger-btn:hover{background:rgba(255,255,255,0.22);}
+.student-sidebar{transition:transform .3s cubic-bezier(0.4,0,0.2,1);}
+/* Backdrop shown on mobile when sidebar is open */
+.sidebar-backdrop{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.45);z-index:149;cursor:pointer;}
+/* Desktop: hamburger can hide/show sidebar */
+@media(min-width:769px){
+  body.sidebar-hidden .student-sidebar{transform:translateX(-100%);}
+  body.sidebar-hidden .main{margin-left:0!important;}
+}
+/* Mobile: sidebar hidden by default, shown on toggle */
+@media(max-width:768px){
+  .student-sidebar{transform:translateX(-100%);}
+  body.sidebar-mobile-open .student-sidebar{transform:translateX(0);}
+  body.sidebar-mobile-open .sidebar-backdrop{display:block;}
+}
+/* ── Notification Bell ── */
+.notif-bell{position:relative;display:inline-flex;}.notif-bell-btn{background:rgba(255,255,255,.12);border:none;border-radius:8px;color:#fff;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:background .2s;position:relative;}.notif-bell-btn:hover{background:rgba(255,255,255,.25);}.notif-badge{position:absolute;top:-5px;right:-5px;background:#f44336;color:#fff;font-size:9px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:none;align-items:center;justify-content:center;padding:0 3px;pointer-events:none;}.notif-badge.show{display:flex;}.notif-dropdown{position:absolute;top:calc(100% + 8px);right:0;width:320px;background:#1a1f2e;border:1px solid rgba(255,255,255,.12);border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.55);z-index:99999;display:none;overflow:hidden;}.notif-dropdown.open{display:block;}.notif-dd-header{padding:11px 15px;border-bottom:1px solid rgba(255,255,255,.09);display:flex;align-items:center;justify-content:space-between;}.notif-dd-header span{font-size:13px;font-weight:700;color:#e0e0e0;font-family:'Poppins',sans-serif;}.notif-dd-mark{font-size:11px;color:#64b5f6;cursor:pointer;background:none;border:none;font-family:'Poppins',sans-serif;padding:0;}.notif-dd-mark:hover{color:#90caf9;}.notif-scroll{max-height:300px;overflow-y:auto;}.notif-row{padding:10px 15px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;gap:9px;align-items:flex-start;transition:background .15s;}.notif-row:hover{background:rgba(255,255,255,.04);}.notif-row.unread{background:rgba(100,181,246,.07);}.notif-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px;}.notif-dot.info{background:#64b5f6;}.notif-dot.success{background:#66bb6a;}.notif-dot.warning{background:#ffb74d;}.notif-dot.danger,.notif-dot.urgent{background:#ef5350;}.notif-dot.announcement,.notif-dot.circular{background:#ab47bc;}.notif-dot.alert{background:#ff7043;}.notif-body{flex:1;min-width:0;}.notif-ttl{font-size:12px;font-weight:600;color:#e0e0e0;font-family:'Poppins',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.notif-sub{font-size:11px;color:#9e9e9e;margin-top:2px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}.notif-ago{font-size:10px;color:#616161;margin-top:3px;font-family:'Poppins',sans-serif;}.notif-empty-msg{padding:20px;text-align:center;color:#616161;font-size:12px;font-family:'Poppins',sans-serif;}
+
+/* ── Layout ── */
+.main{max-width:1200px;margin:0 auto;padding:28px 20px;}
+
+/* ── Welcome banner ── */
+.welcome{background:linear-gradient(135deg,var(--navy) 0%,#163a8a 100%);border-radius:16px;padding:24px 28px;color:#fff;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;}
+.welcome-left h2{font-family:'Playfair Display',serif;font-size:22px;margin-bottom:4px;}
+.welcome-left p{font-size:13px;color:rgba(255,255,255,0.6);}
+.welcome-right{display:flex;gap:12px;flex-wrap:wrap;}
+.stat-chip{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:10px;padding:12px 18px;text-align:center;min-width:90px;}
+.stat-chip .num{font-size:22px;font-weight:800;color:var(--green-l);}
+.stat-chip .lbl{font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.5px;margin-top:2px;}
+
+/* ── Sidebar Layout ── */
+.dashboard-wrap{display:flex;min-height:calc(100vh - 65px);}
+.student-sidebar{width:248px;min-width:248px;background:#0D1B5E;display:flex;flex-direction:column;padding:0 0 20px;overflow-y:auto;position:fixed;top:65px;left:0;height:calc(100vh - 65px);z-index:150;transition:transform .3s cubic-bezier(0.4,0,0.2,1);}
+.sqb-strip{display:flex;gap:6px;padding:14px 10px 12px;border-bottom:1px solid rgba(255,255,255,0.1);flex-shrink:0;}
+.sqb{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px 10px;border:1.5px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);border-radius:14px;cursor:pointer;transition:all .2s;font-family:inherit;min-width:0;overflow:hidden;}
+.sqb i{font-size:20px;color:rgba(255,255,255,0.5);}
+.sqb .sqb-lbl{font-size:9px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0;line-height:1;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block;text-align:center;}
+.sqb:hover{background:rgba(255,255,255,0.13);border-color:rgba(255,255,255,0.2);}
+.sqb:hover i,.sqb:hover .sqb-lbl{color:#fff;}
+.sqb.active{background:rgba(201,162,39,0.22);border-color:rgba(201,162,39,0.55);}
+.sqb.active i,.sqb.active .sqb-lbl{color:#D4A92A;font-weight:800;}
+.sidebar-section-title{font-size:12px;font-weight:800;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:1.5px;padding:14px 20px 6px;margin-top:4px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;transition:color .18s;}
+.sidebar-section-title:first-child{margin-top:0;}
+.sidebar-section-title:hover{color:rgba(255,255,255,0.65);}
+.sidebar-section-title .sst-arrow{font-size:9px;margin-right:4px;transition:transform .2s;color:rgba(255,255,255,0.3);flex-shrink:0;}
+.sidebar-section-title.collapsed .sst-arrow{transform:rotate(-90deg);}
+.sidebar-section-items{overflow:hidden;max-height:9999px;opacity:1;transition:max-height .28s ease, opacity .2s ease;flex-shrink:0;}
+.sidebar-section-items.collapsed{max-height:0;opacity:0;}
+.sidebar-item{display:flex;align-items:center;gap:11px;padding:11px 20px;font-size:14px;font-weight:600;color:rgba(255,255,255,0.65);cursor:pointer;border:none;background:none;border-left:3px solid transparent;transition:all .18s;width:100%;text-align:left;font-family:'Poppins',sans-serif;}
+.sidebar-item:hover{background:rgba(255,255,255,0.08);color:#fff;}
+.sidebar-item.active{background:rgba(201,162,39,0.18);color:#C9A227;border-left-color:#C9A227;font-weight:700;}
+.sidebar-item i{width:16px;text-align:center;font-size:13px;flex-shrink:0;}
+
+/* ── Layout ── */
+.main{flex:1;padding:22px 20px;min-width:0;overflow-x:hidden;margin-left:248px;transition:margin-left .3s cubic-bezier(0.4,0,0.2,1);}
+
+/* ── Tab panels ── */
+.panel{display:none;}
+.panel.active{display:block;}
+
+/* ── Cards ── */
+.card{background:#fff;border-radius:14px;padding:24px;box-shadow:0 2px 12px rgba(0,0,0,0.06);margin-bottom:20px;}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
+.card-title{font-size:16px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px;}
+.card-title i{color:var(--green);}
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+.badge-green{background:rgba(201,162,39,0.12);color:var(--green);}
+.badge-red{background:rgba(220,53,69,0.1);color:#dc3545;}
+.badge-yellow{background:rgba(255,193,7,0.15);color:#b58900;}
+.badge-blue{background:rgba(13,27,94,0.08);color:var(--navy);}
+
+/* ── Attendance ── */
+.att-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+.att-stat{background:var(--light);border-radius:10px;padding:16px;text-align:center;}
+.att-stat .n{font-size:28px;font-weight:800;color:var(--navy);}
+.att-stat .l{font-size:11px;color:#888;margin-top:2px;text-transform:uppercase;letter-spacing:0.5px;}
+.att-stat.pct .n{color:var(--green);}
+.progress-bar{background:#e9ecef;border-radius:20px;height:8px;overflow:hidden;margin-bottom:20px;}
+.progress-fill{height:100%;border-radius:20px;background:linear-gradient(90deg,var(--green),var(--green-l));transition:width .8s ease;}
+
+.att-table{width:100%;border-collapse:collapse;font-size:13px;}
+.att-table th{background:var(--light);color:var(--navy);font-weight:700;padding:10px 14px;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;}
+.att-table td{padding:10px 14px;border-bottom:1px solid #f0f0f0;color:#555;}
+.att-table tr:last-child td{border-bottom:none;}
+.att-table tr:hover td{background:#fafafa;}
+.status-P{color:var(--green);font-weight:700;}
+.status-A{color:#dc3545;font-weight:700;}
+.status-L{color:#e8a000;font-weight:700;}
+
+/* ── Marks ── */
+.term-section{margin-bottom:28px;}
+.term-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:14px;padding-bottom:8px;border-bottom:2px solid var(--light);display:flex;align-items:center;gap:8px;}
+.marks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;}
+.marks-card{background:var(--light);border-radius:10px;padding:14px;border-left:4px solid var(--green);}
+.marks-card .subject{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.marks-card .exam-name{font-size:11px;color:#888;margin-bottom:8px;}
+.marks-card .score{display:flex;align-items:baseline;gap:4px;}
+.marks-card .score .m{font-size:26px;font-weight:800;color:var(--navy);}
+.marks-card .score .max{font-size:13px;color:#aaa;}
+.marks-card .score .pct{font-size:12px;font-weight:700;margin-left:auto;}
+.marks-bar{background:#ddd;border-radius:4px;height:5px;margin-top:8px;}
+.marks-bar-fill{height:100%;border-radius:4px;background:var(--green);transition:width .6s ease;}
+.marks-bar-fill.low{background:#dc3545;}
+.marks-bar-fill.mid{background:#e8a000;}
+
+/* ── Fees ── */
+.fees-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
+.fee-stat{border-radius:12px;padding:18px 20px;display:flex;align-items:center;gap:14px;}
+.fee-stat.paid{background:rgba(201,162,39,0.08);border:1px solid rgba(201,162,39,0.2);}
+.fee-stat.pending{background:rgba(220,53,69,0.06);border:1px solid rgba(220,53,69,0.2);}
+.fee-stat.total{background:rgba(13,27,94,0.05);border:1px solid rgba(13,27,94,0.12);}
+.fee-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.fee-stat.paid .fee-icon{background:rgba(201,162,39,0.15);color:var(--green);}
+.fee-stat.pending .fee-icon{background:rgba(220,53,69,0.1);color:#dc3545;}
+.fee-stat.total .fee-icon{background:rgba(13,27,94,0.1);color:var(--navy);}
+.fee-stat .amt{font-size:22px;font-weight:800;color:var(--navy);}
+.fee-stat .lbl{font-size:12px;color:#888;margin-top:2px;}
+
+.fee-table{width:100%;border-collapse:collapse;font-size:13px;}
+.fee-table th{background:var(--light);color:var(--navy);font-weight:700;padding:10px 14px;text-align:left;font-size:12px;text-transform:uppercase;letter-spacing:0.5px;}
+.fee-table td{padding:12px 14px;border-bottom:1px solid #f0f0f0;color:#555;}
+.fee-table tr:last-child td{border-bottom:none;}
+.fee-table tr:hover td{background:#fafafa;}
+.paid-tag{color:var(--green);font-weight:700;}
+.pending-tag{color:#dc3545;font-weight:700;}
+.verifying-tag{color:#e8a000;font-weight:700;}
+.partial-tag{color:#7c3aed;font-weight:700;}
+
+/* ── Online Pay Button ── */
+.btn-pay{background:linear-gradient(135deg,var(--navy),#163a8a);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all .2s;font-family:'Poppins',sans-serif;}
+.btn-pay:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(13,27,94,0.3);}
+.btn-pay:disabled{background:#aaa;cursor:not-allowed;transform:none;box-shadow:none;}
+
+/* ── Pay Modal ── */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;}
+.modal-box{background:#fff;border-radius:18px;padding:30px;max-width:480px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.2);}
+.modal-title{font-size:18px;font-weight:800;color:var(--navy);margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+.modal-field{margin-bottom:14px;}
+.modal-field label{display:block;font-size:12px;font-weight:700;color:#555;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.5px;}
+.modal-field input,.modal-field select{width:100%;padding:10px 12px;border:1.5px solid #e0e0e0;border-radius:8px;font-family:'Poppins',sans-serif;font-size:13px;color:#333;outline:none;transition:border .2s;}
+.modal-field input:focus,.modal-field select:focus{border-color:var(--navy);}
+.modal-info-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;padding:14px;background:var(--light);border-radius:10px;}
+.modal-info-lbl{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:0.5px;}
+.modal-info-val{font-size:14px;font-weight:700;color:var(--navy);}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+.btn-cancel{background:#f0f2f8;border:none;border-radius:8px;padding:10px 20px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:#666;cursor:pointer;}
+.btn-submit-pay{background:linear-gradient(135deg,#1a9c3e,#22c55e);color:#fff;border:none;border-radius:8px;padding:10px 22px;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+.btn-submit-pay:disabled{background:#aaa;cursor:not-allowed;}
+
+/* ── Poll indicator ── */
+.poll-bar{display:flex;align-items:center;gap:8px;font-size:11px;color:#aaa;margin-top:10px;}
+.poll-dot{width:7px;height:7px;border-radius:50%;background:#22c55e;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.3;}}
+
+/* ── Pending banner ── */
+.pending-banner{background:rgba(255,193,7,0.1);border:1px solid rgba(255,193,7,0.35);border-radius:10px;padding:12px 16px;font-size:13px;color:#b58900;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+.success-banner{background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.3);border-radius:10px;padding:12px 16px;font-size:13px;color:#1a9c3e;margin-bottom:16px;display:flex;align-items:center;gap:10px;}
+
+/* ── Loading/Error states ── */
+.loading-state{text-align:center;padding:60px 20px;color:#aaa;}
+.loading-state .spinner{width:36px;height:36px;border:3px solid #e0e0e0;border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 14px;}
+.error-state{background:rgba(220,53,69,0.06);border:1px solid rgba(220,53,69,0.2);border-radius:12px;padding:20px;text-align:center;color:#dc3545;font-size:14px;}
+.server-notice{background:rgba(13,27,94,0.05);border:1px solid rgba(13,27,94,0.12);border-radius:12px;padding:16px 20px;font-size:13px;color:#555;margin-bottom:20px;line-height:1.7;}
+.server-notice strong{color:var(--navy);}
+.server-notice code{background:#f0f0f0;padding:2px 7px;border-radius:4px;font-family:monospace;font-size:12px;color:var(--navy);}
+
+@keyframes spin{to{transform:rotate(360deg);}}
+
+/* ── Responsive ── */
+@media(max-width:768px){
+  .main{padding:16px;}
+  .welcome{padding:18px;}
+  .welcome-left h2{font-size:18px;}
+  .welcome-right{gap:8px;}
+  .stat-chip{min-width:70px;padding:10px 12px;}
+  .stat-chip .num{font-size:18px;}
+  .att-summary{grid-template-columns:repeat(2,1fr);}
+  .fees-summary{grid-template-columns:1fr 1fr;}
+  .marks-grid{grid-template-columns:1fr 1fr;}
+  .topbar{justify-content:center;text-align:center;}
+}
+@media(max-width:480px){
+  .header-inner{height:62px;}
+  .header-logo img{width:40px;height:40px;}
+  .student-chip-name{display:none;}
+  .student-sidebar{width:170px;min-width:170px;}
+  .sidebar-item{padding:8px 12px;font-size:11px;}
+  .marks-grid{grid-template-columns:1fr;}
+  .att-table th:nth-child(3),.att-table td:nth-child(3){display:none;}
+}
+
+/* ── Print Styles ── */
+@media print {
+  .topbar, .header, .student-sidebar, .hamburger-btn, .notif-bell, .btn-logout, .sqb, .sidebar-section-title, button, .sqb-strip, .poll-bar, .sidebar-backdrop {
+    display: none !important;
+  }
+  .main {
+    margin-left: 0 !important;
+    padding: 10px !important;
+  }
+  /* Show only the active panel */
+  .panel:not(.active) {
+    display: none !important;
+  }
+  .panel.active {
+    display: block !important;
+  }
+  .card {
+    box-shadow: none !important;
+    border: 1px solid #ddd !important;
+  }
+  .marks-card {
+    break-inside: avoid;
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+  }
+  .att-table, .fee-table, .marks-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+  .att-table th, .att-table td,
+  .fee-table th, .fee-table td,
+  .marks-table th, .marks-table td {
+    border: 1px solid #ccc !important;
+    padding: 6px 8px !important;
+    text-align: left !important;
+    font-size: 11px !important;
+  }
+  .att-table th, .fee-table th, .marks-table th {
+    background: #f0f0f0 !important;
+    font-weight: bold !important;
+  }
+  /* Print header branding */
+  body::before {
+    content: "The Gurukul High — Student Report";
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px 0;
+    border-bottom: 2px solid #0D1B5E;
+    margin-bottom: 16px;
+  }
+  body {
+    background: white !important;
+    color: #000 !important;
+  }
+}
+
+/* ── Payment Modal ── */
+#paymentModal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
+}
+#paymentModal.open {
+  display: flex;
+}
+.payment-modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 28px;
+  width: 90%;
+  max-width: 420px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+.payment-modal-header {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 20px;
+}
+.payment-modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.payment-modal-body label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+.payment-modal-body input {
+  border: 1.5px solid #ddd;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: 'Poppins', sans-serif;
+  outline: none;
+}
+.payment-modal-body input:focus {
+  border-color: var(--navy);
+}
+.payment-modal-footer {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+.payment-modal-footer button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+}
+.payment-modal-footer .btn-cancel {
+  background: #f0f2f8;
+  color: var(--navy);
+}
+.payment-modal-footer .btn-cancel:hover {
+  background: #e0e4f0;
+}
+.payment-modal-footer .btn-submit {
+  background: var(--navy);
+  color: var(--green);
+}
+.payment-modal-footer .btn-submit:hover {
+  background: #060D2E;
+}
+</style>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#C9A227">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Gurukul ERP">
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+  <span><i class="fa fa-phone"></i> +91 821-234-5678 &nbsp;|&nbsp; <i class="fa fa-envelope"></i> info@gurukul.edu.in</span>
+  <span><i class="fa fa-map-marker"></i> K.R. Nagar, Mysuru(D), Karnataka</span>
+</div>
+
+<!-- Header -->
+<header class="header">
+  <div class="header-inner">
+    <div class="header-left">
+      <button class="hamburger-btn" onclick="toggleSidebar()" title="Toggle Sidebar"><i class="fa fa-bars"></i></button>
+      <span class="portal-tag"><i class="fa fa-graduation-cap"></i> Student Portal</span>
+      <span class="portal-school">K.R. Nagar, Mysuru</span>
+    </div>
+    <div class="header-logo">
+      <img src="/images/gurukul-logo.png" alt="Gurukul Logo">
+      <div class="header-logo-text">
+        <div class="name">The Gurukul High</div>
+        <div class="sub">Empowering Minds, Shaping Futures</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="student-chip">
+        <div class="student-avatar" id="avatarInitials">?</div>
+        <div>
+          <div class="student-chip-name" id="chipName">Loading…</div>
+          <div class="student-chip-class" id="chipClass"></div>
+        </div>
+      </div>
+      <div class="notif-bell" id="notifBell">
+        <button class="notif-bell-btn" onclick="toggleNotifDrop(event)" title="Notifications"><i class="fa fa-bell"></i><span class="notif-badge" id="notifBadge"></span></button>
+        <div class="notif-dropdown" id="notifDropdown">
+          <div class="notif-dd-header"><span>Notifications</span><button class="notif-dd-mark" onclick="markAllRead()">Mark all read</button></div>
+          <div class="notif-scroll" id="notifList"><div class="notif-empty-msg">Loading…</div></div>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="doLogout()"><i class="fa fa-sign-out"></i> Logout</button>
+    </div>
+  </div>
+</header>
+
+<div class="dashboard-wrap">
+
+<!-- Mobile sidebar backdrop -->
+<div class="sidebar-backdrop" onclick="toggleSidebar()"></div>
+
+<!-- Student Sidebar -->
+<nav class="student-sidebar" id="studentSidebar">
+
+  <!-- Quick-toggle buttons -->
+  <div class="sqb-strip">
+    <button class="sqb" id="sqb-attendance" onclick="switchTab('attendance')">
+      <i class="fa fa-calendar-check-o"></i><span class="sqb-lbl">Attend.</span>
+    </button>
+    <button class="sqb" id="sqb-fees" onclick="switchTab('fees')">
+      <i class="fa fa-rupee"></i><span class="sqb-lbl">Fees</span>
+    </button>
+    <button class="sqb" id="sqb-profile" onclick="switchTab('profile')">
+      <i class="fa fa-user"></i><span class="sqb-lbl">Account</span>
+    </button>
+  </div>
+
+  <div class="sidebar-section-title" onclick="toggleSidebarSection(this)"><span>Academics</span><i class="fa fa-chevron-down sst-arrow"></i></div>
+  <div class="sidebar-section-items">
+    <button class="sidebar-item active" id="tab-attendance" onclick="switchTab('attendance')"><i class="fa fa-calendar-check-o"></i> Attendance</button>
+    <button class="sidebar-item" id="tab-marks" onclick="switchTab('marks')"><i class="fa fa-graduation-cap"></i> Marks</button>
+    <button class="sidebar-item" id="tab-homework" onclick="switchTab('homework')"><i class="fa fa-tasks"></i> Homework</button>
+  </div>
+
+  <div class="sidebar-section-title" onclick="toggleSidebarSection(this)"><span>Finance</span><i class="fa fa-chevron-down sst-arrow"></i></div>
+  <div class="sidebar-section-items">
+    <button class="sidebar-item" id="tab-fees" onclick="switchTab('fees')"><i class="fa fa-rupee"></i> Fee Details</button>
+  </div>
+
+  <div class="sidebar-section-title" onclick="toggleSidebarSection(this)"><span>School</span><i class="fa fa-chevron-down sst-arrow"></i></div>
+  <div class="sidebar-section-items">
+    <button class="sidebar-item" id="tab-timetable" onclick="switchTab('timetable')"><i class="fa fa-calendar"></i> Timetable</button>
+    <button class="sidebar-item" id="tab-biometric" onclick="switchTab('biometric')"><i class="fa fa-fingerprint"></i> Biometric</button>
+    <button class="sidebar-item" id="tab-holidays" onclick="switchTab('holidays')"><i class="fa fa-star-o"></i> Holidays</button>
+    <button class="sidebar-item" id="tab-acadcal" onclick="switchTab('acadcal')"><i class="fa fa-calendar-check-o"></i> Academic Calendar</button>
+  </div>
+
+  <div class="sidebar-section-title" onclick="toggleSidebarSection(this)"><span>My Account</span><i class="fa fa-chevron-down sst-arrow"></i></div>
+  <div class="sidebar-section-items">
+    <button class="sidebar-item" id="tab-profile" onclick="switchTab('profile')"><i class="fa fa-user"></i> Profile</button>
+  </div>
+
+</nav>
+
+<!-- Main -->
+<div class="main">
+
+  <!-- Server notice -->
+  <div class="server-notice" id="serverNotice" style="display:none;">
+    <strong>⚠️ Server not running.</strong> To see live data, start the backend server:<br>
+    Open terminal → Navigate to the <code>server/</code> folder → Run <code>node server.js</code>
+  </div>
+
+  <!-- Welcome -->
+  <div class="welcome">
+    <div class="welcome-left">
+      <h2>Hello, <span id="welcomeName">Student</span> 👋</h2>
+      <p id="welcomeSub">Academic Year 2026–27 · The Gurukul High</p>
+    </div>
+    <div class="welcome-right">
+      <div class="stat-chip"><div class="num" id="wAttPct">–</div><div class="lbl">Attendance</div></div>
+      <div class="stat-chip"><div class="num" id="wAvgMarks">–</div><div class="lbl">Avg Marks</div></div>
+      <div class="stat-chip"><div class="num" id="wFeePending">–</div><div class="lbl">Fee Due</div></div>
+    </div>
+  </div>
+
+  <!-- ── ATTENDANCE PANEL ── -->
+  <div class="panel active" id="panel-attendance">
+    <div class="card" id="attCard">
+      <div class="loading-state"><div class="spinner"></div><p>Loading attendance…</p></div>
+    </div>
+  </div>
+
+  <!-- ── MARKS PANEL ── -->
+  <div class="panel" id="panel-marks">
+    <div class="card" id="marksCard">
+      <div class="loading-state"><div class="spinner"></div><p>Loading marks…</p></div>
+    </div>
+  </div>
+
+  <!-- ── HOMEWORK PANEL ── -->
+  <div class="panel" id="panel-homework">
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title"><i class="fa fa-tasks"></i> My Homework</div>
+        <div style="font-size:12px;color:#888;">Assignments from your teachers</div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+        <select id="stuHwSubjFilter" onchange="loadStudentHomework()" style="border:1.5px solid #e0e0e0;border-radius:8px;padding:8px 12px;font-family:'Poppins',sans-serif;font-size:12px;outline:none;background:#fff;">
+          <option value="">All Subjects</option>
+          <option>Mathematics</option><option>Science</option><option>English</option><option>Hindi</option>
+          <option>Social Studies</option><option>Computer Science</option><option>Physics</option>
+          <option>Chemistry</option><option>Biology</option>
+        </select>
+        <select id="stuHwStatusFilter" onchange="loadStudentHomework()" style="border:1.5px solid #e0e0e0;border-radius:8px;padding:8px 12px;font-family:'Poppins',sans-serif;font-size:12px;outline:none;background:#fff;">
+          <option value="">All</option>
+          <option value="pending">Pending</option>
+          <option value="overdue">Overdue</option>
+          <option value="upcoming">Upcoming</option>
+        </select>
+      </div>
+      <div id="stuHwList">
+        <div class="loading-state"><div class="spinner"></div><p>Loading homework…</p></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── FEES PANEL ── -->
+  <div class="panel" id="panel-fees">
+    <div class="card" id="feesCard">
+      <div class="loading-state"><div class="spinner"></div><p>Loading fee details…</p></div>
+    </div>
+    <!-- Installment Plan Card (shown only when a plan exists) -->
+    <div id="stuInstallCard" style="display:none;margin-top:16px;background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.07);overflow:hidden;border:2px solid #1565c0;">
+      <div style="background:linear-gradient(135deg,#1565c0,#1e88e5);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;">
+        <div style="color:#fff;font-size:13px;font-weight:700;"><i class="fa fa-calendar-check-o"></i> My Installment Plan</div>
+        <span style="background:rgba(255,255,255,.2);color:#fff;border-radius:20px;padding:2px 10px;font-size:11px;font-weight:700;">3 Installments</span>
+      </div>
+      <div style="padding:16px 18px;" id="stuInstallBody">
+        <div style="text-align:center;color:#aaa;padding:10px;"><i class="fa fa-spinner fa-spin"></i> Loading…</div>
+      </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal">
+      <div class="payment-modal-content">
+        <div class="payment-modal-header">💳 Online Payment</div>
+        <div class="payment-modal-body">
+          <div>
+            <label>Amount (₹)</label>
+            <input type="number" id="paymentAmount" readonly style="background:#f9f9f9;">
+          </div>
+          <div>
+            <label>Purpose</label>
+            <input type="text" id="paymentPurpose" value="Annual Fee" readonly style="background:#f9f9f9;">
+          </div>
+        </div>
+        <div class="payment-modal-footer">
+          <button class="btn-cancel" onclick="closePaymentModal()">Cancel</button>
+          <button class="btn-submit" onclick="processPayment()" id="paySubmitBtn">Proceed to Payment</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TIMETABLE PANEL ── -->
+  <div class="panel" id="panel-timetable">
+    <!-- Today's classes banner -->
+    <div style="background:linear-gradient(135deg,var(--navy) 0%,#163a8a 100%);border-radius:14px;padding:20px 24px;color:#fff;margin-bottom:18px;">
+      <div style="font-size:13px;font-weight:700;opacity:0.7;margin-bottom:12px;display:flex;align-items:center;gap:7px;"><i class="fa fa-sun-o"></i> TODAY'S CLASSES</div>
+      <div id="stuTodayClasses" style="display:flex;gap:12px;flex-wrap:wrap;">
+        <div style="opacity:0.6;font-size:13px;">Loading…</div>
+      </div>
+    </div>
+    <!-- Weekly timetable -->
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:18px;">
+        <h3 style="font-size:15px;font-weight:700;color:var(--navy);"><i class="fa fa-calendar" style="color:var(--green);margin-right:8px;"></i>Weekly Timetable</h3>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button onclick="stuTTNavWeek(-1)" style="background:#f0f2f8;border:none;border-radius:7px;padding:7px 12px;cursor:pointer;font-weight:700;color:var(--navy);">&#8249;</button>
+          <span id="stuTTWeekLabel" style="font-size:12px;font-weight:700;color:var(--navy);min-width:150px;text-align:center;">Loading…</span>
+          <button onclick="stuTTNavWeek(1)"  style="background:#f0f2f8;border:none;border-radius:7px;padding:7px 12px;cursor:pointer;font-weight:700;color:var(--navy);">&#8250;</button>
+        </div>
+      </div>
+      <div id="stuTTGrid"><div style="text-align:center;color:#aaa;padding:30px;font-size:13px;">Loading timetable…</div></div>
+    </div>
+  </div>
+
+  <!-- ── BIOMETRIC PANEL ── -->
+  <div class="panel" id="panel-biometric">
+    <div class="card" style="margin-bottom:18px;">
+      <h3 style="font-size:15px;font-weight:700;color:var(--navy);margin-bottom:18px;"><i class="fa fa-fingerprint" style="color:var(--green);margin-right:8px;"></i>Biometric Attendance</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:22px;">
+        <div style="background:linear-gradient(135deg,#eaffea,#d4f8d4);border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-size:10px;color:#16a085;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;"><i class="fa fa-sign-in"></i> Check-In</div>
+          <div id="stuBioIn" style="font-size:20px;font-weight:800;color:#16a085;">—</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#fff3e0,#ffddb3);border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-size:10px;color:#e67e22;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;"><i class="fa fa-sign-out"></i> Check-Out</div>
+          <div id="stuBioOut" style="font-size:20px;font-weight:800;color:#e67e22;">—</div>
+        </div>
+        <div style="background:linear-gradient(135deg,#eef5ff,#d6e8ff);border-radius:12px;padding:16px;text-align:center;">
+          <div style="font-size:10px;color:#0D1B5E;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;"><i class="fa fa-circle"></i> Status</div>
+          <div id="stuBioStatus" style="font-size:16px;font-weight:800;color:#0D1B5E;">—</div>
+        </div>
+      </div>
+      <div id="stuBioLog" style="font-size:12px;color:#888;"></div>
+    </div>
+  </div>
+
+  <!-- ── HOLIDAYS PANEL ── -->
+  <div class="panel" id="panel-holidays">
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+        <h3 style="font-size:15px;font-weight:700;color:var(--navy);flex:1;"><i class="fa fa-star-o" style="color:var(--green);margin-right:8px;"></i>Holiday Calendar</h3>
+        <button onclick="stuChangeHolYear(-1)" style="background:#f0f2f8;border:none;border-radius:7px;padding:6px 12px;cursor:pointer;font-weight:700;color:var(--navy);">&#8249;</button>
+        <span id="stuHolYear" style="font-size:16px;font-weight:800;color:var(--navy);min-width:50px;text-align:center;">2026</span>
+        <button onclick="stuChangeHolYear(1)"  style="background:#f0f2f8;border:none;border-radius:7px;padding:6px 12px;cursor:pointer;font-weight:700;color:var(--navy);">&#8250;</button>
+      </div>
+      <div style="display:flex;gap:16px;margin-bottom:18px;font-size:12px;font-weight:600;flex-wrap:wrap;">
+        <span style="color:var(--green);"><span style="display:inline-block;width:10px;height:10px;background:var(--green);border-radius:2px;margin-right:5px;"></span>National</span>
+        <span style="color:#7c3aed;"><span style="display:inline-block;width:10px;height:10px;background:#7c3aed;border-radius:2px;margin-right:5px;"></span>State (Karnataka)</span>
+      </div>
+      <div id="stuHolLoading" style="text-align:center;padding:40px;color:#aaa;"><div style="width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px;"></div><p>Loading…</p></div>
+      <div id="stuHolList" style="display:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;"></div>
+    </div>
+  </div>
+
+  <!-- ── ACADEMIC CALENDAR PANEL ── -->
+  <div class="panel" id="panel-acadcal">
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+        <h3 style="font-size:15px;font-weight:700;color:var(--navy);flex:1;"><i class="fa fa-calendar-check-o" style="color:var(--green);margin-right:8px;"></i>Academic Calendar</h3>
+      </div>
+      <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+        <span style="color:#2980b9;font-size:11px;font-weight:700;"><span style="display:inline-block;width:8px;height:8px;background:#2980b9;border-radius:2px;margin-right:4px;"></span>Term</span>
+        <span style="color:#e74c3c;font-size:11px;font-weight:700;"><span style="display:inline-block;width:8px;height:8px;background:#e74c3c;border-radius:2px;margin-right:4px;"></span>Exam</span>
+        <span style="color:#16a085;font-size:11px;font-weight:700;"><span style="display:inline-block;width:8px;height:8px;background:#16a085;border-radius:2px;margin-right:4px;"></span>Vacation</span>
+        <span style="color:#8e44ad;font-size:11px;font-weight:700;"><span style="display:inline-block;width:8px;height:8px;background:#8e44ad;border-radius:2px;margin-right:4px;"></span>PTM</span>
+        <span style="color:#f39c12;font-size:11px;font-weight:700;"><span style="display:inline-block;width:8px;height:8px;background:#f39c12;border-radius:2px;margin-right:4px;"></span>Test</span>
+        <span style="color:#27ae60;font-size:11px;font-weight:700;"><span style="display:inline-block;width:8px;height:8px;background:#27ae60;border-radius:2px;margin-right:4px;"></span>Event</span>
+        <span style="color:#e84393;font-size:11px;font-weight:700;"><span style="display:inline-block;width:8px;height:8px;background:#e84393;border-radius:2px;margin-right:4px;"></span>Result</span>
+      </div>
+      <div id="acadCalLoading" style="text-align:center;padding:40px;color:#aaa;"><div style="width:32px;height:32px;border:3px solid #e0e0e0;border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 10px;"></div><p>Loading calendar…</p></div>
+      <div id="acadCalList" style="display:none;"></div>
+    </div>
+  </div>
+
+  <!-- ── PROFILE PANEL ── -->
+  <div class="panel" id="panel-profile">
+    <div class="card" id="profileCard">
+      <div class="loading-state"><div class="spinner"></div><p>Loading profile…</p></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ── ONLINE PAYMENT MODAL ── -->
+<div class="modal-overlay" id="payModal" style="display:none;" onclick="if(event.target===this)closePayModal()">
+  <div class="modal-box">
+    <div class="modal-title"><i class="fa fa-credit-card" style="color:var(--green)"></i> Pay Online</div>
+    <div class="modal-info-row">
+      <div><div class="modal-info-lbl">Fee Type</div><div class="modal-info-val" id="pmFeeType">–</div></div>
+      <div><div class="modal-info-lbl">Amount Due</div><div class="modal-info-val" id="pmAmount">–</div></div>
+      <div><div class="modal-info-lbl">Term</div><div class="modal-info-val" id="pmTerm">–</div></div>
+      <div><div class="modal-info-lbl">Academic Year</div><div class="modal-info-val" id="pmYear">–</div></div>
+    </div>
+    <div class="modal-field">
+      <label>Payment Mode <span style="color:#dc3545">*</span></label>
+      <select id="pmMode" onchange="togglePayFields()">
+        <option value="UPI">UPI</option>
+        <option value="Net Banking">Net Banking</option>
+        <option value="Debit Card">Debit Card</option>
+        <option value="Credit Card">Credit Card</option>
+      </select>
+    </div>
+    <div class="modal-field" id="pmUpiField">
+      <label>UPI Transaction ID / Reference No. <span style="color:#dc3545">*</span></label>
+      <input type="text" id="pmTransId" placeholder="e.g. 426819273654" maxlength="50">
+    </div>
+    <div class="modal-field">
+      <label>Notes (optional)</label>
+      <input type="text" id="pmNotes" placeholder="Any message for the school office">
+    </div>
+    <div style="background:rgba(255,193,7,0.08);border:1px solid rgba(255,193,7,0.2);border-radius:8px;padding:10px 14px;font-size:12px;color:#b58900;margin-top:4px;">
+      <i class="fa fa-info-circle"></i> After submitting, the finance office will verify your payment. Status will update automatically once verified.
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closePayModal()">Cancel</button>
+      <button class="btn-submit-pay" id="btnSubmitPay" onclick="submitOnlinePayment()"><i class="fa fa-paper-plane"></i> Submit Payment</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '/api';
+const token = sessionStorage.getItem('token');
+const studentInfo = JSON.parse(sessionStorage.getItem('student') || 'null');
+
+// Redirect to login if no token
+if (!token) { window.location.href = 'login.html'; }
+
+// Set header info from stored student
+if (studentInfo) {
+  document.getElementById('chipName').textContent = studentInfo.name;
+  document.getElementById('chipClass').textContent = `Class ${studentInfo.class}-${studentInfo.section}`;
+  document.getElementById('avatarInitials').textContent = studentInfo.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('welcomeName').textContent = studentInfo.name.split(' ')[0];
+  document.getElementById('welcomeSub').textContent = `Class ${studentInfo.class}-${studentInfo.section} · Academic Year 2026–27 · The Gurukul High`;
+}
+
+function doLogout() {
+  sessionStorage.clear();
+  window.location.href = 'login.html';
+}
+
+// ── RAZORPAY PAYMENT ──
+function openPaymentModal(amount) {
+  document.getElementById('paymentAmount').value = amount.toFixed(2);
+  document.getElementById('paymentModal').classList.add('open');
+}
+
+function closePaymentModal() {
+  document.getElementById('paymentModal').classList.remove('open');
+}
+
+async function processPayment() {
+  try {
+    const amount = parseFloat(document.getElementById('paymentAmount').value);
+    const purpose = document.getElementById('paymentPurpose').value;
+    const yr = new Date().getFullYear().toString();
+
+    if (!amount || amount <= 0) {
+      alert('Please enter a valid amount');
+      return;
+    }
+
+    const submitBtn = document.getElementById('paySubmitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Creating order...';
+
+    // Create order
+    const orderRes = await fetch(`${API}/payment/create-order`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        amount: Math.round(amount * 100),
+        purpose: purpose,
+        academic_yr: yr
+      })
+    });
+
+    if (orderRes.status === 503) {
+      alert('Online payment is not configured yet. Please pay at the school office.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Proceed to Payment';
+      closePaymentModal();
+      return;
+    }
+
+    if (!orderRes.ok) {
+      throw new Error('Failed to create order');
+    }
+
+    const orderData = await orderRes.json();
+    if (!orderData.order_id || !orderData.key) {
+      throw new Error('Invalid order response');
+    }
+
+    // Load Razorpay SDK
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.onload = function() {
+      openRazorpayCheckout(orderData.order_id, orderData.key, amount, orderData.razorpay_customer_id);
+    };
+    script.onerror = function() {
+      alert('Failed to load payment gateway. Please try again.');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Proceed to Payment';
+    };
+    document.head.appendChild(script);
+
+  } catch (e) {
+    console.error('Payment error:', e);
+    alert('Payment initiation failed. Please try again.');
+    const submitBtn = document.getElementById('paySubmitBtn');
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Proceed to Payment';
+  }
+}
+
+function openRazorpayCheckout(orderId, key, amount, customerId) {
+  const options = {
+    key: key,
+    amount: Math.round(amount * 100),
+    currency: 'INR',
+    order_id: orderId,
+    customer_id: customerId,
+    handler: async function(response) {
+      try {
+        // Verify payment
+        const verifyRes = await fetch(`${API}/payment/verify`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature
+          })
+        });
+
+        if (verifyRes.ok) {
+          const successToast = document.createElement('div');
+          successToast.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(39, 174, 96, 0.95);
+            color: white;
+            padding: 14px 18px;
+            border-radius: 8px;
+            z-index: 999999;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+          `;
+          successToast.textContent = '✓ Payment successful! Fees updated.';
+          document.body.appendChild(successToast);
+
+          closePaymentModal();
+          setTimeout(() => loadFinanceFees(false), 1000);
+          setTimeout(() => successToast.remove(), 4000);
+        } else {
+          alert('Payment verification failed. Please contact support.');
+        }
+      } catch (e) {
+        console.error('Verification error:', e);
+        alert('Payment verification error. Please check your transaction status.');
+      } finally {
+        const submitBtn = document.getElementById('paySubmitBtn');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Proceed to Payment';
+      }
+    },
+    prefill: {
+      name: studentInfo?.name || '',
+      email: studentInfo?.email || '',
+      contact: studentInfo?.phone || ''
+    },
+    theme: {
+      color: '#0D1B5E'
+    },
+    modal: {
+      ondismiss: function() {
+        const submitBtn = document.getElementById('paySubmitBtn');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Proceed to Payment';
+      }
+    }
+  };
+
+  const rzp = new Razorpay(options);
+  rzp.open();
+}
+
+// ── SESSION TIMEOUT CHECK ──
+function checkTokenExpiry() {
+  try {
+    if (!token) return;
+    const parts = token.split('.');
+    if (parts.length !== 3) return;
+    const payload = JSON.parse(atob(parts[1]));
+    if (!payload.exp) return;
+    const expiryTime = payload.exp * 1000;
+    const now = Date.now();
+    if (expiryTime < now) {
+      showSessionExpiredToast();
+    }
+  } catch (e) { }
+}
+
+function showSessionExpiredToast() {
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(220, 53, 69, 0.95);
+    color: white;
+    padding: 14px 18px;
+    border-radius: 8px;
+    z-index: 999999;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    animation: slideIn .3s ease;
+  `;
+  toast.textContent = '⚠ Session expired. Redirecting to login...';
+  document.body.appendChild(toast);
+
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideIn {
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  setTimeout(() => doLogout(), 2000);
+}
+
+// Check token expiry every 60 seconds
+setInterval(checkTokenExpiry, 60000);
+
+function toggleSidebarSection(titleEl) {
+  const items = titleEl.nextElementSibling;
+  if (!items || !items.classList.contains('sidebar-section-items')) return;
+  const isCollapsed = items.classList.toggle('collapsed');
+  titleEl.classList.toggle('collapsed', isCollapsed);
+}
+function sidebarExpandForTab(tabId) {
+  const tabEl = document.getElementById(tabId);
+  if (!tabEl) return;
+  const section = tabEl.closest('.sidebar-section-items');
+  if (section && section.classList.contains('collapsed')) {
+    section.classList.remove('collapsed');
+    const title = section.previousElementSibling;
+    if (title) title.classList.remove('collapsed');
+  }
+}
+
+function syncQuickBtns(name) {
+  document.querySelectorAll('.sqb').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('sqb-'+name);
+  if (btn) btn.classList.add('active');
+}
+
+function switchTab(name, el) {
+  document.querySelectorAll('.sidebar-item').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  const tabEl = document.getElementById('tab-'+name);
+  if (tabEl) tabEl.classList.add('active');
+  sidebarExpandForTab('tab-'+name);
+  syncQuickBtns(name);
+  const panelEl = document.getElementById('panel-'+name);
+  if (panelEl) panelEl.classList.add('active');
+
+  // Load specific data for certain tabs
+  if (name === 'homework') {
+    loadStudentHomework();
+  } else if (name === 'acadcal') {
+    loadAcademicCalendar();
+  } else if (name === 'fees') {
+    startFeePolling();
+  } else {
+    stopFeePolling();
+  }
+}
+
+async function apiFetch(endpoint) {
+  const res = await fetch(`${API}${endpoint}`, { headers: { 'Authorization': `Bearer ${token}` } });
+  if (res.status === 401) { doLogout(); return null; }
+  return res.json();
+}
+
+function fmt(n) { return '₹' + Number(n).toLocaleString('en-IN'); }
+function dayName(dateStr) { return new Date(dateStr).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'}); }
+
+// ── RENDER ATTENDANCE ──
+async function loadAttendance() {
+  const data = await apiFetch('/student/attendance');
+  if (!data) return;
+  const {records, summary} = data;
+  document.getElementById('wAttPct').textContent = summary.percentage + '%';
+
+  const pct = summary.percentage;
+  const pctColor = pct >= 85 ? 'var(--green)' : pct >= 75 ? '#e8a000' : '#dc3545';
+  const pctClass = pct >= 85 ? 'badge-green' : pct >= 75 ? 'badge-yellow' : 'badge-red';
+
+  document.getElementById('attCard').innerHTML = `
+    <div class="card-header">
+      <div class="card-title"><i class="fa fa-calendar"></i> Attendance Record</div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <span class="badge ${pctClass}">${pct}% Attendance</span>
+        <button onclick="window.print()" style="background:#fff;color:var(--navy);border:1.5px solid var(--navy);border-radius:6px;padding:5px 11px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;"><i class="fa fa-print"></i> Print</button>
+      </div>
+    </div>
+    <div class="att-summary">
+      <div class="att-stat pct"><div class="n">${pct}%</div><div class="l">Overall</div></div>
+      <div class="att-stat"><div class="n" style="color:var(--green)">${summary.present}</div><div class="l">Present</div></div>
+      <div class="att-stat"><div class="n" style="color:#dc3545">${summary.absent}</div><div class="l">Absent</div></div>
+      <div class="att-stat"><div class="n" style="color:#e8a000">${summary.leave}</div><div class="l">Leave</div></div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    ${pct < 75 ? '<div style="background:rgba(220,53,69,0.08);border:1px solid rgba(220,53,69,0.2);border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:13px;color:#dc3545;"><i class="fa fa-warning"></i> Attendance below 75%. Please contact the class teacher.</div>' : ''}
+    <table class="att-table">
+      <thead><tr><th>#</th><th>Date</th><th>Day</th><th>Status</th></tr></thead>
+      <tbody>${records.slice(0,30).map((r,i)=>`
+        <tr>
+          <td style="color:#aaa;font-size:12px">${i+1}</td>
+          <td>${r.date}</td>
+          <td style="color:#888;font-size:12px">${new Date(r.date).toLocaleDateString('en-IN',{weekday:'short'})}</td>
+          <td><span class="status-${r.status}">${r.status==='P'?'✓ Present':r.status==='A'?'✗ Absent':'◌ Leave'}</span></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+    ${records.length > 30 ? `<p style="text-align:center;color:#aaa;font-size:12px;margin-top:12px">Showing latest 30 of ${records.length} records</p>` : ''}
+  `;
+}
+
+// ── PDF EXPORT FOR MARKS ──
+function downloadMarksPDF() {
+  try {
+    const { jsPDF } = window.jspdf || {};
+    if (!jsPDF) {
+      alert('PDF library not loaded. Please try again.');
+      return;
+    }
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+
+    // Header
+    doc.setFillColor(13, 27, 94);
+    doc.rect(0, 0, pageWidth, 25, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(16);
+    doc.setFont(undefined, 'bold');
+    doc.text('The Gurukul High', 15, 16);
+
+    // Student info
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(11);
+    doc.setFont(undefined, 'normal');
+    const studentName = studentInfo?.name || 'Student';
+    const studentClass = studentInfo?.class && studentInfo?.section ? `${studentInfo.class}-${studentInfo.section}` : 'N/A';
+    doc.text(`Student: ${studentName}`, 15, 35);
+    doc.text(`Class: ${studentClass}`, 15, 42);
+    doc.text(`Generated: ${new Date().toLocaleDateString('en-IN')}`, 15, 49);
+
+    // Marks table
+    const rows = [];
+    document.querySelectorAll('.marks-card').forEach(card => {
+      const subject = card.querySelector('.subject')?.textContent || '';
+      const exam = card.querySelector('.exam-name')?.textContent || '';
+      const score = card.querySelector('.m')?.textContent || '0';
+      const max = card.querySelector('.max')?.textContent || '/0';
+      const pct = card.querySelector('.pct')?.textContent || '0%';
+      rows.push([subject, exam, `${score}${max}`, pct]);
+    });
+
+    doc.autoTable({
+      startY: 56,
+      head: [['Subject', 'Exam', 'Marks', 'Percentage']],
+      body: rows,
+      theme: 'grid',
+      headStyles: { fillColor: [201, 162, 39], textColor: [0, 0, 0], fontStyle: 'bold' },
+      bodyStyles: { textColor: [0, 0, 0] },
+      alternateRowStyles: { fillColor: [240, 242, 248] },
+      margin: { top: 56, left: 15, right: 15 }
+    });
+
+    doc.save(`marks_report_${studentName.replace(/\s+/g, '_')}.pdf`);
+  } catch (e) {
+    console.error('PDF export error:', e);
+    alert('Error generating PDF. Please try again.');
+  }
+}
+
+// ── RENDER MARKS ──
+async function loadMarks() {
+  const data = await apiFetch('/student/marks');
+  if (!data) return;
+  const {records, terms} = data;
+
+  // Calculate avg
+  const allPcts = records.map(r => Math.round((r.marks/(r.max_marks||r.maxMarks||100))*100));
+  const avg = allPcts.length ? Math.round(allPcts.reduce((a,b)=>a+b,0)/allPcts.length) : 0;
+  document.getElementById('wAvgMarks').textContent = avg + '%';
+
+  let html = `<div class="card-header"><div class="card-title"><i class="fa fa-graduation-cap"></i> Marks & Performance</div><div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><span class="badge badge-blue">Avg: ${avg}%</span><button onclick="downloadMarksPDF()" style="background:var(--navy);color:var(--green-l);border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;"><i class="fa fa-download"></i> Download PDF</button><button onclick="window.print()" style="background:#fff;color:var(--navy);border:1.5px solid var(--navy);border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px;"><i class="fa fa-print"></i> Print</button></div></div>`;
+
+  Object.keys(terms).forEach(term => {
+    html += `<div class="term-section"><div class="term-title"><i class="fa fa-bookmark"></i> ${term}</div><div class="marks-grid">`;
+    terms[term].forEach(r => {
+      const pct  = Math.round((r.marks/(r.max_marks||r.maxMarks||100))*100);
+      const cls  = pct >= 75 ? '' : pct >= 50 ? ' mid' : ' low';
+      const pcol = pct >= 75 ? 'var(--green)' : pct >= 50 ? '#e8a000' : '#dc3545';
+      html += `
+        <div class="marks-card">
+          <div class="subject">${r.subject}</div>
+          <div class="exam-name">${r.exam}</div>
+          <div class="score">
+            <span class="m">${r.marks}</span><span class="max">/${r.max_marks||r.maxMarks||100}</span>
+            <span class="pct" style="color:${pcol}">${pct}%</span>
+          </div>
+          <div class="marks-bar"><div class="marks-bar-fill${cls}" style="width:${pct}%"></div></div>
+        </div>`;
+    });
+    html += `</div></div>`;
+  });
+
+  document.getElementById('marksCard').innerHTML = html;
+}
+
+// ── RENDER FEES (Finance Dashboard – Real-time) ──
+let _payModalData = {};
+let _feePollingInterval = null;
+let _lastFeeRefresh = null;
+
+async function loadFinanceFees(silent) {
+  const yr = new Date().getFullYear().toString();
+  const data = await apiFetch(`/student/finance-fees?year=${yr}`);
+  if (!data) return;
+
+  const { schedule, payments, totalExpected, totalPaid, totalBalance } = data;
+
+  // Update header chip
+  document.getElementById('wFeePending').textContent = totalBalance > 0 ? fmt(totalBalance) : '₹0';
+  _lastFeeRefresh = new Date();
+
+  // Build paid-map (by fee_type) for quick lookup
+  const latestByType = {};
+  payments.forEach(p => {
+    if (!latestByType[p.fee_type]) latestByType[p.fee_type] = [];
+    latestByType[p.fee_type].push(p);
+  });
+
+  // Check for any pending online submissions
+  const hasPending = payments.some(p => p.status === 'Pending' && p.submitted_by === 'student');
+  const hasVerified = payments.some(p => p.status === 'Paid' && p.submitted_by === 'student');
+
+  // If silent refresh (polling), just patch DOM if card already built
+  if (silent && document.getElementById('feeScheduleBody')) {
+    _renderFeeRows(schedule, latestByType);
+    _renderPayHistory(payments);
+    _updateFeeSummary(totalExpected, totalPaid, totalBalance);
+    document.getElementById('feeLastUpdated').textContent = 'Updated just now';
+    return;
+  }
+
+  // Full render
+  let html = `
+    <div class="card-header">
+      <div class="card-title"><i class="fa fa-rupee"></i> Fee Details & Online Payment</div>
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <span class="badge badge-blue">${yr}–${(parseInt(yr)+1).toString().slice(2)}</span>
+        <button onclick="window.print()" style="background:var(--navy);color:var(--green);border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;">🖨 Print Receipt</button>
+        ${totalBalance > 0 ? `<button onclick="openPaymentModal(${totalBalance})" style="background:var(--navy);color:var(--green);border:none;border-radius:6px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s;">💳 Pay Online</button>` : ''}
+      </div>
+    </div>
+    ${hasPending ? `<div class="pending-banner"><i class="fa fa-clock-o"></i> <span>You have payments awaiting verification by the finance office. We'll update you as soon as they're confirmed.</span></div>` : ''}
+    ${!hasPending && hasVerified ? `<div class="success-banner"><i class="fa fa-check-circle"></i> <span>Your recent online payment has been verified. Thank you!</span></div>` : ''}
+    <div class="fees-summary" id="feeSummaryCards">
+      <div class="fee-stat total">
+        <div class="fee-icon"><i class="fa fa-file-text-o"></i></div>
+        <div><div class="amt" id="fsTotalExp">${fmt(totalExpected)}</div><div class="lbl">Total Fees</div></div>
+      </div>
+      <div class="fee-stat paid">
+        <div class="fee-icon"><i class="fa fa-check-circle"></i></div>
+        <div><div class="amt" id="fsTotalPaid">${fmt(totalPaid)}</div><div class="lbl">Paid</div></div>
+      </div>
+      <div class="fee-stat pending">
+        <div class="fee-icon"><i class="fa fa-exclamation-circle"></i></div>
+        <div><div class="amt" id="fsTotalBal">${fmt(totalBalance)}</div><div class="lbl">Balance Due</div></div>
+      </div>
+    </div>`;
+
+  if (schedule.length === 0) {
+    html += `<div style="text-align:center;padding:40px;color:#aaa;"><i class="fa fa-info-circle" style="font-size:28px;margin-bottom:10px;display:block;"></i>No fee schedule assigned yet. Please contact the school office.</div>`;
+  } else {
+    html += `
+    <div style="margin-bottom:6px;">
+      <h4 style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:8px;"><i class="fa fa-list-ul" style="color:var(--green)"></i> Fee Schedule</h4>
+      <table class="fee-table">
+        <thead><tr><th>Fee Type</th><th>Term</th><th>Amount</th><th>Paid</th><th>Balance</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody id="feeScheduleBody">${_buildFeeRows(schedule, latestByType)}</tbody>
+      </table>
+    </div>`;
+  }
+
+  // Payment history
+  html += `
+    <div style="margin-top:22px;">
+      <h4 style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:8px;"><i class="fa fa-history" style="color:var(--green)"></i> Payment History</h4>
+      <div id="payHistoryWrap">
+        ${_buildPayHistory(payments)}
+      </div>
+    </div>
+    <div class="poll-bar"><span class="poll-dot"></span><span id="feeLastUpdated">Auto-refreshing every 15 seconds</span></div>`;
+
+  document.getElementById('feesCard').innerHTML = html;
+}
+
+function _buildFeeRows(schedule, latestByType) {
+  return schedule.map(s => {
+    const recs = latestByType[s.fee_type] || [];
+    const paidAmt = recs.filter(r => r.status==='Paid'||r.status==='Partial').reduce((a,r)=>a+r.amount,0);
+    const pendingRec = recs.find(r => r.status==='Pending');
+    const balance = Math.max(0, s.amount - paidAmt);
+    const isPaid = balance <= 0;
+    const isPending = !isPaid && pendingRec;
+
+    let statusBadge = '';
+    let actionBtn = '';
+    if (isPaid) {
+      statusBadge = `<span class="paid-tag">✓ Paid</span>`;
+      actionBtn = `<span style="font-size:12px;color:#aaa">–</span>`;
+    } else if (isPending) {
+      statusBadge = `<span class="verifying-tag"><i class="fa fa-clock-o"></i> Verifying</span>`;
+      actionBtn = `<span style="font-size:11px;color:#e8a000">Awaiting<br>Verification</span>`;
+    } else {
+      statusBadge = `<span class="pending-tag">⏳ Due</span>`;
+      actionBtn = `<button class="btn-pay" onclick="openPayModal('${s.fee_type}','${balance}','${s.term}','${s.academic_yr}')"><i class="fa fa-credit-card"></i> Pay Online</button>`;
+    }
+
+    return `<tr>
+      <td style="font-weight:600;color:#333">${s.fee_type}</td>
+      <td style="color:#888;font-size:12px">${s.term||'Annual'}</td>
+      <td>${fmt(s.amount)}</td>
+      <td>${paidAmt > 0 ? `<span style="color:var(--green);font-weight:600">${fmt(paidAmt)}</span>` : '–'}</td>
+      <td>${balance > 0 ? `<span style="color:#dc3545;font-weight:700">${fmt(balance)}</span>` : '<span style="color:var(--green)">–</span>'}</td>
+      <td>${statusBadge}</td>
+      <td>${actionBtn}</td>
+    </tr>`;
+  }).join('');
+}
+
+function _renderFeeRows(schedule, latestByType) {
+  const tbody = document.getElementById('feeScheduleBody');
+  if (tbody) tbody.innerHTML = _buildFeeRows(schedule, latestByType);
+}
+
+function _buildPayHistory(payments) {
+  if (!payments.length) return `<div style="text-align:center;padding:24px;color:#aaa;font-size:13px;"><i class="fa fa-inbox"></i> No payment records yet.</div>`;
+  return `<table class="fee-table">
+    <thead><tr><th>#</th><th>Fee Type</th><th>Amount</th><th>Mode</th><th>Date</th><th>Receipt</th><th>Status</th></tr></thead>
+    <tbody>${payments.map((p,i) => {
+      const statusCls = p.status==='Paid'?'paid-tag':p.status==='Pending'?'verifying-tag':p.status==='Partial'?'partial-tag':'pending-tag';
+      const statusTxt = p.status==='Paid'?'✓ Paid':p.status==='Pending'?'⏳ Verifying':p.status==='Partial'?'◑ Partial':'✗ Rejected';
+      return `<tr>
+        <td style="color:#aaa;font-size:12px">${i+1}</td>
+        <td style="font-weight:600;color:#333">${p.fee_type}</td>
+        <td>${fmt(p.amount)}</td>
+        <td style="font-size:12px;color:#888">${p.payment_mode||'–'}</td>
+        <td style="font-size:12px;color:#888">${p.paid_date||p.recorded_at?.split('T')[0]||'–'}</td>
+        <td style="font-size:12px;color:#aaa">${p.receipt_no||'–'}</td>
+        <td><span class="${statusCls}">${statusTxt}</span></td>
+      </tr>`;
+    }).join('')}</tbody>
+  </table>`;
+}
+
+function _renderPayHistory(payments) {
+  const wrap = document.getElementById('payHistoryWrap');
+  if (wrap) wrap.innerHTML = _buildPayHistory(payments);
+}
+
+function _updateFeeSummary(totalExpected, totalPaid, totalBalance) {
+  const e = document.getElementById('fsTotalExp');
+  const p = document.getElementById('fsTotalPaid');
+  const b = document.getElementById('fsTotalBal');
+  if (e) e.textContent = fmt(totalExpected);
+  if (p) p.textContent = fmt(totalPaid);
+  if (b) b.textContent = fmt(totalBalance);
+}
+
+// ── PAY MODAL ──
+function openPayModal(feeType, amount, term, year) {
+  _payModalData = { feeType, amount: parseFloat(amount), term, year };
+  document.getElementById('pmFeeType').textContent = feeType;
+  document.getElementById('pmAmount').textContent = fmt(amount);
+  document.getElementById('pmTerm').textContent = term || 'Annual';
+  document.getElementById('pmYear').textContent = year;
+  document.getElementById('pmTransId').value = '';
+  document.getElementById('pmNotes').value = '';
+  document.getElementById('pmMode').value = 'UPI';
+  document.getElementById('btnSubmitPay').disabled = false;
+  document.getElementById('btnSubmitPay').innerHTML = '<i class="fa fa-paper-plane"></i> Submit Payment';
+  togglePayFields();
+  document.getElementById('payModal').style.display = 'flex';
+}
+
+function closePayModal() {
+  document.getElementById('payModal').style.display = 'none';
+}
+
+function togglePayFields() {
+  const mode = document.getElementById('pmMode').value;
+  const upiField = document.getElementById('pmUpiField');
+  if (mode === 'UPI' || mode === 'Net Banking' || mode === 'Debit Card' || mode === 'Credit Card') {
+    upiField.style.display = 'block';
+    document.querySelector('#pmUpiField label').textContent =
+      mode === 'UPI' ? 'UPI Transaction ID *' :
+      mode === 'Net Banking' ? 'Transaction / Reference ID *' : 'Transaction / Approval Code *';
+  }
+}
+
+async function submitOnlinePayment() {
+  const transId = document.getElementById('pmTransId').value.trim();
+  const mode = document.getElementById('pmMode').value;
+  if (!transId) { alert('Please enter the transaction / reference ID.'); return; }
+
+  const btn = document.getElementById('btnSubmitPay');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Submitting…';
+
+  try {
+    const res = await fetch(`${API}/student/pay`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        fee_type: _payModalData.feeType,
+        amount: _payModalData.amount,
+        payment_mode: mode,
+        transaction_id: transId,
+        academic_yr: _payModalData.year,
+        term: _payModalData.term,
+        notes: document.getElementById('pmNotes').value.trim()
+      })
+    });
+    const result = await res.json();
+    if (res.ok) {
+      closePayModal();
+      // Immediately refresh fees to show pending status
+      await loadFinanceFees(false);
+      // Show a toast
+      showToast('Payment submitted! The finance office will verify and confirm shortly.', 'success');
+    } else {
+      showToast(result.error || 'Submission failed. Try again.', 'error');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa fa-paper-plane"></i> Submit Payment';
+    }
+  } catch(e) {
+    showToast('Network error. Please try again.', 'error');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa fa-paper-plane"></i> Submit Payment';
+  }
+}
+
+function showToast(msg, type) {
+  const existing = document.getElementById('feeToast');
+  if (existing) existing.remove();
+  const div = document.createElement('div');
+  div.id = 'feeToast';
+  div.style.cssText = `position:fixed;bottom:24px;right:24px;z-index:2000;background:${type==='success'?'#1a9c3e':'#dc3545'};color:#fff;padding:14px 20px;border-radius:10px;font-size:13px;font-weight:600;max-width:320px;box-shadow:0 6px 24px rgba(0,0,0,0.2);display:flex;align-items:center;gap:10px;font-family:'Poppins',sans-serif;`;
+  div.innerHTML = `<i class="fa fa-${type==='success'?'check-circle':'exclamation-circle'}"></i> ${msg}`;
+  document.body.appendChild(div);
+  setTimeout(() => div.remove(), 5000);
+}
+
+// Kept for backward compat if other code calls it
+async function loadFees() { return loadFinanceFees(false); }
+
+// ── INSTALLMENT PLAN (student view) ──────────────────────────────────────────
+async function loadStudentInstallments() {
+  const card  = document.getElementById('stuInstallCard');
+  const body  = document.getElementById('stuInstallBody');
+  if (!card || !body) return;
+  try {
+    const yr = new Date().getFullYear().toString();
+    const r  = await apiFetch(`/student/installments?year=${yr}`);
+    if (!r || !r.installments || !r.installments.length) {
+      card.style.display = 'none';
+      return;
+    }
+    card.style.display = 'block';
+    const SC = { Paid:'#27ae60', Pending:'#f39c12', Overdue:'#e74c3c' };
+    const insts = r.installments;
+    const grandTotal = insts.reduce((a,i)=>a+i.total_amount, 0);
+    const paidTotal  = insts.filter(i=>i.status==='Paid').reduce((a,i)=>a+i.total_amount, 0);
+    const remaining  = grandTotal - paidTotal;
+    body.innerHTML = `
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px;">
+        <div style="flex:1;min-width:120px;background:#f8f9fd;border-radius:10px;padding:12px 14px;text-align:center;border:1.5px solid #e0e4f0;">
+          <div style="font-size:11px;color:#888;text-transform:uppercase;font-weight:700;margin-bottom:4px;">Annual Fee</div>
+          <div style="font-size:16px;font-weight:800;color:var(--navy);">₹${(insts[0]?.annual_fee||21000).toLocaleString('en-IN')}</div>
+        </div>
+        <div style="flex:1;min-width:120px;background:#e8f5e9;border-radius:10px;padding:12px 14px;text-align:center;border:1.5px solid #c8e6c9;">
+          <div style="font-size:11px;color:#888;text-transform:uppercase;font-weight:700;margin-bottom:4px;">Paid</div>
+          <div style="font-size:16px;font-weight:800;color:#27ae60;">₹${paidTotal.toLocaleString('en-IN')}</div>
+        </div>
+        <div style="flex:1;min-width:120px;background:#fff3e0;border-radius:10px;padding:12px 14px;text-align:center;border:1.5px solid #ffe0b2;">
+          <div style="font-size:11px;color:#888;text-transform:uppercase;font-weight:700;margin-bottom:4px;">Remaining</div>
+          <div style="font-size:16px;font-weight:800;color:#e65100;">₹${remaining.toLocaleString('en-IN')}</div>
+        </div>
+        <div style="flex:1;min-width:120px;background:#e3f2fd;border-radius:10px;padding:12px 14px;text-align:center;border:1.5px solid #90caf9;">
+          <div style="font-size:11px;color:#888;text-transform:uppercase;font-weight:700;margin-bottom:4px;">Grand Total</div>
+          <div style="font-size:16px;font-weight:800;color:#1565c0;">₹${grandTotal.toLocaleString('en-IN')}</div>
+        </div>
+      </div>
+      <div style="font-size:11px;color:#e65100;background:#fff8e1;border-radius:8px;padding:8px 12px;margin-bottom:12px;border:1px solid #ffcc02;">
+        <i class="fa fa-info-circle"></i> Annual fee ₹${(insts[0]?.annual_fee||21000).toLocaleString('en-IN')} + ₹${(insts.reduce((a,i)=>a+i.processing_fee,0)).toLocaleString('en-IN')} processing charges = ₹${grandTotal.toLocaleString('en-IN')} total
+      </div>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;">
+          <thead>
+            <tr style="background:#e3f2fd;">
+              <th style="padding:8px 10px;text-align:left;">Installment</th>
+              <th style="padding:8px 10px;text-align:right;">Base</th>
+              <th style="padding:8px 10px;text-align:right;">Processing</th>
+              <th style="padding:8px 10px;text-align:right;">Total</th>
+              <th style="padding:8px 10px;text-align:left;">Due Date</th>
+              <th style="padding:8px 10px;text-align:center;">Status</th>
+              <th style="padding:8px 10px;text-align:left;">Paid On</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${insts.map(inst => `<tr style="border-bottom:1px solid #f0f2f8;">
+              <td style="padding:8px 10px;font-weight:700;color:#0d47a1;">Inst. ${inst.installment_no}</td>
+              <td style="padding:8px 10px;text-align:right;">₹${inst.base_amount.toLocaleString('en-IN')}</td>
+              <td style="padding:8px 10px;text-align:right;color:#e65100;">+₹${inst.processing_fee.toLocaleString('en-IN')}</td>
+              <td style="padding:8px 10px;text-align:right;font-weight:800;color:#1565c0;">₹${inst.total_amount.toLocaleString('en-IN')}</td>
+              <td style="padding:8px 10px;">${inst.due_date||'—'}</td>
+              <td style="padding:8px 10px;text-align:center;"><span style="background:${SC[inst.status]||'#888'}22;color:${SC[inst.status]||'#888'};border-radius:20px;padding:2px 10px;font-weight:700;font-size:11px;">${inst.status}</span></td>
+              <td style="padding:8px 10px;color:#888;">${inst.paid_date||'—'}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div style="font-size:10px;color:#aaa;margin-top:10px;text-align:right;">To pay an installment, visit the school finance office.</div>`;
+  } catch(e) { /* silently fail */ }
+}
+
+// ── RENDER PROFILE ──
+async function loadProfile() {
+  const data = await apiFetch('/student/profile');
+  if (!data) return;
+  window._stuProfileClass = data.class || data.class_name || '';
+  window._stuProfileData  = data;
+
+  document.getElementById('profileCard').innerHTML = `
+    <div class="card-header"><div class="card-title"><i class="fa fa-user-circle"></i> Student Profile</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div>
+        <div style="font-size:12px;color:#aaa;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Full Name</div>
+        <div style="font-size:16px;font-weight:700;color:var(--navy)">${data.name}</div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:#aaa;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Student ID</div>
+        <div style="font-size:15px;font-weight:600;color:#555">${data.id}</div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:#aaa;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Class & Section</div>
+        <div style="font-size:15px;font-weight:600;color:#555">Class ${data.class} – ${data.section}</div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:#aaa;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Date of Birth</div>
+        <div style="font-size:15px;font-weight:600;color:#555">${data.dob || '–'}</div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:#aaa;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Parent / Guardian</div>
+        <div style="font-size:15px;font-weight:600;color:#555">${data.parentName || '–'}</div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:#aaa;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Parent Phone</div>
+        <div style="font-size:15px;font-weight:600;color:#555">${data.parentPhone || '–'}</div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:#aaa;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Username</div>
+        <div style="font-size:15px;font-weight:600;color:#555;font-family:monospace">${data.username}</div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:#aaa;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">Academic Year</div>
+        <div style="font-size:15px;font-weight:600;color:#555">2026–27</div>
+      </div>
+    </div>
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid #f0f0f0;font-size:12px;color:#aaa;">
+      To update any profile information, please contact the school office. &nbsp;|&nbsp; info@gurukul.edu.in &nbsp;|&nbsp; +91 821-234-5678
+    </div>
+    <div style="margin-top:20px;background:linear-gradient(135deg,#0b4d3b,#16a085);border-radius:12px;padding:18px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:#fff;margin-bottom:3px;"><i class="fa fa-id-card"></i> My ID Card</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.7);">Download your official student ID card as a printable PDF.</div>
+      </div>
+      <button onclick="downloadStudentIdCard()" style="background:#C9A227;color:#fff;border:none;border-radius:9px;padding:10px 20px;font-family:'Poppins',sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;white-space:nowrap;"><i class="fa fa-download"></i> Download ID Card</button>
+    </div>
+  `;
+}
+
+// ── ACADEMIC CALENDAR ──
+async function loadAcademicCalendar() {
+  try {
+    const loading = document.getElementById('acadCalLoading');
+    const list = document.getElementById('acadCalList');
+    loading.style.display = 'block';
+    list.style.display = 'none';
+
+    const currentYear = new Date().getFullYear();
+    const res = await fetch(`/api/academic-calendar?year=${currentYear}`);
+    if (!res.ok) throw new Error('Failed to load calendar');
+
+    const data = await res.json();
+    const events = data.events || [];
+
+    // Filter to upcoming events from today
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const upcoming = events.filter(e => {
+      const eventDate = new Date(e.start_date || e.date);
+      eventDate.setHours(0, 0, 0, 0);
+      return eventDate >= today;
+    }).sort((a, b) => new Date(a.start_date||a.date) - new Date(b.start_date||b.date));
+
+    // Group by month
+    const eventsByMonth = {};
+    upcoming.forEach(e => {
+      const d = new Date(e.start_date || e.date);
+      const key = d.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+      if (!eventsByMonth[key]) eventsByMonth[key] = [];
+      eventsByMonth[key].push(e);
+    });
+
+    loading.style.display = 'none';
+
+    if (!upcoming.length) {
+      list.innerHTML = '<div style="text-align:center;padding:30px;color:#aaa;"><i class="fa fa-calendar" style="font-size:28px;margin-bottom:10px;display:block;"></i>No upcoming events</div>';
+      list.style.display = 'block';
+      return;
+    }
+
+    const colorMap = {
+      'Term': '#2980b9',
+      'Exam': '#e74c3c',
+      'Vacation': '#16a085',
+      'PTM': '#8e44ad',
+      'Test': '#f39c12',
+      'Event': '#27ae60',
+      'Result': '#e84393'
+    };
+
+    let html = '';
+    Object.entries(eventsByMonth).forEach(([month, monthEvents]) => {
+      html += `<div style="margin-bottom:20px;"><div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid #f0f0f0;">${month}</div>`;
+      monthEvents.forEach(e => {
+        const color = colorMap[e.event_type||e.type] || '#999';
+        const d = new Date(e.start_date || e.date);
+        const dateStr = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', weekday: 'short' });
+        html += `<div style="background:#f8f9fc;border-radius:8px;padding:10px 12px;margin-bottom:8px;border-left:4px solid ${color};display:flex;align-items:center;gap:10px;">
+          <div style="font-size:12px;color:${color};font-weight:700;background:rgba(0,0,0,0.05);padding:4px 8px;border-radius:4px;min-width:50px;text-align:center;">${dateStr}</div>
+          <div style="flex:1;"><div style="font-size:13px;font-weight:600;color:var(--navy);">${e.title || 'Event'}</div><div style="font-size:11px;color:#888;margin-top:2px;">${e.description || ''}</div></div>
+          <span style="background:${color};color:#fff;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700;white-space:nowrap;">${e.event_type||e.type||'Event'}</span>
+        </div>`;
+      });
+      html += '</div>';
+    });
+
+    list.innerHTML = html;
+    list.style.display = 'block';
+  } catch (e) {
+    console.error('Calendar load error:', e);
+    document.getElementById('acadCalLoading').style.display = 'none';
+    document.getElementById('acadCalList').innerHTML = '<div style="text-align:center;color:#e74c3c;padding:20px;"><i class="fa fa-exclamation-circle"></i> Unable to load calendar</div>';
+    document.getElementById('acadCalList').style.display = 'block';
+  }
+}
+
+// ── LOAD ALL DATA ──
+async function init() {
+  try {
+    await Promise.all([loadAttendance(), loadMarks(), loadFinanceFees(false), loadProfile(), loadStudentInstallments()]);
+  } catch(e) {
+    document.getElementById('serverNotice').style.display = 'block';
+    ['attCard','marksCard','feesCard','profileCard'].forEach(id => {
+      document.getElementById(id).innerHTML = `<div class="error-state"><i class="fa fa-exclamation-circle"></i> Could not load data. Start the server and refresh.</div>`;
+    });
+  }
+}
+
+// ── FEE POLLING: start when fees tab active, stop otherwise ──
+function startFeePolling() {
+  if (_feePollingInterval) return;
+  _feePollingInterval = setInterval(async () => {
+    try { await loadFinanceFees(true); } catch(e) {}
+  }, 15000);
+}
+
+function stopFeePolling() {
+  if (_feePollingInterval) { clearInterval(_feePollingInterval); _feePollingInterval = null; }
+}
+
+init();
+
+// ══ STUDENT HOLIDAYS ══
+let stuHolYear = new Date().getFullYear();
+async function loadStudentHolidays() {
+  document.getElementById('stuHolLoading').style.display = 'block';
+  const list = document.getElementById('stuHolList');
+  list.style.display = 'none';
+  document.getElementById('stuHolYear').textContent = stuHolYear;
+  const r = await fetch(`${API}/holidays?year=${stuHolYear}`);
+  const d = await r.json();
+  document.getElementById('stuHolLoading').style.display = 'none';
+  // Show only National and State (government) holidays for students
+  const govHolidays = (d.holidays || []).filter(h => h.type === 'National' || h.type === 'State');
+  if (!govHolidays.length) { list.innerHTML = '<p style="color:#aaa;text-align:center;padding:20px;">No holidays found.</p>'; list.style.display='block'; return; }
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const borderColor = { National:'var(--green)', State:'#7c3aed' };
+  list.innerHTML = govHolidays.map(h => {
+    const dt = new Date(h.date+'T00:00:00');
+    return `<div style="background:#f8f9fc;border-radius:12px;padding:12px 14px;display:flex;align-items:center;gap:12px;border-left:4px solid ${borderColor[h.type]||'#ccc'};">
+      <div style="text-align:center;min-width:40px;">
+        <div style="font-size:20px;font-weight:800;color:var(--navy);line-height:1;">${dt.getDate()}</div>
+        <div style="font-size:10px;color:#888;text-transform:uppercase;">${months[dt.getMonth()]} ${dt.getFullYear()}</div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:#333;">${h.name}</div>
+        <span style="font-size:10px;font-weight:700;padding:1px 7px;border-radius:8px;background:rgba(201,162,39,0.1);color:var(--green);">${h.type}</span>
+      </div>
+    </div>`;
+  }).join('');
+  list.style.display = 'grid';
+}
+
+function stuChangeHolYear(d) { stuHolYear += d; loadStudentHolidays(); }
+
+// ══ Patch switchTab to load holiday panel + manage fee polling ══
+const _stuOrigSwitch = switchTab;
+switchTab = function(tab, btn) {
+  _stuOrigSwitch(tab, null);
+  if (tab === 'holidays')  loadStudentHolidays();
+  if (tab === 'timetable') { if (!_stuTTWeekOffset && _stuTTWeekOffset !== 0) _stuTTWeekOffset = 0; loadStuTimetable(); }
+  if (tab === 'biometric') loadStuBiometric();
+  if (tab === 'fees') {
+    startFeePolling();
+  } else {
+    stopFeePolling();
+  }
+};
+
+// ══ STUDENT TIMETABLE ══
+let _stuTTWeekOffset = 0;
+
+function stuWeekMonday(offset) {
+  const d = new Date();
+  const day = d.getDay() || 7;
+  d.setDate(d.getDate() - day + 1 + offset * 7);
+  return d.toISOString().slice(0,10);
+}
+
+function stuTTNavWeek(dir) { _stuTTWeekOffset += dir; loadStuTimetable(); }
+
+async function loadStuTimetable() {
+  const stuClass = window._stuProfileClass || '';
+  const week     = stuWeekMonday(_stuTTWeekOffset);
+  const wEnd     = stuWeekMonday(_stuTTWeekOffset + 1);
+  const label    = week + ' – ' + wEnd;
+  const lbl = document.getElementById('stuTTWeekLabel');
+  if (lbl) lbl.textContent = label;
+
+  // Today's classes banner
+  const todayDay = new Date().toLocaleDateString('en-US',{weekday:'long'});
+  const todayEl  = document.getElementById('stuTodayClasses');
+
+  if (!stuClass) {
+    const ng = document.getElementById('stuTTGrid');
+    if (ng) ng.innerHTML = '<div style="text-align:center;color:#aaa;padding:30px;font-size:13px;">Class info not loaded yet. Please refresh.</div>';
+    return;
+  }
+
+  try {
+    const r = await fetch(`/api/timetable/class?class=${encodeURIComponent(stuClass)}&week=${encodeURIComponent(week)}`);
+    const d = await r.json();
+    const slots = d.timetable || [];
+
+    // Today banner
+    const todaySlots = slots.filter(s => s.day_of_week === todayDay);
+    if (todaySlots.length) {
+      todayEl.innerHTML = todaySlots.map(s => {
+        const now = new Date(); const cur = now.getHours()*60+now.getMinutes();
+        const [sh,sm] = s.start_time.split(':').map(Number);
+        const [eh,em] = s.end_time.split(':').map(Number);
+        const isLive = cur>=sh*60+sm && cur<=eh*60+em;
+        return `<div style="background:rgba(255,255,255,0.12);border-radius:10px;padding:10px 14px;min-width:130px;">
+          <div style="font-size:12px;font-weight:800;">${s.subject}</div>
+          <div style="font-size:10px;opacity:0.7;">${s.start_time}–${s.end_time}</div>
+          <div style="font-size:10px;opacity:0.7;">${s.teacher_name||''}</div>
+          ${isLive ? '<div style="font-size:9px;background:#16a085;padding:1px 7px;border-radius:8px;display:inline-block;margin-top:4px;">LIVE NOW</div>':''}
+        </div>`;
+      }).join('');
+    } else {
+      todayEl.innerHTML = '<div style="opacity:0.6;font-size:13px;">No classes scheduled today.</div>';
+    }
+
+    // Weekly grid
+    const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const DAY_COLORS2 = { Monday:'#0D1B5E', Tuesday:'#8e44ad', Wednesday:'#16a085', Thursday:'#e67e22', Friday:'#e74c3c', Saturday:'#2980b9' };
+    const grid = document.getElementById('stuTTGrid');
+    if (!slots.length) { grid.innerHTML = '<div style="text-align:center;color:#aaa;padding:30px;font-size:13px;">No timetable for this week yet.</div>'; return; }
+    const byDay = {};
+    DAYS.forEach(d => byDay[d] = []);
+    slots.forEach(s => { if (byDay[s.day_of_week]) byDay[s.day_of_week].push(s); });
+    let html = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;">';
+    DAYS.forEach(day => {
+      const daySlots = byDay[day];
+      const isToday  = (day === todayDay);
+      const col = DAY_COLORS2[day] || '#0D1B5E';
+      html += `<div style="background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.07);${isToday?'border:2px solid '+col:'border:1px solid #eee'}">
+        <div style="background:${col};color:#fff;padding:9px 12px;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:space-between;">
+          <span>${day}</span>${isToday?'<span style="font-size:9px;background:rgba(255,255,255,0.25);padding:1px 7px;border-radius:10px;">TODAY</span>':''}
+        </div>`;
+      if (!daySlots.length) {
+        html += '<div style="padding:14px;text-align:center;font-size:11px;color:#ccc;">No classes</div>';
+      } else {
+        daySlots.forEach(s => {
+          const now = new Date(); const cur = now.getHours()*60+now.getMinutes();
+          const [sh,sm] = s.start_time.split(':').map(Number); const [eh,em] = s.end_time.split(':').map(Number);
+          let badge = '';
+          if (day === todayDay) {
+            if (cur>=sh*60+sm && cur<=eh*60+em) badge = '<span style="background:#16a085;color:#fff;font-size:9px;padding:2px 7px;border-radius:10px;">LIVE</span>';
+            else if (cur<sh*60+sm) badge = '<span style="background:#e67e22;color:#fff;font-size:9px;padding:2px 7px;border-radius:10px;">UPCOMING</span>';
+          }
+          html += `<div style="padding:9px 12px;border-bottom:1px solid #f5f5f5;">
+            <div style="font-size:12px;font-weight:700;color:#333;display:flex;align-items:center;gap:5px;flex-wrap:wrap;">${s.subject} ${badge}</div>
+            <div style="font-size:10px;color:${col};font-weight:600;">${s.start_time}–${s.end_time}</div>
+            <div style="font-size:10px;color:#aaa;">${s.teacher_name||'Teacher'}</div>
+          </div>`;
+        });
+      }
+      html += '</div>';
+    });
+    html += '</div>';
+    grid.innerHTML = html;
+  } catch(e) { console.error('Timetable load error', e); }
+}
+
+// ══ STUDENT BIOMETRIC ══
+async function loadStuBiometric() {
+  try {
+    const r = await fetch('/api/student/biometric/today', { headers: { Authorization: 'Bearer ' + token } });
+    const d = await r.json();
+    const logs = d.logs || [];
+    const firstIn  = logs.find(l => l.action === 'IN');
+    const lastOut  = [...logs].reverse().find(l => l.action === 'OUT');
+    document.getElementById('stuBioIn').textContent  = firstIn ? firstIn.timestamp.slice(11,16) : '—';
+    document.getElementById('stuBioOut').textContent = lastOut ? lastOut.timestamp.slice(11,16) : '—';
+    const stEl = document.getElementById('stuBioStatus');
+    const last = logs[logs.length-1];
+    if (!last) { stEl.textContent='Not Punched'; stEl.style.color='#aaa'; }
+    else if (last.action==='IN') { stEl.textContent='● Present'; stEl.style.color='#16a085'; }
+    else { stEl.textContent='● Left'; stEl.style.color='#e67e22'; }
+    const logEl = document.getElementById('stuBioLog');
+    if (!logs.length) { logEl.innerHTML='<div style="text-align:center;color:#ccc;padding:20px;font-size:13px;">No biometric records for today.</div>'; return; }
+    logEl.innerHTML = `<table style="width:100%;border-collapse:collapse;font-size:12px;">
+      <thead><tr style="background:#f0f2f8;"><th style="padding:8px 12px;text-align:left;color:#888;font-weight:700;">Action</th><th style="padding:8px 12px;text-align:left;color:#888;font-weight:700;">Time</th><th style="padding:8px 12px;text-align:left;color:#888;font-weight:700;">Device</th></tr></thead>
+      <tbody>${logs.map(l=>`<tr style="border-bottom:1px solid #f5f5f5;">
+        <td style="padding:8px 12px;"><span style="background:${l.action==='IN'?'#eaffea':'#fff0ee'};color:${l.action==='IN'?'#16a085':'#e74c3c'};padding:3px 10px;border-radius:20px;font-weight:700;font-size:11px;">${l.action}</span></td>
+        <td style="padding:8px 12px;font-weight:600;color:var(--navy);">${l.timestamp.slice(11,19)}</td>
+        <td style="padding:8px 12px;color:#888;">${l.device_id||'—'}</td>
+      </tr>`).join('')}</tbody></table>`;
+  } catch(e) { console.error('Bio error', e); }
+}
+
+// Expose class to timetable loader after init
+(async () => {
+  // Wait for profile to load
+  await new Promise(r => setTimeout(r, 800));
+  try {
+    const pr = await fetch('/api/student/profile', { headers: { Authorization: 'Bearer ' + token } });
+    const pd = await pr.json();
+    window._stuProfileClass = pd.class || pd.class_name || '';
+  } catch(e) {}
+})();
+
+// BroadcastChannel live timetable update — always reload data
+try {
+  new BroadcastChannel('gurukul_timetable').onmessage = () => {
+    loadStuTimetable();
+  };
+} catch(_) {}
+
+// ── Student ID Card PDF ───────────────────────────────────────────────────────
+async function downloadStudentIdCard() {
+  const d = window._stuProfileData;
+  if (!d) { alert('Profile not loaded yet. Please open the Profile tab first.'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ orientation:'landscape', unit:'mm', format:[86,54] });
+  let logo = null;
+  try {
+    const r = await fetch('/images/gurukul-logo.png');
+    const blob = await r.blob();
+    logo = await new Promise(res => { const fr = new FileReader(); fr.onloadend = () => res(fr.result); fr.readAsDataURL(blob); });
+  } catch(e) {}
+  // Header
+  doc.setFillColor(22,160,133); doc.rect(0,0,86,18,'F');
+  if (logo) { try { doc.addImage(logo,'PNG',2,2,13,13); } catch(e){} }
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(8); doc.setFont('helvetica','bold');
+  doc.text('The Gurukul High', logo?17:43, 7, logo?{}:{align:'center'});
+  doc.setFontSize(5.5); doc.setFont('helvetica','normal');
+  doc.text('K.R. Nagar, Mysuru – 571602', logo?17:43, 11, logo?{}:{align:'center'});
+  doc.setFontSize(4.5); doc.text('STUDENT ID CARD', logo?17:43, 15, logo?{}:{align:'center'});
+  // Avatar
+  doc.setFillColor(22,160,133); doc.circle(11,29,7,'F');
+  doc.setTextColor(255,255,255);
+  const ini = (d.name||'').split(' ').map(w=>w[0]||'').join('').toUpperCase().slice(0,2);
+  doc.setFontSize(9); doc.setFont('helvetica','bold'); doc.text(ini,11,31,{align:'center'});
+  // Details
+  doc.setTextColor(20,20,20); doc.setFontSize(8); doc.setFont('helvetica','bold');
+  doc.text(d.name||'', 22, 22, {maxWidth:62});
+  doc.setFontSize(6.5); doc.setFont('helvetica','normal'); doc.setTextColor(80,80,80);
+  doc.text('Class '+(d.class||'—')+' – Sec '+(d.section||'—'), 22, 27);
+  if (d.dob) doc.text('DOB: '+d.dob, 22, 31);
+  if (d.parentName || d.parent_name) doc.text('Parent: '+(d.parentName||d.parent_name), 22, 35);
+  if (d.parentPhone || d.parent_phone) doc.text('Ph: '+(d.parentPhone||d.parent_phone), 22, 38.5);
+  // Footer
+  doc.setFillColor(240,242,248); doc.rect(0,43,86,11,'F');
+  doc.setDrawColor(220,220,230); doc.line(0,43,86,43);
+  doc.setTextColor(60,60,60); doc.setFontSize(6);
+  doc.text('STU ID: '+(d.id||''), 3, 48);
+  doc.text('AY 2026–27', 3, 52);
+  doc.setTextColor(22,160,133); doc.setFontSize(7);
+  doc.text('||| '+(d.id||'')+' |||', 83, 50, {align:'right'});
+  doc.save(`Student-ID-Card-${d.id||'student'}-${(d.name||'').replace(/\s+/g,'-')}.pdf`);
+}
+// ── Notification Bell ──────────────────────────────────────────────────────
+(function(){
+  let _nd=[],_unread=0,_open=false;
+  function nH(){ return {Authorization:'Bearer '+token}; }
+  function ago(s){ if(!s) return ''; const sec=Math.round((Date.now()-new Date(s.replace(' ','T')))/1000); if(sec<60) return sec+'s ago'; if(sec<3600) return Math.round(sec/60)+'m ago'; if(sec<86400) return Math.round(sec/3600)+'h ago'; return Math.round(sec/86400)+'d ago'; }
+  function renderB(){ const b=document.getElementById('notifBadge'); if(!b) return; b.textContent=_unread>99?'99+':String(_unread); b.classList.toggle('show',_unread>0); }
+  function renderL(){ const el=document.getElementById('notifList'); if(!el) return; if(!_nd.length){el.innerHTML='<div class="notif-empty-msg">No notifications</div>';return;} el.innerHTML=_nd.map(n=>`<div class="notif-row${n.is_read?'':' unread'}"><div class="notif-dot ${n.type||'info'}"></div><div class="notif-body"><div class="notif-ttl">${n.title||''}</div><div class="notif-sub">${n.message||n.body||''}</div><div class="notif-ago">${ago(n.created_at)}</div></div></div>`).join(''); }
+  async function load(){ try{ const r=await fetch('/api/notifications',{headers:nH()}); if(!r.ok) return; const d=await r.json(); const ann=(d.announcements||[]).map(a=>({id:'a'+a.id,title:a.title,message:a.body,type:a.type||'announcement',is_read:1,created_at:a.created_at})); _nd=[...(d.notifications||[]),...ann].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,20); _unread=d.unread_count||0; renderB(); if(_open) renderL(); }catch(e){} }
+  window.toggleNotifDrop=function(e){ e.stopPropagation(); const dd=document.getElementById('notifDropdown'); _open=!_open; dd.classList.toggle('open',_open); if(_open){renderL();markAllRead();} };
+  window.markAllRead=async function(){ try{ await fetch('/api/notifications/read',{method:'POST',headers:{...nH(),'Content-Type':'application/json'}}); _nd.forEach(n=>n.is_read=1); _unread=0; renderB(); if(_open) renderL(); }catch(e){} };
+  document.addEventListener('click',function(e){ if(_open&&!document.getElementById('notifBell')?.contains(e.target)){_open=false;document.getElementById('notifDropdown')?.classList.remove('open');} });
+  load(); setInterval(load,30000);
+})();
+
+function toggleSidebar() {
+  if (window.innerWidth <= 768) {
+    document.body.classList.toggle('sidebar-mobile-open');
+  } else {
+    document.body.classList.toggle('sidebar-hidden');
+  }
+}
+window.addEventListener('resize', function() {
+  if (window.innerWidth > 768) {
+    document.body.classList.remove('sidebar-mobile-open');
+  } else {
+    document.body.classList.remove('sidebar-hidden');
+  }
+  updateSidebarTop();
+});
+
+// Keep sidebar top flush with the real bottom of the header (accounts for topbar scrolling away)
+function updateSidebarTop() {
+  const header = document.querySelector('.header');
+  const sidebar = document.querySelector('.student-sidebar');
+  if (!header || !sidebar) return;
+  const top = Math.max(0, Math.round(header.getBoundingClientRect().bottom));
+  sidebar.style.top = top + 'px';
+  sidebar.style.height = 'calc(100vh - ' + top + 'px)';
+}
+updateSidebarTop();
+window.addEventListener('scroll', updateSidebarTop, { passive: true });
+</script>
+</div><!-- /main -->
+</div><!-- /dashboard-wrap -->
+</body>
+</html>

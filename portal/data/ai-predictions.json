@@ -1,0 +1,84 @@
+{
+  "predictions": [
+    {
+      "student_id": "STU005",
+      "name": "Kiran Patel",
+      "class": "10",
+      "section": "A",
+      "attPct": 88,
+      "marksPct": 79,
+      "feesPending": 2,
+      "reasons": [
+        "Fee dues (2 unpaid)"
+      ],
+      "level": "Low",
+      "riskScore": 0,
+      "prediction": "On Track"
+    },
+    {
+      "student_id": "STU004",
+      "name": "Divya Nair",
+      "class": "6",
+      "section": "A",
+      "attPct": 90,
+      "marksPct": 76,
+      "feesPending": 2,
+      "reasons": [
+        "Fee dues (2 unpaid)"
+      ],
+      "level": "Low",
+      "riskScore": 0,
+      "prediction": "On Track"
+    },
+    {
+      "student_id": "STU002",
+      "name": "Priya Sharma",
+      "class": "7",
+      "section": "B",
+      "attPct": 88,
+      "marksPct": 77,
+      "feesPending": 2,
+      "reasons": [
+        "Fee dues (2 unpaid)"
+      ],
+      "level": "Low",
+      "riskScore": 0,
+      "prediction": "On Track"
+    },
+    {
+      "student_id": "STU001",
+      "name": "Rahul Kumar",
+      "class": "8",
+      "section": "A",
+      "attPct": 90,
+      "marksPct": 70,
+      "feesPending": 2,
+      "reasons": [
+        "Fee dues (2 unpaid)"
+      ],
+      "level": "Low",
+      "riskScore": 0,
+      "prediction": "On Track"
+    },
+    {
+      "student_id": "STU003",
+      "name": "Arjun Gowda",
+      "class": "9",
+      "section": "A",
+      "attPct": 96,
+      "marksPct": 72,
+      "feesPending": 2,
+      "reasons": [
+        "Fee dues (2 unpaid)"
+      ],
+      "level": "Low",
+      "riskScore": 0,
+      "prediction": "On Track"
+    }
+  ],
+  "summary": {
+    "high": 0,
+    "medium": 0,
+    "low": 5
+  }
+}

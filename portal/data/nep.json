@@ -1,0 +1,61 @@
+{
+  "students": [
+    {
+      "student_id": "STU005",
+      "name": "Kiran Patel",
+      "class": "10"
+    },
+    {
+      "student_id": "STU004",
+      "name": "Divya Nair",
+      "class": "6"
+    },
+    {
+      "student_id": "STU002",
+      "name": "Priya Sharma",
+      "class": "7"
+    },
+    {
+      "student_id": "STU001",
+      "name": "Rahul Kumar",
+      "class": "8"
+    },
+    {
+      "student_id": "STU003",
+      "name": "Arjun Gowda",
+      "class": "9"
+    }
+  ],
+  "assessments": [
+    {
+      "id": 2,
+      "student_id": "STU001",
+      "class": "8",
+      "term": "Term-1",
+      "academic_yr": "2025-26",
+      "cognitive": 82,
+      "affective": 75,
+      "psychomotor": 68,
+      "sports": "Cricket, Athletics",
+      "arts": "Tabla, Drawing",
+      "community": "School Garden Club",
+      "teacher_note": "Rahul shows excellent analytical skills. Needs improvement in creative writing. Very active in co-curricular activities.",
+      "created_at": "2026-03-16 05:52:11"
+    },
+    {
+      "id": 1,
+      "student_id": "STU001",
+      "class": "8",
+      "term": "Term-1",
+      "academic_yr": "2026-27",
+      "cognitive": 85,
+      "affective": 78,
+      "psychomotor": 90,
+      "sports": "Cricket",
+      "arts": "Drawing",
+      "community": "NSS",
+      "teacher_note": "Excellent student",
+      "created_at": "2026-03-16 05:00:53"
+    }
+  ]
+}

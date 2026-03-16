@@ -1,0 +1,57 @@
+[
+  {
+    "id": "STU001",
+    "name": "Rahul Kumar",
+    "class": "8",
+    "section": "A",
+    "dob": "2011-03-15",
+    "parentName": "Suresh Kumar",
+    "parentPhone": "9876543210",
+    "username": "rahul.kumar",
+    "passwordHash": "a272eca5072d6a7e65f300cfad451849:9f752f439516c4fa6285b7b91d907272904dd407e0f10291726475dc61a990017d114186132c96549c47b31e1cd5c4c3d58860a1ae417be35d30869d293411c6"
+  },
+  {
+    "id": "STU002",
+    "name": "Priya Sharma",
+    "class": "7",
+    "section": "B",
+    "dob": "2012-07-22",
+    "parentName": "Ramesh Sharma",
+    "parentPhone": "9845678901",
+    "username": "priya.sharma",
+    "passwordHash": "9f30a0feabfe62e86eb0e5072adfafdf:d26ca9aeb431f72a30aceacb3040e2656f126e03db88f610051cd60cdcda480d6f55cb5522309dcc5d7114c9882f25ba5b67c85f750aa7e7cea23d109b7d5095"
+  },
+  {
+    "id": "STU003",
+    "name": "Arjun Gowda",
+    "class": "9",
+    "section": "A",
+    "dob": "2010-11-05",
+    "parentName": "Vijay Gowda",
+    "parentPhone": "9901234567",
+    "username": "arjun.gowda",
+    "passwordHash": "ada4197c443171ad46892c768b59f04a:670b954cb368efdf69372bcc1c4e8cf4929bba9da2e7a018d308c5a70c63b5830d605d26059aa7378006c13575e836f95de75490c469a042f6571182e4600192"
+  },
+  {
+    "id": "STU004",
+    "name": "Divya Nair",
+    "class": "6",
+    "section": "A",
+    "dob": "2013-02-18",
+    "parentName": "Anil Nair",
+    "parentPhone": "9980123456",
+    "username": "divya.nair",
+    "passwordHash": "2939444debe96f05d82cbd840339c39d:547baa9483753425f27c461292e0e90645d73a8ef6dfc68c585cf7b8a22e3031ff86a78e1bbc8ca90bf572e8cf3dc730b22697fa8349853c571db92d4325070f"
+  },
+  {
+    "id": "STU005",
+    "name": "Kiran Patel",
+    "class": "10",
+    "section": "A",
+    "dob": "2009-09-30",
+    "parentName": "Mohan Patel",
+    "parentPhone": "9741234567",
+    "username": "kiran.patel",
+    "passwordHash": "7692cc4b113009bd8440bd210a7c3a54:3f9685e4a4c4c7d482a2852233bb30977efd9d4da02eda6e133bd185d6e49c46b41a6d1144a4cc43ed93d82ae13381705d9587095a4b51c5eec3c04276843530"
+  }
+]

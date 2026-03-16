@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Login – The Gurukul High</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/font-awesome.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--navy:#0D1B5E;--navy-d:#091245;--gold:#C9A227;--gold-l:#E6C86A;}
+body{
+  font-family:'Poppins',sans-serif;min-height:100vh;
+  background:var(--navy-d);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:20px;
+}
+body::before{
+  content:'';position:fixed;inset:0;
+  background:
+    radial-gradient(ellipse at 20% 50%,rgba(201,162,39,0.09) 0%,transparent 55%),
+    radial-gradient(ellipse at 80% 20%,rgba(201,162,39,0.06) 0%,transparent 50%);
+  pointer-events:none;
+}
+
+.login-wrap{width:100%;max-width:420px;position:relative;z-index:2;}
+
+/* School branding */
+.brand{text-align:center;margin-bottom:30px;}
+.brand img{width:64px;height:64px;border-radius:14px;border:2px solid rgba(201,162,39,0.35);margin-bottom:12px;}
+.brand h1{font-size:20px;font-weight:800;color:#fff;margin-bottom:4px;}
+.brand p{font-size:12px;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:1.5px;}
+
+/* Card */
+.login-card{
+  background:rgba(255,255,255,0.06);
+  backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:20px;
+  padding:36px 32px;
+}
+.login-title{
+  font-size:14px;font-weight:700;color:var(--gold-l);
+  text-transform:uppercase;letter-spacing:1.4px;
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:24px;
+}
+.login-title::after{content:'';flex:1;height:1px;background:rgba(201,162,39,0.2);}
+
+.fld{margin-bottom:18px;}
+.fld label{display:block;font-size:11px;font-weight:700;color:rgba(255,255,255,0.45);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:7px;}
+.fld input{
+  width:100%;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.12);
+  border-radius:10px;padding:12px 14px;font-family:'Poppins',sans-serif;
+  font-size:14px;color:#fff;outline:none;transition:border .2s;
+}
+.fld input::placeholder{color:rgba(255,255,255,0.25);}
+.fld input:focus{border-color:rgba(201,162,39,0.55);background:rgba(255,255,255,0.09);}
+
+.pwd-wrap{position:relative;}
+.pwd-wrap input{padding-right:44px;}
+.pwd-toggle{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  background:none;border:none;color:rgba(255,255,255,0.35);cursor:pointer;
+  font-size:14px;padding:4px;transition:color .2s;
+}
+.pwd-toggle:hover{color:rgba(255,255,255,0.7);}
+
+.btn-login{
+  width:100%;background:var(--gold);color:#1a1200;border:none;
+  border-radius:10px;padding:14px;font-family:'Poppins',sans-serif;
+  font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;
+  box-shadow:0 4px 20px rgba(201,162,39,0.35);
+  display:flex;align-items:center;justify-content:center;gap:9px;
+  margin-top:8px;
+}
+.btn-login:hover{background:var(--gold-l);transform:translateY(-1px);box-shadow:0 6px 28px rgba(201,162,39,0.5);}
+.btn-login:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+
+.error-msg{
+  background:rgba(220,53,69,0.12);border:1px solid rgba(220,53,69,0.25);
+  color:#ff8090;border-radius:9px;padding:10px 14px;font-size:13px;
+  margin-top:14px;display:none;text-align:center;
+}
+.error-msg.show{display:block;}
+
+.back-link{
+  text-align:center;margin-top:20px;
+  font-size:12px;color:rgba(255,255,255,0.3);
+}
+.back-link a{color:rgba(201,162,39,0.6);text-decoration:none;transition:color .2s;}
+.back-link a:hover{color:var(--gold-l);}
+
+.hint-box{
+  background:rgba(201,162,39,0.06);border:1px solid rgba(201,162,39,0.15);
+  border-radius:10px;padding:12px 14px;font-size:12px;color:rgba(201,162,39,0.7);
+  margin-bottom:20px;
+}
+.hint-box strong{color:var(--gold-l);}
+</style>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#C9A227">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Gurukul ERP">
+</head>
+<body>
+
+<div class="login-wrap">
+
+  <div class="brand">
+    <img src="/images/gurukul-logo.png" alt="Gurukul Logo">
+    <h1>The Gurukul High</h1>
+    <p>Admin Portal · K.R. Nagar, Mysuru</p>
+  </div>
+
+  <div class="login-card">
+    <div class="login-title"><i class="fa fa-lock"></i> Admin Login</div>
+
+    <div class="hint-box">
+      <i class="fa fa-info-circle"></i>&nbsp;
+      Default: <strong>admin</strong> / <strong>gurukul@2026</strong>
+    </div>
+
+    <form id="loginForm" onsubmit="doLogin(event)">
+      <div class="fld">
+        <label><i class="fa fa-user-circle-o" style="margin-right:5px;"></i>Username</label>
+        <input type="text" id="username" placeholder="Enter admin username" autocomplete="username" required>
+      </div>
+      <div class="fld">
+        <label><i class="fa fa-lock" style="margin-right:5px;"></i>Password</label>
+        <div class="pwd-wrap">
+          <input type="password" id="password" placeholder="Enter password" autocomplete="current-password" required>
+          <button type="button" class="pwd-toggle" onclick="togglePwd()"><i class="fa fa-eye" id="eyeIcon"></i></button>
+        </div>
+      </div>
+      <button type="submit" class="btn-login" id="loginBtn">
+        <i class="fa fa-sign-in"></i> Sign In as Admin
+      </button>
+    </form>
+
+    <div class="error-msg" id="errMsg"></div>
+  </div>
+
+  <div class="back-link">
+    <a href="/portal/index.html"><i class="fa fa-arrow-left"></i> Back to Portal Hub</a>
+  </div>
+
+</div>
+
+<script>
+const API = '/api';
+
+// Already logged in? Go straight to dashboard
+if (sessionStorage.getItem('adminToken')) {
+  window.location.href = 'admin-dashboard.html';
+}
+
+function togglePwd() {
+  const inp = document.getElementById('password');
+  const ico = document.getElementById('eyeIcon');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    ico.className = 'fa fa-eye-slash';
+  } else {
+    inp.type = 'password';
+    ico.className = 'fa fa-eye';
+  }
+}
+
+async function doLogin(e) {
+  e.preventDefault();
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const btn      = document.getElementById('loginBtn');
+  const err      = document.getElementById('errMsg');
+
+  err.classList.remove('show');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Signing in…';
+
+  try {
+    const res  = await fetch(`${API}/admin/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      err.textContent = data.error || 'Invalid credentials. Please try again.';
+      err.classList.add('show');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa fa-sign-in"></i> Sign In as Admin';
+      return;
+    }
+
+    // Store admin token and key
+    sessionStorage.setItem('adminToken', data.token);
+    sessionStorage.setItem('adminKey',   data.adminKey);
+    sessionStorage.setItem('adminName',  data.name || 'Administrator');
+
+    window.location.href = 'admin-dashboard.html';
+
+  } catch(e) {
+    err.textContent = '⚠️ Server not running. Start the server with: node server.js';
+    err.classList.add('show');
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa fa-sign-in"></i> Sign In as Admin';
+  }
+}
+</script>
+</body>
+</html>

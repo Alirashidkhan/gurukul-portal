@@ -1,0 +1,52 @@
+{
+  "id": "T004",
+  "name": "Kavitha Nair",
+  "username": "kavitha.nair",
+  "email": "kavitha.nair@gurukul.edu",
+  "phone": "9900004444",
+  "subject": "Social Studies",
+  "dob": "",
+  "gender": "",
+  "blood_group": "",
+  "emergency_name": "",
+  "emergency_phone": "",
+  "address": "",
+  "bank_name": "",
+  "account_number": "",
+  "ifsc": "",
+  "account_type": "Savings",
+  "pan": "",
+  "uan": "",
+  "esi_number": "",
+  "employment_type": "Full-time",
+  "designation": "Teacher",
+  "department": "Social Studies",
+  "joining_date": "2022-06-01",
+  "status": "Active",
+  "assignments": [
+    {
+      "class": "6",
+      "section": "A",
+      "subject": "Social Studies"
+    },
+    {
+      "class": "6",
+      "section": "B",
+      "subject": "Social Studies"
+    }
+  ],
+  "payroll_structure": {
+    "id": 11,
+    "staff_id": "T004",
+    "staff_type": "teacher",
+    "basic": 25000,
+    "hra_pct": 40,
+    "da_pct": 5,
+    "transport": 1500,
+    "medical": 1250,
+    "pf_pct": 12,
+    "esi_pct": 0,
+    "tds": 500
+  },
+  "payroll_entries": []
+}

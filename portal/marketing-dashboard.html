@@ -1,0 +1,2187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marketing Dashboard — The Gurukul High</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --navy:#0d1b5e; --gold:#c9a227; --green:#27ae60;
+  --red:#e74c3c; --orange:#f39c12; --purple:#8e44ad; --teal:#16a085;
+  --pink:#e91e8c; --blue:#2980b9;
+  --bg:#f2f4f9; --card:#fff;
+  --text:#1a1a2e; --muted:#8a8fa8;
+  --sidebar:224px;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;font-size:13px;background:var(--bg);color:var(--text);}
+
+/* ── LOGIN ── */
+#loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,#0d1b5e 0%,#1a3a6c 55%,#e91e8c 100%);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.login-box{background:#fff;border-radius:20px;padding:44px 40px;width:380px;box-shadow:0 24px 80px rgba(0,0,0,.4);}
+.login-logo{text-align:center;margin-bottom:24px;}
+.login-logo img{width:72px;height:72px;border-radius:50%;border:3px solid var(--navy);}
+.login-logo .school-name{font-size:17px;font-weight:800;color:var(--navy);margin-top:10px;}
+.login-logo .school-sub{font-size:11px;color:var(--muted);}
+.login-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(233,30,140,.1);color:var(--pink);border:1px solid rgba(233,30,140,.3);border-radius:20px;padding:4px 14px;font-size:11px;font-weight:700;margin-bottom:20px;}
+.login-title{font-size:22px;font-weight:800;color:var(--navy);margin-bottom:4px;}
+.login-sub{font-size:12px;color:var(--muted);margin-bottom:22px;}
+.login-field{margin-bottom:14px;}
+.login-field label{display:block;font-size:10px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px;}
+.login-field input{width:100%;border:1.5px solid #e0e4ef;border-radius:10px;padding:11px 14px;font-size:13px;outline:none;font-family:inherit;transition:border .15s;}
+.login-field input:focus{border-color:var(--pink);}
+.login-btn{width:100%;background:linear-gradient(135deg,var(--navy),#e91e8c);color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:4px;}
+.login-err{background:#fde8e8;color:var(--red);border-radius:8px;padding:10px 14px;font-size:12px;font-weight:600;margin-bottom:14px;display:none;}
+
+/* ── APP ── */
+#app{display:none;height:100vh;overflow:hidden;}
+
+/* ── TOPBAR ── */
+.topbar{height:62px;background:linear-gradient(90deg,var(--navy) 0%,#1a2a7c 70%,#c0176e 100%);display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 22px;position:fixed;top:0;left:0;right:0;z-index:200;box-shadow:0 2px 12px rgba(0,0,0,.25);}
+.topbar-left{color:rgba(255,255,255,.5);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2px;display:flex;align-items:center;gap:10px;}
+.topbar-badge{background:rgba(233,30,140,.25);border:1px solid rgba(233,30,140,.5);color:#ffb3d9;border-radius:20px;padding:3px 12px;font-size:10px;font-weight:700;}
+.topbar-logo{display:flex;align-items:center;gap:12px;justify-content:center;}
+.topbar-logo img{width:40px;height:40px;border-radius:8px;border:2px solid rgba(255,255,255,.3);}
+.topbar-school .name{font-size:17px;font-weight:700;color:#fff;letter-spacing:.3px;}
+.topbar-right{display:flex;align-items:center;gap:10px;justify-content:flex-end;}
+.topbar-live{display:flex;align-items:center;gap:6px;color:rgba(255,255,255,.6);font-size:11px;}
+.topbar-live .dot{width:7px;height:7px;border-radius:50%;background:#ffb3d9;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(.8);}}
+.topbar-user{color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;gap:8px;}
+.topbar-user .avatar{width:32px;height:32px;background:var(--pink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;}
+.logout-btn{background:rgba(255,255,255,.12);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:11px;font-weight:700;cursor:pointer;}
+.logout-btn:hover{background:rgba(255,255,255,.25);}
+.hamburger-btn{width:38px;height:38px;background:rgba(255,255,255,0.09);border:1.5px solid rgba(255,255,255,0.18);border-radius:10px;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:background .2s;flex-shrink:0;}
+.hamburger-btn:hover{background:rgba(255,255,255,0.22);}
+.sidebar{transition:transform .3s cubic-bezier(0.4,0,0.2,1);}
+body.sidebar-hidden .sidebar{transform:translateX(-100%);}
+.main-content{transition:margin-left .3s cubic-bezier(0.4,0,0.2,1);}
+body.sidebar-hidden .main-content{margin-left:0!important;}
+/* ── Notification Bell ── */
+.notif-bell{position:relative;display:inline-flex;}.notif-bell-btn{background:rgba(255,255,255,.12);border:none;border-radius:8px;color:#fff;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:background .2s;position:relative;}.notif-bell-btn:hover{background:rgba(255,255,255,.25);}.notif-badge{position:absolute;top:-5px;right:-5px;background:#f44336;color:#fff;font-size:9px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:none;align-items:center;justify-content:center;padding:0 3px;pointer-events:none;}.notif-badge.show{display:flex;}.notif-dropdown{position:absolute;top:calc(100% + 8px);right:0;width:320px;background:#1a1f2e;border:1px solid rgba(255,255,255,.12);border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.55);z-index:99999;display:none;overflow:hidden;}.notif-dropdown.open{display:block;}.notif-dd-header{padding:11px 15px;border-bottom:1px solid rgba(255,255,255,.09);display:flex;align-items:center;justify-content:space-between;}.notif-dd-header span{font-size:13px;font-weight:700;color:#e0e0e0;font-family:'Poppins',sans-serif;}.notif-dd-mark{font-size:11px;color:#64b5f6;cursor:pointer;background:none;border:none;font-family:'Poppins',sans-serif;padding:0;}.notif-dd-mark:hover{color:#90caf9;}.notif-scroll{max-height:300px;overflow-y:auto;}.notif-row{padding:10px 15px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;gap:9px;align-items:flex-start;transition:background .15s;}.notif-row:hover{background:rgba(255,255,255,.04);}.notif-row.unread{background:rgba(100,181,246,.07);}.notif-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px;}.notif-dot.info{background:#64b5f6;}.notif-dot.success{background:#66bb6a;}.notif-dot.warning{background:#ffb74d;}.notif-dot.danger,.notif-dot.urgent{background:#ef5350;}.notif-dot.announcement,.notif-dot.circular{background:#ab47bc;}.notif-dot.alert{background:#ff7043;}.notif-body{flex:1;min-width:0;}.notif-ttl{font-size:12px;font-weight:600;color:#e0e0e0;font-family:'Poppins',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.notif-sub{font-size:11px;color:#9e9e9e;margin-top:2px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}.notif-ago{font-size:10px;color:#616161;margin-top:3px;font-family:'Poppins',sans-serif;}.notif-empty-msg{padding:20px;text-align:center;color:#616161;font-size:12px;font-family:'Poppins',sans-serif;}
+
+/* ── SIDEBAR ── */
+.sidebar{position:fixed;top:62px;left:0;width:var(--sidebar);height:calc(100vh - 62px);background:#fff;border-right:1px solid #e8eaf0;overflow-y:auto;z-index:100;padding:14px 0;}
+.nav-section{padding:0 14px;margin-bottom:4px;}
+.nav-section-label{font-size:12px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;padding:10px 8px 4px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;border-radius:6px;transition:background .15s;}
+.nav-section-label:hover{background:#f0f2f9;color:var(--navy);}
+.nav-section-label .sst-arrow{font-size:9px;color:#aaa;transition:transform .2s;flex-shrink:0;}
+.nav-section-label.collapsed .sst-arrow{transform:rotate(-90deg);}
+.nav-section-items{overflow:hidden;max-height:9999px;opacity:1;transition:max-height .28s ease, opacity .2s ease;flex-shrink:0;}
+.nav-section-items.collapsed{max-height:0;opacity:0;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:10px;cursor:pointer;color:#555;font-size:14px;font-weight:600;transition:all .15s;margin-bottom:2px;user-select:none;}
+.nav-item:hover{background:#f0f2f9;color:var(--navy);}
+.nav-item.active{background:rgba(233,30,140,.08);color:var(--pink);font-weight:700;}
+.nav-item .icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;background:#f0f2f9;transition:background .15s;}
+.nav-item.active .icon{background:var(--pink);color:#fff;}
+.nav-item .badge-pill{margin-left:auto;background:var(--red);color:#fff;border-radius:10px;padding:1px 7px;font-size:10px;font-weight:800;}
+.fqb-strip{display:flex;gap:6px;padding:14px 10px 12px;border-bottom:1.5px solid #e8eaf0;flex-shrink:0;}
+.fqb{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px 10px;border:1.5px solid #e0e4ef;background:#f4f6fc;border-radius:14px;cursor:pointer;transition:all .2s;font-family:inherit;min-width:0;overflow:hidden;}
+.fqb i{font-size:20px;color:#7b88a8;}
+.fqb .fqb-lbl{font-size:9px;font-weight:700;color:#7b88a8;text-transform:uppercase;letter-spacing:0;line-height:1;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block;text-align:center;}
+.fqb:hover{background:#eaecf8;border-color:#b0b8d8;}
+.fqb:hover i,.fqb:hover .fqb-lbl{color:var(--navy);}
+.fqb.active{background:rgba(233,30,140,0.1);border-color:rgba(233,30,140,0.3);}
+.fqb.active i,.fqb.active .fqb-lbl{color:var(--pink);font-weight:800;}
+
+/* ── MAIN ── */
+.main-content{margin-left:var(--sidebar);padding-top:62px;height:100vh;overflow-y:auto;}
+.page{display:none;padding:24px;}
+.page.active{display:block;}
+
+/* ── CARDS ── */
+.card{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);overflow:hidden;margin-bottom:18px;}
+.card-head{padding:16px 22px;border-bottom:1px solid #f0f2f8;display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.card-title{font-size:14px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px;}
+.card-body{padding:20px 22px;}
+
+/* ── KPI ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.kpi-card{background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 2px 12px rgba(0,0,0,.07);border-left:5px solid var(--pink);transition:transform .15s;}
+.kpi-card:hover{transform:translateY(-2px);}
+.kpi-card.gold{border-left-color:var(--gold);}
+.kpi-card.green{border-left-color:var(--green);}
+.kpi-card.blue{border-left-color:var(--blue);}
+.kpi-card.purple{border-left-color:var(--purple);}
+.kpi-card.navy{border-left-color:var(--navy);}
+.kpi-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.kpi-val{font-size:26px;font-weight:800;color:var(--navy);line-height:1.1;}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+.kpi-icon{font-size:22px;float:right;margin-top:-2px;opacity:.15;}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+thead th{background:#f0f2f8;color:var(--navy);font-weight:700;font-size:10px;text-transform:uppercase;letter-spacing:.4px;padding:10px 14px;text-align:left;white-space:nowrap;}
+tbody td{padding:10px 14px;border-bottom:1px solid #f5f6fa;vertical-align:middle;}
+tbody tr:hover{background:#fafbff;}
+tbody tr:last-child td{border-bottom:none;}
+
+/* ── BADGES ── */
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;}
+.badge-inquiry   {background:rgba(41,128,185,.12);color:#2980b9;}
+.badge-contacted {background:rgba(243,156,18,.14);color:#d68910;}
+.badge-visit     {background:rgba(142,68,173,.12);color:#8e44ad;}
+.badge-applied   {background:rgba(22,160,133,.12);color:var(--teal);}
+.badge-admitted  {background:rgba(39,174,96,.12);color:#27ae60;}
+.badge-enrolled  {background:rgba(13,27,94,.12);color:var(--navy);}
+.badge-active    {background:rgba(39,174,96,.12);color:#27ae60;}
+.badge-draft     {background:rgba(127,140,141,.12);color:#7f8c8d;}
+.badge-paused    {background:rgba(243,156,18,.14);color:#d68910;}
+.badge-completed {background:rgba(13,27,94,.1);color:var(--navy);}
+.badge-upcoming  {background:rgba(41,128,185,.12);color:#2980b9;}
+.badge-done      {background:rgba(39,174,96,.12);color:#27ae60;}
+.badge-published {background:rgba(39,174,96,.12);color:#27ae60;}
+.badge-scheduled {background:rgba(142,68,173,.12);color:#8e44ad;}
+
+/* ── FORM ── */
+.form-row{display:grid;gap:12px;margin-bottom:12px;}
+.form-row.col2{grid-template-columns:1fr 1fr;}
+.form-row.col3{grid-template-columns:1fr 1fr 1fr;}
+.fgroup label{display:block;font-size:10px;font-weight:700;color:#666;text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;}
+.fgroup input,.fgroup select,.fgroup textarea{width:100%;border:1.5px solid #e0e4ef;border-radius:9px;padding:9px 12px;font-size:12px;font-family:inherit;outline:none;transition:border .15s;background:#fff;}
+.fgroup input:focus,.fgroup select:focus,.fgroup textarea:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(233,30,140,.08);}
+.fgroup textarea{resize:vertical;min-height:60px;}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:9px;padding:9px 18px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;}
+.btn-primary{background:var(--navy);color:#fff;}
+.btn-primary:hover{background:var(--pink);}
+.btn-pink{background:var(--pink);color:#fff;}
+.btn-pink:hover{background:#c01678;}
+.btn-success{background:var(--green);color:#fff;}
+.btn-danger{background:var(--red);color:#fff;}
+.btn-outline{background:#f0f2f8;color:var(--navy);}
+.btn-outline:hover{background:var(--navy);color:#fff;}
+.btn-sm{padding:5px 12px;font-size:11px;}
+.btn:disabled{opacity:.5;cursor:not-allowed;}
+
+/* ── ALERTS ── */
+.alert{border-radius:10px;padding:10px 16px;font-size:12px;font-weight:600;margin-bottom:14px;display:none;}
+.alert-success{background:#e8f5e9;color:#27ae60;border:1px solid rgba(39,174,96,.3);}
+.alert-error  {background:#fde8e8;color:#e74c3c;border:1px solid rgba(231,76,60,.3);}
+
+/* ── PAGE HEADER ── */
+.page-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px;}
+.page-hdr h2{font-size:20px;font-weight:800;color:var(--navy);}
+.page-hdr h2 i{color:var(--pink);}
+.page-hdr .sub{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:500;display:none;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:16px;width:560px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 80px rgba(0,0,0,.3);}
+.modal-lg{width:720px;}
+.modal-head{padding:20px 24px;border-bottom:1px solid #f0f2f8;display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-size:16px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:8px;}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:#aaa;padding:4px 8px;}
+.modal-close:hover{color:var(--red);}
+.modal-body{padding:24px;}
+.modal-footer{padding:16px 24px;border-top:1px solid #f0f2f8;display:flex;justify-content:flex-end;gap:10px;}
+
+/* ── SEARCH BAR ── */
+.search-bar{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid #e0e4ef;border-radius:10px;padding:8px 14px;flex:1;max-width:320px;}
+.search-bar i{color:var(--muted);}
+.search-bar input{border:none;outline:none;font-size:13px;font-family:inherit;flex:1;background:transparent;}
+
+/* ── FUNNEL KANBAN ── */
+.funnel-board{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;overflow-x:auto;}
+.funnel-col{background:#f8f9fd;border-radius:12px;padding:12px;min-width:140px;}
+.funnel-col-hdr{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;padding:6px 10px;border-radius:8px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;color:#fff;}
+.funnel-card{background:#fff;border-radius:9px;padding:10px 12px;margin-bottom:8px;box-shadow:0 2px 6px rgba(0,0,0,.07);font-size:11px;cursor:pointer;border-left:3px solid transparent;transition:box-shadow .15s;}
+.funnel-card:hover{box-shadow:0 4px 14px rgba(0,0,0,.12);}
+.funnel-card .fc-name{font-weight:700;color:var(--navy);margin-bottom:3px;}
+.funnel-card .fc-meta{color:var(--muted);font-size:10px;}
+.funnel-card .fc-source{font-size:9px;background:#f0f2f8;border-radius:5px;padding:1px 6px;display:inline-block;margin-top:4px;}
+
+/* ── SOCIAL PLATFORM ICONS ── */
+.platform-ig{color:#e91e8c;}
+.platform-fb{color:#1877f2;}
+.platform-tw{color:#1da1f2;}
+.platform-yt{color:#ff0000;}
+.platform-wa{color:#25d366;}
+.platform-li{color:#0a66c2;}
+
+/* ── ANALYTICS CHART GRID ── */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px;}
+.chart-box{background:#fff;border-radius:14px;padding:20px;box-shadow:0 2px 12px rgba(0,0,0,.06);}
+.chart-box-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:16px;display:flex;align-items:center;gap:7px;}
+.chart-box canvas{max-height:220px;}
+
+/* ── SECTION HEADER ── */
+.section-hdr{background:#f8f9fd;border-radius:10px;padding:10px 16px;margin-bottom:14px;font-size:12px;font-weight:700;color:var(--navy);display:flex;align-items:center;gap:8px;}
+
+/* ── TAB BAR ── */
+.tab-bar{display:flex;gap:0;border-bottom:2px solid #e8eaf0;margin-bottom:20px;}
+.tab-btn{padding:10px 20px;background:none;border:none;font-size:12px;font-weight:600;color:#888;cursor:pointer;font-family:inherit;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;}
+.tab-btn.active{color:var(--pink);border-bottom-color:var(--pink);font-weight:700;}
+
+@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,1fr);}.funnel-board{grid-template-columns:repeat(3,1fr);}.chart-grid{grid-template-columns:1fr;}}
+@media(max-width:768px){.sidebar{display:none;}.main-content{margin-left:0;}}
+</style>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#C9A227">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Gurukul ERP">
+</head>
+<body>
+
+<!-- ══ LOGIN SCREEN ══ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <img src="../images/gurukul-logo.png" alt="Gurukul Logo" onerror="this.style.display='none'">
+      <div class="school-name">The Gurukul High</div>
+      <div class="school-sub">K.R. Nagar, Mysuru</div>
+    </div>
+    <div style="text-align:center;margin-bottom:18px;">
+      <span class="login-badge"><i class="fa fa-bullhorn"></i> Marketing Portal</span>
+    </div>
+    <div class="login-err" id="loginErr"></div>
+    <div class="login-field">
+      <label>Username</label>
+      <input type="text" id="loginUser" value="marketing" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="login-field">
+      <label>Password</label>
+      <input type="password" id="loginPass" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div style="background:rgba(233,30,140,.07);border:1px solid rgba(233,30,140,.2);border-radius:9px;padding:9px 14px;font-size:11px;color:#c01678;margin-bottom:14px;display:flex;align-items:center;gap:8px;">
+      <i class="fa fa-key"></i> Default password: <b>marketing@2026</b>
+    </div>
+    <button class="login-btn" id="loginBtn" onclick="doLogin()"><i class="fa fa-sign-in"></i> Sign In</button>
+  </div>
+</div>
+
+<!-- ══ APP ══ -->
+<div id="app">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="hamburger-btn" onclick="toggleSidebar()" title="Toggle Sidebar"><i class="fa fa-bars"></i></button>
+      <span class="topbar-badge"><i class="fa fa-bullhorn"></i> Marketing</span>
+    </div>
+    <div class="topbar-logo">
+      <img src="../images/gurukul-logo.png" alt="" onerror="this.style.display='none'">
+      <div class="topbar-school"><div class="name">The Gurukul High</div></div>
+    </div>
+    <div class="topbar-right">
+      <div class="topbar-live"><span class="dot"></span> Live</div>
+      <div class="topbar-user"><div class="avatar">M</div><span id="topbarUser">Marketing</span></div>
+      <div class="notif-bell" id="notifBell">
+        <button class="notif-bell-btn" onclick="toggleNotifDrop(event)" title="Notifications"><i class="fa fa-bell"></i><span class="notif-badge" id="notifBadge"></span></button>
+        <div class="notif-dropdown" id="notifDropdown">
+          <div class="notif-dd-header"><span>Notifications</span><button class="notif-dd-mark" onclick="markAllRead()">Mark all read</button></div>
+          <div class="notif-scroll" id="notifList"><div class="notif-empty-msg">Loading…</div></div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="doLogout()"><i class="fa fa-sign-out"></i> Logout</button>
+    </div>
+  </div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="fqb-strip">
+      <button class="fqb" id="fqb-overview" onclick="showPage('overview')">
+        <i class="fa fa-tachometer"></i><span class="fqb-lbl">Overview</span>
+      </button>
+      <button class="fqb" id="fqb-leads" onclick="showPage('leads')">
+        <i class="fa fa-bullseye"></i><span class="fqb-lbl">Leads</span>
+      </button>
+      <button class="fqb" id="fqb-campaigns" onclick="showPage('campaigns')">
+        <i class="fa fa-paper-plane"></i><span class="fqb-lbl">Campaign</span>
+      </button>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label" onclick="toggleNavSection(this)"><span>Dashboard</span><i class="fa fa-chevron-down sst-arrow"></i></div>
+      <div class="nav-section-items">
+        <div class="nav-item active" id="nav-overview" onclick="showPage('overview')">
+          <div class="icon"><i class="fa fa-tachometer"></i></div> Overview
+        </div>
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label" onclick="toggleNavSection(this)"><span>Leads & Funnel</span><i class="fa fa-chevron-down sst-arrow"></i></div>
+      <div class="nav-section-items">
+        <div class="nav-item" id="nav-leads" onclick="showPage('leads')">
+          <div class="icon"><i class="fa fa-users"></i></div> Leads
+          <span class="badge-pill" id="navLeadCount" style="display:none">0</span>
+        </div>
+        <div class="nav-item" id="nav-funnel" onclick="showPage('funnel')">
+          <div class="icon"><i class="fa fa-filter"></i></div> Enrollment Funnel
+        </div>
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label" onclick="toggleNavSection(this)"><span>Campaigns & Events</span><i class="fa fa-chevron-down sst-arrow"></i></div>
+      <div class="nav-section-items">
+        <div class="nav-item" id="nav-campaigns" onclick="showPage('campaigns')">
+          <div class="icon"><i class="fa fa-paper-plane"></i></div> Campaigns
+        </div>
+        <div class="nav-item" id="nav-events" onclick="showPage('events')">
+          <div class="icon"><i class="fa fa-calendar-check-o"></i></div> Events
+        </div>
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label" onclick="toggleNavSection(this)"><span>Content & Analytics</span><i class="fa fa-chevron-down sst-arrow"></i></div>
+      <div class="nav-section-items">
+        <div class="nav-item" id="nav-social" onclick="showPage('social')">
+          <div class="icon"><i class="fa fa-share-alt"></i></div> Social Media
+        </div>
+        <div class="nav-item" id="nav-analytics" onclick="showPage('analytics')">
+          <div class="icon"><i class="fa fa-bar-chart"></i></div> Analytics
+        </div>
+        <div class="nav-item" id="nav-content" onclick="showPage('content')">
+          <div class="icon"><i class="fa fa-paint-brush"></i></div> Build Content
+        </div>
+        <div class="nav-item" id="nav-templates" onclick="showPage('templates')">
+          <div class="icon"><i class="fa fa-envelope-o"></i></div> Email Templates
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+
+    <!-- ═══════════ OVERVIEW ═══════════ -->
+    <div class="page active" id="page-overview">
+      <div class="page-hdr">
+        <div>
+          <h2><i class="fa fa-tachometer"></i> Marketing Overview</h2>
+          <div class="sub">Live snapshot of admissions pipeline and campaign performance</div>
+        </div>
+        <button class="btn btn-pink" onclick="loadOverview()"><i class="fa fa-refresh"></i> Refresh</button>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <i class="fa fa-users kpi-icon"></i>
+          <div class="kpi-label">Total Leads</div>
+          <div class="kpi-val" id="kpiTotalLeads">—</div>
+          <div class="kpi-sub" id="kpiTodayLeads">— new today</div>
+        </div>
+        <div class="kpi-card green">
+          <i class="fa fa-graduation-cap kpi-icon"></i>
+          <div class="kpi-label">Enrolled</div>
+          <div class="kpi-val" id="kpiEnrolled">—</div>
+          <div class="kpi-sub">Successfully admitted</div>
+        </div>
+        <div class="kpi-card gold">
+          <i class="fa fa-paper-plane kpi-icon"></i>
+          <div class="kpi-label">Active Campaigns</div>
+          <div class="kpi-val" id="kpiActiveCampaigns">—</div>
+          <div class="kpi-sub">Currently running</div>
+        </div>
+        <div class="kpi-card blue">
+          <i class="fa fa-calendar kpi-icon"></i>
+          <div class="kpi-label">Upcoming Events</div>
+          <div class="kpi-val" id="kpiUpcomingEvents">—</div>
+          <div class="kpi-sub">Scheduled ahead</div>
+        </div>
+        <div class="kpi-card purple">
+          <i class="fa fa-eye kpi-icon"></i>
+          <div class="kpi-label">Total Reach</div>
+          <div class="kpi-val" id="kpiTotalReach">—</div>
+          <div class="kpi-sub">Across all campaigns</div>
+        </div>
+        <div class="kpi-card navy">
+          <i class="fa fa-percent kpi-icon"></i>
+          <div class="kpi-label">Conversion Rate</div>
+          <div class="kpi-val" id="kpiConvRate">—</div>
+          <div class="kpi-sub">Leads to enrolled</div>
+        </div>
+      </div>
+
+      <!-- ── Marketing Annual Budget Fund Row ── -->
+      <div style="background:#fff;border-radius:16px;border:1.5px solid #e4e8f4;box-shadow:0 2px 12px rgba(0,0,0,.06);margin-bottom:18px;overflow:hidden;" id="mktBudgetFundRow">
+        <div style="background:linear-gradient(135deg,var(--navy),#c0255e);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;">
+          <div style="display:flex;align-items:center;gap:9px;">
+            <i class="fa fa-bank" style="color:#ffb3d0;font-size:15px;"></i>
+            <span style="color:#fff;font-size:13px;font-weight:800;letter-spacing:.2px;">Marketing Annual Fund</span>
+            <span style="background:rgba(255,255,255,.15);color:rgba(255,255,255,.85);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;" id="mktBudgetYear">—</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex:1;max-width:260px;">
+            <div style="flex:1;background:rgba(255,255,255,.2);border-radius:999px;height:6px;overflow:hidden;">
+              <div id="mktBudgetBar" style="background:#ffb3d0;height:100%;border-radius:999px;transition:width .4s;width:0%;"></div>
+            </div>
+            <span id="mktBudgetPct" style="color:rgba(255,255,255,.85);font-size:11px;font-weight:700;white-space:nowrap;">0%</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:0;padding:0;">
+          <div style="flex:1;min-width:130px;padding:16px 20px;border-right:1px solid #f0f2f8;">
+            <div style="font-size:10px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;"><i class="fa fa-rupee" style="color:var(--navy);"></i> Annual Fund</div>
+            <div style="font-size:22px;font-weight:800;color:var(--navy);" id="mktBudgetAllocated">—</div>
+            <div style="font-size:11px;color:#aaa;margin-top:3px;">Total allocated</div>
+          </div>
+          <div style="flex:1;min-width:130px;padding:16px 20px;border-right:1px solid #f0f2f8;">
+            <div style="font-size:10px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;"><i class="fa fa-check-circle" style="color:#e67e22;"></i> Used YTD</div>
+            <div style="font-size:22px;font-weight:800;color:#e67e22;" id="mktBudgetUsed">—</div>
+            <div style="font-size:11px;color:#aaa;margin-top:3px;" id="mktBudgetUsedSub">of allocated</div>
+          </div>
+          <div style="flex:1;min-width:130px;padding:16px 20px;border-right:1px solid #f0f2f8;">
+            <div style="font-size:10px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;"><i class="fa fa-bank" style="color:#16a085;"></i> Remaining</div>
+            <div style="font-size:22px;font-weight:800;" id="mktBudgetRemaining">—</div>
+            <div style="font-size:11px;color:#aaa;margin-top:3px;" id="mktBudgetRemainingNote">available</div>
+          </div>
+          <div style="flex:1;min-width:130px;padding:16px 20px;">
+            <div style="font-size:10px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px;"><i class="fa fa-bar-chart" style="color:var(--pink);"></i> Total Spent</div>
+            <div style="font-size:22px;font-weight:800;color:var(--navy);" id="mktBudgetSpent">—</div>
+            <div style="font-size:11px;color:#aaa;margin-top:3px;">across all expenses</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Build Content Quick-Access Card ── -->
+      <div style="background:#fff;border-radius:16px;border:1.5px solid #f0d0e0;box-shadow:0 2px 12px rgba(190,40,100,.07);margin-bottom:18px;overflow:hidden;">
+        <div style="background:linear-gradient(135deg,#fff0f5,#fce4ec);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div style="width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--pink),#e91e63);display:flex;align-items:center;justify-content:center;">
+              <i class="fa fa-paint-brush" style="color:#fff;font-size:15px;"></i>
+            </div>
+            <div>
+              <div style="font-size:13px;font-weight:800;color:var(--navy);">Build Marketing Content</div>
+              <div style="font-size:11px;color:#c0255e;">Create posters, banners, and presentations instantly</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button onclick="showPage('content');setTimeout(()=>switchContentTab('posters'),50)" style="background:linear-gradient(135deg,#e91e63,#c0255e);color:#fff;border:none;border-radius:10px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;">
+              <i class="fa fa-image"></i> Posters
+            </button>
+            <button onclick="showPage('content');setTimeout(()=>switchContentTab('banners'),50)" style="background:linear-gradient(135deg,#7b1fa2,#9c27b0);color:#fff;border:none;border-radius:10px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;">
+              <i class="fa fa-photo"></i> Banners
+            </button>
+            <button onclick="showPage('content');setTimeout(()=>switchContentTab('ppt'),50)" style="background:linear-gradient(135deg,#d84315,#e64a19);color:#fff;border:none;border-radius:10px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;">
+              <i class="fa fa-file-powerpoint-o"></i> PPT
+            </button>
+            <button onclick="showPage('content')" style="background:rgba(190,40,100,.08);color:var(--pink);border:1.5px solid #f0c0d0;border-radius:10px;padding:8px 16px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;">
+              <i class="fa fa-arrow-right"></i> Open All
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+        <!-- Recent Leads -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title"><i class="fa fa-users" style="color:var(--pink)"></i> Recent Leads</div>
+            <button class="btn btn-sm btn-outline" onclick="showPage('leads')">View All</button>
+          </div>
+          <div class="card-body" style="padding:0">
+            <table><thead><tr><th>Name</th><th>Class</th><th>Source</th><th>Stage</th></tr></thead>
+            <tbody id="ovRecentLeads"><tr><td colspan="4" style="text-align:center;color:#aaa;padding:20px">Loading…</td></tr></tbody></table>
+          </div>
+        </div>
+
+        <!-- Lead Sources -->
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title"><i class="fa fa-pie-chart" style="color:var(--gold)"></i> Lead Sources</div>
+          </div>
+          <div class="card-body" style="height:220px;display:flex;align-items:center;justify-content:center;">
+            <canvas id="ovSourceChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Funnel Stage Summary -->
+        <div class="card" style="grid-column:span 2">
+          <div class="card-head">
+            <div class="card-title"><i class="fa fa-filter" style="color:var(--pink)"></i> Enrollment Funnel</div>
+            <button class="btn btn-sm btn-outline" onclick="showPage('funnel')">Full View</button>
+          </div>
+          <div class="card-body">
+            <div id="ovFunnelStrip" style="display:flex;gap:0;border-radius:10px;overflow:hidden;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ LEADS ═══════════ -->
+    <div class="page" id="page-leads">
+      <div class="page-hdr">
+        <div>
+          <h2><i class="fa fa-users"></i> Leads Management</h2>
+          <div class="sub">Track and manage all prospective student inquiries</div>
+        </div>
+        <button class="btn btn-pink" onclick="openLeadModal()"><i class="fa fa-plus"></i> Add Lead</button>
+      </div>
+
+      <!-- Filters -->
+      <div class="card">
+        <div class="card-body" style="padding:14px 22px;display:flex;gap:12px;flex-wrap:wrap;align-items:center;">
+          <div class="search-bar">
+            <i class="fa fa-search"></i>
+            <input type="text" id="leadSearch" placeholder="Search name, phone, email…" oninput="filterLeads()">
+          </div>
+          <select id="leadFilterStage" onchange="filterLeads()" style="border:1.5px solid #e0e4ef;border-radius:9px;padding:8px 12px;font-size:12px;outline:none;background:#fff;">
+            <option value="">All Stages</option>
+            <option>Inquiry</option><option>Contacted</option><option>Visit Scheduled</option><option>Applied</option><option>Admitted</option><option>Enrolled</option>
+          </select>
+          <select id="leadFilterSource" onchange="filterLeads()" style="border:1.5px solid #e0e4ef;border-radius:9px;padding:8px 12px;font-size:12px;outline:none;background:#fff;">
+            <option value="">All Sources</option>
+            <option>Walk-in</option><option>Website</option><option>Referral</option><option>Social Media</option><option>Event</option><option>WhatsApp</option><option>Phone Call</option><option>Email</option>
+          </select>
+          <span id="leadCountLabel" style="font-size:11px;color:var(--muted);margin-left:auto;"></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Name</th><th>Phone</th><th>Class</th><th>Source</th><th>Stage</th><th>Assigned To</th><th>Date</th><th>Actions</th></tr></thead>
+            <tbody id="leadTableBody"><tr><td colspan="9" style="text-align:center;color:#aaa;padding:30px">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ FUNNEL ═══════════ -->
+    <div class="page" id="page-funnel">
+      <div class="page-hdr">
+        <div>
+          <h2><i class="fa fa-filter"></i> Enrollment Funnel</h2>
+          <div class="sub">Visual Kanban board of every lead through the admissions journey</div>
+        </div>
+        <button class="btn btn-pink" onclick="openLeadModal()"><i class="fa fa-plus"></i> Add Lead</button>
+      </div>
+      <div class="funnel-board" id="funnelBoard">
+        <div style="text-align:center;color:#aaa;padding:40px;grid-column:span 6">Loading funnel…</div>
+      </div>
+    </div>
+
+    <!-- ═══════════ CAMPAIGNS ═══════════ -->
+    <div class="page" id="page-campaigns">
+      <div class="page-hdr">
+        <div>
+          <h2><i class="fa fa-paper-plane"></i> Campaigns</h2>
+          <div class="sub">Manage email, SMS, social and event campaigns</div>
+        </div>
+        <button class="btn btn-pink" onclick="openCampaignModal()"><i class="fa fa-plus"></i> New Campaign</button>
+      </div>
+      <div class="card">
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>#</th><th>Campaign Name</th><th>Type</th><th>Status</th><th>Audience</th><th>Budget (₹)</th><th>Reach</th><th>Conversions</th><th>Dates</th><th>Actions</th></tr></thead>
+            <tbody id="campaignTableBody"><tr><td colspan="10" style="text-align:center;color:#aaa;padding:30px">Loading…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ EVENTS ═══════════ -->
+    <div class="page" id="page-events">
+      <div class="page-hdr">
+        <div>
+          <h2><i class="fa fa-calendar-check-o"></i> Events</h2>
+          <div class="sub">School open days, admission expos and orientation sessions</div>
+        </div>
+        <button class="btn btn-pink" onclick="openEventModal()"><i class="fa fa-plus"></i> Add Event</button>
+      </div>
+      <div id="eventCards" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;">
+        <div style="text-align:center;color:#aaa;padding:40px;grid-column:span 3">Loading events…</div>
+      </div>
+    </div>
+
+    <!-- ═══════════ SOCIAL MEDIA ═══════════ -->
+    <div class="page" id="page-social">
+      <div class="page-hdr">
+        <div>
+          <h2><i class="fa fa-share-alt"></i> Social Media Planner</h2>
+          <div class="sub">Schedule and track posts across all platforms</div>
+        </div>
+        <button class="btn btn-pink" onclick="openSocialModal()"><i class="fa fa-plus"></i> Add Post</button>
+      </div>
+      <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+        <button class="btn btn-sm btn-outline" onclick="filterSocial('')" id="spAll">All Platforms</button>
+        <button class="btn btn-sm" onclick="filterSocial('Instagram')" id="spInsta" style="background:#e91e8c;color:#fff"><i class="fa fa-instagram"></i> Instagram</button>
+        <button class="btn btn-sm btn-outline" onclick="filterSocial('Facebook')" id="spFB"><i class="fa fa-facebook"></i> Facebook</button>
+        <button class="btn btn-sm btn-outline" onclick="filterSocial('WhatsApp')" id="spWA"><i class="fa fa-whatsapp"></i> WhatsApp</button>
+        <button class="btn btn-sm btn-outline" onclick="filterSocial('YouTube')" id="spYT"><i class="fa fa-youtube"></i> YouTube</button>
+      </div>
+      <div id="socialGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;">
+        <div style="text-align:center;color:#aaa;padding:40px;grid-column:span 4">Loading posts…</div>
+      </div>
+    </div>
+
+    <!-- ═══════════ ANALYTICS ═══════════ -->
+    <div class="page" id="page-analytics">
+      <div class="page-hdr">
+        <div>
+          <h2><i class="fa fa-bar-chart"></i> Analytics</h2>
+          <div class="sub">Trends, source performance and funnel conversion metrics</div>
+        </div>
+        <button class="btn btn-pink" onclick="loadAnalytics()"><i class="fa fa-refresh"></i> Refresh</button>
+      </div>
+      <div class="chart-grid">
+        <div class="chart-box">
+          <div class="chart-box-title"><i class="fa fa-line-chart" style="color:var(--pink)"></i> Monthly Lead Trend</div>
+          <canvas id="chartMonthly"></canvas>
+        </div>
+        <div class="chart-box">
+          <div class="chart-box-title"><i class="fa fa-pie-chart" style="color:var(--gold)"></i> Leads by Source</div>
+          <canvas id="chartSource"></canvas>
+        </div>
+        <div class="chart-box" style="grid-column:span 2">
+          <div class="chart-box-title"><i class="fa fa-filter" style="color:var(--navy)"></i> Funnel Stage Distribution</div>
+          <canvas id="chartFunnel" style="max-height:180px;"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ BUILD CONTENT ═══════════ -->
+    <div class="page" id="page-content">
+      <div class="page-hdr">
+        <div>
+          <h2><i class="fa fa-paint-brush"></i> Build Content</h2>
+          <div class="sub">Generate school-branded posters, banners and presentations for every social media platform</div>
+        </div>
+      </div>
+
+      <!-- Tab bar -->
+      <div class="tab-bar" id="contentTabBar">
+        <button class="tab-btn active" onclick="switchContentTab('posters',this)"><i class="fa fa-image"></i> Posters</button>
+        <button class="tab-btn" onclick="switchContentTab('banners',this)"><i class="fa fa-picture-o"></i> Banners</button>
+        <button class="tab-btn" onclick="switchContentTab('ppt',this)"><i class="fa fa-file-powerpoint-o"></i> Presentations</button>
+      </div>
+
+      <!-- ─── POSTERS ─── -->
+      <div id="ct-posters">
+        <div style="background:rgba(233,30,140,.06);border:1px solid rgba(233,30,140,.15);border-radius:12px;padding:14px 20px;margin-bottom:20px;font-size:12px;color:#c01678;display:flex;align-items:center;gap:10px;">
+          <i class="fa fa-info-circle fa-lg"></i>
+          <span>All posters use your school logo, brand colours (Navy & Gold) and are sized exactly to each platform's spec. Click <b>Customize</b> to edit text, then <b>Download PNG</b>.</span>
+        </div>
+
+        <!-- Template selector strip -->
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:22px;">
+          <button class="btn btn-pink btn-sm" onclick="setPosterTemplate('admissions')" id="ptpl-admissions">🎓 Admissions Open</button>
+          <button class="btn btn-outline btn-sm" onclick="setPosterTemplate('achievement')" id="ptpl-achievement">🏆 Achievement</button>
+          <button class="btn btn-outline btn-sm" onclick="setPosterTemplate('event')" id="ptpl-event">📅 Event Announcement</button>
+          <button class="btn btn-outline btn-sm" onclick="setPosterTemplate('quote')" id="ptpl-quote">💬 Inspirational Quote</button>
+        </div>
+
+        <!-- Customize panel -->
+        <div class="card" style="margin-bottom:22px;">
+          <div class="card-head"><div class="card-title"><i class="fa fa-sliders" style="color:var(--pink)"></i> Customize Text</div></div>
+          <div class="card-body">
+            <div class="form-row col3">
+              <div class="fgroup"><label>Headline</label><input id="pHeadline" value="Admissions Open 2025–26" oninput="clearTimeout(window._pdebounce);window._pdebounce=setTimeout(renderAllPreviews,500)"></div>
+              <div class="fgroup"><label>Sub-headline</label><input id="pSub" value="Nurturing Minds, Building Futures" oninput="clearTimeout(window._pdebounce);window._pdebounce=setTimeout(renderAllPreviews,500)"></div>
+              <div class="fgroup"><label>Call to Action</label><input id="pCTA" value="Enrol Today · 9876543210" oninput="clearTimeout(window._pdebounce);window._pdebounce=setTimeout(renderAllPreviews,500)"></div>
+            </div>
+            <!-- Description textarea — full width row -->
+            <div class="form-row" style="margin-bottom:14px;">
+              <div class="fgroup" style="width:100%;">
+                <label style="display:flex;align-items:center;gap:6px;font-weight:700;font-size:11px;color:#555;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">
+                  <i class="fa fa-align-left" style="color:var(--pink);"></i> Description / Body Text
+                  <span style="background:rgba(233,30,140,.1);color:var(--pink);font-size:9px;padding:2px 8px;border-radius:20px;font-weight:700;text-transform:uppercase;">Appears on poster</span>
+                </label>
+                <textarea id="pDesc" rows="4" placeholder="Type your poster description here…&#10;&#10;Example: Join us for admissions 2025–26. Limited seats available across all classes (1–12). CBSE curriculum with world-class facilities, experienced faculty, and holistic development programs. Visit us or call to know more." style="width:100%;border:1.5px solid #e0e4f0;border-radius:10px;padding:12px 14px;font-size:13px;font-family:inherit;resize:vertical;color:#333;line-height:1.6;outline:none;transition:border-color .2s;box-sizing:border-box;" onfocus="this.style.borderColor='var(--pink)'" onblur="this.style.borderColor='#e0e4f0'" oninput="clearTimeout(window._pdebounce);window._pdebounce=setTimeout(renderAllPreviews,600)"></textarea>
+                <div style="font-size:10px;color:#aaa;margin-top:4px;"><i class="fa fa-info-circle"></i> This text wraps automatically inside the poster. Leave blank to hide. Use ↵ for line breaks.</div>
+              </div>
+            </div>
+            <div class="form-row col2">
+              <div class="fgroup"><label>Accent Colour</label>
+                <select id="pAccent" onchange="renderAllPreviews()">
+                  <option value="gold">Gold (default)</option>
+                  <option value="pink">Pink</option>
+                  <option value="teal">Teal</option>
+                  <option value="white">White</option>
+                </select>
+              </div>
+              <div class="fgroup" style="display:flex;align-items:flex-end;">
+                <button class="btn btn-pink" onclick="renderAllPreviews()" style="width:100%"><i class="fa fa-refresh"></i> Update Previews</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Size cards grid -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;" id="posterGrid"></div>
+      </div>
+
+      <!-- ─── BANNERS ─── -->
+      <div id="ct-banners" style="display:none">
+        <div style="background:rgba(13,27,94,.05);border:1px solid rgba(13,27,94,.12);border-radius:12px;padding:14px 20px;margin-bottom:20px;font-size:12px;color:var(--navy);display:flex;align-items:center;gap:10px;">
+          <i class="fa fa-info-circle fa-lg"></i>
+          <span>Cover photos and header banners for every social media profile. Click <b>Customize</b> then <b>Download PNG</b> at full resolution.</span>
+        </div>
+        <div class="card" style="margin-bottom:22px;">
+          <div class="card-head"><div class="card-title"><i class="fa fa-sliders" style="color:var(--pink)"></i> Customize Banner Text</div></div>
+          <div class="card-body">
+            <div class="form-row col3">
+              <div class="fgroup"><label>School Name</label><input id="bName" value="The Gurukul High"></div>
+              <div class="fgroup"><label>Tagline</label><input id="bTagline" value="Nurturing Minds, Building Futures"></div>
+              <div class="fgroup"><label>Contact / Website</label><input id="bContact" value="www.gurukulhigh.edu.in  ·  9876543210"></div>
+            </div>
+            <button class="btn btn-pink" onclick="renderAllBanners()"><i class="fa fa-refresh"></i> Update Banners</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;" id="bannerGrid"></div>
+      </div>
+
+      <!-- ─── PPT ─── -->
+      <div id="ct-ppt" style="display:none">
+        <div style="background:rgba(201,162,39,.08);border:1px solid rgba(201,162,39,.25);border-radius:12px;padding:14px 20px;margin-bottom:20px;font-size:12px;color:#8a6800;display:flex;align-items:center;gap:10px;">
+          <i class="fa fa-info-circle fa-lg"></i>
+          <span>Download ready-made branded PowerPoint (.pptx) presentation templates. Each includes your school colours, logo placeholder, and professional slide layouts.</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;" id="pptGrid"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════ EMAIL TEMPLATES ═══════════ -->
+    <div class="page" id="page-templates">
+      <div class="page-hdr">
+        <div>
+          <h2><i class="fa fa-envelope-o"></i> Email Templates</h2>
+          <div class="sub">Ready-to-use marketing email templates — fill, preview and send</div>
+        </div>
+      </div>
+      <div id="emailTemplatesList"></div>
+    </div>
+
+  </div><!-- end main-content -->
+</div><!-- end app -->
+
+<!-- ══ LEAD MODAL ══ -->
+<div class="modal-overlay" id="leadModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title"><i class="fa fa-user-plus" style="color:var(--pink)"></i> <span id="leadModalTitle">Add Lead</span></div>
+      <button class="modal-close" onclick="closeModal('leadModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="leadModalAlert" class="alert"></div>
+      <div class="form-row col2">
+        <div class="fgroup"><label>Full Name *</label><input id="lName" placeholder="e.g. Arjun Sharma"></div>
+        <div class="fgroup"><label>Phone</label><input id="lPhone" placeholder="+91 98765 43210"></div>
+      </div>
+      <div class="form-row col2">
+        <div class="fgroup"><label>Email</label><input id="lEmail" type="email" placeholder="parent@email.com"></div>
+        <div class="fgroup"><label>Class Interested</label>
+          <select id="lClass"><option value="">Select…</option>
+            <option>Nursery</option><option>KG</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row col2">
+        <div class="fgroup"><label>Source</label>
+          <select id="lSource">
+            <option>Walk-in</option><option>Website</option><option>Referral</option><option>Social Media</option><option>Event</option><option>WhatsApp</option><option>Phone Call</option><option>Email</option>
+          </select>
+        </div>
+        <div class="fgroup"><label>Stage</label>
+          <select id="lStage">
+            <option>Inquiry</option><option>Contacted</option><option>Visit Scheduled</option><option>Applied</option><option>Admitted</option><option>Enrolled</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row col2">
+        <div class="fgroup"><label>Assigned To</label><input id="lAssigned" placeholder="Staff name…"></div>
+      </div>
+      <div class="fgroup"><label>Notes</label><textarea id="lNotes" rows="3" placeholder="Any additional notes…"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('leadModal')">Cancel</button>
+      <button class="btn btn-pink" id="leadSaveBtn" onclick="saveLead()"><i class="fa fa-save"></i> Save Lead</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CAMPAIGN MODAL ══ -->
+<div class="modal-overlay" id="campaignModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title"><i class="fa fa-paper-plane" style="color:var(--pink)"></i> <span id="campaignModalTitle">New Campaign</span></div>
+      <button class="modal-close" onclick="closeModal('campaignModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="campaignAlert" class="alert"></div>
+      <div class="form-row col2">
+        <div class="fgroup"><label>Campaign Name *</label><input id="cName" placeholder="e.g. Admission 2025 Drive"></div>
+        <div class="fgroup"><label>Type</label>
+          <select id="cType"><option>Email</option><option>SMS</option><option>Social Media</option><option>WhatsApp</option><option>Event</option><option>Print</option><option>Multi-channel</option></select>
+        </div>
+      </div>
+      <div class="form-row col2">
+        <div class="fgroup"><label>Status</label>
+          <select id="cStatus"><option>Draft</option><option>Active</option><option>Paused</option><option>Completed</option></select>
+        </div>
+        <div class="fgroup"><label>Target Audience</label><input id="cAudience" placeholder="e.g. Parents of Class 5-8 students"></div>
+      </div>
+      <div class="form-row col3">
+        <div class="fgroup"><label>Budget (₹)</label><input id="cBudget" type="number" min="0" placeholder="0"></div>
+        <div class="fgroup"><label>Reach</label><input id="cReach" type="number" min="0" placeholder="0"></div>
+        <div class="fgroup"><label>Conversions</label><input id="cConversions" type="number" min="0" placeholder="0"></div>
+      </div>
+      <div class="form-row col2">
+        <div class="fgroup"><label>Start Date</label><input id="cStartDate" type="date"></div>
+        <div class="fgroup"><label>End Date</label><input id="cEndDate" type="date"></div>
+      </div>
+      <div class="fgroup"><label>Notes</label><textarea id="cNotes" rows="2" placeholder="Campaign description or notes…"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('campaignModal')">Cancel</button>
+      <button class="btn btn-pink" id="campaignSaveBtn" onclick="saveCampaign()"><i class="fa fa-save"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EVENT MODAL ══ -->
+<div class="modal-overlay" id="eventModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title"><i class="fa fa-calendar-plus-o" style="color:var(--pink)"></i> <span id="eventModalTitle">Add Event</span></div>
+      <button class="modal-close" onclick="closeModal('eventModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="eventAlert" class="alert"></div>
+      <div class="form-row col2">
+        <div class="fgroup"><label>Event Name *</label><input id="evName" placeholder="e.g. School Open Day 2025"></div>
+        <div class="fgroup"><label>Type</label>
+          <select id="evType"><option>Open Day</option><option>Admission Expo</option><option>Orientation</option><option>Workshop</option><option>Cultural Event</option><option>Sports Day</option><option>Online Webinar</option></select>
+        </div>
+      </div>
+      <div class="form-row col2">
+        <div class="fgroup"><label>Date</label><input id="evDate" type="date"></div>
+        <div class="fgroup"><label>Venue</label><input id="evVenue" placeholder="School Hall / Online"></div>
+      </div>
+      <div class="form-row col3">
+        <div class="fgroup"><label>Status</label>
+          <select id="evStatus"><option>Upcoming</option><option>Ongoing</option><option>Done</option><option>Cancelled</option></select>
+        </div>
+        <div class="fgroup"><label>Registrations</label><input id="evReg" type="number" min="0" placeholder="0"></div>
+        <div class="fgroup"><label>Attendees</label><input id="evAtt" type="number" min="0" placeholder="0"></div>
+      </div>
+      <div class="fgroup"><label>Description</label><textarea id="evDesc" rows="3" placeholder="Event details…"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('eventModal')">Cancel</button>
+      <button class="btn btn-pink" id="eventSaveBtn" onclick="saveEvent()"><i class="fa fa-save"></i> Save Event</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SOCIAL POST MODAL ══ -->
+<div class="modal-overlay" id="socialModal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title"><i class="fa fa-share-alt" style="color:var(--pink)"></i> <span id="socialModalTitle">Add Post</span></div>
+      <button class="modal-close" onclick="closeModal('socialModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="socialAlert" class="alert"></div>
+      <div class="form-row col2">
+        <div class="fgroup"><label>Platform</label>
+          <select id="spPlatform"><option>Instagram</option><option>Facebook</option><option>WhatsApp</option><option>YouTube</option><option>Twitter/X</option><option>LinkedIn</option></select>
+        </div>
+        <div class="fgroup"><label>Status</label>
+          <select id="spStatus"><option>Draft</option><option>Scheduled</option><option>Published</option></select>
+        </div>
+      </div>
+      <div class="form-row col2">
+        <div class="fgroup"><label>Scheduled Date</label><input id="spDate" type="date"></div>
+        <div class="fgroup"><label>Reach</label><input id="spReach" type="number" min="0" placeholder="0"></div>
+      </div>
+      <div class="fgroup"><label>Engagement (likes/shares)</label><input id="spEngagement" type="number" min="0" placeholder="0"></div>
+      <div class="fgroup"><label>Content / Caption</label><textarea id="spContent" rows="4" placeholder="Write your post content…"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('socialModal')">Cancel</button>
+      <button class="btn btn-pink" id="socialSaveBtn" onclick="saveSocial()"><i class="fa fa-save"></i> Save Post</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '/api';
+let mktToken = sessionStorage.getItem('mktToken') || '';
+let _allLeads = [], _allCampaigns = [], _allEvents = [], _allSocial = [];
+let _editLeadId = null, _editCampaignId = null, _editEventId = null, _editSocialId = null;
+let _ovSourceChart = null, _analyticsMonthly = null, _analyticsSource = null, _analyticsFunnel = null;
+
+// ── AUTH ────────────────────────────────────────────────────────────────────
+function authH() { return { 'Content-Type':'application/json', 'Authorization':'Bearer '+mktToken }; }
+
+async function doLogin() {
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const err  = document.getElementById('loginErr');
+  const btn  = document.getElementById('loginBtn');
+  if (!user || !pass) { err.textContent='Enter username and password.'; err.style.display='block'; return; }
+  btn.disabled=true; btn.innerHTML='<i class="fa fa-spinner fa-spin"></i> Signing in…';
+  try {
+    const r = await fetch(`${API}/marketing/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({username:user,password:pass}) });
+    const d = await r.json();
+    if (!r.ok) { err.textContent=d.error||'Invalid credentials.'; err.style.display='block'; }
+    else { mktToken=d.token; sessionStorage.setItem('mktToken',d.token); launchApp(); }
+  } catch(e) { err.textContent='Cannot reach server. Is it running?'; err.style.display='block'; }
+  finally { btn.disabled=false; btn.innerHTML='<i class="fa fa-sign-in"></i> Sign In'; }
+}
+
+function doLogout() { sessionStorage.removeItem('mktToken'); mktToken=''; location.reload(); }
+
+// ── SESSION TIMEOUT CHECK ──
+function checkTokenExpiry() {
+  try {
+    if (!mktToken) return;
+    const parts = mktToken.split('.');
+    if (parts.length !== 3) return;
+    const payload = JSON.parse(atob(parts[1]));
+    if (!payload.exp) return;
+    const expiryTime = payload.exp * 1000;
+    const now = Date.now();
+    if (expiryTime < now) {
+      showSessionExpiredToast();
+    }
+  } catch (e) { }
+}
+
+function showSessionExpiredToast() {
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(220, 53, 69, 0.95);
+    color: white;
+    padding: 14px 18px;
+    border-radius: 8px;
+    z-index: 999999;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    animation: slideIn .3s ease;
+  `;
+  toast.textContent = '⚠ Session expired. Redirecting to login...';
+  document.body.appendChild(toast);
+
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideIn {
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  setTimeout(() => doLogout(), 2000);
+}
+
+function launchApp() {
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('app').style.display='block';
+  loadOverview();
+  // Live refresh every 30s
+  setInterval(() => {
+    const activePage = document.querySelector('.page.active')?.id;
+    if (activePage === 'page-overview') loadOverview();
+    loadMktBudget();
+  }, 30000);
+  // Start session timeout check
+  setInterval(checkTokenExpiry, 60000);
+}
+
+// ── NAVIGATION ────────────────────────────────────────────────────────────────
+function toggleNavSection(labelEl) {
+  const items = labelEl.nextElementSibling;
+  if (!items || !items.classList.contains('nav-section-items')) return;
+  const isCollapsed = items.classList.toggle('collapsed');
+  labelEl.classList.toggle('collapsed', isCollapsed);
+}
+function navExpandForPage(navId) {
+  const navEl = document.getElementById(navId);
+  if (!navEl) return;
+  const section = navEl.closest('.nav-section-items');
+  if (section && section.classList.contains('collapsed')) {
+    section.classList.remove('collapsed');
+    const label = section.previousElementSibling;
+    if (label) label.classList.remove('collapsed');
+  }
+}
+function syncFqBtns(name) {
+  document.querySelectorAll('.fqb').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('fqb-'+name);
+  if (btn) btn.classList.add('active');
+}
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById(`page-${name}`)?.classList.add('active');
+  document.getElementById(`nav-${name}`)?.classList.add('active');
+  navExpandForPage('nav-'+name);
+  syncFqBtns(name);
+  if (name==='overview')   loadOverview();
+  if (name==='leads')      loadLeads();
+  if (name==='funnel')     loadFunnel();
+  if (name==='campaigns')  loadCampaigns();
+  if (name==='events')     loadEvents();
+  if (name==='social')     loadSocial();
+  if (name==='analytics')  loadAnalytics();
+  if (name==='content')    initContentBuilder();
+  if (name==='templates')  renderEmailTemplates();
+}
+
+// ── OVERVIEW ──────────────────────────────────────────────────────────────────
+async function loadOverview() {
+  try {
+    const tok = localStorage.getItem('marketingToken') || '';
+    const r = await fetch(`/api/marketing/overview?_nc=${Date.now()}`, { headers: tok ? {'Authorization':'Bearer '+tok} : {} });
+    const d = await r.json();
+    document.getElementById('kpiTotalLeads').textContent = d.totalLeads ?? '0';
+    document.getElementById('kpiTodayLeads').textContent = `${d.todayLeads ?? 0} new today`;
+    document.getElementById('kpiEnrolled').textContent   = d.enrolled ?? '0';
+    document.getElementById('kpiActiveCampaigns').textContent = d.activeCampaigns ?? '0';
+    document.getElementById('kpiUpcomingEvents').textContent  = d.upcomingEvents ?? '0';
+    document.getElementById('kpiTotalReach').textContent = (d.totalReach||0).toLocaleString('en-IN');
+    document.getElementById('kpiConvRate').textContent   = (d.conversionRate||0)+'%';
+
+    // Recent leads table
+    const tbody = document.getElementById('ovRecentLeads');
+    tbody.innerHTML = (d.recentLeads||[]).length ? d.recentLeads.map(l=>`
+      <tr>
+        <td><b>${l.name}</b></td>
+        <td>${l.class_interested||'—'}</td>
+        <td><span style="font-size:10px;background:#f0f2f8;padding:2px 8px;border-radius:5px">${l.source||''}</span></td>
+        <td>${stageBadge(l.stage)}</td>
+      </tr>`).join('') : '<tr><td colspan="4" style="text-align:center;color:#aaa;padding:20px">No leads yet</td></tr>';
+
+    // Source doughnut
+    const labels = (d.sourceRows||[]).map(r=>r.source);
+    const values = (d.sourceRows||[]).map(r=>r.c);
+    if (_ovSourceChart) _ovSourceChart.destroy();
+    const ctx = document.getElementById('ovSourceChart').getContext('2d');
+    _ovSourceChart = new Chart(ctx, {
+      type:'doughnut',
+      data:{ labels, datasets:[{ data:values, backgroundColor:['#e91e8c','#0d1b5e','#27ae60','#c9a227','#8e44ad','#2980b9'], borderWidth:2 }] },
+      options:{ responsive:true, maintainAspectRatio:false, plugins:{ legend:{ position:'right', labels:{ font:{size:10}, boxWidth:12 } } } }
+    });
+
+    // Funnel strip
+    const STAGES = ['Inquiry','Contacted','Visit Scheduled','Applied','Admitted','Enrolled'];
+    const COLORS  = ['#2980b9','#e67e22','#8e44ad','#16a085','#27ae60','#0d1b5e'];
+    const stageMap = {};
+    (d.stageRows||[]).forEach(r=>stageMap[r.stage]=r.c);
+    const total = STAGES.reduce((sum,s)=>sum+(stageMap[s]||0),0)||1;
+    document.getElementById('ovFunnelStrip').innerHTML = STAGES.map((s,i)=>{
+      const cnt = stageMap[s]||0;
+      const pct = Math.round((cnt/total)*100);
+      return `<div style="flex:${Math.max(pct,5)};background:${COLORS[i]};color:#fff;text-align:center;padding:12px 6px;cursor:pointer;transition:opacity .2s" onclick="showPage('funnel')" title="${s}">
+        <div style="font-size:18px;font-weight:800">${cnt}</div>
+        <div style="font-size:9px;opacity:.85;margin-top:2px">${s}</div>
+      </div>`;
+    }).join('');
+    // Also load budget
+    loadMktBudget();
+  } catch(e) { console.error(e); }
+}
+
+// ── MARKETING BUDGET ──────────────────────────────────────────────────────────
+async function loadMktBudget() {
+  try {
+    const year = new Date().getFullYear().toString();
+    const tok = localStorage.getItem('marketingToken') || '';
+    const r = await fetch(`/api/budget/overview?_nc=${Date.now()}`, { headers: tok ? {'Authorization':'Bearer '+tok} : {} });
+    if (!r.ok) return;
+    const d = await r.json();
+    const b = (d.depts || []).find(x => x.dept_key === 'marketing') || d.budget;
+    if (!b) return;
+    const fmt = n => '₹' + Math.round(n||0).toLocaleString('en-IN');
+    const pct = Math.min(100, Math.round((b.pct_used||0)));
+    const remaining = (b.remaining !== undefined) ? b.remaining : (b.allocated - b.spent);
+    const isOver = b.allocated > 0 && remaining < 0;
+    const isLow  = b.allocated > 0 && pct >= 80 && remaining >= 0;
+
+    document.getElementById('mktBudgetYear').textContent       = `FY ${year}`;
+    document.getElementById('mktBudgetAllocated').textContent  = fmt(b.allocated);
+    document.getElementById('mktBudgetUsed').textContent       = fmt(b.spent || b.used || 0);
+    document.getElementById('mktBudgetUsedSub').textContent    = b.allocated > 0 ? `${pct}% of allocated` : 'No budget set';
+    document.getElementById('mktBudgetSpent').textContent      = fmt(b.spent || b.used || 0);
+    const remEl = document.getElementById('mktBudgetRemaining');
+    remEl.textContent  = fmt(remaining);
+    remEl.style.color  = isOver ? '#c0392b' : isLow ? '#d4770a' : '#16a085';
+    document.getElementById('mktBudgetRemainingNote').textContent = isOver ? '⚠ Over budget!' : isLow ? '⚠ Running low' : 'available';
+    document.getElementById('mktBudgetPct').textContent        = b.allocated > 0 ? `${pct}%` : '0%';
+    const barColor = isOver ? '#e74c3c' : isLow ? '#f39c12' : '#ffb3d0';
+    const barEl = document.getElementById('mktBudgetBar');
+    barEl.style.width      = pct + '%';
+    barEl.style.background = barColor;
+  } catch(e) { /* budget not set yet */ }
+}
+
+// ── BADGE HELPER ─────────────────────────────────────────────────────────────
+function stageBadge(stage) {
+  const map = { 'Inquiry':'inquiry','Contacted':'contacted','Visit Scheduled':'visit','Applied':'applied','Admitted':'admitted','Enrolled':'enrolled' };
+  return `<span class="badge badge-${map[stage]||'inquiry'}">${stage||'—'}</span>`;
+}
+function campaignStatusBadge(s) {
+  const m={'Active':'active','Draft':'draft','Paused':'paused','Completed':'completed'};
+  return `<span class="badge badge-${m[s]||'draft'}">${s}</span>`;
+}
+function eventStatusBadge(s) {
+  const m={'Upcoming':'upcoming','Ongoing':'active','Done':'done','Cancelled':'draft'};
+  return `<span class="badge badge-${m[s]||'upcoming'}">${s}</span>`;
+}
+function socialStatusBadge(s) {
+  const m={'Published':'published','Scheduled':'scheduled','Draft':'draft'};
+  return `<span class="badge badge-${m[s]||'draft'}">${s}</span>`;
+}
+function platformIcon(p) {
+  const icons = { Instagram:'fa-instagram platform-ig', Facebook:'fa-facebook platform-fb', WhatsApp:'fa-whatsapp platform-wa', YouTube:'fa-youtube platform-yt', 'Twitter/X':'fa-twitter platform-tw', LinkedIn:'fa-linkedin platform-li' };
+  return `<i class="fa ${icons[p]||'fa-share-alt'}" style="font-size:14px"></i>`;
+}
+
+// ── LEADS ────────────────────────────────────────────────────────────────────
+async function loadLeads() {
+  try {
+    const r = await fetch(`${API}/marketing/leads`, { headers:authH() });
+    const d = await r.json();
+    _allLeads = d.leads || [];
+    const badge = document.getElementById('navLeadCount');
+    badge.textContent = _allLeads.length; badge.style.display = _allLeads.length ? 'inline-block' : 'none';
+    filterLeads();
+  } catch(e) {}
+}
+
+function filterLeads() {
+  const q     = (document.getElementById('leadSearch')?.value||'').toLowerCase();
+  const stage = document.getElementById('leadFilterStage')?.value||'';
+  const src   = document.getElementById('leadFilterSource')?.value||'';
+  let list = _allLeads.filter(l =>
+    (!q || l.name.toLowerCase().includes(q) || (l.phone||'').includes(q) || (l.email||'').toLowerCase().includes(q)) &&
+    (!stage || l.stage===stage) &&
+    (!src   || l.source===src)
+  );
+  document.getElementById('leadCountLabel').textContent = `${list.length} lead${list.length!==1?'s':''}`;
+  const tbody = document.getElementById('leadTableBody');
+  tbody.innerHTML = list.length ? list.map((l,i)=>`
+    <tr>
+      <td style="color:var(--muted)">${l.id}</td>
+      <td><b>${l.name}</b><br><span style="font-size:10px;color:var(--muted)">${l.email||''}</span></td>
+      <td>${l.phone||'—'}</td>
+      <td>${l.class_interested||'—'}</td>
+      <td><span style="font-size:10px;background:#f0f2f8;padding:2px 8px;border-radius:5px">${l.source||''}</span></td>
+      <td>${stageBadge(l.stage)}</td>
+      <td>${l.assigned_to||'—'}</td>
+      <td style="color:var(--muted);font-size:11px">${(l.created_at||'').slice(0,10)}</td>
+      <td>
+        <button class="btn btn-sm btn-outline" onclick="openLeadModal(${l.id})" title="Edit"><i class="fa fa-pencil"></i></button>
+        <button class="btn btn-sm btn-danger" onclick="deleteLead(${l.id})" title="Delete"><i class="fa fa-trash"></i></button>
+      </td>
+    </tr>`).join('') : '<tr><td colspan="9" style="text-align:center;color:#aaa;padding:30px">No leads found</td></tr>';
+  loadFunnel();
+}
+
+function openLeadModal(id) {
+  _editLeadId = id || null;
+  const title = id ? 'Edit Lead' : 'Add Lead';
+  document.getElementById('leadModalTitle').textContent = title;
+  document.getElementById('leadModalAlert').style.display='none';
+  if (id) {
+    const l = _allLeads.find(x=>x.id===id);
+    if (!l) return;
+    document.getElementById('lName').value     = l.name||'';
+    document.getElementById('lPhone').value    = l.phone||'';
+    document.getElementById('lEmail').value    = l.email||'';
+    document.getElementById('lClass').value    = l.class_interested||'';
+    document.getElementById('lSource').value   = l.source||'Walk-in';
+    document.getElementById('lStage').value    = l.stage||'Inquiry';
+    document.getElementById('lAssigned').value = l.assigned_to||'';
+    document.getElementById('lNotes').value    = l.notes||'';
+  } else {
+    document.getElementById('lName').value=''; document.getElementById('lPhone').value='';
+    document.getElementById('lEmail').value=''; document.getElementById('lClass').value='';
+    document.getElementById('lSource').value='Walk-in'; document.getElementById('lStage').value='Inquiry';
+    document.getElementById('lAssigned').value=''; document.getElementById('lNotes').value='';
+  }
+  document.getElementById('leadModal').classList.add('open');
+}
+
+async function saveLead() {
+  const name = document.getElementById('lName').value.trim();
+  const alrt = document.getElementById('leadModalAlert');
+  if (!name) { showAlert('leadModalAlert','Name is required','error'); return; }
+  const body = { name, phone:document.getElementById('lPhone').value, email:document.getElementById('lEmail').value,
+    class_interested:document.getElementById('lClass').value, source:document.getElementById('lSource').value,
+    stage:document.getElementById('lStage').value, assigned_to:document.getElementById('lAssigned').value,
+    notes:document.getElementById('lNotes').value };
+  const btn = document.getElementById('leadSaveBtn');
+  btn.disabled=true; btn.innerHTML='<i class="fa fa-spinner fa-spin"></i> Saving…';
+  try {
+    const url  = _editLeadId ? `${API}/marketing/leads/${_editLeadId}` : `${API}/marketing/leads`;
+    const meth = _editLeadId ? 'PATCH' : 'POST';
+    const r = await fetch(url, { method:meth, headers:authH(), body:JSON.stringify(body) });
+    const d = await r.json();
+    if (!r.ok) { showAlert('leadModalAlert',d.error||'Failed','error'); return; }
+    closeModal('leadModal'); loadLeads();
+  } finally { btn.disabled=false; btn.innerHTML='<i class="fa fa-save"></i> Save Lead'; }
+}
+
+async function deleteLead(id) {
+  if (!confirm('Delete this lead?')) return;
+  await fetch(`${API}/marketing/leads/${id}`, { method:'DELETE', headers:authH() });
+  loadLeads();
+}
+
+// ── FUNNEL ────────────────────────────────────────────────────────────────────
+function loadFunnel() {
+  const STAGES = ['Inquiry','Contacted','Visit Scheduled','Applied','Admitted','Enrolled'];
+  const COLORS  = ['#2980b9','#e67e22','#8e44ad','#16a085','#27ae60','#0d1b5e'];
+  const board = document.getElementById('funnelBoard');
+  if (!board) return;
+  const byStage = {};
+  STAGES.forEach(s => byStage[s]=[]);
+  _allLeads.forEach(l => { if (byStage[l.stage]) byStage[l.stage].push(l); });
+  board.innerHTML = STAGES.map((stage, i) => `
+    <div class="funnel-col">
+      <div class="funnel-col-hdr" style="background:${COLORS[i]}">
+        <span>${stage}</span>
+        <span style="background:rgba(255,255,255,.25);border-radius:10px;padding:1px 8px">${byStage[stage].length}</span>
+      </div>
+      ${byStage[stage].length ? byStage[stage].map(l=>`
+        <div class="funnel-card" style="border-left-color:${COLORS[i]}" onclick="openLeadModal(${l.id})">
+          <div class="fc-name">${l.name}</div>
+          <div class="fc-meta">${l.phone||l.email||'No contact'}</div>
+          <div class="fc-meta">${l.class_interested ? 'Class '+l.class_interested : ''}</div>
+          <span class="fc-source">${l.source||''}</span>
+        </div>`).join('') : `<div style="text-align:center;color:#bbb;font-size:11px;padding:20px 0">No leads</div>`}
+    </div>`).join('');
+}
+
+// ── CAMPAIGNS ────────────────────────────────────────────────────────────────
+async function loadCampaigns() {
+  const r = await fetch(`${API}/marketing/campaigns`, { headers:authH() });
+  const d = await r.json();
+  _allCampaigns = d.campaigns||[];
+  const tbody = document.getElementById('campaignTableBody');
+  tbody.innerHTML = _allCampaigns.length ? _allCampaigns.map(c=>`
+    <tr>
+      <td style="color:var(--muted)">${c.id}</td>
+      <td><b>${c.name}</b>${c.notes?`<br><span style="font-size:10px;color:var(--muted)">${c.notes.slice(0,50)}…</span>`:''}
+      </td>
+      <td><span style="font-size:10px;background:#f0f2f8;padding:2px 8px;border-radius:5px">${c.type}</span></td>
+      <td>${campaignStatusBadge(c.status)}</td>
+      <td>${c.target_audience||'—'}</td>
+      <td>₹${Number(c.budget||0).toLocaleString('en-IN')}</td>
+      <td>${(c.reach||0).toLocaleString()}</td>
+      <td>${c.conversions||0}</td>
+      <td style="font-size:11px;color:var(--muted)">${c.start_date||'—'}<br>${c.end_date||''}</td>
+      <td>
+        <button class="btn btn-sm btn-outline" onclick="openCampaignModal(${c.id})"><i class="fa fa-pencil"></i></button>
+        <button class="btn btn-sm btn-danger"  onclick="deleteCampaign(${c.id})"><i class="fa fa-trash"></i></button>
+      </td>
+    </tr>`).join('') : '<tr><td colspan="10" style="text-align:center;color:#aaa;padding:30px">No campaigns yet. <button class="btn btn-sm btn-pink" onclick="openCampaignModal()">Add one</button></td></tr>';
+}
+
+function openCampaignModal(id) {
+  _editCampaignId = id||null;
+  document.getElementById('campaignModalTitle').textContent = id?'Edit Campaign':'New Campaign';
+  document.getElementById('campaignAlert').style.display='none';
+  if (id) {
+    const c = _allCampaigns.find(x=>x.id===id); if (!c) return;
+    document.getElementById('cName').value       = c.name||'';
+    document.getElementById('cType').value       = c.type||'Email';
+    document.getElementById('cStatus').value     = c.status||'Draft';
+    document.getElementById('cAudience').value   = c.target_audience||'';
+    document.getElementById('cBudget').value     = c.budget||0;
+    document.getElementById('cReach').value      = c.reach||0;
+    document.getElementById('cConversions').value= c.conversions||0;
+    document.getElementById('cStartDate').value  = c.start_date||'';
+    document.getElementById('cEndDate').value    = c.end_date||'';
+    document.getElementById('cNotes').value      = c.notes||'';
+  } else {
+    ['cName','cAudience','cNotes'].forEach(id=>document.getElementById(id).value='');
+    ['cBudget','cReach','cConversions'].forEach(id=>document.getElementById(id).value=0);
+    ['cStartDate','cEndDate'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('cType').value='Email'; document.getElementById('cStatus').value='Draft';
+  }
+  document.getElementById('campaignModal').classList.add('open');
+}
+
+async function saveCampaign() {
+  if (!document.getElementById('cName').value.trim()) { showAlert('campaignAlert','Name required','error'); return; }
+  const body = { name:document.getElementById('cName').value, type:document.getElementById('cType').value,
+    status:document.getElementById('cStatus').value, target_audience:document.getElementById('cAudience').value,
+    budget:parseFloat(document.getElementById('cBudget').value)||0,
+    reach:parseInt(document.getElementById('cReach').value)||0,
+    conversions:parseInt(document.getElementById('cConversions').value)||0,
+    start_date:document.getElementById('cStartDate').value, end_date:document.getElementById('cEndDate').value,
+    notes:document.getElementById('cNotes').value };
+  const btn = document.getElementById('campaignSaveBtn');
+  btn.disabled=true;
+  try {
+    const url = _editCampaignId ? `${API}/marketing/campaigns/${_editCampaignId}` : `${API}/marketing/campaigns`;
+    const r = await fetch(url, { method:_editCampaignId?'PATCH':'POST', headers:authH(), body:JSON.stringify(body) });
+    const d = await r.json();
+    if (!r.ok) { showAlert('campaignAlert',d.error||'Failed','error'); return; }
+    closeModal('campaignModal'); loadCampaigns();
+  } finally { btn.disabled=false; }
+}
+
+async function deleteCampaign(id) {
+  if (!confirm('Delete this campaign?')) return;
+  await fetch(`${API}/marketing/campaigns/${id}`, { method:'DELETE', headers:authH() });
+  loadCampaigns();
+}
+
+// ── EVENTS ────────────────────────────────────────────────────────────────────
+async function loadEvents() {
+  const r = await fetch(`${API}/marketing/events`, { headers:authH() });
+  const d = await r.json();
+  _allEvents = d.events||[];
+  const ETYPE_COLORS = {'Open Day':'#e91e8c','Admission Expo':'#0d1b5e','Orientation':'#27ae60','Workshop':'#8e44ad','Cultural Event':'#c9a227','Sports Day':'#e74c3c','Online Webinar':'#2980b9'};
+  const grid = document.getElementById('eventCards');
+  grid.innerHTML = _allEvents.length ? _allEvents.map(ev=>{
+    const col = ETYPE_COLORS[ev.type]||'#0d1b5e';
+    return `<div style="background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.07);overflow:hidden;transition:transform .15s" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform=''">
+      <div style="background:${col};color:#fff;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div style="font-size:13px;font-weight:800">${ev.name}</div>
+          <div style="font-size:10px;opacity:.8;margin-top:3px">${ev.type}</div>
+        </div>
+        ${eventStatusBadge(ev.status)}
+      </div>
+      <div style="padding:16px 20px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;font-size:12px;">
+          <div><i class="fa fa-calendar" style="color:${col};margin-right:5px"></i>${ev.event_date||'TBD'}</div>
+          <div><i class="fa fa-map-marker" style="color:${col};margin-right:5px"></i>${ev.venue||'TBD'}</div>
+          <div><i class="fa fa-user-plus" style="color:${col};margin-right:5px"></i>${ev.registrations||0} registered</div>
+          <div><i class="fa fa-users" style="color:${col};margin-right:5px"></i>${ev.attendees||0} attended</div>
+        </div>
+        ${ev.description?`<p style="font-size:11px;color:var(--muted);margin-bottom:12px">${ev.description.slice(0,100)}${ev.description.length>100?'…':''}</p>`:''}
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-sm btn-outline" onclick="openEventModal(${ev.id})"><i class="fa fa-pencil"></i> Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteEvent(${ev.id})"><i class="fa fa-trash"></i></button>
+        </div>
+      </div>
+    </div>`;
+  }).join('') : '<div style="text-align:center;color:#aaa;padding:40px;grid-column:span 3"><i class="fa fa-calendar-o fa-3x" style="display:block;margin-bottom:12px;opacity:.3"></i>No events yet.<br><button class="btn btn-pink" style="margin-top:12px" onclick="openEventModal()"><i class="fa fa-plus"></i> Add First Event</button></div>';
+}
+
+function openEventModal(id) {
+  _editEventId = id||null;
+  document.getElementById('eventModalTitle').textContent = id?'Edit Event':'Add Event';
+  document.getElementById('eventAlert').style.display='none';
+  if (id) {
+    const ev = _allEvents.find(x=>x.id===id); if (!ev) return;
+    document.getElementById('evName').value   = ev.name||'';
+    document.getElementById('evType').value   = ev.type||'Open Day';
+    document.getElementById('evDate').value   = ev.event_date||'';
+    document.getElementById('evVenue').value  = ev.venue||'';
+    document.getElementById('evStatus').value = ev.status||'Upcoming';
+    document.getElementById('evReg').value    = ev.registrations||0;
+    document.getElementById('evAtt').value    = ev.attendees||0;
+    document.getElementById('evDesc').value   = ev.description||'';
+  } else {
+    ['evName','evVenue','evDesc'].forEach(id=>document.getElementById(id).value='');
+    ['evReg','evAtt'].forEach(id=>document.getElementById(id).value=0);
+    document.getElementById('evDate').value=''; document.getElementById('evType').value='Open Day'; document.getElementById('evStatus').value='Upcoming';
+  }
+  document.getElementById('eventModal').classList.add('open');
+}
+
+async function saveEvent() {
+  if (!document.getElementById('evName').value.trim()) { showAlert('eventAlert','Name required','error'); return; }
+  const body = { name:document.getElementById('evName').value, type:document.getElementById('evType').value,
+    event_date:document.getElementById('evDate').value, venue:document.getElementById('evVenue').value,
+    status:document.getElementById('evStatus').value, registrations:parseInt(document.getElementById('evReg').value)||0,
+    attendees:parseInt(document.getElementById('evAtt').value)||0, description:document.getElementById('evDesc').value };
+  const btn = document.getElementById('eventSaveBtn'); btn.disabled=true;
+  try {
+    const url = _editEventId ? `${API}/marketing/events/${_editEventId}` : `${API}/marketing/events`;
+    const r = await fetch(url, { method:_editEventId?'PATCH':'POST', headers:authH(), body:JSON.stringify(body) });
+    if (!r.ok) { const d=await r.json(); showAlert('eventAlert',d.error||'Failed','error'); return; }
+    closeModal('eventModal'); loadEvents();
+  } finally { btn.disabled=false; }
+}
+
+async function deleteEvent(id) {
+  if (!confirm('Delete this event?')) return;
+  await fetch(`${API}/marketing/events/${id}`, { method:'DELETE', headers:authH() });
+  loadEvents();
+}
+
+// ── SOCIAL MEDIA ─────────────────────────────────────────────────────────────
+let _socialFilter = '';
+async function loadSocial() {
+  const r = await fetch(`${API}/marketing/social`, { headers:authH() });
+  const d = await r.json();
+  _allSocial = d.posts||[];
+  filterSocial(_socialFilter);
+}
+
+function filterSocial(platform) {
+  _socialFilter = platform;
+  document.querySelectorAll('[id^="sp"]').forEach(b=>{ b.style.opacity=1; b.style.fontWeight=''; });
+  const list = platform ? _allSocial.filter(p=>p.platform===platform) : _allSocial;
+  const grid = document.getElementById('socialGrid');
+  const PCOLS = { Instagram:'#e91e8c', Facebook:'#1877f2', WhatsApp:'#25d366', YouTube:'#ff0000', 'Twitter/X':'#1da1f2', LinkedIn:'#0a66c2' };
+  grid.innerHTML = list.length ? list.map(p=>{
+    const col = PCOLS[p.platform]||'#0d1b5e';
+    return `<div style="background:#fff;border-radius:12px;box-shadow:0 2px 10px rgba(0,0,0,.07);overflow:hidden;">
+      <div style="background:${col};color:#fff;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-weight:700;font-size:12px">${platformIcon(p.platform)} ${p.platform}</span>
+        ${socialStatusBadge(p.status)}
+      </div>
+      <div style="padding:14px;">
+        <p style="font-size:12px;color:var(--text);line-height:1.5;margin-bottom:10px;min-height:50px">${p.content||'<em style="color:#bbb">No content</em>'}</p>
+        <div style="display:flex;gap:14px;font-size:11px;color:var(--muted);margin-bottom:12px">
+          <span><i class="fa fa-calendar" style="color:${col}"></i> ${p.scheduled_date||'—'}</span>
+          <span><i class="fa fa-eye" style="color:${col}"></i> ${(p.reach||0).toLocaleString()}</span>
+          <span><i class="fa fa-heart" style="color:${col}"></i> ${(p.engagement||0).toLocaleString()}</span>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-sm btn-outline" onclick="openSocialModal(${p.id})"><i class="fa fa-pencil"></i></button>
+          <button class="btn btn-sm btn-danger"  onclick="deleteSocial(${p.id})"><i class="fa fa-trash"></i></button>
+        </div>
+      </div>
+    </div>`;
+  }).join('') : `<div style="text-align:center;color:#aaa;padding:40px;grid-column:span 4"><i class="fa fa-share-alt fa-3x" style="display:block;margin-bottom:12px;opacity:.3"></i>No posts yet.</div>`;
+}
+
+function openSocialModal(id) {
+  _editSocialId = id||null;
+  document.getElementById('socialModalTitle').textContent = id?'Edit Post':'Add Post';
+  document.getElementById('socialAlert').style.display='none';
+  if (id) {
+    const p = _allSocial.find(x=>x.id===id); if (!p) return;
+    document.getElementById('spPlatform').value  = p.platform||'Instagram';
+    document.getElementById('spStatus').value    = p.status||'Draft';
+    document.getElementById('spDate').value      = p.scheduled_date||'';
+    document.getElementById('spReach').value     = p.reach||0;
+    document.getElementById('spEngagement').value= p.engagement||0;
+    document.getElementById('spContent').value   = p.content||'';
+  } else {
+    document.getElementById('spPlatform').value='Instagram'; document.getElementById('spStatus').value='Draft';
+    document.getElementById('spDate').value=''; document.getElementById('spReach').value=0;
+    document.getElementById('spEngagement').value=0; document.getElementById('spContent').value='';
+  }
+  document.getElementById('socialModal').classList.add('open');
+}
+
+async function saveSocial() {
+  const body = { platform:document.getElementById('spPlatform').value, status:document.getElementById('spStatus').value,
+    scheduled_date:document.getElementById('spDate').value, reach:parseInt(document.getElementById('spReach').value)||0,
+    engagement:parseInt(document.getElementById('spEngagement').value)||0, content:document.getElementById('spContent').value };
+  const btn = document.getElementById('socialSaveBtn'); btn.disabled=true;
+  try {
+    const url = _editSocialId ? `${API}/marketing/social/${_editSocialId}` : `${API}/marketing/social`;
+    const r = await fetch(url, { method:_editSocialId?'PATCH':'POST', headers:authH(), body:JSON.stringify(body) });
+    if (!r.ok) { const d=await r.json(); showAlert('socialAlert',d.error||'Failed','error'); return; }
+    closeModal('socialModal'); loadSocial();
+  } finally { btn.disabled=false; }
+}
+
+async function deleteSocial(id) {
+  if (!confirm('Delete this post?')) return;
+  await fetch(`${API}/marketing/social/${id}`, { method:'DELETE', headers:authH() });
+  loadSocial();
+}
+
+// ── ANALYTICS ────────────────────────────────────────────────────────────────
+async function loadAnalytics() {
+  try {
+    const r = await fetch(`${API}/marketing/overview`, { headers:authH() });
+    const d = await r.json();
+    // Monthly Trend
+    const months = (d.monthlyLeads||[]).map(m=>m.mo); const counts = (d.monthlyLeads||[]).map(m=>m.c);
+    if (_analyticsMonthly) _analyticsMonthly.destroy();
+    _analyticsMonthly = new Chart(document.getElementById('chartMonthly').getContext('2d'), {
+      type:'line',
+      data:{ labels:months, datasets:[{ label:'Leads', data:counts, borderColor:'#e91e8c', backgroundColor:'rgba(233,30,140,.1)', borderWidth:2.5, pointRadius:4, tension:.4, fill:true }] },
+      options:{ responsive:true, plugins:{ legend:{display:false} }, scales:{ y:{beginAtZero:true, ticks:{stepSize:1} } } }
+    });
+    // Source Doughnut
+    const sLabels = (d.sourceRows||[]).map(r=>r.source); const sVals = (d.sourceRows||[]).map(r=>r.c);
+    if (_analyticsSource) _analyticsSource.destroy();
+    _analyticsSource = new Chart(document.getElementById('chartSource').getContext('2d'), {
+      type:'doughnut',
+      data:{ labels:sLabels, datasets:[{ data:sVals, backgroundColor:['#e91e8c','#0d1b5e','#27ae60','#c9a227','#8e44ad','#2980b9'], borderWidth:2 }] },
+      options:{ responsive:true, plugins:{ legend:{ position:'right', labels:{ font:{size:11}, boxWidth:14 } } } }
+    });
+    // Funnel Bar
+    const STAGES = ['Inquiry','Contacted','Visit Scheduled','Applied','Admitted','Enrolled'];
+    const COLORS  = ['#2980b9','#e67e22','#8e44ad','#16a085','#27ae60','#0d1b5e'];
+    const stageMap = {}; (d.stageRows||[]).forEach(r=>stageMap[r.stage]=r.c);
+    const stageCounts = STAGES.map(s=>stageMap[s]||0);
+    if (_analyticsFunnel) _analyticsFunnel.destroy();
+    _analyticsFunnel = new Chart(document.getElementById('chartFunnel').getContext('2d'), {
+      type:'bar',
+      data:{ labels:STAGES, datasets:[{ label:'Leads', data:stageCounts, backgroundColor:COLORS, borderRadius:6 }] },
+      options:{ responsive:true, plugins:{ legend:{display:false} }, scales:{ y:{beginAtZero:true, ticks:{stepSize:1} } } }
+    });
+  } catch(e) {}
+}
+
+// ── EMAIL TEMPLATES ──────────────────────────────────────────────────────────
+const MKT_TEMPLATES = [
+  { icon:'fa-user-plus', color:'#e91e8c', title:'Admission Enquiry Response', desc:'Reply to a prospective parent who enquired about admissions',
+    fields:['Parent Name','Child Name','Class Interested','Enquiry Date'],
+    subject: 'Thank You for Your Enquiry — The Gurukul High',
+    body: (f) => `Dear ${f[0]||'[Parent Name]'},\n\nThank you for your interest in The Gurukul High for ${f[1]||'[Child Name]'} (Class ${f[2]||'[Class]'}).\n\nWe are delighted to share that admissions for the upcoming academic year are now open. We would love to schedule a school visit for your family to tour our campus and meet our team.\n\nPlease visit us during school hours (Mon–Fri, 9:00 AM – 1:00 PM) or call us to book a convenient appointment.\n\nLooking forward to welcoming ${f[1]||'your child'} to The Gurukul family!\n\nWarm regards,\nAdmissions Team\nThe Gurukul High, K.R. Nagar, Mysuru` },
+  { icon:'fa-calendar', color:'#0d1b5e', title:'School Open Day Invitation', desc:'Invite prospective parents to an upcoming open day event',
+    fields:['Parent Name','Event Date','Event Time','Venue'],
+    subject: 'You\'re Invited — School Open Day at The Gurukul High',
+    body: (f) => `Dear ${f[0]||'[Parent Name]'},\n\nWe warmly invite you to our School Open Day on ${f[1]||'[Date]'} at ${f[2]||'[Time]'}, held at ${f[3]||'The Gurukul High, K.R. Nagar, Mysuru'}.\n\nThis is a wonderful opportunity to:\n• Tour our state-of-the-art campus\n• Meet our faculty and Principal\n• Understand our academic curriculum and extracurricular activities\n• Get answers to all your admissions questions\n\nKindly confirm your attendance by replying to this email.\n\nWe look forward to seeing you!\n\nBest regards,\nMarketing Team\nThe Gurukul High` },
+  { icon:'fa-star', color:'#c9a227', title:'Admission Confirmation', desc:'Confirm a student\'s successful admission to the school',
+    fields:['Parent Name','Child Name','Class','Section','Roll No','Reporting Date'],
+    subject: 'Admission Confirmed — Welcome to The Gurukul High!',
+    body: (f) => `Dear ${f[0]||'[Parent Name]'},\n\nWe are thrilled to inform you that ${f[1]||'[Child Name]'} has been successfully admitted to The Gurukul High for Class ${f[2]||'[Class]'}, Section ${f[3]||'[Section]'}.\n\nAdmission Details:\n• Student Name: ${f[1]||'[Child Name]'}\n• Class & Section: ${f[2]||'[Class]'} - ${f[3]||'[Section]'}\n• Roll Number: ${f[4]||'[Roll No]'}\n• Reporting Date: ${f[5]||'[Date]'}\n\nPlease ensure the student arrives by 8:30 AM on the first day with all required documents and stationery.\n\nWelcome to The Gurukul family!\n\nWith warm regards,\nPrincipal's Office\nThe Gurukul High` },
+  { icon:'fa-share-alt', color:'#8e44ad', title:'Referral Thank You', desc:'Thank a parent for referring a new student to the school',
+    fields:['Referring Parent Name','Referred Family Name'],
+    subject: 'Thank You for Your Referral — The Gurukul High',
+    body: (f) => `Dear ${f[0]||'[Parent Name]'},\n\nThank you so much for recommending The Gurukul High to the ${f[1]||'[Family Name]'} family. Your trust in our institution means the world to us.\n\nReferrals from our own parent community are the highest compliment we can receive. It reflects the confidence you have in the quality of education and values we uphold every day.\n\nAs a token of our appreciation, we will be acknowledging your support at our upcoming Parent-Teacher Meeting.\n\nThank you once again for being a wonderful ambassador for our school!\n\nWith gratitude,\nMarketing Team\nThe Gurukul High` },
+];
+
+function renderEmailTemplates() {
+  const container = document.getElementById('emailTemplatesList');
+  container.innerHTML = MKT_TEMPLATES.map((t, ti) => `
+    <div class="card" id="etpl_${ti}">
+      <div style="display:flex;align-items:center;gap:14px;padding:16px 20px;cursor:pointer" onclick="toggleTemplate(${ti})">
+        <div style="width:42px;height:42px;border-radius:10px;background:${t.color};color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0"><i class="fa ${t.icon}"></i></div>
+        <div style="flex:1"><div style="font-size:14px;font-weight:700;color:var(--navy)">${t.title}</div><div style="font-size:11px;color:var(--muted);margin-top:2px">${t.desc}</div></div>
+        <i class="fa fa-chevron-down" id="etpl_chev_${ti}" style="color:#bbb;transition:transform .25s"></i>
+      </div>
+      <div id="etpl_body_${ti}" style="display:none;border-top:1px solid #f0f2f8;padding:20px;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:16px">
+          ${t.fields.map((f,fi)=>`<div class="fgroup"><label>${f}</label><input id="etf_${ti}_${fi}" placeholder="${f}…" oninput="previewTemplate(${ti})"></div>`).join('')}
+        </div>
+        <div style="background:#f8f9fc;border-radius:10px;padding:16px;margin-bottom:16px">
+          <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;margin-bottom:8px">Subject</div>
+          <div style="font-size:12px;font-weight:600;color:var(--navy)" id="etpl_subj_${ti}">${t.subject}</div>
+          <div style="font-size:10px;font-weight:700;color:#888;text-transform:uppercase;margin:12px 0 8px">Preview</div>
+          <pre id="etpl_prev_${ti}" style="font-family:'Courier New',monospace;font-size:11px;color:#444;white-space:pre-wrap;line-height:1.7;margin:0;max-height:200px;overflow-y:auto">${t.body([])}</pre>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn btn-outline btn-sm" onclick="copyTemplate(${ti})"><i class="fa fa-copy"></i> Copy Text</button>
+          <button class="btn btn-sm" style="background:${t.color};color:#fff" onclick="openEmailClient(${ti})"><i class="fa fa-envelope"></i> Open in Email App</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function toggleTemplate(i) {
+  const body = document.getElementById(`etpl_body_${i}`);
+  const chev = document.getElementById(`etpl_chev_${i}`);
+  const open = body.style.display==='block';
+  body.style.display = open?'none':'block';
+  chev.style.transform = open?'':'rotate(180deg)';
+}
+
+function previewTemplate(ti) {
+  const t = MKT_TEMPLATES[ti];
+  const vals = t.fields.map((_,fi)=>document.getElementById(`etf_${ti}_${fi}`)?.value||'');
+  document.getElementById(`etpl_prev_${ti}`).textContent = t.body(vals);
+}
+
+function copyTemplate(ti) {
+  const t = MKT_TEMPLATES[ti];
+  const vals = t.fields.map((_,fi)=>document.getElementById(`etf_${ti}_${fi}`)?.value||'');
+  navigator.clipboard.writeText(t.body(vals)).then(()=>alert('Copied to clipboard!'));
+}
+
+function openEmailClient(ti) {
+  const t = MKT_TEMPLATES[ti];
+  const vals = t.fields.map((_,fi)=>document.getElementById(`etf_${ti}_${fi}`)?.value||'');
+  const subject = encodeURIComponent(t.subject);
+  const body    = encodeURIComponent(t.body(vals));
+  window.location.href = `mailto:?subject=${subject}&body=${body}`;
+}
+
+// ── UTILITY ────────────────────────────────────────────────────────────────
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function showAlert(id, msg, type) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.className = `alert alert-${type}`;
+  el.style.display='block';
+  setTimeout(()=>el.style.display='none', 4000);
+}
+
+// ══════════════════════════════════════════════════════════════
+//  BUILD CONTENT — Posters, Banners, Presentations
+// ══════════════════════════════════════════════════════════════
+
+// ── TAB SWITCHING ────────────────────────────────────────────
+function switchContentTab(name, btn) {
+  ['posters','banners','ppt'].forEach(t => document.getElementById('ct-'+t).style.display = t===name?'block':'none');
+  document.querySelectorAll('#contentTabBar .tab-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  else { const active = document.querySelector(`#contentTabBar .tab-btn[onclick*="'${name}'"]`); if (active) active.classList.add('active'); }
+  if (name==='posters')  renderAllPreviews();
+  if (name==='banners')  renderAllBanners();
+  if (name==='ppt')      renderPPTCards();
+}
+
+let _contentInited = false;
+let _currentPosterTemplate = 'admissions';
+let _logoImg = null;
+
+function initContentBuilder() {
+  if (_contentInited) return;
+  _contentInited = true;
+  // Load school logo
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload  = () => { _logoImg = img; renderAllPreviews(); };
+  img.onerror = () => { _logoImg = null; renderAllPreviews(); };
+  img.src = '../images/gurukul-logo.png';
+  renderPPTCards();
+}
+
+// ── POSTER SIZES ─────────────────────────────────────────────
+const POSTER_SIZES = [
+  { key:'ig-square',  label:'Instagram Post',   platform:'Instagram', w:1080, h:1080, icon:'fa-instagram', color:'#e91e8c' },
+  { key:'ig-story',   label:'Instagram Story',  platform:'Instagram', w:1080, h:1920, icon:'fa-instagram', color:'#e91e8c' },
+  { key:'fb-post',    label:'Facebook Post',     platform:'Facebook',  w:1200, h:630,  icon:'fa-facebook',  color:'#1877f2' },
+  { key:'wa-status',  label:'WhatsApp Status',   platform:'WhatsApp',  w:1080, h:1920, icon:'fa-whatsapp',  color:'#25d366' },
+  { key:'tw-post',    label:'Twitter/X Post',    platform:'Twitter',   w:1200, h:675,  icon:'fa-twitter',   color:'#1da1f2' },
+  { key:'yt-thumb',   label:'YouTube Thumbnail', platform:'YouTube',   w:1280, h:720,  icon:'fa-youtube',   color:'#ff0000' },
+  { key:'li-post',    label:'LinkedIn Post',     platform:'LinkedIn',  w:1200, h:628,  icon:'fa-linkedin',  color:'#0a66c2' },
+  { key:'print-a4',   label:'Print Poster (A4)', platform:'Print',     w:2480, h:3508, icon:'fa-print',     color:'#555'    },
+];
+
+const BANNER_SIZES = [
+  { key:'fb-cover',   label:'Facebook Cover',     platform:'Facebook',  w:820,  h:312,  icon:'fa-facebook',  color:'#1877f2' },
+  { key:'tw-header',  label:'Twitter/X Header',   platform:'Twitter',   w:1500, h:500,  icon:'fa-twitter',   color:'#1da1f2' },
+  { key:'li-banner',  label:'LinkedIn Banner',     platform:'LinkedIn',  w:1584, h:396,  icon:'fa-linkedin',  color:'#0a66c2' },
+  { key:'yt-art',     label:'YouTube Channel Art', platform:'YouTube',   w:2560, h:1440, icon:'fa-youtube',   color:'#ff0000' },
+  { key:'web-hero',   label:'Website Hero Banner', platform:'Website',   w:1920, h:600,  icon:'fa-globe',     color:'#0d1b5e' },
+];
+
+const ACCENT_COLORS = { gold:'#c9a227', pink:'#e91e8c', teal:'#16a085', white:'#ffffff' };
+
+function setPosterTemplate(tpl) {
+  _currentPosterTemplate = tpl;
+  document.querySelectorAll('[id^="ptpl-"]').forEach(b => { b.className = 'btn btn-outline btn-sm'; });
+  document.getElementById('ptpl-'+tpl).className = 'btn btn-pink btn-sm';
+  const defaults = {
+    admissions: { h:'Admissions Open 2025–26',  s:'Nurturing Minds, Building Futures', cta:'Enrol Today · 9876543210' },
+    achievement: { h:'Excellence in Education',  s:'Congratulations to Our Achievers',   cta:'The Gurukul High · K.R. Nagar' },
+    event:       { h:'Annual Day 2025',           s:'A Celebration of Talent & Spirit',   cta:'All are Welcome · 5:00 PM Onwards' },
+    quote:       { h:'"Education is the\npassport to the future"', s:'— Malcolm X',       cta:'The Gurukul High · Mysuru' },
+  };
+  const d = defaults[tpl];
+  document.getElementById('pHeadline').value = d.h;
+  document.getElementById('pSub').value      = d.s;
+  document.getElementById('pCTA').value      = d.cta;
+  renderAllPreviews();
+}
+
+// ── CANVAS RENDERING ─────────────────────────────────────────
+function renderAllPreviews() {
+  const grid = document.getElementById('posterGrid');
+  if (!grid) return;
+  grid.innerHTML = POSTER_SIZES.map(sz => `
+    <div class="card" style="overflow:hidden;">
+      <div style="background:${sz.color};color:#fff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-weight:700;font-size:12px"><i class="fa ${sz.icon}"></i> ${sz.label}</span>
+        <span style="font-size:10px;opacity:.8">${sz.w}×${sz.h}px</span>
+      </div>
+      <div style="background:#1a1a2e;display:flex;align-items:center;justify-content:center;padding:12px;min-height:180px;">
+        <canvas id="cv_${sz.key}" style="max-width:100%;border-radius:6px;box-shadow:0 4px 20px rgba(0,0,0,.5);"></canvas>
+      </div>
+      <div style="padding:12px 16px;display:flex;gap:8px;">
+        <button class="btn btn-sm btn-pink" style="flex:1" onclick="downloadCanvas('cv_${sz.key}','${sz.label.replace(/\s+/g,'-')}','${sz.key}')"><i class="fa fa-download"></i> Download PNG</button>
+      </div>
+    </div>`).join('');
+  POSTER_SIZES.forEach(sz => drawPoster(sz));
+}
+
+function drawPoster(sz) {
+  const canvas = document.getElementById('cv_'+sz.key);
+  if (!canvas) return;
+  const PREVIEW_W = 280;
+  const scale     = PREVIEW_W / sz.w;
+  canvas.width    = PREVIEW_W;
+  canvas.height   = Math.round(sz.h * scale);
+  canvas._fullW   = sz.w;
+  canvas._fullH   = sz.h;
+  canvas._szKey   = sz.key;
+  renderPosterToCanvas(canvas, sz, scale);
+}
+
+function renderPosterToCanvas(canvas, sz, scale) {
+  const ctx   = canvas.getContext('2d');
+  const W     = canvas.width, H = canvas.height;
+  const tpl   = _currentPosterTemplate;
+  const accent = ACCENT_COLORS[document.getElementById('pAccent')?.value||'gold'];
+  const headline = document.getElementById('pHeadline')?.value || 'The Gurukul High';
+  const sub      = document.getElementById('pSub')?.value      || '';
+  const cta      = document.getElementById('pCTA')?.value      || '';
+  const desc     = document.getElementById('pDesc')?.value     || '';
+
+  // Background gradient
+  const grad = ctx.createLinearGradient(0, 0, W, H);
+  if (tpl==='admissions') { grad.addColorStop(0,'#0d1b5e'); grad.addColorStop(1,'#1a3a8c'); }
+  else if (tpl==='achievement') { grad.addColorStop(0,'#1a0535'); grad.addColorStop(1,'#3d0070'); }
+  else if (tpl==='event') { grad.addColorStop(0,'#0d1b5e'); grad.addColorStop(0.6,'#0d4a6e'); grad.addColorStop(1,'#0a7a60'); }
+  else { grad.addColorStop(0,'#111827'); grad.addColorStop(1,'#1e3a5f'); }
+  ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
+
+  // Decorative circles
+  ctx.globalAlpha = 0.07;
+  ctx.fillStyle = accent;
+  ctx.beginPath(); ctx.arc(W*0.9, H*0.12, W*0.35, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(-W*0.05, H*0.85, W*0.25, 0, Math.PI*2); ctx.fill();
+  ctx.globalAlpha = 1;
+
+  // Gold accent bar top
+  ctx.fillStyle = accent;
+  ctx.fillRect(0, 0, W, Math.round(5*scale));
+
+  // Logo
+  const logoY = Math.round(24*scale);
+  const logoS = Math.round(60*scale);
+  if (_logoImg) {
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(W/2, logoY + logoS/2, logoS/2, 0, Math.PI*2);
+    ctx.closePath();
+    ctx.clip();
+    ctx.drawImage(_logoImg, W/2 - logoS/2, logoY, logoS, logoS);
+    ctx.restore();
+    // Circle border
+    ctx.strokeStyle = accent; ctx.lineWidth = Math.round(2*scale);
+    ctx.beginPath(); ctx.arc(W/2, logoY+logoS/2, logoS/2, 0, Math.PI*2); ctx.stroke();
+  } else {
+    // Placeholder circle
+    ctx.fillStyle = accent;
+    ctx.beginPath(); ctx.arc(W/2, logoY+logoS/2, logoS/2, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#0d1b5e';
+    ctx.font = `bold ${Math.round(20*scale)}px Arial`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('G', W/2, logoY+logoS/2);
+  }
+
+  // School name below logo
+  const afterLogo = logoY + logoS + Math.round(10*scale);
+  ctx.fillStyle = '#ffffff'; ctx.textAlign='center'; ctx.textBaseline='top';
+  ctx.font = `700 ${Math.round(11*scale)}px 'Segoe UI',Arial`;
+  ctx.fillText('THE GURUKUL HIGH', W/2, afterLogo);
+  ctx.fillStyle = accent;
+  ctx.font = `${Math.round(9*scale)}px 'Segoe UI',Arial`;
+  ctx.fillText('K.R. Nagar, Mysuru', W/2, afterLogo + Math.round(14*scale));
+
+  // Divider line
+  const divY = afterLogo + Math.round(32*scale);
+  ctx.strokeStyle = accent; ctx.lineWidth = Math.round(1.5*scale);
+  ctx.beginPath();
+  ctx.moveTo(W*0.2, divY); ctx.lineTo(W*0.8, divY);
+  ctx.stroke();
+
+  // Headline — multiline support
+  const headY = divY + Math.round(18*scale);
+  ctx.fillStyle = '#ffffff';
+  const headFontSize = Math.max(8, Math.round(22*scale));
+  ctx.font = `800 ${headFontSize}px 'Segoe UI',Arial`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+  const headLines = headline.replace(/\\n/g,'\n').split('\n');
+  headLines.forEach((line, i) => ctx.fillText(line, W/2, headY + i * (headFontSize * 1.25)));
+  const afterHead = headY + headLines.length * (headFontSize * 1.25) + Math.round(10*scale);
+
+  // Sub-headline
+  ctx.fillStyle = 'rgba(255,255,255,0.75)';
+  const subFontSize = Math.max(6, Math.round(13*scale));
+  ctx.font = `400 ${subFontSize}px 'Segoe UI',Arial`;
+  const subLineH = subFontSize * 1.4;
+  const subHeight = sub ? wrapTextH(ctx, sub, W/2, afterHead, W*0.8, subLineH, 'center') : 0;
+  const afterSub = afterHead + subHeight + Math.round(14*scale);
+
+  // Description body text (optional)
+  let afterDesc = afterSub;
+  if (desc.trim()) {
+    const descFontSize = Math.max(5, Math.round(11*scale));
+    const descLineH    = descFontSize * 1.55;
+    // Soft divider
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = Math.round(scale);
+    ctx.beginPath(); ctx.moveTo(W*0.15, afterSub - Math.round(4*scale)); ctx.lineTo(W*0.85, afterSub - Math.round(4*scale)); ctx.stroke();
+    // Desc label
+    ctx.fillStyle = accent;
+    ctx.font = `700 ${Math.max(4, Math.round(8*scale))}px 'Segoe UI',Arial`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    ctx.fillText('▸  DETAILS', W/2, afterSub);
+    const descStart = afterSub + Math.round(12*scale);
+    ctx.fillStyle = 'rgba(255,255,255,0.88)';
+    ctx.font = `400 ${descFontSize}px 'Segoe UI',Arial`;
+    // Support both \n (typed newlines) and literal \n escape
+    const descLines = desc.replace(/\\n/g, '\n').split('\n');
+    let curY = descStart;
+    descLines.forEach(para => {
+      if (para.trim() === '') { curY += descLineH * 0.5; return; }
+      curY += wrapTextH(ctx, para, W/2, curY, W*0.82, descLineH, 'center');
+      curY += Math.round(3*scale);
+    });
+    afterDesc = curY + Math.round(8*scale);
+  }
+
+  // CTA pill at bottom
+  const pillH   = Math.round(28*scale);
+  const pillW   = Math.round(W * 0.7);
+  const pillX   = (W - pillW) / 2;
+  const pillY   = H - pillH - Math.round(20*scale);
+  ctx.fillStyle = accent;
+  roundRect(ctx, pillX, pillY, pillW, pillH, Math.round(14*scale));
+  ctx.fill();
+  ctx.fillStyle = '#0d1b5e';
+  ctx.font = `700 ${Math.max(6, Math.round(11*scale))}px 'Segoe UI',Arial`;
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(cta, W/2, pillY + pillH/2);
+
+  // Bottom accent bar
+  ctx.fillStyle = accent;
+  ctx.fillRect(0, H - Math.round(4*scale), W, Math.round(4*scale));
+}
+
+function renderAllBanners() {
+  const grid = document.getElementById('bannerGrid');
+  if (!grid) return;
+  grid.innerHTML = BANNER_SIZES.map(sz => `
+    <div class="card" style="overflow:hidden;">
+      <div style="background:${sz.color};color:#fff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-weight:700;font-size:12px"><i class="fa ${sz.icon}"></i> ${sz.label}</span>
+        <span style="font-size:10px;opacity:.8">${sz.w}×${sz.h}px</span>
+      </div>
+      <div style="background:#1a1a2e;display:flex;align-items:center;justify-content:center;padding:12px;">
+        <canvas id="bn_${sz.key}" style="max-width:100%;border-radius:6px;box-shadow:0 4px 20px rgba(0,0,0,.5);"></canvas>
+      </div>
+      <div style="padding:12px 16px;display:flex;gap:8px;">
+        <button class="btn btn-sm btn-pink" style="flex:1" onclick="downloadCanvas('bn_${sz.key}','${sz.label.replace(/\s+/g,'-')}','${sz.key}')"><i class="fa fa-download"></i> Download PNG</button>
+      </div>
+    </div>`).join('');
+  BANNER_SIZES.forEach(sz => drawBanner(sz));
+}
+
+function drawBanner(sz) {
+  const canvas = document.getElementById('bn_'+sz.key);
+  if (!canvas) return;
+  const PREVIEW_W = 320;
+  const scale     = PREVIEW_W / sz.w;
+  canvas.width    = PREVIEW_W;
+  canvas.height   = Math.round(sz.h * scale);
+  canvas._fullW   = sz.w;
+  canvas._fullH   = sz.h;
+  renderBannerToCanvas(canvas, sz, scale);
+}
+
+function renderBannerToCanvas(canvas, sz, scale) {
+  const ctx   = canvas.getContext('2d');
+  const W     = canvas.width, H = canvas.height;
+  const name  = document.getElementById('bName')?.value    || 'The Gurukul High';
+  const tag   = document.getElementById('bTagline')?.value || 'Nurturing Minds, Building Futures';
+  const cont  = document.getElementById('bContact')?.value || '';
+
+  // Gradient background
+  const grad = ctx.createLinearGradient(0, 0, W, H);
+  grad.addColorStop(0,'#0d1b5e'); grad.addColorStop(0.6,'#162580'); grad.addColorStop(1,'#0a4a6e');
+  ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
+
+  // Decorative circles
+  ctx.globalAlpha=0.1; ctx.fillStyle='#c9a227';
+  ctx.beginPath(); ctx.arc(W*1.05, H*0.5, H*0.9, 0, Math.PI*2); ctx.fill();
+  ctx.globalAlpha=0.06; ctx.fillStyle='#ffffff';
+  ctx.beginPath(); ctx.arc(-H*0.2, H*0.5, H*0.7, 0, Math.PI*2); ctx.fill();
+  ctx.globalAlpha=1;
+
+  // Gold top & bottom bar
+  ctx.fillStyle='#c9a227';
+  ctx.fillRect(0, 0, W, Math.round(4*scale));
+  ctx.fillRect(0, H-Math.round(4*scale), W, Math.round(4*scale));
+
+  // Logo on left
+  const lPad  = Math.round(20*scale);
+  const logoS = Math.round(Math.min(H*0.55, 55*scale));
+  const logoY = (H - logoS) / 2;
+  if (_logoImg) {
+    ctx.save();
+    ctx.beginPath(); ctx.arc(lPad + logoS/2, H/2, logoS/2, 0, Math.PI*2); ctx.closePath(); ctx.clip();
+    ctx.drawImage(_logoImg, lPad, logoY, logoS, logoS);
+    ctx.restore();
+    ctx.strokeStyle='#c9a227'; ctx.lineWidth=Math.round(2*scale);
+    ctx.beginPath(); ctx.arc(lPad+logoS/2, H/2, logoS/2, 0, Math.PI*2); ctx.stroke();
+  } else {
+    ctx.fillStyle='#c9a227';
+    ctx.beginPath(); ctx.arc(lPad+logoS/2, H/2, logoS/2, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle='#0d1b5e'; ctx.font=`bold ${Math.round(18*scale)}px Arial`;
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('G', lPad+logoS/2, H/2);
+  }
+
+  // Text to right of logo
+  const textX = lPad + logoS + Math.round(16*scale);
+  ctx.textAlign='left'; ctx.textBaseline='middle';
+
+  // School name
+  const nameFz = Math.max(7, Math.round(16*scale));
+  ctx.fillStyle='#ffffff'; ctx.font=`800 ${nameFz}px 'Segoe UI',Arial`;
+  ctx.fillText(name.toUpperCase(), textX, H/2 - Math.round(10*scale));
+
+  // Tagline
+  const tagFz = Math.max(5, Math.round(10*scale));
+  ctx.fillStyle='#c9a227'; ctx.font=`400 ${tagFz}px 'Segoe UI',Arial`;
+  ctx.fillText(tag, textX, H/2 + Math.round(8*scale));
+
+  // Contact
+  if (cont) {
+    ctx.fillStyle='rgba(255,255,255,0.5)';
+    ctx.font=`400 ${Math.max(5,Math.round(8*scale))}px 'Segoe UI',Arial`;
+    ctx.fillText(cont, textX, H/2 + Math.round(22*scale));
+  }
+
+  // Right badge
+  const badgeW = Math.round(55*scale);
+  const badgeH = Math.round(22*scale);
+  ctx.fillStyle='#c9a227';
+  roundRect(ctx, W-badgeW-Math.round(16*scale), (H-badgeH)/2, badgeW, badgeH, Math.round(11*scale));
+  ctx.fill();
+  ctx.fillStyle='#0d1b5e'; ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.font=`700 ${Math.max(5,Math.round(9*scale))}px 'Segoe UI',Arial`;
+  ctx.fillText('EST. 2000', W-Math.round(16*scale)-badgeW/2, H/2);
+}
+
+// ── DOWNLOAD CANVAS ──────────────────────────────────────────
+function downloadCanvas(canvasId, label, key) {
+  const preview = document.getElementById(canvasId);
+  if (!preview) return;
+  // Re-render at full resolution
+  const fullCanvas = document.createElement('canvas');
+  fullCanvas.width  = preview._fullW;
+  fullCanvas.height = preview._fullH;
+  const sz = [...POSTER_SIZES, ...BANNER_SIZES].find(s=>s.key===key);
+  if (!sz) return;
+  const scale = preview._fullW / preview._fullW; // 1:1
+  if (POSTER_SIZES.find(s=>s.key===key)) {
+    renderPosterToCanvas(fullCanvas, sz, 1);
+  } else {
+    renderBannerToCanvas(fullCanvas, sz, 1);
+  }
+  const link = document.createElement('a');
+  link.download = `Gurukul-${label}-${sz.w}x${sz.h}.png`;
+  link.href = fullCanvas.toDataURL('image/png');
+  link.click();
+}
+
+// ── PPT CARDS ────────────────────────────────────────────────
+const PPT_TEMPLATES = [
+  { id:'admissions', icon:'fa-graduation-cap', color:'#0d1b5e', title:'Admissions Pitch Deck',
+    desc:'10-slide deck: School overview, Academics, Facilities, Achievements, Admissions process, Fee structure, Testimonials, Contact',
+    slides:10, tags:['Admissions','Parents'] },
+  { id:'annual',     icon:'fa-star',           color:'#c9a227', title:'Annual Presentation',
+    desc:'12-slide annual day / school performance deck with charts, stats, photo placeholders and award sections',
+    slides:12, tags:['Annual Day','Events'] },
+  { id:'event',      icon:'fa-calendar',       color:'#e91e8c', title:'Event / Programme Deck',
+    desc:'8-slide event presentation: Title, Agenda, Welcome, Programme, Chief Guest, Vote of Thanks, Gallery, Thank You',
+    slides:8,  tags:['Events','Cultural'] },
+  { id:'training',   icon:'fa-book',           color:'#8e44ad', title:'Staff Training Deck',
+    desc:'6-slide internal staff training/workshop presentation with navy theme and professional layouts',
+    slides:6,  tags:['Internal','Staff'] },
+];
+
+function renderPPTCards() {
+  const grid = document.getElementById('pptGrid');
+  if (!grid) return;
+  grid.innerHTML = PPT_TEMPLATES.map(t => `
+    <div class="card" style="overflow:hidden;transition:transform .15s" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform=''">
+      <div style="background:${t.color};padding:24px 20px;position:relative;overflow:hidden;">
+        <div style="position:absolute;right:-20px;top:-20px;width:100px;height:100px;background:rgba(255,255,255,.08);border-radius:50%"></div>
+        <i class="fa ${t.icon}" style="font-size:32px;color:rgba(255,255,255,.9);margin-bottom:10px;display:block;position:relative"></i>
+        <div style="font-size:15px;font-weight:800;color:#fff;position:relative">${t.title}</div>
+        <div style="font-size:10px;color:rgba(255,255,255,.6);margin-top:4px;position:relative">${t.slides} slides</div>
+      </div>
+      <div style="padding:16px 20px;">
+        <p style="font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:12px">${t.desc}</p>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">
+          ${t.tags.map(g=>`<span style="background:#f0f2f8;color:var(--navy);border-radius:6px;padding:2px 9px;font-size:10px;font-weight:700">${g}</span>`).join('')}
+        </div>
+        <button class="btn btn-pink" style="width:100%" onclick="downloadPPT('${t.id}')">
+          <i class="fa fa-download"></i> Download .pptx
+        </button>
+      </div>
+    </div>`).join('');
+}
+
+// ── PPTX GENERATION ──────────────────────────────────────────
+function downloadPPT(templateId) {
+  if (typeof PptxGenJS === 'undefined') {
+    alert('Loading PptxGenJS…'); return;
+  }
+  const pptx = new PptxGenJS();
+  pptx.layout = 'LAYOUT_WIDE';
+  const NAVY='#0D1B5E', GOLD='#C9A227', WHITE='#FFFFFF', LGRAY='#F2F4F9';
+
+  // Helper: title slide
+  function addTitleSlide(title, subtitle) {
+    const sl = pptx.addSlide();
+    sl.background = { color: NAVY };
+    sl.addShape(pptx.ShapeType.rect, { x:0, y:0, w:'100%', h:0.08, fill:{ color:GOLD } });
+    sl.addShape(pptx.ShapeType.rect, { x:0, y:'92%', w:'100%', h:0.08, fill:{ color:GOLD } });
+    sl.addShape(pptx.ShapeType.ellipse, { x:8.5, y:-0.5, w:3.5, h:3.5, fill:{ color:'112040', transparency:85 } });
+    sl.addText('THE GURUKUL HIGH', { x:0.5, y:0.5, w:9, h:0.4, fontSize:11, color:GOLD, bold:true, charSpacing:4 });
+    sl.addText(title,    { x:0.5, y:1.8, w:9, h:1.2, fontSize:34, color:WHITE, bold:true });
+    sl.addText(subtitle, { x:0.5, y:3.1, w:9, h:0.5, fontSize:16, color:'BBBBDD' });
+    sl.addText('K.R. Nagar, Mysuru  ·  www.gurukulhigh.edu.in', { x:0.5, y:'88%', w:9, h:0.35, fontSize:10, color:GOLD });
+  }
+
+  // Helper: content slide
+  function addContentSlide(title, bullets, bgLight=false) {
+    const sl = pptx.addSlide();
+    sl.background = { color: bgLight ? LGRAY : WHITE };
+    sl.addShape(pptx.ShapeType.rect, { x:0, y:0, w:0.12, h:'100%', fill:{ color:NAVY } });
+    sl.addShape(pptx.ShapeType.rect, { x:0, y:0, w:'100%', h:0.06, fill:{ color:GOLD } });
+    sl.addText(title, { x:0.3, y:0.2, w:9.2, h:0.6, fontSize:20, color:NAVY, bold:true });
+    sl.addShape(pptx.ShapeType.rect, { x:0.3, y:0.85, w:2.5, h:0.04, fill:{ color:GOLD } });
+    const bulletOpts = { x:0.3, y:1.1, w:9, h:4.5, fontSize:14, color:'333355',
+      bullet:{ type:'bullet', code:'2022', color:GOLD, indent:15 }, lineSpacingMultiple:1.5 };
+    sl.addText(bullets.map(b=>({ text:b, options:{} })), bulletOpts);
+    sl.addText('The Gurukul High', { x:0.3, y:'93%', w:4, h:0.3, fontSize:9, color:'AAAACC' });
+  }
+
+  // Helper: two-column slide
+  function addTwoColSlide(title, leftItems, rightItems) {
+    const sl = pptx.addSlide();
+    sl.background = { color: WHITE };
+    sl.addShape(pptx.ShapeType.rect, { x:0, y:0, w:'100%', h:0.06, fill:{ color:NAVY } });
+    sl.addShape(pptx.ShapeType.rect, { x:0, y:0.06, w:'100%', h:0.7, fill:{ color:NAVY } });
+    sl.addText(title, { x:0.4, y:0.1, w:9.2, h:0.55, fontSize:22, color:WHITE, bold:true });
+    sl.addShape(pptx.ShapeType.rect, { x:0, y:0.76, w:5.05, h:5.7, fill:{ color:LGRAY } });
+    sl.addText(leftItems.map(b=>({ text:b })), { x:0.3, y:1.1, w:4.5, h:4.8, fontSize:13, color:'222244', bullet:{ type:'bullet', color:NAVY, indent:12 }, lineSpacingMultiple:1.5 });
+    sl.addText(rightItems.map(b=>({ text:b })), { x:5.3, y:1.1, w:4.5, h:4.8, fontSize:13, color:'222244', bullet:{ type:'bullet', color:GOLD, indent:12 }, lineSpacingMultiple:1.5 });
+  }
+
+  // Helper: stats slide
+  function addStatsSlide(title, stats) {
+    const sl = pptx.addSlide();
+    sl.background = { color: NAVY };
+    sl.addShape(pptx.ShapeType.rect, { x:0, y:0, w:'100%', h:0.06, fill:{ color:GOLD } });
+    sl.addText(title, { x:0.4, y:0.2, w:9.2, h:0.6, fontSize:22, color:WHITE, bold:true });
+    stats.forEach((s, i) => {
+      const col = i % 4, row = Math.floor(i/4);
+      const x = 0.3 + col*2.4, y = 1.2 + row*2.2;
+      sl.addShape(pptx.ShapeType.rect, { x, y, w:2.1, h:1.8, fill:{ color:'142060' }, line:{ color:GOLD, width:1.5 } });
+      sl.addText(s.val,   { x, y:y+0.2, w:2.1, h:0.8, fontSize:28, color:GOLD, bold:true, align:'center' });
+      sl.addText(s.label, { x, y:y+1.0, w:2.1, h:0.5, fontSize:10, color:'BBBBDD', align:'center' });
+    });
+  }
+
+  // ── BUILD SLIDES BY TEMPLATE ─────────────────────────────
+  if (templateId === 'admissions') {
+    addTitleSlide('Admissions 2025–26', 'Welcome to The Gurukul High — Where Excellence Begins');
+    addContentSlide('About The Gurukul High', ['Premier K–12 institution in K.R. Nagar, Mysuru', 'Founded in 2000 — over 25 years of academic excellence', 'Affiliated with CBSE Board (School Code: XXXXXX)', 'Over 1,200 students across Classes Nursery to XII', 'State-of-the-art campus spread over 5 acres']);
+    addTwoColSlide('Academics & Curriculum', ['CBSE curriculum with activity-based learning', 'Classes Nursery to XII', 'Experienced faculty — 100% qualified teachers', 'Science, Commerce & Humanities streams (XI–XII)', 'Regular assessments and personalised feedback'], ['Smart classrooms with digital boards', 'Well-equipped Science & Computer Labs', 'Library with 5,000+ titles', 'Career counselling & college guidance', 'Annual academic achievement awards']);
+    addTwoColSlide('Facilities & Infrastructure', ['Spacious air-conditioned classrooms', 'Multi-purpose sports ground & indoor gymnasium', 'Swimming pool (coming soon)', 'Transportation with GPS-tracked buses', 'CCTV surveillance — safe & secure campus'], ['Cafeteria with nutritious meals', 'First aid & infirmary', 'Dedicated activity & art rooms', 'Amphitheatre for events', 'Parent portal for live updates']);
+    addStatsSlide('Our Achievements at a Glance', [{ val:'98%',label:'Board Pass Rate'},{ val:'1200+',label:'Students'},{ val:'85+',label:'Staff'},{ val:'25+',label:'Years'},{ val:'40+',label:'Clubs'},{ val:'12',label:'Sports'},{ val:'100%',label:'Placement'},{ val:'50+',label:'Awards'}]);
+    addContentSlide('Admissions Process', ['Step 1: Fill the online application form at our website or visit the school office', 'Step 2: Submit required documents (Birth certificate, previous marksheet, photos)', 'Step 3: Interaction session with the student and parents', 'Step 4: Receive admission confirmation letter via email/WhatsApp', 'Step 5: Complete fee payment to confirm seat', 'Step 6: Collect admission kit and uniform details']);
+    addTwoColSlide('Fee Structure 2025–26', ['Tuition Fee: As per class (contact office for details)', 'One-time Registration: ₹500', 'Admission Fee: ₹2,000 (new students)', 'Annual Charges: Included in tuition', 'Transportation: Optional (route-wise)', 'Uniform: Available at school store'], ['Payment Modes: Cash / Cheque / Online', 'Term wise payment option available', 'Sibling discount: 5% on second child', 'Merit scholarship for top performers', 'Fee receipts issued for all payments', 'No hidden charges policy']);
+    addContentSlide('Why Choose The Gurukul High?', ['"My child has grown in confidence and academics since joining Gurukul." — Parent, Class 7', '"The teachers here genuinely care about every student." — Parent, Class 10', '"Best school environment in the region — highly recommended!" — Parent, Class 5', 'Over 500 families trust us with their children\'s education', 'Ranked among Top 10 schools in Mysuru district — 2024']);
+    addTitleSlide('Join the Gurukul Family Today!', 'Admissions for 2025–26 are now open · Limited seats available');
+    const lastSl = pptx.addSlide();
+    lastSl.background = { color: NAVY };
+    lastSl.addShape(pptx.ShapeType.rect, { x:0, y:0, w:'100%', h:0.06, fill:{ color:GOLD } });
+    lastSl.addShape(pptx.ShapeType.rect, { x:0, y:'94%', w:'100%', h:0.06, fill:{ color:GOLD } });
+    lastSl.addText('Contact Us', { x:0.4, y:0.5, w:9.2, h:0.6, fontSize:26, color:WHITE, bold:true });
+    lastSl.addText(['📍  The Gurukul High, K.R. Nagar, Mysuru — 571602', '📞  +91 9876 543 210  ·  +91 9876 543 211', '✉️   admissions@gurukulhigh.edu.in', '🌐  www.gurukulhigh.edu.in', '📱  Follow us: @gurukulhigh on Instagram & Facebook'].map(t=>({text:t})),
+      { x:1.5, y:1.5, w:7, h:3.5, fontSize:14, color:'BBBBDD', lineSpacingMultiple:1.8 });
+    pptx.writeFile({ fileName:'Gurukul-Admissions-Deck-2025-26.pptx' });
+  }
+  else if (templateId === 'annual') {
+    addTitleSlide('Annual Report 2024–25', 'A Year of Growth, Excellence & Milestones');
+    addStatsSlide('Year at a Glance', [{ val:'1,200',label:'Students'},{ val:'85',label:'Staff'},{ val:'98%',label:'Results'},{ val:'40+',label:'Events'},{ val:'120+',label:'Awards'},{ val:'12',label:'Clubs'},{ val:'15',label:'Sports'},{ val:'25+',label:'Yrs Legacy'}]);
+    addContentSlide('Academic Excellence', ['Class X Results: 98% pass rate · 12 students scored above 95%', 'Class XII Science: 100% pass · 5 students selected for NEET/JEE coaching', 'Class XII Commerce: 100% pass · 3 students in top 10, Mysuru', 'Primary & Middle School: Average score improved by 8% over last year', 'All India Olympiad: 14 medals including 3 Gold']);
+    addTwoColSlide('Co-curricular Highlights', ['Annual Sports Day — 600+ participants', 'Cultural Fest "Utsav 2024" — 400 attendees', 'Science Exhibition — 45 student projects', 'District-level Debate Championship — Winners', 'National Children\'s Science Congress participants'], ['Inter-school Quiz Competition — 2nd Place', 'Art & Craft Exhibition — 80 exhibits', 'Yoga Day celebration — 1,000 participants', 'Eco Club: Planted 500 saplings this year', 'Community service: 200 hrs volunteered']);
+    addContentSlide('Infrastructure & Development', ['New Smart Classrooms installed across Classes 6–10 (total 18 rooms)', 'Computer Lab upgraded — 60 new systems with high-speed internet', 'Library digitised — RFID cataloguing of 5,000+ books', 'New drinking water purification plant installed', 'Campus CCTV upgraded — 48 cameras with cloud recording', 'Annual maintenance budget utilised: ₹45 Lakhs']);
+    addStatsSlide('Financial Summary', [{ val:'₹2.8Cr',label:'Fee Revenue'},{ val:'₹45L',label:'Infrastructure'},{ val:'₹1.2Cr',label:'Salaries Paid'},{ val:'₹18L',label:'Scholarships Given'}]);
+    addContentSlide('Staff Achievements', ['Teacher of the Year: Ms. Priya Sharma (Science Dept)', '3 teachers completed M.Ed. degrees this year', 'Principal attended National Education Leadership Summit, Delhi', '5 teachers received State-level teaching awards', 'New HR policies implemented — 100% staff satisfaction score']);
+    addContentSlide('Goals for 2025–26', ['Launch Gurukul Digital Learning Platform for all students', 'Establish new STEM laboratory with Robotics and AI modules', 'Increase scholarship seats to 50 (from current 30)', 'Introduce Coding & Entrepreneurship as elective subjects', 'Complete new sports pavilion construction by Q2 2025', 'Target 1,400 student strength for next academic year']);
+    addTwoColSlide('Parent & Community Engagement', ['PTMs held 4 times — 95% parent attendance', 'Parent-Teacher WhatsApp groups: 100% active', 'Annual Alumni Reunion — 200+ alumni attended', 'Community health camp conducted — 300 beneficiaries', 'Local NGO partnership for underprivileged student support'], ['Parent satisfaction survey: 92% rated "Excellent"', 'School newsletter published monthly — 1,000+ subscribers', 'Open Day: 300+ prospective families visited', 'Social media reach grew 150% year-on-year', 'Google rating: 4.7/5 (320+ reviews)']);
+    addTitleSlide('Thank You!', 'Together, we build the leaders of tomorrow.');
+    pptx.writeFile({ fileName:'Gurukul-Annual-Report-2024-25.pptx' });
+  }
+  else if (templateId === 'event') {
+    addTitleSlide('Annual Day 2025', 'A Celebration of Talent, Culture & Excellence');
+    addContentSlide('Programme Overview', ['Welcome Address — Principal', 'Lamp Lighting Ceremony', 'Classical Dance Performance — Primary Section', 'Drama — "The Journey of Knowledge"', 'Musical Extravaganza — School Band & Choir', 'Prize Distribution & Awards Ceremony', 'Address by Chief Guest', 'Vote of Thanks & National Anthem']);
+    addContentSlide('Welcome Address', ['Honourable Chief Guest — [Name, Designation]', 'Distinguished Guests', 'Respected Parents & Guardians', 'Dear Students & Staff', '', 'We are delighted to welcome you to the [Year] Annual Day of The Gurukul High — a celebration of hard work, talent and the spirit of our school.']);
+    addContentSlide('Achievements of the Year', ['Academic Excellence — 98% Board Results', 'Sports Champions — District level winners in 5 events', 'Cultural Awards — 12 state level recognitions', 'Science & Innovation — National finalist, CBSE Science Exhibition', 'Community Service — 200 volunteer hours, tree planting drive']);
+    addContentSlide('Prize Distribution', ['Best Student — Academic Excellence Award', 'Sports Champion of the Year', 'Cultural Star Award', 'Best Attendance Award', 'Principal\'s Merit Award', 'Community Service Award', 'Innovation & Creativity Award', 'Staff Excellence Award']);
+    addContentSlide("Chief Guest's Address", ['[Space reserved for Chief Guest remarks]', '', 'Please welcome to the dais:', '[Full Name]', '[Designation]', '[Organisation]']);
+    addContentSlide('Vote of Thanks', ['Our heartfelt gratitude to:', 'Chief Guest — [Name] for the inspiring address', 'All parents and guardians for your unwavering support', 'Our dedicated teaching and non-teaching staff', 'The student organising committee', 'The Gurukul High management & trustees', '', '"Together, we make Gurukul great!"']);
+    addTitleSlide('Thank You!', 'See you at Annual Day 2026 — even bigger and better!');
+    pptx.writeFile({ fileName:'Gurukul-Annual-Day-2025.pptx' });
+  }
+  else if (templateId === 'training') {
+    addTitleSlide('Staff Training Workshop', 'Professional Development — The Gurukul High');
+    addContentSlide('Workshop Objectives', ['Align on school vision, values and academic standards for 2025–26', 'Review student assessment and reporting procedures', 'Introduction to new Smart Classroom technology & tools', 'Discuss parent communication best practices', 'Update on school policies, safety & compliance']);
+    addTwoColSlide('Session 1: Pedagogy Update', ['Activity-based learning techniques', 'Bloom\'s Taxonomy in lesson planning', 'Differentiated instruction strategies', 'Formative vs. summative assessment', 'Using learning outcomes effectively'], ['Setting clear classroom expectations', 'Managing diverse learning needs', 'Digital tools for engagement', 'Feedback that drives improvement', 'Cross-subject integration']);
+    addContentSlide('Session 2: Technology in Teaching', ['Using the Smart Board effectively — hands-on demo', 'Google Classroom / School LMS walkthrough', 'Digital assessment tools — creating online quizzes', 'WhatsApp group communication guidelines', 'Recording and sharing lecture notes digitally', 'Cyber safety and responsible technology use in classrooms']);
+    addTwoColSlide('Session 3: Parent Engagement', ['Scheduling and conducting effective PTMs', 'How to handle difficult parent conversations', 'Progress report writing — clear and constructive', 'Communication do\'s and don\'ts', 'Using the school parent portal'], ['Setting student behaviour expectations together', 'Celebrating student achievements publicly', 'Regular informal check-ins vs formal meetings', 'Maintaining professional boundaries', 'Escalation procedures for serious issues']);
+    addTitleSlide('Thank You for Your Dedication!', 'Questions? Reach us at principal@gurukulhigh.edu.in');
+    pptx.writeFile({ fileName:'Gurukul-Staff-Training-Workshop.pptx' });
+  }
+}
+
+// ── CANVAS HELPERS ────────────────────────────────────────────
+function wrapText(ctx, text, x, y, maxWidth, lineHeight, align='left') {
+  wrapTextH(ctx, text, x, y, maxWidth, lineHeight, align);
+}
+
+// Like wrapText but returns the total height consumed (lineHeight * numLines)
+function wrapTextH(ctx, text, x, y, maxWidth, lineHeight, align='left') {
+  const words = text.split(' ');
+  let line = ''; let ty = y; let lineCount = 1;
+  for (let n = 0; n < words.length; n++) {
+    const testLine  = line + words[n] + ' ';
+    const testWidth = ctx.measureText(testLine).width;
+    if (testWidth > maxWidth && n > 0) {
+      ctx.fillText(line.trim(), x, ty);
+      line = words[n] + ' '; ty += lineHeight; lineCount++;
+    } else { line = testLine; }
+  }
+  if (line.trim()) ctx.fillText(line.trim(), x, ty);
+  return lineCount * lineHeight;
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y); ctx.arcTo(x+w, y, x+w, y+r, r);
+  ctx.lineTo(x+w, y+h-r); ctx.arcTo(x+w, y+h, x+w-r, y+h, r);
+  ctx.lineTo(x+r, y+h); ctx.arcTo(x, y+h, x, y+h-r, r);
+  ctx.lineTo(x, y+r); ctx.arcTo(x, y, x+r, y, r);
+  ctx.closePath();
+}
+
+// ── INIT ────────────────────────────────────────────────────────────────────
+document.getElementById('loginErr').style.display = 'none';
+if (mktToken) {
+  fetch(`${API}/marketing/overview`, { headers:authH() }).then(r => {
+    if (r.ok) launchApp();
+    else { sessionStorage.removeItem('mktToken'); mktToken=''; }
+  }).catch(() => {});
+}
+// ── Notification Bell ──────────────────────────────────────────────────────
+(function(){
+  let _nd=[],_unread=0,_open=false;
+  function nH(){ return {Authorization:'Bearer '+mktToken}; }
+  function ago(s){ if(!s) return ''; const sec=Math.round((Date.now()-new Date(s.replace(' ','T')))/1000); if(sec<60) return sec+'s ago'; if(sec<3600) return Math.round(sec/60)+'m ago'; if(sec<86400) return Math.round(sec/3600)+'h ago'; return Math.round(sec/86400)+'d ago'; }
+  function renderB(){ const b=document.getElementById('notifBadge'); if(!b) return; b.textContent=_unread>99?'99+':String(_unread); b.classList.toggle('show',_unread>0); }
+  function renderL(){ const el=document.getElementById('notifList'); if(!el) return; if(!_nd.length){el.innerHTML='<div class="notif-empty-msg">No notifications</div>';return;} el.innerHTML=_nd.map(n=>`<div class="notif-row${n.is_read?'':' unread'}"><div class="notif-dot ${n.type||'info'}"></div><div class="notif-body"><div class="notif-ttl">${n.title||''}</div><div class="notif-sub">${n.message||n.body||''}</div><div class="notif-ago">${ago(n.created_at)}</div></div></div>`).join(''); }
+  async function load(){ try{ const r=await fetch('/api/notifications',{headers:nH()}); if(!r.ok) return; const d=await r.json(); const ann=(d.announcements||[]).map(a=>({id:'a'+a.id,title:a.title,message:a.body,type:a.type||'announcement',is_read:1,created_at:a.created_at})); _nd=[...(d.notifications||[]),...ann].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,20); _unread=d.unread_count||0; renderB(); if(_open) renderL(); }catch(e){} }
+  window.toggleNotifDrop=function(e){ e.stopPropagation(); const dd=document.getElementById('notifDropdown'); _open=!_open; dd.classList.toggle('open',_open); if(_open){renderL();markAllRead();} };
+  window.markAllRead=async function(){ try{ await fetch('/api/notifications/read',{method:'POST',headers:{...nH(),'Content-Type':'application/json'}}); _nd.forEach(n=>n.is_read=1); _unread=0; renderB(); if(_open) renderL(); }catch(e){} };
+  document.addEventListener('click',function(e){ if(_open&&!document.getElementById('notifBell')?.contains(e.target)){_open=false;document.getElementById('notifDropdown')?.classList.remove('open');} });
+  load(); setInterval(load,30000);
+})();
+function toggleSidebar() {
+  document.body.classList.toggle('sidebar-hidden');
+}
+</script>
+</body>
+</html>

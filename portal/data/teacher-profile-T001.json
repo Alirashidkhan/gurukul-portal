@@ -1,0 +1,52 @@
+{
+  "id": "T001",
+  "name": "Suresh Kumar",
+  "username": "suresh.kumar",
+  "email": "suresh.kumar@gurukul.edu",
+  "phone": "9900001111",
+  "subject": "Mathematics",
+  "dob": "",
+  "gender": "",
+  "blood_group": "",
+  "emergency_name": "",
+  "emergency_phone": "",
+  "address": "",
+  "bank_name": "",
+  "account_number": "",
+  "ifsc": "",
+  "account_type": "Savings",
+  "pan": "",
+  "uan": "",
+  "esi_number": "",
+  "employment_type": "Full-time",
+  "designation": "Senior Teacher",
+  "department": "Mathematics",
+  "joining_date": "2020-06-01",
+  "status": "Active",
+  "assignments": [
+    {
+      "class": "10",
+      "section": "A",
+      "subject": "Mathematics"
+    },
+    {
+      "class": "10",
+      "section": "B",
+      "subject": "Mathematics"
+    }
+  ],
+  "payroll_structure": {
+    "id": 8,
+    "staff_id": "T001",
+    "staff_type": "teacher",
+    "basic": 25000,
+    "hra_pct": 40,
+    "da_pct": 5,
+    "transport": 1500,
+    "medical": 1250,
+    "pf_pct": 12,
+    "esi_pct": 0,
+    "tds": 500
+  },
+  "payroll_entries": []
+}

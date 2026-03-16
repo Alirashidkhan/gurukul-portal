@@ -1,0 +1,69 @@
+{
+  "loans": [
+    {
+      "id": 4,
+      "book_id": 1,
+      "borrower_id": "STU001",
+      "borrower_type": "student",
+      "issued_on": "2026-03-16 05:52:11",
+      "due_date": "2026-04-01",
+      "returned_on": "",
+      "status": "Issued",
+      "fine": 0,
+      "title": "Mathematics for Class 10",
+      "author": "R.D. Sharma"
+    },
+    {
+      "id": 5,
+      "book_id": 7,
+      "borrower_id": "STU003",
+      "borrower_type": "student",
+      "issued_on": "2026-03-16 05:52:11",
+      "due_date": "2026-03-20",
+      "returned_on": "",
+      "status": "Issued",
+      "fine": 0,
+      "title": "Physics for Class 12",
+      "author": "H.C. Verma"
+    },
+    {
+      "id": 3,
+      "book_id": 7,
+      "borrower_id": "STU002",
+      "borrower_type": "student",
+      "issued_on": "2026-03-16 05:11:14",
+      "due_date": "2026-03-20",
+      "returned_on": "2026-03-16 05:11:14",
+      "status": "Returned",
+      "fine": 0,
+      "title": "Physics for Class 12",
+      "author": "H.C. Verma"
+    },
+    {
+      "id": 2,
+      "book_id": 6,
+      "borrower_id": "STU001",
+      "borrower_type": "student",
+      "issued_on": "2026-03-16 05:11:05",
+      "due_date": "2026-04-15",
+      "returned_on": "",
+      "status": "Issued",
+      "fine": 0,
+      "title": "English Grammar",
+      "author": "Wren & Martin"
+    },
+    {
+      "id": 1,
+      "book_id": 6,
+      "borrower_id": "STU001",
+      "borrower_type": "student",
+      "issued_on": "2026-03-16 05:00:33",
+      "due_date": "2026-04-15",
+      "returned_on": "",
+      "status": "Issued",
+      "fine": 0,
+      "title": "English Grammar",
+      "author": "Wren & Martin"
+    }
+  ]
+}

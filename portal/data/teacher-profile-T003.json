@@ -1,0 +1,57 @@
+{
+  "id": "T003",
+  "name": "Ramesh Rao",
+  "username": "ramesh.rao",
+  "email": "ramesh.rao@gurukul.edu",
+  "phone": "9900003333",
+  "subject": "Science",
+  "dob": "",
+  "gender": "",
+  "blood_group": "",
+  "emergency_name": "",
+  "emergency_phone": "",
+  "address": "",
+  "bank_name": "",
+  "account_number": "",
+  "ifsc": "",
+  "account_type": "Savings",
+  "pan": "",
+  "uan": "",
+  "esi_number": "",
+  "employment_type": "Full-time",
+  "designation": "Senior Teacher",
+  "department": "Science",
+  "joining_date": "2019-06-01",
+  "status": "Active",
+  "assignments": [
+    {
+      "class": "10",
+      "section": "A",
+      "subject": "Science"
+    },
+    {
+      "class": "9",
+      "section": "A",
+      "subject": "Science"
+    },
+    {
+      "class": "9",
+      "section": "B",
+      "subject": "Science"
+    }
+  ],
+  "payroll_structure": {
+    "id": 10,
+    "staff_id": "T003",
+    "staff_type": "teacher",
+    "basic": 25000,
+    "hra_pct": 40,
+    "da_pct": 5,
+    "transport": 1500,
+    "medical": 1250,
+    "pf_pct": 12,
+    "esi_pct": 0,
+    "tds": 500
+  },
+  "payroll_entries": []
+}

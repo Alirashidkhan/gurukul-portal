@@ -1,0 +1,44 @@
+{
+  "feeByType": [
+    {
+      "fee_type": "Tuition Fee",
+      "total": 65000
+    },
+    {
+      "fee_type": "Transport Fee",
+      "total": 13500
+    },
+    {
+      "fee_type": "Annual Charges",
+      "total": 4000
+    },
+    {
+      "fee_type": "Lab Fee",
+      "total": 1500
+    },
+    {
+      "fee_type": "Sports Fee",
+      "total": 1200
+    }
+  ],
+  "donations": 0,
+  "manualReceipts": [],
+  "salaryByMonth": [
+    {
+      "month": "2026-01",
+      "total": 332499
+    },
+    {
+      "month": "2026-02",
+      "total": 332499
+    },
+    {
+      "month": "2026-03",
+      "total": 332499
+    }
+  ],
+  "pfPaid": 82080,
+  "esiPaid": 1473,
+  "manualPayments": [],
+  "year": "2025"
+}

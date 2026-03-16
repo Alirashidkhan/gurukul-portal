@@ -1,0 +1,50 @@
+{
+  "routes": [
+    {
+      "id": 3,
+      "route_name": "Jayanagar Route",
+      "driver": "Raju Kumar",
+      "vehicle": "KA-09-1234",
+      "capacity": 40,
+      "stops": "[]",
+      "departure": "08:00",
+      "arrival": "09:00",
+      "status": "Active",
+      "stops_arr": []
+    },
+    {
+      "id": 1,
+      "route_name": "Route 1 – KR Nagar",
+      "driver": "Raju Kumar",
+      "vehicle": "KA-09 AB 1234",
+      "capacity": 40,
+      "stops": "[\"KR Nagar\",\"Mysore Road\",\"Vijayanagar\",\"School\"]",
+      "departure": "08:00",
+      "arrival": "08:45",
+      "status": "Active",
+      "stops_arr": [
+        "KR Nagar",
+        "Mysore Road",
+        "Vijayanagar",
+        "School"
+      ]
+    },
+    {
+      "id": 2,
+      "route_name": "Route 2 – Hunsur Road",
+      "driver": "Mahesh D",
+      "vehicle": "KA-09 CD 5678",
+      "capacity": 35,
+      "stops": "[\"Hunsur Road\",\"Rajajinagar\",\"Saraswathipuram\",\"School\"]",
+      "departure": "08:10",
+      "arrival": "08:50",
+      "status": "Active",
+      "stops_arr": [
+        "Hunsur Road",
+        "Rajajinagar",
+        "Saraswathipuram",
+        "School"
+      ]
+    }
+  ]
+}

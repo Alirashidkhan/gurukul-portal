@@ -1,0 +1,2034 @@
+<!DOCTYPE html>
+<html lang="en-US" class="no-js">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Gurukul High School – Mysore | Excellence in Education Since 1965</title>
+	<meta name="description" content="Gurukul High School, Mysore – Nurturing young minds with a blend of modern knowledge, traditional values and spiritual wisdom. CBSE affiliated school in Mysore, Karnataka.">
+
+	<!-- Fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+	<!-- Stylesheets -->
+	<link rel="stylesheet" href="css/font-awesome.css" type="text/css" media="all">
+	<link rel="stylesheet" href="css/all.css" type="text/css" media="all">
+	<link rel="stylesheet" href="css/elegant-font.css" type="text/css" media="all">
+	<link rel="stylesheet" href="css/style_1.css" type="text/css" media="all">
+	<link rel="stylesheet" href="css/page-builder.css" type="text/css" media="all">
+	<link rel="stylesheet" href="css/style-core.css" type="text/css" media="all">
+	<link rel="stylesheet" href="css/kingster-style-custom.css" type="text/css" media="all">
+	<link rel="stylesheet" href="css/dashicons.min.css" type="text/css" media="all">
+
+	<style>
+		/* ===== CSS RESET & BASE ===== */
+		*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+		html { scroll-behavior: smooth; }
+		body {
+			font-family: 'Poppins', sans-serif;
+			font-size: 15px;
+			color: #444;
+			background: #fff;
+			line-height: 1.8;
+		}
+		a { text-decoration: none; color: inherit; }
+		img { max-width: 100%; height: auto; display: block; }
+		ul { list-style: none; }
+
+		/* ===== VARIABLES ===== */
+		:root {
+			--primary:   #0D1B5E;   /* Deep Navy Blue */
+			--primary-d: #091245;
+			--gold:      #3D8B37;   /* Leaf Green */
+			--gold-l:    #5CB85C;   /* Light Green */
+			--dark:      #060D2E;   /* Very Dark Navy */
+			--text:      #444;
+			--light-bg:  #f0f2f8;
+			--white:     #ffffff;
+		}
+
+		/* ===== TOP BAR ===== */
+		.top-bar {
+			background: var(--dark);
+			color: #ccc;
+			font-size: 13px;
+			padding: 8px 0;
+		}
+		.top-bar-inner {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 0 20px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			flex-wrap: wrap;
+			gap: 8px;
+		}
+		.top-bar a { color: #ccc; transition: color .2s; }
+		.top-bar a:hover { color: var(--gold); }
+		.top-bar i { margin-right: 6px; color: var(--gold); }
+		.top-bar-left { display: flex; gap: 22px; align-items: center; flex-wrap: wrap; }
+		.top-bar-right { display: flex; gap: 16px; align-items: center; }
+		.top-bar-btn {
+			background: var(--primary);
+			color: #fff !important;
+			padding: 4px 16px;
+			border-radius: 3px;
+			font-weight: 600;
+			transition: background .2s;
+		}
+		.top-bar-btn:hover { background: var(--gold) !important; color: #fff !important; }
+
+		/* ===== NAVIGATION ===== */
+		.navbar {
+			background: rgba(255,255,255,0.97);
+			box-shadow: 0 2px 20px rgba(0,0,0,0.10);
+			position: sticky;
+			top: 0;
+			z-index: 999;
+			transition: all .3s;
+		}
+		.nav-inner {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 0 20px;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			height: 80px;
+		}
+		.logo-wrap { display: flex; align-items: center; gap: 14px; }
+		.logo-emblem {
+			width: 58px;
+			height: 58px;
+			background: linear-gradient(135deg, var(--primary) 0%, var(--gold) 100%);
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 24px;
+			color: #fff;
+			font-weight: 800;
+			flex-shrink: 0;
+			letter-spacing: -1px;
+			box-shadow: 0 4px 15px rgba(139,26,46,0.35);
+		}
+		.logo-text-wrap { display: flex; flex-direction: column; }
+		.logo-name {
+			font-family: 'Playfair Display', serif;
+			font-size: 20px;
+			font-weight: 700;
+			color: var(--primary);
+			line-height: 1.1;
+		}
+		.logo-tagline {
+			font-size: 10px;
+			color: var(--gold);
+			letter-spacing: 2px;
+			text-transform: uppercase;
+			font-weight: 600;
+		}
+		.nav-menu {
+			display: flex;
+			gap: 4px;
+			align-items: center;
+		}
+		.nav-menu > li { position: relative; }
+		.nav-menu > li > a {
+			display: block;
+			padding: 10px 14px;
+			color: var(--dark);
+			font-size: 14px;
+			font-weight: 600;
+			border-radius: 4px;
+			transition: all .2s;
+		}
+		.nav-menu > li > a:hover,
+		.nav-menu > li.active > a { color: var(--primary); background: rgba(139,26,46,0.06); }
+		.nav-menu .dropdown {
+			position: absolute;
+			top: calc(100% + 6px);
+			left: 0;
+			background: #fff;
+			min-width: 200px;
+			border-radius: 6px;
+			box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+			opacity: 0;
+			pointer-events: none;
+			transform: translateY(-8px);
+			transition: all .25s;
+			border-top: 3px solid var(--primary);
+		}
+		.nav-menu li:hover .dropdown {
+			opacity: 1;
+			pointer-events: all;
+			transform: translateY(0);
+		}
+		.nav-menu .dropdown li a {
+			display: block;
+			padding: 10px 18px;
+			font-size: 13px;
+			color: #444;
+			border-bottom: 1px solid #f0f0f0;
+			transition: all .2s;
+		}
+		.nav-menu .dropdown li:last-child a { border-bottom: none; }
+		.nav-menu .dropdown li a:hover { color: var(--primary); padding-left: 24px; background: #fdf5f6; }
+		.nav-apply-btn {
+			background: var(--primary);
+			color: #fff !important;
+			padding: 10px 22px !important;
+			border-radius: 30px !important;
+			font-weight: 700 !important;
+			margin-left: 8px;
+			box-shadow: 0 4px 15px rgba(139,26,46,0.3);
+			transition: all .2s !important;
+		}
+		.nav-apply-btn:hover { background: var(--gold) !important; color: #fff !important; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(200,150,42,0.4) !important; }
+		.mobile-menu-toggle {
+			display: none;
+			flex-direction: column;
+			gap: 5px;
+			cursor: pointer;
+			padding: 8px;
+			background: none;
+			border: none;
+		}
+		.mobile-menu-toggle span {
+			display: block;
+			width: 26px;
+			height: 3px;
+			background: var(--primary);
+			border-radius: 2px;
+			transition: all .3s;
+		}
+
+		/* ===== HERO SECTION ===== */
+		.hero {
+			position: relative;
+			min-height: 92vh;
+			display: flex;
+			align-items: center;
+			overflow: hidden;
+			background: linear-gradient(135deg, #1a0a0e 0%, #3a1020 40%, #1a0a0e 100%);
+		}
+		.hero-bg {
+			position: absolute;
+			inset: 0;
+			background:
+				url('images/bg-7.jpg') center/cover no-repeat;
+			opacity: 0.25;
+		}
+		.hero-pattern {
+			position: absolute;
+			inset: 0;
+			background-image: radial-gradient(circle at 25% 50%, rgba(200,150,42,0.12) 0%, transparent 60%),
+				radial-gradient(circle at 75% 30%, rgba(139,26,46,0.2) 0%, transparent 55%);
+		}
+		.hero-content {
+			position: relative;
+			z-index: 2;
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 80px 20px;
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 60px;
+			align-items: center;
+		}
+		.hero-text .pre-title {
+			display: inline-flex;
+			align-items: center;
+			gap: 10px;
+			background: rgba(200,150,42,0.15);
+			border: 1px solid rgba(200,150,42,0.4);
+			color: var(--gold-l);
+			font-size: 12px;
+			letter-spacing: 3px;
+			text-transform: uppercase;
+			font-weight: 700;
+			padding: 6px 16px;
+			border-radius: 30px;
+			margin-bottom: 24px;
+		}
+		.hero-text h1 {
+			font-family: 'Playfair Display', serif;
+			font-size: clamp(36px, 5vw, 62px);
+			color: #fff;
+			line-height: 1.15;
+			margin-bottom: 20px;
+		}
+		.hero-text h1 span { color: var(--gold-l); }
+		.hero-text p {
+			color: rgba(255,255,255,0.75);
+			font-size: 16px;
+			line-height: 1.8;
+			margin-bottom: 36px;
+			max-width: 520px;
+		}
+		.hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+		.btn-primary {
+			background: var(--primary);
+			color: #fff;
+			padding: 14px 32px;
+			border-radius: 30px;
+			font-weight: 700;
+			font-size: 14px;
+			letter-spacing: .5px;
+			transition: all .25s;
+			box-shadow: 0 6px 20px rgba(139,26,46,0.4);
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+		.btn-primary:hover { background: var(--gold); transform: translateY(-2px); box-shadow: 0 10px 28px rgba(200,150,42,0.4); }
+		.btn-outline {
+			border: 2px solid rgba(255,255,255,0.5);
+			color: #fff;
+			padding: 12px 30px;
+			border-radius: 30px;
+			font-weight: 600;
+			font-size: 14px;
+			transition: all .25s;
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+		}
+		.btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+		.hero-stats {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 16px;
+			margin-top: 50px;
+		}
+		.hero-stat-card {
+			background: rgba(255,255,255,0.07);
+			backdrop-filter: blur(10px);
+			border: 1px solid rgba(255,255,255,0.12);
+			border-radius: 12px;
+			padding: 20px;
+			text-align: center;
+			transition: all .3s;
+		}
+		.hero-stat-card:hover { background: rgba(200,150,42,0.15); border-color: var(--gold); }
+		.hero-stat-num {
+			font-size: 34px;
+			font-weight: 800;
+			color: var(--gold-l);
+			line-height: 1;
+			font-family: 'Playfair Display', serif;
+		}
+		.hero-stat-label { font-size: 12px; color: rgba(255,255,255,0.65); margin-top: 5px; letter-spacing: 1px; }
+		.hero-visual {
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+		}
+		.hero-card-main {
+			background: rgba(255,255,255,0.07);
+			backdrop-filter: blur(12px);
+			border: 1px solid rgba(255,255,255,0.15);
+			border-radius: 20px;
+			padding: 30px;
+			text-align: center;
+			color: #fff;
+		}
+		.hero-card-main .school-crest {
+			width: 100px;
+			height: 100px;
+			background: linear-gradient(135deg, var(--primary) 0%, var(--gold) 100%);
+			border-radius: 50%;
+			margin: 0 auto 20px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 40px;
+			box-shadow: 0 8px 30px rgba(139,26,46,0.5);
+		}
+		.hero-card-main h3 {
+			font-family: 'Playfair Display', serif;
+			font-size: 22px;
+			margin-bottom: 8px;
+		}
+		.hero-card-main p { font-size: 13px; color: rgba(255,255,255,0.65); }
+		.hero-motto {
+			background: linear-gradient(135deg, var(--primary) 0%, #a82035 100%);
+			border-radius: 14px;
+			padding: 20px 24px;
+			color: #fff;
+			text-align: center;
+		}
+		.hero-motto .motto-label { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-l); margin-bottom: 8px; }
+		.hero-motto .motto-text { font-family: 'Playfair Display', serif; font-size: 18px; font-style: italic; }
+		.hero-badges {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 12px;
+		}
+		.hero-badge {
+			background: rgba(255,255,255,0.07);
+			border: 1px solid rgba(255,255,255,0.12);
+			border-radius: 10px;
+			padding: 14px 10px;
+			text-align: center;
+			color: #fff;
+		}
+		.hero-badge i { font-size: 22px; color: var(--gold-l); margin-bottom: 6px; display: block; }
+		.hero-badge span { font-size: 11px; color: rgba(255,255,255,0.7); }
+
+		/* ===== ANNOUNCEMENT BAR ===== */
+		.announcement-bar {
+			background: var(--gold);
+			color: var(--dark);
+			padding: 12px 0;
+			overflow: hidden;
+		}
+		.announcement-inner {
+			max-width: 1200px;
+			margin: 0 auto;
+			padding: 0 20px;
+			display: flex;
+			align-items: center;
+			gap: 20px;
+		}
+		.announcement-label {
+			background: var(--primary);
+			color: #fff;
+			font-size: 11px;
+			font-weight: 800;
+			letter-spacing: 2px;
+			text-transform: uppercase;
+			padding: 4px 14px;
+			border-radius: 3px;
+			white-space: nowrap;
+			flex-shrink: 0;
+		}
+		.announcement-scroll {
+			overflow: hidden;
+			flex: 1;
+		}
+		.announcement-text {
+			font-size: 13px;
+			font-weight: 600;
+			white-space: nowrap;
+			animation: marquee 30s linear infinite;
+			display: inline-block;
+		}
+		@keyframes marquee {
+			0% { transform: translateX(100%); }
+			100% { transform: translateX(-100%); }
+		}
+
+		/* ===== SECTION STYLES ===== */
+		.section { padding: 90px 0; }
+		.section-alt { background: var(--light-bg); }
+		.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+		.section-header { text-align: center; margin-bottom: 60px; }
+		.section-tag {
+			display: inline-block;
+			background: rgba(139,26,46,0.1);
+			color: var(--primary);
+			font-size: 11px;
+			font-weight: 700;
+			letter-spacing: 3px;
+			text-transform: uppercase;
+			padding: 6px 18px;
+			border-radius: 30px;
+			margin-bottom: 16px;
+			border: 1px solid rgba(139,26,46,0.2);
+		}
+		.section-title {
+			font-family: 'Playfair Display', serif;
+			font-size: clamp(28px, 4vw, 44px);
+			color: var(--dark);
+			line-height: 1.25;
+			margin-bottom: 16px;
+		}
+		.section-title span { color: var(--primary); }
+		.section-desc { font-size: 16px; color: #777; max-width: 600px; margin: 0 auto; line-height: 1.8; }
+		.section-divider {
+			width: 60px;
+			height: 4px;
+			background: linear-gradient(90deg, var(--primary), var(--gold));
+			border-radius: 2px;
+			margin: 20px auto 0;
+		}
+
+		/* ===== ABOUT SECTION ===== */
+		.about-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 70px;
+			align-items: center;
+		}
+		.about-visual { position: relative; }
+		.about-img-main {
+			background: linear-gradient(135deg, #8B1A2E 0%, #C8962A 100%);
+			border-radius: 20px;
+			height: 420px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 80px;
+			color: rgba(255,255,255,0.4);
+			overflow: hidden;
+			position: relative;
+		}
+		.about-img-main img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			border-radius: 20px;
+		}
+		.about-badge-card {
+			position: absolute;
+			bottom: -24px;
+			right: -24px;
+			background: var(--white);
+			border-radius: 14px;
+			padding: 18px 22px;
+			box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+			text-align: center;
+		}
+		.about-badge-card .big-num {
+			font-size: 40px;
+			font-weight: 800;
+			color: var(--primary);
+			line-height: 1;
+			font-family: 'Playfair Display', serif;
+		}
+		.about-badge-card .big-label { font-size: 12px; color: #888; margin-top: 4px; }
+		.about-text { padding-bottom: 30px; }
+		.about-text h2 {
+			font-family: 'Playfair Display', serif;
+			font-size: clamp(28px, 3.5vw, 40px);
+			color: var(--dark);
+			line-height: 1.25;
+			margin-bottom: 16px;
+		}
+		.about-text h2 span { color: var(--primary); }
+		.about-text p { color: #666; line-height: 1.9; margin-bottom: 16px; }
+		.about-pillars {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 16px;
+			margin: 28px 0;
+		}
+		.pillar-card {
+			background: var(--light-bg);
+			border-radius: 12px;
+			padding: 18px;
+			text-align: center;
+			border-top: 3px solid var(--primary);
+			transition: all .3s;
+		}
+		.pillar-card:hover { background: #fff; box-shadow: 0 6px 20px rgba(0,0,0,0.1); transform: translateY(-3px); }
+		.pillar-card i { font-size: 24px; color: var(--primary); margin-bottom: 10px; display: block; }
+		.pillar-card h4 { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+		.pillar-card p { font-size: 11px; color: #888; }
+
+		/* ===== PROGRAMS SECTION ===== */
+		.programs-grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 28px;
+		}
+		.program-card {
+			background: #fff;
+			border-radius: 16px;
+			overflow: hidden;
+			box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+			transition: all .3s;
+			border: 1px solid #f0eae8;
+		}
+		.program-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,0.12); }
+		.program-card-header {
+			padding: 30px 24px 20px;
+			text-align: center;
+			background: linear-gradient(135deg, #fdf5f6 0%, #fff9f0 100%);
+			border-bottom: 1px solid #f0eae8;
+		}
+		.program-icon {
+			width: 68px;
+			height: 68px;
+			background: linear-gradient(135deg, var(--primary), var(--gold));
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin: 0 auto 16px;
+			font-size: 26px;
+			color: #fff;
+			box-shadow: 0 6px 20px rgba(139,26,46,0.25);
+		}
+		.program-card h3 { font-size: 18px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+		.program-card .grade-tag {
+			display: inline-block;
+			background: rgba(139,26,46,0.1);
+			color: var(--primary);
+			font-size: 11px;
+			font-weight: 600;
+			padding: 3px 12px;
+			border-radius: 20px;
+		}
+		.program-card-body { padding: 22px 24px; }
+		.program-card-body p { font-size: 13.5px; color: #666; line-height: 1.8; margin-bottom: 16px; }
+		.program-features { padding: 0; }
+		.program-features li {
+			font-size: 13px;
+			color: #555;
+			padding: 5px 0;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+		.program-features li::before {
+			content: '';
+			width: 7px;
+			height: 7px;
+			background: var(--gold);
+			border-radius: 50%;
+			flex-shrink: 0;
+		}
+		.program-card-footer {
+			padding: 0 24px 24px;
+		}
+		.program-learn-more {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			color: var(--primary);
+			font-size: 13px;
+			font-weight: 700;
+			transition: gap .2s;
+		}
+		.program-learn-more:hover { gap: 14px; color: var(--gold); }
+
+		/* ===== STATS SECTION ===== */
+		.stats-section {
+			background: linear-gradient(135deg, var(--primary) 0%, #6a1322 50%, var(--dark) 100%);
+			padding: 80px 0;
+			position: relative;
+			overflow: hidden;
+		}
+		.stats-section::before {
+			content: '';
+			position: absolute;
+			inset: 0;
+			background: url('images/pattern-1.png') repeat;
+			opacity: 0.05;
+		}
+		.stats-grid {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: 40px;
+			position: relative;
+		}
+		.stat-item { text-align: center; color: #fff; }
+		.stat-item .stat-num {
+			font-family: 'Playfair Display', serif;
+			font-size: 52px;
+			font-weight: 700;
+			color: var(--gold-l);
+			line-height: 1;
+			margin-bottom: 10px;
+		}
+		.stat-item .stat-label { font-size: 14px; color: rgba(255,255,255,0.75); letter-spacing: 1px; }
+		.stat-item .stat-divider {
+			width: 40px;
+			height: 3px;
+			background: var(--gold);
+			margin: 12px auto;
+			border-radius: 2px;
+		}
+
+		/* ===== FACILITIES SECTION ===== */
+		.facilities-grid {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: 24px;
+		}
+		.facility-card {
+			background: #fff;
+			border-radius: 14px;
+			padding: 28px 20px;
+			text-align: center;
+			box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+			border: 1px solid #f0eae8;
+			transition: all .3s;
+		}
+		.facility-card:hover { transform: translateY(-5px); box-shadow: 0 12px 32px rgba(0,0,0,0.12); border-color: var(--primary); }
+		.facility-icon {
+			width: 62px;
+			height: 62px;
+			background: linear-gradient(135deg, rgba(139,26,46,0.1), rgba(200,150,42,0.1));
+			border-radius: 12px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin: 0 auto 16px;
+			font-size: 24px;
+			color: var(--primary);
+			transition: all .3s;
+		}
+		.facility-card:hover .facility-icon { background: linear-gradient(135deg, var(--primary), var(--gold)); color: #fff; }
+		.facility-card h4 { font-size: 15px; font-weight: 700; color: var(--dark); margin-bottom: 8px; }
+		.facility-card p { font-size: 13px; color: #888; line-height: 1.6; }
+
+		/* ===== NEWS SECTION ===== */
+		.news-grid {
+			display: grid;
+			grid-template-columns: 2fr 1fr 1fr;
+			gap: 24px;
+		}
+		.news-card {
+			background: #fff;
+			border-radius: 14px;
+			overflow: hidden;
+			box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+			transition: all .3s;
+		}
+		.news-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.12); }
+		.news-card-img {
+			height: 220px;
+			background: linear-gradient(135deg, var(--primary) 0%, var(--gold) 100%);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 48px;
+			color: rgba(255,255,255,0.4);
+			overflow: hidden;
+		}
+		.news-card:not(.news-card-large) .news-card-img { height: 160px; }
+		.news-cat {
+			display: inline-block;
+			background: var(--primary);
+			color: #fff;
+			font-size: 10px;
+			font-weight: 700;
+			letter-spacing: 2px;
+			text-transform: uppercase;
+			padding: 4px 12px;
+			border-radius: 3px;
+			margin-bottom: 12px;
+		}
+		.news-card-body { padding: 22px; }
+		.news-date { font-size: 12px; color: #aaa; margin-bottom: 8px; }
+		.news-card-body h3 { font-size: 17px; font-weight: 700; color: var(--dark); margin-bottom: 10px; line-height: 1.4; }
+		.news-card:not(.news-card-large) .news-card-body h3 { font-size: 14px; }
+		.news-card-body p { font-size: 13px; color: #777; line-height: 1.7; }
+		.news-read-more { color: var(--primary); font-size: 13px; font-weight: 700; margin-top: 14px; display: inline-flex; align-items: center; gap: 6px; }
+		.news-read-more:hover { color: var(--gold); }
+
+		/* ===== TESTIMONIALS ===== */
+		.testimonials-section { background: var(--light-bg); }
+		.testimonials-grid {
+			display: grid;
+			grid-template-columns: repeat(3, 1fr);
+			gap: 24px;
+		}
+		.testimonial-card {
+			background: #fff;
+			border-radius: 16px;
+			padding: 32px;
+			box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+			position: relative;
+			transition: all .3s;
+		}
+		.testimonial-card:hover { transform: translateY(-4px); box-shadow: 0 14px 36px rgba(0,0,0,0.11); }
+		.testimonial-card::before {
+			content: '\201C';
+			font-size: 80px;
+			color: rgba(139,26,46,0.1);
+			font-family: Georgia, serif;
+			position: absolute;
+			top: 10px;
+			left: 20px;
+			line-height: 1;
+		}
+		.testimonial-text {
+			font-size: 14px;
+			color: #666;
+			line-height: 1.8;
+			font-style: italic;
+			margin-bottom: 24px;
+			position: relative;
+		}
+		.testimonial-author { display: flex; align-items: center; gap: 14px; }
+		.author-avatar {
+			width: 48px;
+			height: 48px;
+			border-radius: 50%;
+			background: linear-gradient(135deg, var(--primary), var(--gold));
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 18px;
+			color: #fff;
+			font-weight: 700;
+			flex-shrink: 0;
+		}
+		.author-info .name { font-size: 14px; font-weight: 700; color: var(--dark); }
+		.author-info .role { font-size: 12px; color: #aaa; }
+		.rating { color: var(--gold); font-size: 12px; margin-bottom: 14px; }
+
+		/* ===== ADMISSIONS CTA ===== */
+		.admissions-cta {
+			background: linear-gradient(135deg, var(--dark) 0%, #2a0a16 100%);
+			padding: 90px 0;
+			position: relative;
+			overflow: hidden;
+		}
+		.admissions-cta::before {
+			content: '';
+			position: absolute;
+			right: 0;
+			top: 0;
+			bottom: 0;
+			width: 45%;
+			background: url('images/bg-3.jpg') center/cover;
+			opacity: 0.1;
+		}
+		.admissions-inner {
+			position: relative;
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 60px;
+			align-items: center;
+		}
+		.admissions-text h2 {
+			font-family: 'Playfair Display', serif;
+			font-size: clamp(28px, 3.5vw, 42px);
+			color: #fff;
+			line-height: 1.25;
+			margin-bottom: 20px;
+		}
+		.admissions-text h2 span { color: var(--gold-l); }
+		.admissions-text p { color: rgba(255,255,255,0.7); font-size: 15px; line-height: 1.8; margin-bottom: 32px; }
+		.admissions-checklist { margin-bottom: 36px; }
+		.admissions-checklist li {
+			display: flex;
+			align-items: center;
+			gap: 12px;
+			color: rgba(255,255,255,0.8);
+			font-size: 14px;
+			margin-bottom: 12px;
+		}
+		.admissions-checklist li i { color: var(--gold); font-size: 14px; }
+		.admissions-form-card {
+			background: rgba(255,255,255,0.06);
+			backdrop-filter: blur(10px);
+			border: 1px solid rgba(255,255,255,0.12);
+			border-radius: 20px;
+			padding: 36px;
+		}
+		.admissions-form-card h3 {
+			font-size: 20px;
+			color: #fff;
+			font-weight: 700;
+			margin-bottom: 24px;
+			text-align: center;
+		}
+		.form-group { margin-bottom: 16px; }
+		.form-group input,
+		.form-group select {
+			width: 100%;
+			background: rgba(255,255,255,0.08);
+			border: 1px solid rgba(255,255,255,0.2);
+			border-radius: 8px;
+			padding: 12px 16px;
+			color: #fff;
+			font-size: 14px;
+			font-family: inherit;
+			outline: none;
+			transition: border .2s;
+		}
+		.form-group input::placeholder { color: rgba(255,255,255,0.45); }
+		.form-group input:focus,
+		.form-group select:focus { border-color: var(--gold); }
+		.form-group select option { background: var(--dark); color: #fff; }
+		.form-submit {
+			width: 100%;
+			background: var(--primary);
+			color: #fff;
+			border: none;
+			padding: 14px;
+			border-radius: 8px;
+			font-size: 15px;
+			font-weight: 700;
+			font-family: inherit;
+			cursor: pointer;
+			transition: background .2s;
+			margin-top: 8px;
+		}
+		.form-submit:hover { background: var(--gold); }
+
+		/* ===== EVENTS SECTION ===== */
+		.events-list { display: flex; flex-direction: column; gap: 16px; }
+		.event-item {
+			display: flex;
+			gap: 20px;
+			align-items: flex-start;
+			background: #fff;
+			border-radius: 12px;
+			padding: 20px;
+			box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+			border-left: 4px solid var(--primary);
+			transition: all .3s;
+		}
+		.event-item:hover { transform: translateX(4px); box-shadow: 0 6px 20px rgba(0,0,0,0.1); }
+		.event-date-badge {
+			background: var(--primary);
+			color: #fff;
+			border-radius: 10px;
+			padding: 10px 14px;
+			text-align: center;
+			min-width: 56px;
+			flex-shrink: 0;
+		}
+		.event-date-badge .day { font-size: 24px; font-weight: 800; line-height: 1; font-family: 'Playfair Display', serif; }
+		.event-date-badge .month { font-size: 11px; letter-spacing: 1px; opacity: .85; }
+		.event-info h4 { font-size: 15px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+		.event-info p { font-size: 13px; color: #888; }
+		.event-info .event-meta { display: flex; gap: 14px; margin-top: 8px; }
+		.event-meta span { font-size: 12px; color: #aaa; display: flex; align-items: center; gap: 5px; }
+		.event-meta i { color: var(--gold); }
+
+		/* ===== GALLERY SECTION ===== */
+		.gallery-grid {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			grid-template-rows: auto auto;
+			gap: 12px;
+		}
+		.gallery-item {
+			border-radius: 10px;
+			overflow: hidden;
+			background: linear-gradient(135deg, var(--primary), var(--gold));
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 36px;
+			color: rgba(255,255,255,0.4);
+			transition: all .3s;
+			cursor: pointer;
+			position: relative;
+		}
+		.gallery-item:hover { transform: scale(1.02); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+		.gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 2; height: 300px; font-size: 64px; }
+		.gallery-item:not(:nth-child(1)) { height: 144px; }
+		.gallery-overlay {
+			position: absolute;
+			inset: 0;
+			background: rgba(139,26,46,0.7);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			opacity: 0;
+			transition: opacity .3s;
+		}
+		.gallery-item:hover .gallery-overlay { opacity: 1; }
+		.gallery-overlay i { font-size: 28px; color: #fff; }
+		.gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+
+		/* ===== CONTACT BAR ===== */
+		.contact-bar {
+			background: var(--primary);
+			padding: 50px 0;
+		}
+		.contact-bar-grid {
+			display: grid;
+			grid-template-columns: repeat(4, 1fr);
+			gap: 30px;
+		}
+		.contact-bar-item {
+			display: flex;
+			align-items: center;
+			gap: 16px;
+			color: #fff;
+		}
+		.contact-bar-item .icon-wrap {
+			width: 50px;
+			height: 50px;
+			background: rgba(255,255,255,0.15);
+			border-radius: 12px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 20px;
+			flex-shrink: 0;
+			color: var(--gold-l);
+			transition: all .3s;
+		}
+		.contact-bar-item:hover .icon-wrap { background: var(--gold); color: #fff; }
+		.contact-bar-item h4 { font-size: 12px; color: rgba(255,255,255,0.65); margin-bottom: 4px; letter-spacing: 1px; text-transform: uppercase; }
+		.contact-bar-item p { font-size: 14px; font-weight: 600; }
+
+		/* ===== FOOTER ===== */
+		.footer {
+			background: var(--dark);
+			color: rgba(255,255,255,0.7);
+			padding: 70px 0 0;
+		}
+		.footer-grid {
+			display: grid;
+			grid-template-columns: 2fr 1fr 1fr 1fr;
+			gap: 50px;
+			padding-bottom: 50px;
+		}
+		.footer-brand .footer-logo-name {
+			font-family: 'Playfair Display', serif;
+			font-size: 22px;
+			color: #fff;
+			margin-bottom: 6px;
+		}
+		.footer-brand .footer-logo-tagline {
+			font-size: 11px;
+			color: var(--gold);
+			letter-spacing: 2px;
+			text-transform: uppercase;
+			margin-bottom: 20px;
+		}
+		.footer-brand p { font-size: 13.5px; line-height: 1.8; margin-bottom: 24px; }
+		.footer-social { display: flex; gap: 10px; }
+		.social-btn {
+			width: 38px;
+			height: 38px;
+			background: rgba(255,255,255,0.08);
+			border-radius: 8px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			color: rgba(255,255,255,0.7);
+			font-size: 14px;
+			transition: all .2s;
+		}
+		.social-btn:hover { background: var(--primary); color: #fff; }
+		.footer-col h4 {
+			color: #fff;
+			font-size: 15px;
+			font-weight: 700;
+			margin-bottom: 20px;
+			padding-bottom: 12px;
+			border-bottom: 2px solid rgba(255,255,255,0.1);
+		}
+		.footer-links li { margin-bottom: 10px; }
+		.footer-links a {
+			font-size: 13.5px;
+			color: rgba(255,255,255,0.6);
+			transition: all .2s;
+			display: flex;
+			align-items: center;
+			gap: 8px;
+		}
+		.footer-links a::before {
+			content: '›';
+			color: var(--gold);
+			font-size: 16px;
+		}
+		.footer-links a:hover { color: var(--gold); padding-left: 4px; }
+		.footer-contact-item {
+			display: flex;
+			gap: 12px;
+			margin-bottom: 14px;
+			align-items: flex-start;
+		}
+		.footer-contact-item i { color: var(--gold); font-size: 14px; margin-top: 3px; flex-shrink: 0; }
+		.footer-contact-item span { font-size: 13px; line-height: 1.7; }
+		.footer-bottom {
+			border-top: 1px solid rgba(255,255,255,0.1);
+			padding: 22px 0;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			font-size: 13px;
+			flex-wrap: wrap;
+			gap: 10px;
+		}
+		.footer-bottom a { color: var(--gold); }
+
+		/* ===== SCROLL TO TOP ===== */
+		.scroll-top {
+			position: fixed;
+			bottom: 30px;
+			right: 30px;
+			width: 46px;
+			height: 46px;
+			background: var(--primary);
+			color: #fff;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 18px;
+			cursor: pointer;
+			box-shadow: 0 4px 16px rgba(139,26,46,0.4);
+			z-index: 999;
+			transition: all .3s;
+			border: none;
+			outline: none;
+		}
+		.scroll-top:hover { background: var(--gold); transform: translateY(-3px); }
+
+		/* ===== RESPONSIVE ===== */
+		@media (max-width: 1024px) {
+			.programs-grid { grid-template-columns: repeat(2, 1fr); }
+			.facilities-grid { grid-template-columns: repeat(2, 1fr); }
+			.stats-grid { grid-template-columns: repeat(2, 1fr); }
+			.footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
+			.contact-bar-grid { grid-template-columns: repeat(2, 1fr); }
+		}
+		@media (max-width: 768px) {
+			.top-bar-left,
+			.top-bar-right { flex-wrap: wrap; gap: 8px; }
+			.nav-menu { display: none; }
+			.mobile-menu-toggle { display: flex; }
+			.hero-content { grid-template-columns: 1fr; text-align: center; }
+			.hero-visual { display: none; }
+			.hero-buttons { justify-content: center; }
+			.hero-stats { grid-template-columns: repeat(2, 1fr); }
+			.about-grid { grid-template-columns: 1fr; }
+			.programs-grid { grid-template-columns: 1fr; }
+			.news-grid { grid-template-columns: 1fr; }
+			.testimonials-grid { grid-template-columns: 1fr; }
+			.admissions-inner { grid-template-columns: 1fr; }
+			.gallery-grid { grid-template-columns: repeat(2, 1fr); }
+			.gallery-item:nth-child(1) { grid-column: span 2; height: 200px; }
+			.footer-grid { grid-template-columns: 1fr; }
+			.contact-bar-grid { grid-template-columns: 1fr 1fr; }
+			.footer-bottom { flex-direction: column; text-align: center; }
+		}
+		@media (max-width: 480px) {
+			.stats-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+			.contact-bar-grid { grid-template-columns: 1fr; }
+			.facilities-grid { grid-template-columns: 1fr; }
+			.about-pillars { grid-template-columns: 1fr; }
+		}
+
+		/* Mobile Nav Open State */
+		.nav-open .nav-menu {
+			display: flex;
+			flex-direction: column;
+			position: absolute;
+			top: 80px;
+			left: 0;
+			right: 0;
+			background: #fff;
+			padding: 20px;
+			box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+			gap: 0;
+		}
+		.nav-open .nav-menu .dropdown {
+			position: static;
+			opacity: 1;
+			pointer-events: all;
+			transform: none;
+			box-shadow: none;
+			border: none;
+			padding-left: 20px;
+		}
+	</style>
+</head>
+
+<body>
+
+<!-- ===== TOP BAR ===== -->
+<div class="top-bar">
+	<div class="top-bar-inner">
+		<div class="top-bar-left">
+			<a href="mailto:info@gurukulhighschool.edu.in">
+				<i class="fa fa-envelope"></i> info@gurukulhighschool.edu.in
+			</a>
+			<a href="tel:+918212345678">
+				<i class="fa fa-phone"></i> +91 821-234-5678
+			</a>
+			<span><i class="fa fa-map-marker"></i> KRS Road, Mysore, Karnataka – 570010</span>
+		</div>
+		<div class="top-bar-right">
+			<a href="#">Alumni</a>
+			<a href="#">Calendar</a>
+			<a href="#">Parent Portal</a>
+			<a href="admission-form.html" class="top-bar-btn">Apply Now</a>
+		</div>
+	</div>
+</div>
+
+<!-- ===== NAVIGATION ===== -->
+<nav class="navbar" id="mainNav">
+	<div class="nav-inner">
+		<a href="#" class="logo-wrap">
+			<div class="logo-emblem">GH</div>
+			<div class="logo-text-wrap">
+				<span class="logo-name">Gurukul High School</span>
+				<span class="logo-tagline">Mysore · Est. 1965</span>
+			</div>
+		</a>
+
+		<ul class="nav-menu" id="navMenu">
+			<li class="active"><a href="#">Home</a></li>
+			<li>
+				<a href="#about">About Us</a>
+				<ul class="dropdown">
+					<li><a href="#about">Our Story</a></li>
+					<li><a href="#about">Vision & Mission</a></li>
+					<li><a href="#about">Principal's Message</a></li>
+					<li><a href="#about">Our Faculty</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="#programs">Academics</a>
+				<ul class="dropdown">
+					<li><a href="#programs">Primary School (I–V)</a></li>
+					<li><a href="#programs">Middle School (VI–VIII)</a></li>
+					<li><a href="#programs">High School (IX–X)</a></li>
+					<li><a href="#programs">Senior Secondary (XI–XII)</a></li>
+					<li><a href="#programs">Curriculum Overview</a></li>
+				</ul>
+			</li>
+			<li>
+				<a href="#facilities">Facilities</a>
+				<ul class="dropdown">
+					<li><a href="#facilities">Science Labs</a></li>
+					<li><a href="#facilities">Library & Resource Centre</a></li>
+					<li><a href="#facilities">Sports Complex</a></li>
+					<li><a href="#facilities">Computer Lab</a></li>
+					<li><a href="#facilities">Arts & Music Studio</a></li>
+				</ul>
+			</li>
+			<li><a href="#events">Events</a></li>
+			<li><a href="#news">News</a></li>
+			<li><a href="#contact">Contact</a></li>
+			<li><a href="admission-form.html" class="nav-apply-btn">Apply Now</a></li>
+		</ul>
+
+		<button class="mobile-menu-toggle" id="mobileToggle" aria-label="Toggle menu">
+			<span></span><span></span><span></span>
+		</button>
+	</div>
+</nav>
+
+<!-- ===== HERO SECTION ===== -->
+<section class="hero">
+	<div class="hero-bg"></div>
+	<div class="hero-pattern"></div>
+	<div class="hero-content">
+		<div class="hero-text">
+			<div class="pre-title">
+				<i class="fa fa-star"></i>
+				CBSE Affiliated · Est. 1965 · Mysore, Karnataka
+			</div>
+			<h1>Shaping <span>Brilliant Minds</span>, Building Character</h1>
+			<p>
+				Gurukul High School, Mysore, offers a holistic education that harmonises modern learning with India's
+				rich cultural heritage — nurturing students in knowledge, virtue, and wisdom since 1965.
+			</p>
+			<div class="hero-buttons">
+				<a href="admission-form.html" class="btn-primary">
+					<i class="fa fa-graduation-cap"></i> Apply for Admissions
+				</a>
+				<a href="#about" class="btn-outline">
+					<i class="fa fa-play-circle"></i> Explore Our School
+				</a>
+			</div>
+
+			<div class="hero-stats">
+				<div class="hero-stat-card">
+					<div class="hero-stat-num">59+</div>
+					<div class="hero-stat-label">Years of Excellence</div>
+				</div>
+				<div class="hero-stat-card">
+					<div class="hero-stat-num">3,200+</div>
+					<div class="hero-stat-label">Students Enrolled</div>
+				</div>
+				<div class="hero-stat-card">
+					<div class="hero-stat-num">98%</div>
+					<div class="hero-stat-label">Board Pass Rate</div>
+				</div>
+				<div class="hero-stat-card">
+					<div class="hero-stat-num">180+</div>
+					<div class="hero-stat-label">Qualified Faculty</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="hero-visual">
+			<div class="hero-card-main">
+				<div class="school-crest">🏫</div>
+				<h3>Gurukul High School</h3>
+				<p>KRS Road, Mysore, Karnataka</p>
+			</div>
+			<div class="hero-motto">
+				<div class="motto-label">Our School Motto</div>
+				<div class="motto-text">"Sa Vidyā Yā Vimuktaye" — Knowledge that liberates</div>
+			</div>
+			<div class="hero-badges">
+				<div class="hero-badge">
+					<i class="fa fa-certificate"></i>
+					<span>CBSE Affiliated</span>
+				</div>
+				<div class="hero-badge">
+					<i class="fa fa-trophy"></i>
+					<span>Award Winning</span>
+				</div>
+				<div class="hero-badge">
+					<i class="fa fa-users"></i>
+					<span>Alumni Network</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- ===== ANNOUNCEMENT BAR ===== -->
+<div class="announcement-bar">
+	<div class="announcement-inner">
+		<div class="announcement-label">🔔 Latest</div>
+		<div class="announcement-scroll">
+			<div class="announcement-text">
+				📚 Admissions Open for Academic Year 2025–26 &nbsp;|&nbsp;
+				🏆 Gurukul wins State Level Science Olympiad — First Place! &nbsp;|&nbsp;
+				🎉 Annual Day Celebrations scheduled for March 20, 2026 &nbsp;|&nbsp;
+				⚽ Inter-School Sports Meet – Registration Open &nbsp;|&nbsp;
+				📋 CBSE Board Exam Schedule Released – Check Notice Board &nbsp;|&nbsp;
+				🎓 Class XII results: 99% students scored above 85% &nbsp;|&nbsp;
+				🏅 National Merit Scholarship Guidance Camp – April 5, 2026
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- ===== ABOUT SECTION ===== -->
+<section class="section" id="about">
+	<div class="container">
+		<div class="about-grid">
+			<div class="about-visual">
+				<div class="about-img-main">
+					<img src="images/building-700x450.jpg" alt="Gurukul High School Campus, Mysore" onerror="this.style.display='none'">
+					<span style="position:absolute;">🏫</span>
+				</div>
+				<div class="about-badge-card">
+					<div class="big-num">59+</div>
+					<div class="big-label">Years of Excellence</div>
+				</div>
+			</div>
+
+			<div class="about-text">
+				<span class="section-tag">About Gurukul High School</span>
+				<h2>A Legacy of <span>Learning & Leadership</span> in Mysore</h2>
+				<p>
+					Founded in 1965, Gurukul High School in Mysore has been a beacon of quality education in Karnataka
+					for nearly six decades. Nestled in the culturally rich heritage city of Mysore, our school
+					blends the best of modern pedagogy with India's timeless Gurukul tradition.
+				</p>
+				<p>
+					CBSE affiliated and fully equipped with world-class facilities, Gurukul High School prepares
+					students not just for academic success, but for a meaningful and purposeful life — grounded in
+					ethics, compassion, and intellectual curiosity.
+				</p>
+
+				<div class="about-pillars">
+					<div class="pillar-card">
+						<i class="fa fa-book"></i>
+						<h4>Vidyā</h4>
+						<p>Modern academic excellence</p>
+					</div>
+					<div class="pillar-card">
+						<i class="fa fa-heart"></i>
+						<h4>Sadvidyā</h4>
+						<p>Values & ethical character</p>
+					</div>
+					<div class="pillar-card">
+						<i class="fa fa-sun-o"></i>
+						<h4>Brahmavidyā</h4>
+						<p>Spiritual wisdom & purpose</p>
+					</div>
+				</div>
+
+				<a href="#programs" class="btn-primary" style="display:inline-flex;">
+					<i class="fa fa-arrow-right"></i> Explore Our Programs
+				</a>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- ===== STATS SECTION ===== -->
+<section class="stats-section">
+	<div class="container">
+		<div class="stats-grid">
+			<div class="stat-item">
+				<div class="stat-num">3,200+</div>
+				<div class="stat-divider"></div>
+				<div class="stat-label">Students Enrolled</div>
+			</div>
+			<div class="stat-item">
+				<div class="stat-num">180+</div>
+				<div class="stat-divider"></div>
+				<div class="stat-label">Expert Faculty Members</div>
+			</div>
+			<div class="stat-item">
+				<div class="stat-num">98%</div>
+				<div class="stat-divider"></div>
+				<div class="stat-label">Board Exam Pass Rate</div>
+			</div>
+			<div class="stat-item">
+				<div class="stat-num">250+</div>
+				<div class="stat-divider"></div>
+				<div class="stat-label">Annual Awards & Honours</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- ===== PROGRAMS SECTION ===== -->
+<section class="section section-alt" id="programs">
+	<div class="container">
+		<div class="section-header">
+			<span class="section-tag">Academic Programs</span>
+			<h2 class="section-title">Comprehensive Education for <span>Every Stage</span></h2>
+			<p class="section-desc">From foundational learning to competitive board preparation, we offer a structured and enriching curriculum aligned to CBSE standards and beyond.</p>
+			<div class="section-divider"></div>
+		</div>
+		<div class="programs-grid">
+			<div class="program-card">
+				<div class="program-card-header">
+					<div class="program-icon"><i class="fa fa-child"></i></div>
+					<h3>Primary School</h3>
+					<span class="grade-tag">Grades I – V</span>
+				</div>
+				<div class="program-card-body">
+					<p>A nurturing, activity-based learning environment that sparks curiosity, builds foundational literacy & numeracy, and develops social skills in young learners.</p>
+					<ul class="program-features">
+						<li>Activity-based learning</li>
+						<li>Vedic Mathematics introduction</li>
+						<li>Performing arts & yoga</li>
+						<li>Environmental awareness</li>
+					</ul>
+				</div>
+				<div class="program-card-footer">
+					<a href="#" class="program-learn-more">Learn More <i class="fa fa-arrow-right"></i></a>
+				</div>
+			</div>
+
+			<div class="program-card">
+				<div class="program-card-header">
+					<div class="program-icon"><i class="fa fa-pencil"></i></div>
+					<h3>Middle School</h3>
+					<span class="grade-tag">Grades VI – VIII</span>
+				</div>
+				<div class="program-card-body">
+					<p>A rigorous academic framework that bridges junior learning and high school, with a strong focus on conceptual understanding, critical thinking, and character development.</p>
+					<ul class="program-features">
+						<li>CBSE integrated curriculum</li>
+						<li>Science & Maths enrichment labs</li>
+						<li>Leadership & debate programs</li>
+						<li>Hindi, Kannada & English proficiency</li>
+					</ul>
+				</div>
+				<div class="program-card-footer">
+					<a href="#" class="program-learn-more">Learn More <i class="fa fa-arrow-right"></i></a>
+				</div>
+			</div>
+
+			<div class="program-card">
+				<div class="program-card-header">
+					<div class="program-icon"><i class="fa fa-flask"></i></div>
+					<h3>High School</h3>
+					<span class="grade-tag">Grades IX – X (CBSE)</span>
+				</div>
+				<div class="program-card-body">
+					<p>Board examination preparation with comprehensive subject coverage, expert coaching, and personalised mentoring to help every student excel at the Class X CBSE boards.</p>
+					<ul class="program-features">
+						<li>Board exam practice & mock tests</li>
+						<li>Personalised academic counselling</li>
+						<li>Science, Maths & Social Studies</li>
+						<li>Career orientation workshops</li>
+					</ul>
+				</div>
+				<div class="program-card-footer">
+					<a href="#" class="program-learn-more">Learn More <i class="fa fa-arrow-right"></i></a>
+				</div>
+			</div>
+
+			<div class="program-card">
+				<div class="program-card-header">
+					<div class="program-icon"><i class="fa fa-university"></i></div>
+					<h3>Senior Secondary</h3>
+					<span class="grade-tag">Grades XI – XII (CBSE)</span>
+				</div>
+				<div class="program-card-body">
+					<p>Specialised streams in Science (PCM / PCB), Commerce, and Humanities. Focused preparation for JEE, NEET, and other competitive entrance examinations.</p>
+					<ul class="program-features">
+						<li>Science, Commerce & Humanities streams</li>
+						<li>JEE / NEET preparation support</li>
+						<li>Research projects & internships</li>
+						<li>College & career counselling</li>
+					</ul>
+				</div>
+				<div class="program-card-footer">
+					<a href="#" class="program-learn-more">Learn More <i class="fa fa-arrow-right"></i></a>
+				</div>
+			</div>
+
+			<div class="program-card">
+				<div class="program-card-header">
+					<div class="program-icon"><i class="fa fa-music"></i></div>
+					<h3>Co-Curricular Arts</h3>
+					<span class="grade-tag">All Grades</span>
+				</div>
+				<div class="program-card-body">
+					<p>Comprehensive arts, music, dance, and drama programs that foster creativity and cultural appreciation — an integral part of the Gurukul experience.</p>
+					<ul class="program-features">
+						<li>Bharatanatyam & folk dance</li>
+						<li>Classical & Western music</li>
+						<li>Drawing, painting & sculpture</li>
+						<li>Theatre & public speaking</li>
+					</ul>
+				</div>
+				<div class="program-card-footer">
+					<a href="#" class="program-learn-more">Learn More <i class="fa fa-arrow-right"></i></a>
+				</div>
+			</div>
+
+			<div class="program-card">
+				<div class="program-card-header">
+					<div class="program-icon"><i class="fa fa-futbol-o"></i></div>
+					<h3>Sports & Athletics</h3>
+					<span class="grade-tag">All Grades</span>
+				</div>
+				<div class="program-card-body">
+					<p>A full range of indoor and outdoor sports with professional coaching, regular inter-school tournaments, and a commitment to physical fitness and team spirit.</p>
+					<ul class="program-features">
+						<li>Cricket, Football, Basketball</li>
+						<li>Swimming & Athletics</li>
+						<li>Chess & Carrom clubs</li>
+						<li>Yoga & Martial Arts</li>
+					</ul>
+				</div>
+				<div class="program-card-footer">
+					<a href="#" class="program-learn-more">Learn More <i class="fa fa-arrow-right"></i></a>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- ===== FACILITIES SECTION ===== -->
+<section class="section" id="facilities">
+	<div class="container">
+		<div class="section-header">
+			<span class="section-tag">Our Facilities</span>
+			<h2 class="section-title">World-Class Infrastructure for <span>Inspired Learning</span></h2>
+			<p class="section-desc">Our expansive campus in Mysore is designed to provide an ideal learning environment with state-of-the-art facilities across academics, arts, and athletics.</p>
+			<div class="section-divider"></div>
+		</div>
+		<div class="facilities-grid">
+			<div class="facility-card">
+				<div class="facility-icon"><i class="fa fa-flask"></i></div>
+				<h4>Science Laboratories</h4>
+				<p>Fully equipped Physics, Chemistry, and Biology labs for hands-on experimental learning.</p>
+			</div>
+			<div class="facility-card">
+				<div class="facility-icon"><i class="fa fa-laptop"></i></div>
+				<h4>Computer Lab</h4>
+				<p>High-speed internet-enabled computer labs with 150+ workstations and coding infrastructure.</p>
+			</div>
+			<div class="facility-card">
+				<div class="facility-icon"><i class="fa fa-book"></i></div>
+				<h4>Central Library</h4>
+				<p>Over 25,000 books, e-journals, and a dedicated digital reading zone for students and staff.</p>
+			</div>
+			<div class="facility-card">
+				<div class="facility-icon"><i class="fa fa-futbol-o"></i></div>
+				<h4>Sports Complex</h4>
+				<p>Multi-sport outdoor grounds, covered basketball courts, a swimming pool, and a gymnasium.</p>
+			</div>
+			<div class="facility-card">
+				<div class="facility-icon"><i class="fa fa-music"></i></div>
+				<h4>Arts & Music Studio</h4>
+				<p>Dedicated studios for dance, music, painting, and drama with professional equipment.</p>
+			</div>
+			<div class="facility-card">
+				<div class="facility-icon"><i class="fa fa-bus"></i></div>
+				<h4>Transport</h4>
+				<p>GPS-enabled school bus fleet covering major areas of Mysore city and surrounding districts.</p>
+			</div>
+			<div class="facility-card">
+				<div class="facility-icon"><i class="fa fa-heartbeat"></i></div>
+				<h4>Health & Wellness</h4>
+				<p>On-campus medical room with a qualified nurse, yoga sessions, and counselling support.</p>
+			</div>
+			<div class="facility-card">
+				<div class="facility-icon"><i class="fa fa-cutlery"></i></div>
+				<h4>Cafeteria & Dining</h4>
+				<p>Hygienic, nutritious meals and snacks prepared fresh daily in our modern school cafeteria.</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- ===== EVENTS SECTION ===== -->
+<section class="section section-alt" id="events">
+	<div class="container">
+		<div style="display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:start;">
+			<div>
+				<div class="section-header" style="text-align:left; margin-bottom:36px;">
+					<span class="section-tag">Upcoming Events</span>
+					<h2 class="section-title">What's Happening at <span>Gurukul</span></h2>
+					<div class="section-divider" style="margin-left:0;"></div>
+				</div>
+				<div class="events-list">
+					<div class="event-item">
+						<div class="event-date-badge">
+							<div class="day">20</div>
+							<div class="month">MAR</div>
+						</div>
+						<div class="event-info">
+							<h4>Annual Day Celebrations 2026</h4>
+							<p>A grand celebration of student talent — cultural performances, awards ceremony, and special guest address by the Hon. Deputy CM of Karnataka.</p>
+							<div class="event-meta">
+								<span><i class="fa fa-clock-o"></i> 5:00 PM</span>
+								<span><i class="fa fa-map-marker"></i> School Auditorium</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="event-item">
+						<div class="event-date-badge">
+							<div class="day">05</div>
+							<div class="month">APR</div>
+						</div>
+						<div class="event-info">
+							<h4>National Merit Scholarship Guidance Camp</h4>
+							<p>Expert sessions to guide students preparing for NMMS and other national merit-based scholarship examinations.</p>
+							<div class="event-meta">
+								<span><i class="fa fa-clock-o"></i> 9:00 AM</span>
+								<span><i class="fa fa-map-marker"></i> Science Block Hall</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="event-item">
+						<div class="event-date-badge">
+							<div class="day">12</div>
+							<div class="month">APR</div>
+						</div>
+						<div class="event-info">
+							<h4>Inter-School Sports Meet 2026</h4>
+							<p>Annual sports competition hosting 20 schools from across Mysore district. Open events in cricket, football, athletics, and swimming.</p>
+							<div class="event-meta">
+								<span><i class="fa fa-clock-o"></i> All Day</span>
+								<span><i class="fa fa-map-marker"></i> Sports Grounds</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="event-item">
+						<div class="event-date-badge">
+							<div class="day">30</div>
+							<div class="month">APR</div>
+						</div>
+						<div class="event-info">
+							<h4>Open House & Campus Tour</h4>
+							<p>Prospective parents and students are invited to tour our campus, meet the faculty, and learn about our admission process for 2025-26.</p>
+							<div class="event-meta">
+								<span><i class="fa fa-clock-o"></i> 10:00 AM – 1:00 PM</span>
+								<span><i class="fa fa-map-marker"></i> Main Campus</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div>
+				<div class="section-header" style="text-align:left; margin-bottom:36px;">
+					<span class="section-tag">Latest News</span>
+					<h2 class="section-title">School <span>News & Updates</span></h2>
+					<div class="section-divider" style="margin-left:0;"></div>
+				</div>
+				<div class="news-grid" style="grid-template-columns:1fr; gap:16px;" id="news">
+					<div class="news-card" style="display:flex; gap:0;">
+						<div class="news-card-img" style="height:auto; min-width:100px; width:100px; font-size:28px; flex-shrink:0; border-radius:14px 0 0 14px;">🏆</div>
+						<div class="news-card-body" style="padding:16px 18px;">
+							<span class="news-cat">Achievement</span>
+							<div class="news-date"><i class="fa fa-calendar"></i> March 1, 2026</div>
+							<h3 style="font-size:14px;">State-Level Science Olympiad – First Place!</h3>
+							<a href="#" class="news-read-more" style="margin-top:8px;">Read More <i class="fa fa-arrow-right"></i></a>
+						</div>
+					</div>
+					<div class="news-card" style="display:flex; gap:0;">
+						<div class="news-card-img" style="height:auto; min-width:100px; width:100px; font-size:28px; flex-shrink:0; border-radius:14px 0 0 14px; background:linear-gradient(135deg,#C8962A,#e8b84b);">📚</div>
+						<div class="news-card-body" style="padding:16px 18px;">
+							<span class="news-cat">Academic</span>
+							<div class="news-date"><i class="fa fa-calendar"></i> Feb 20, 2026</div>
+							<h3 style="font-size:14px;">New STEM Lab inaugurated by Education Minister</h3>
+							<a href="#" class="news-read-more" style="margin-top:8px;">Read More <i class="fa fa-arrow-right"></i></a>
+						</div>
+					</div>
+					<div class="news-card" style="display:flex; gap:0;">
+						<div class="news-card-img" style="height:auto; min-width:100px; width:100px; font-size:28px; flex-shrink:0; border-radius:14px 0 0 14px; background:linear-gradient(135deg,#1a1a2e,#3a1020);">🎓</div>
+						<div class="news-card-body" style="padding:16px 18px;">
+							<span class="news-cat">Results</span>
+							<div class="news-date"><i class="fa fa-calendar"></i> Jan 15, 2026</div>
+							<h3 style="font-size:14px;">Class XII Board 2025 – 99% students above 85%</h3>
+							<a href="#" class="news-read-more" style="margin-top:8px;">Read More <i class="fa fa-arrow-right"></i></a>
+						</div>
+					</div>
+					<div class="news-card" style="display:flex; gap:0;">
+						<div class="news-card-img" style="height:auto; min-width:100px; width:100px; font-size:28px; flex-shrink:0; border-radius:14px 0 0 14px; background:linear-gradient(135deg,#2e4a8b,#5670b8);">🏅</div>
+						<div class="news-card-body" style="padding:16px 18px;">
+							<span class="news-cat">Awards</span>
+							<div class="news-date"><i class="fa fa-calendar"></i> Dec 10, 2025</div>
+							<h3 style="font-size:14px;">Gurukul wins Best School Award – District Level</h3>
+							<a href="#" class="news-read-more" style="margin-top:8px;">Read More <i class="fa fa-arrow-right"></i></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- ===== TESTIMONIALS ===== -->
+<section class="section testimonials-section">
+	<div class="container">
+		<div class="section-header">
+			<span class="section-tag">Testimonials</span>
+			<h2 class="section-title">What Our <span>Community Says</span></h2>
+			<p class="section-desc">Hear from our students, parents, and alumni about the Gurukul High School experience.</p>
+			<div class="section-divider"></div>
+		</div>
+		<div class="testimonials-grid">
+			<div class="testimonial-card">
+				<div class="rating">★★★★★</div>
+				<p class="testimonial-text">
+					"Gurukul gave my daughter not just academic excellence, but the confidence and values to face the world.
+					The faculty is incredibly dedicated, and the school's holistic approach is unlike anything we experienced elsewhere in Mysore."
+				</p>
+				<div class="testimonial-author">
+					<div class="author-avatar">RS</div>
+					<div class="author-info">
+						<div class="name">Rekha Srinivasan</div>
+						<div class="role">Parent — Class XII Student</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="testimonial-card">
+				<div class="rating">★★★★★</div>
+				<p class="testimonial-text">
+					"The teachers at Gurukul are passionate and supportive. I cracked JEE Advanced thanks to the extra sessions
+					and personalised attention I received here. This school changed my life!"
+				</p>
+				<div class="testimonial-author">
+					<div class="author-avatar">AK</div>
+					<div class="author-info">
+						<div class="name">Arjun Kumar</div>
+						<div class="role">Alumni — IIT Bombay, 2024</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="testimonial-card">
+				<div class="rating">★★★★★</div>
+				<p class="testimonial-text">
+					"What I love about Gurukul is how they balance academics with arts and sports. My son has flourished
+					as both a scholar and a state-level cricket player. A truly complete school experience in Mysore."
+				</p>
+				<div class="testimonial-author">
+					<div class="author-avatar">MN</div>
+					<div class="author-info">
+						<div class="name">Mohan Narayanan</div>
+						<div class="role">Parent — Class IX Student</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- ===== GALLERY SECTION ===== -->
+<section class="section section-alt">
+	<div class="container">
+		<div class="section-header">
+			<span class="section-tag">Campus Gallery</span>
+			<h2 class="section-title">Life at <span>Gurukul</span></h2>
+			<p class="section-desc">A glimpse into our vibrant campus life in Mysore — from classrooms to sports grounds.</p>
+			<div class="section-divider"></div>
+		</div>
+		<div class="gallery-grid">
+			<div class="gallery-item">
+				<img src="images/building-700x450.jpg" alt="Gurukul Main Campus" onerror="this.style.display='none'">
+				<div class="gallery-overlay"><i class="fa fa-search-plus"></i></div>
+				🏫
+			</div>
+			<div class="gallery-item" style="background:linear-gradient(135deg,#C8962A,#e8b84b);">
+				<img src="images/working-400x257.jpg" alt="Students in class" onerror="this.style.display='none'">
+				<div class="gallery-overlay"><i class="fa fa-search-plus"></i></div>
+				📚
+			</div>
+			<div class="gallery-item" style="background:linear-gradient(135deg,#1a1a2e,#3a1020);">
+				<img src="images/business-man-400x257.jpg" alt="Faculty" onerror="this.style.display='none'">
+				<div class="gallery-overlay"><i class="fa fa-search-plus"></i></div>
+				👨‍🏫
+			</div>
+			<div class="gallery-item" style="background:linear-gradient(135deg,#2e8b57,#5cb85c);">
+				<div class="gallery-overlay"><i class="fa fa-search-plus"></i></div>
+				⚽
+			</div>
+			<div class="gallery-item" style="background:linear-gradient(135deg,#2e4a8b,#5670b8);">
+				<div class="gallery-overlay"><i class="fa fa-search-plus"></i></div>
+				🔬
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- ===== ADMISSIONS CTA ===== -->
+<section class="admissions-cta" id="admissions">
+	<div class="container">
+		<div class="admissions-inner">
+			<div class="admissions-text">
+				<span class="section-tag" style="background:rgba(200,150,42,0.2); color:var(--gold-l); border-color:rgba(200,150,42,0.4);">
+					Admissions 2025–26
+				</span>
+				<h2>Begin Your Child's Journey at <span>Gurukul High School</span></h2>
+				<p>
+					Admissions are open for the academic year 2025–26. Secure your child's place at Mysore's most trusted school
+					for holistic education. Limited seats available — apply early.
+				</p>
+				<ul class="admissions-checklist">
+					<li><i class="fa fa-check-circle"></i> CBSE curriculum from Class I to XII</li>
+					<li><i class="fa fa-check-circle"></i> Scholarships available for meritorious students</li>
+					<li><i class="fa fa-check-circle"></i> Fully equipped campus with world-class facilities</li>
+					<li><i class="fa fa-check-circle"></i> Experienced and dedicated teaching faculty</li>
+					<li><i class="fa fa-check-circle"></i> Safe, inclusive and nurturing campus environment</li>
+				</ul>
+				<div style="display:flex; gap:14px; flex-wrap:wrap;">
+					<a href="admission-form.html" class="btn-primary">
+						<i class="fa fa-file-text"></i> Fill Application Online
+					</a>
+					<a href="admission-form.html#download" onclick="sessionStorage.setItem('downloadBlank','1')" class="btn-primary" style="background:var(--gold);">
+						<i class="fa fa-download"></i> Download Blank Form
+					</a>
+				</div>
+			</div>
+
+			<div class="admissions-form-card">
+				<h3>📋 Apply Online</h3>
+				<p style="color:rgba(255,255,255,0.7); font-size:13px; text-align:center; margin-bottom:24px; line-height:1.7;">
+					Fill out our comprehensive admission form online. You can save a PDF copy for your records or submit directly.
+				</p>
+				<a href="admission-form.html" style="
+					display:flex; align-items:center; justify-content:center; gap:10px;
+					background:var(--primary); color:#fff; padding:16px; border-radius:10px;
+					font-size:15px; font-weight:700; text-decoration:none; margin-bottom:14px;
+					transition:background .2s; box-shadow:0 4px 16px rgba(139,26,46,0.4);"
+					onmouseover="this.style.background='#6a1322'" onmouseout="this.style.background='var(--primary)'">
+					<i class="fa fa-file-text-o" style="font-size:18px;"></i> Fill Application Form Online
+				</a>
+				<a href="admission-form.html" onclick="sessionStorage.setItem('dlBlank','1')" style="
+					display:flex; align-items:center; justify-content:center; gap:10px;
+					background:rgba(200,150,42,0.9); color:#fff; padding:14px; border-radius:10px;
+					font-size:14px; font-weight:700; text-decoration:none; margin-bottom:20px;
+					transition:background .2s;"
+					onmouseover="this.style.background='var(--gold)'" onmouseout="this.style.background='rgba(200,150,42,0.9)'">
+					<i class="fa fa-download" style="font-size:16px;"></i> Download Blank Form (PDF)
+				</a>
+				<div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">
+					<p style="font-size:12px; color:rgba(255,255,255,0.5); text-align:center; margin-bottom:10px;">Or call us directly for enquiries:</p>
+					<p style="font-size:16px; font-weight:700; color:var(--gold-l); text-align:center;">+91 821-234-5678</p>
+					<p style="font-size:11px; color:rgba(255,255,255,0.4); text-align:center; margin-top:4px;">Mon – Sat, 8:00 AM – 1:00 PM</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<!-- ===== CONTACT BAR ===== -->
+<div class="contact-bar" id="contact">
+	<div class="container">
+		<div class="contact-bar-grid">
+			<div class="contact-bar-item">
+				<div class="icon-wrap"><i class="fa fa-map-marker"></i></div>
+				<div>
+					<h4>Our Address</h4>
+					<p>KRS Road, Near Mysore Palace,<br>Mysore, Karnataka – 570010</p>
+				</div>
+			</div>
+			<div class="contact-bar-item">
+				<div class="icon-wrap"><i class="fa fa-phone"></i></div>
+				<div>
+					<h4>Call Us</h4>
+					<p>+91 821-234-5678<br>+91 821-234-5679</p>
+				</div>
+			</div>
+			<div class="contact-bar-item">
+				<div class="icon-wrap"><i class="fa fa-envelope"></i></div>
+				<div>
+					<h4>Email Us</h4>
+					<p>info@gurukulhighschool.edu.in<br>admissions@gurukulhighschool.edu.in</p>
+				</div>
+			</div>
+			<div class="contact-bar-item">
+				<div class="icon-wrap"><i class="fa fa-clock-o"></i></div>
+				<div>
+					<h4>School Timings</h4>
+					<p>Mon – Fri: 8:00 AM – 4:00 PM<br>Sat: 8:00 AM – 1:00 PM</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer class="footer">
+	<div class="container">
+		<div class="footer-grid">
+			<div class="footer-brand">
+				<div class="footer-logo-name">Gurukul High School</div>
+				<div class="footer-logo-tagline">Mysore · Est. 1965</div>
+				<p>
+					Committed to nurturing young minds through a perfect blend of modern academics, traditional
+					values, and holistic character development. Proudly serving Mysore since 1965.
+				</p>
+				<div class="footer-social">
+					<a href="#" class="social-btn"><i class="fa fa-facebook"></i></a>
+					<a href="#" class="social-btn"><i class="fa fa-twitter"></i></a>
+					<a href="#" class="social-btn"><i class="fa fa-instagram"></i></a>
+					<a href="#" class="social-btn"><i class="fa fa-youtube-play"></i></a>
+					<a href="#" class="social-btn"><i class="fa fa-linkedin"></i></a>
+				</div>
+			</div>
+
+			<div class="footer-col">
+				<h4>Quick Links</h4>
+				<ul class="footer-links">
+					<li><a href="#about">About Us</a></li>
+					<li><a href="#programs">Academic Programs</a></li>
+					<li><a href="#facilities">Facilities</a></li>
+					<li><a href="#events">Events & Calendar</a></li>
+					<li><a href="#admissions">Admissions</a></li>
+					<li><a href="#">Alumni Network</a></li>
+					<li><a href="#">Parent Portal</a></li>
+				</ul>
+			</div>
+
+			<div class="footer-col">
+				<h4>Academics</h4>
+				<ul class="footer-links">
+					<li><a href="#programs">Primary School (I–V)</a></li>
+					<li><a href="#programs">Middle School (VI–VIII)</a></li>
+					<li><a href="#programs">High School (IX–X)</a></li>
+					<li><a href="#programs">Senior Secondary (XI–XII)</a></li>
+					<li><a href="#">Examination Schedule</a></li>
+					<li><a href="#">Holiday Calendar</a></li>
+					<li><a href="#">CBSE Affiliation Info</a></li>
+				</ul>
+			</div>
+
+			<div class="footer-col">
+				<h4>Contact Info</h4>
+				<div class="footer-contact-item">
+					<i class="fa fa-map-marker"></i>
+					<span>KRS Road, Near Mysore Palace,<br>Mysore, Karnataka – 570010</span>
+				</div>
+				<div class="footer-contact-item">
+					<i class="fa fa-phone"></i>
+					<span>+91 821-234-5678<br>+91 821-234-5679</span>
+				</div>
+				<div class="footer-contact-item">
+					<i class="fa fa-envelope"></i>
+					<span>info@gurukulhighschool.edu.in</span>
+				</div>
+				<div class="footer-contact-item">
+					<i class="fa fa-clock-o"></i>
+					<span>Mon–Fri: 8:00 AM – 4:00 PM<br>Sat: 8:00 AM – 1:00 PM</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="footer-bottom">
+			<p>© 2026 Gurukul High School, Mysore. All Rights Reserved.</p>
+			<p>CBSE Affiliation No. 930012 | <a href="#">Privacy Policy</a> | <a href="#">Terms of Use</a></p>
+		</div>
+	</div>
+</footer>
+
+<!-- Scroll to Top -->
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+	<i class="fa fa-arrow-up"></i>
+</button>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-migrate.min.js"></script>
+<script>
+	// Sticky Navbar Shadow
+	window.addEventListener('scroll', function() {
+		const navbar = document.getElementById('mainNav');
+		const scrollTop = document.getElementById('scrollTop');
+		if (window.scrollY > 60) {
+			navbar.style.boxShadow = '0 4px 30px rgba(0,0,0,0.18)';
+			scrollTop.style.opacity = '1';
+			scrollTop.style.pointerEvents = 'all';
+		} else {
+			navbar.style.boxShadow = '0 2px 20px rgba(0,0,0,0.10)';
+			scrollTop.style.opacity = '0';
+			scrollTop.style.pointerEvents = 'none';
+		}
+	});
+
+	// Initially hide scroll top
+	document.getElementById('scrollTop').style.opacity = '0';
+	document.getElementById('scrollTop').style.pointerEvents = 'none';
+	document.getElementById('scrollTop').style.transition = 'all .3s';
+
+	// Mobile nav toggle
+	const toggle = document.getElementById('mobileToggle');
+	const nav = document.getElementById('mainNav');
+	toggle.addEventListener('click', function() {
+		nav.classList.toggle('nav-open');
+	});
+
+	// Close mobile nav on link click
+	document.querySelectorAll('#navMenu a').forEach(function(link) {
+		link.addEventListener('click', function() {
+			nav.classList.remove('nav-open');
+		});
+	});
+
+	// Smooth counter animation
+	function animateCounter(el, target, duration) {
+		let start = 0;
+		const step = (target / duration) * 16;
+		function update() {
+			start += step;
+			if (start >= target) { el.textContent = target + el.dataset.suffix; return; }
+			el.textContent = Math.floor(start) + el.dataset.suffix;
+			requestAnimationFrame(update);
+		}
+		update();
+	}
+
+	// Intersection Observer for stats
+	const observer = new IntersectionObserver(function(entries) {
+		entries.forEach(function(entry) {
+			if (entry.isIntersecting) {
+				const num = entry.target.textContent;
+				entry.target.dataset.suffix = num.replace(/[0-9]/g, '').trim();
+				const val = parseInt(num.replace(/[^0-9]/g, ''));
+				if (!isNaN(val)) animateCounter(entry.target, val, 1500);
+				observer.unobserve(entry.target);
+			}
+		});
+	}, { threshold: 0.5 });
+
+	document.querySelectorAll('.stat-num, .hero-stat-num').forEach(function(el) {
+		observer.observe(el);
+	});
+</script>
+
+</body>
+</html>

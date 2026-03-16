@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RBAC Admin — The Gurukul High</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --navy:#0d1b5e; --gold:#c9a227; --green:#27ae60;
+  --red:#e74c3c;  --orange:#f39c12; --purple:#8e44ad;
+  --teal:#16a085; --blue:#2980b9;
+  --bg:#f2f4f9;   --card:#fff;
+  --text:#1a1a2e; --muted:#8a8fa8;
+  --sidebar:220px;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;font-size:13px;background:var(--bg);color:var(--text);}
+#loginScreen{position:fixed;inset:0;background:linear-gradient(135deg,var(--navy) 0%,#1a2f8c 60%,#0d4d3d 100%);display:flex;align-items:center;justify-content:center;z-index:9999;}
+.login-box{background:#fff;border-radius:20px;padding:44px 40px;width:380px;box-shadow:0 24px 80px rgba(0,0,0,.4);}
+.login-logo{text-align:center;margin-bottom:28px;}
+.login-logo .school-name{font-size:18px;font-weight:800;color:var(--navy);margin-top:10px;}
+.login-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(13,27,94,.1);color:var(--navy);border:1px solid rgba(13,27,94,.2);border-radius:20px;padding:4px 14px;font-size:11px;font-weight:700;margin-bottom:22px;}
+.login-field{margin-bottom:16px;}
+.login-field label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.login-field input{width:100%;padding:11px 14px;border:1.5px solid #e2e5f0;border-radius:10px;font-size:13px;outline:none;}
+.login-field input:focus{border-color:var(--navy);}
+.btn-login{width:100%;padding:13px;background:linear-gradient(135deg,var(--navy),#1a2f8c);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;}
+.login-err{color:var(--red);font-size:12px;text-align:center;margin-top:12px;display:none;}
+.app-layout{display:flex;min-height:100vh;}
+#sidebar{width:var(--sidebar);background:var(--navy);color:#fff;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;overflow-y:auto;}
+.sidebar-logo{padding:20px 16px;border-bottom:1px solid rgba(255,255,255,.1);}
+.sidebar-logo .school-name{font-size:13px;font-weight:800;color:#fff;}
+.sidebar-logo .school-loc{font-size:10px;color:rgba(255,255,255,.5);}
+nav{flex:1;padding:12px 0;}
+.nav-section{padding:8px 16px 4px;font-size:9px;font-weight:700;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:1px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;transition:background .15s;border-left:3px solid transparent;font-size:12px;font-weight:500;color:rgba(255,255,255,.75);}
+.nav-item:hover{background:rgba(255,255,255,.07);color:#fff;}
+.nav-item.active{background:rgba(255,255,255,.12);color:#fff;border-left-color:var(--gold);}
+.nav-item .fa{width:16px;text-align:center;}
+.sidebar-footer{padding:16px;border-top:1px solid rgba(255,255,255,.1);}
+.sidebar-user{font-size:11px;color:rgba(255,255,255,.6);}
+.sidebar-user strong{display:block;font-size:12px;color:#fff;}
+.btn-logout{margin-top:8px;background:rgba(255,255,255,.1);color:#fff;border:none;border-radius:6px;padding:6px 12px;font-size:11px;cursor:pointer;width:100%;}
+.btn-logout:hover{background:rgba(255,255,255,.2);}
+.main-content{margin-left:var(--sidebar);flex:1;padding:24px;}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.topbar h1{font-size:20px;font-weight:800;color:var(--navy);}
+.tabs{display:flex;gap:4px;background:var(--card);border-radius:12px;padding:6px;box-shadow:0 1px 4px rgba(0,0,0,.06);margin-bottom:20px;flex-wrap:wrap;}
+.tab-btn{padding:8px 16px;border:none;background:transparent;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;color:var(--muted);}
+.tab-btn.active{background:var(--navy);color:#fff;}
+.tab-pane{display:none;}
+.tab-pane.active{display:block;}
+.card{background:var(--card);border-radius:14px;box-shadow:0 1px 4px rgba(0,0,0,.06);overflow:hidden;margin-bottom:16px;}
+.card-header{padding:14px 18px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
+.card-title{font-size:13px;font-weight:700;color:var(--navy);}
+.form-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:14px 18px;background:#fafbff;border-bottom:1px solid #f0f0f5;}
+.form-row input,.form-row select{padding:8px 12px;border:1.5px solid #e2e5f0;border-radius:8px;font-size:12px;outline:none;}
+.form-row input:focus,.form-row select:focus{border-color:var(--navy);}
+.btn-sm{padding:6px 14px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:none;}
+.btn-navy{background:var(--navy);color:#fff;}
+.btn-red{background:var(--red);color:#fff;}
+.btn-green{background:var(--green);color:#fff;}
+.btn-orange{background:var(--orange);color:#fff;}
+.btn-sm:hover{opacity:.85;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{background:#f8f9fc;color:var(--muted);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:10px 12px;text-align:left;}
+td{padding:10px 12px;border-bottom:1px solid #f4f4f8;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fafbff;}
+.pill{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:20px;font-size:10px;font-weight:700;}
+.empty{text-align:center;padding:40px 20px;color:var(--muted);}
+.empty .fa{font-size:32px;display:block;margin-bottom:10px;opacity:.3;}
+.role-card{background:var(--card);border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.06);border-left:5px solid var(--navy);margin-bottom:10px;}
+.role-card.super_admin{border-left-color:#8b0000;}
+.role-card.principal{border-left-color:#1a6091;}
+.role-card.admin{border-left-color:var(--navy);}
+.role-card.finance_officer{border-left-color:var(--teal);}
+.role-card.accountant{border-left-color:var(--orange);}
+.role-card.hr_manager{border-left-color:var(--purple);}
+.role-card.teacher{border-left-color:var(--green);}
+.role-card.parent{border-left-color:var(--muted);}
+.role-name{font-size:14px;font-weight:800;color:var(--text);}
+.role-desc{font-size:11px;color:var(--muted);margin-top:4px;}
+.role-key{font-size:10px;font-weight:700;font-family:monospace;background:#f0f3ff;color:var(--navy);padding:2px 8px;border-radius:8px;}
+/* PERMISSION MATRIX TABLE */
+.perm-table{width:100%;border-collapse:collapse;font-size:11px;}
+.perm-table th{background:var(--navy);color:#fff;padding:8px 10px;font-size:10px;text-align:center;position:sticky;top:0;}
+.perm-table th:first-child{text-align:left;}
+.perm-table td{padding:6px 10px;border-bottom:1px solid #f0f0f5;text-align:center;}
+.perm-table td:first-child{font-weight:600;text-align:left;white-space:nowrap;}
+.perm-table tr:hover td{background:#fafbff;}
+.check{color:var(--green);font-size:13px;}
+.cross{color:#ccc;font-size:11px;}
+.today-pill{background:rgba(243,156,18,.15);color:var(--orange);padding:1px 6px;border-radius:8px;font-size:9px;font-weight:700;}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:16px;width:92%;max-width:500px;overflow:hidden;}
+.modal-header{padding:18px 20px;border-bottom:1px solid #f0f0f5;display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-size:14px;font-weight:800;color:var(--navy);}
+.modal-close{background:none;border:none;font-size:18px;cursor:pointer;color:var(--muted);}
+.modal-body{padding:20px;}
+.modal-field{margin-bottom:14px;}
+.modal-field label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.modal-field input,.modal-field select,.modal-field textarea{width:100%;padding:9px 12px;border:1.5px solid #e2e5f0;border-radius:8px;font-size:12px;outline:none;}
+.modal-field input:focus,.modal-field select:focus{border-color:var(--navy);}
+#toast{position:fixed;bottom:20px;right:20px;background:var(--navy);color:#fff;padding:12px 20px;border-radius:10px;font-size:12px;z-index:9000;opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;}
+#toast.show{opacity:1;transform:translateY(0);}
+#toast.error{background:var(--red);}
+#toast.success{background:var(--green);}
+@media(max-width:700px){#sidebar{display:none;}.main-content{margin-left:0;padding:12px;}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="24" fill="#0d1b5e"/><text x="50%" y="55%" dominant-baseline="middle" text-anchor="middle" fill="#c9a227" font-size="20" font-weight="900">G</text></svg>
+      <div class="school-name">The Gurukul High</div>
+    </div>
+    <div style="text-align:center;margin-bottom:18px;"><span class="login-badge"><i class="fa fa-users-cog fa-cog"></i> RBAC Admin Panel</span></div>
+    <div style="font-size:22px;font-weight:800;color:var(--navy);margin-bottom:6px;">Admin Login</div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:20px;">Super Admin access required</div>
+    <div class="login-field"><label>Username</label><input type="text" id="loginUser" placeholder="admin"></div>
+    <div class="login-field"><label>Password</label><input type="password" id="loginPass" placeholder="••••••••"></div>
+    <button class="btn-login" onclick="doLogin()">Sign In</button>
+    <div class="login-err" id="loginErr"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app-layout" id="appLayout" style="display:none;">
+  <div id="sidebar">
+    <div class="sidebar-logo">
+      <div class="school-name">The Gurukul High</div>
+      <div class="school-loc">RBAC Administration</div>
+    </div>
+    <nav>
+      <div class="nav-section">Role Management</div>
+      <div class="nav-item active" onclick="showTab('roles')"><i class="fa fa-id-card"></i> Roles Overview</div>
+      <div class="nav-item" onclick="showTab('userRoles')"><i class="fa fa-users"></i> User Assignments</div>
+      <div class="nav-item" onclick="showTab('permissions')"><i class="fa fa-key"></i> Permission Matrix</div>
+      <div class="nav-section">Security</div>
+      <div class="nav-item" onclick="showTab('ipWhitelist')"><i class="fa fa-shield"></i> IP Whitelist</div>
+      <div class="nav-item" onclick="showTab('biometric')"><i class="fa fa-id-badge"></i> Biometric Log</div>
+      <div class="nav-section">Navigation</div>
+      <div class="nav-item" onclick="window.location.href='audit-dashboard.html'"><i class="fa fa-dashboard"></i> Audit Dashboard</div>
+      <div class="nav-item" onclick="window.location.href='admin-dashboard.html'"><i class="fa fa-home"></i> Admin Home</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="sidebar-user"><strong id="sbUser">–</strong><span id="sbRole">–</span></div>
+      <button class="btn-logout" onclick="logout()"><i class="fa fa-sign-out"></i> Logout</button>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div>
+        <h1><i class="fa fa-cog" style="color:var(--navy);margin-right:8px;"></i>RBAC Admin Panel</h1>
+        <p style="font-size:12px;color:var(--muted);" id="topSub">Role-Based Access Control Management</p>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-roles"       onclick="showTab('roles')">Roles</button>
+      <button class="tab-btn"        id="tab-userRoles"   onclick="showTab('userRoles')">User Assignments</button>
+      <button class="tab-btn"        id="tab-permissions" onclick="showTab('permissions')">Permission Matrix</button>
+      <button class="tab-btn"        id="tab-ipWhitelist" onclick="showTab('ipWhitelist')">IP Whitelist</button>
+      <button class="tab-btn"        id="tab-biometric"   onclick="showTab('biometric')">Biometric Log</button>
+    </div>
+
+    <!-- ROLES OVERVIEW -->
+    <div class="tab-pane active" id="pane-roles">
+      <div id="rolesList"></div>
+    </div>
+
+    <!-- USER ASSIGNMENTS -->
+    <div class="tab-pane" id="pane-userRoles">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><i class="fa fa-users"></i> User → Role Assignments</span>
+          <button class="btn-sm btn-navy" onclick="openAssignModal()"><i class="fa fa-plus"></i> Assign Role</button>
+        </div>
+        <div class="form-row">
+          <input type="text" id="urSearch" placeholder="Search username..." onkeyup="filterUserRoles()" style="width:200px;">
+        </div>
+        <table>
+          <thead><tr>
+            <th>Username</th><th>Role</th><th>Role Name</th><th>Assigned By</th><th>Assigned At</th><th>Expires At</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="userRolesBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PERMISSION MATRIX -->
+    <div class="tab-pane" id="pane-permissions">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><i class="fa fa-key"></i> Permission Matrix</span>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <select id="permRoleFilter" onchange="loadPermissions()">
+              <option value="">All Roles</option>
+            </select>
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="perm-table" id="permTable">
+            <thead id="permHead"></thead>
+            <tbody id="permBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- IP WHITELIST -->
+    <div class="tab-pane" id="pane-ipWhitelist">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><i class="fa fa-shield"></i> IP Whitelist</span>
+          <button class="btn-sm btn-navy" onclick="openIPModal()"><i class="fa fa-plus"></i> Add IP</button>
+        </div>
+        <div style="padding:12px 18px;background:#fff8e6;border-bottom:1px solid #f0f0f5;font-size:12px;color:var(--orange);">
+          <i class="fa fa-info-circle"></i>
+          Roles <strong>parent</strong> and <strong>student</strong> are exempt from IP restriction (set to 0.0.0.0/0 = any IP).
+          All staff roles require school network or registered IPs.
+        </div>
+        <table>
+          <thead><tr>
+            <th>ID</th><th>Username</th><th>Role</th><th>IP Address</th><th>Label</th><th>Added By</th><th>Added At</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="ipBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- BIOMETRIC LOG -->
+    <div class="tab-pane" id="pane-biometric">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title"><i class="fa fa-id-badge"></i> Biometric Events</span>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="bioUser" placeholder="Filter by username" style="padding:6px 10px;border:1.5px solid #e2e5f0;border-radius:8px;font-size:12px;outline:none;">
+            <button class="btn-sm btn-navy" onclick="loadBiometric()"><i class="fa fa-search"></i></button>
+          </div>
+        </div>
+        <div style="padding:12px 18px;background:#f0f9ff;border-bottom:1px solid #f0f0f5;font-size:12px;color:var(--blue);">
+          <i class="fa fa-info-circle"></i>
+          Biometric device events are synced here. Devices send data via <code>POST /api/rbac/biometric</code>.
+          Match biometric check-in to IP for dual-factor presence verification.
+        </div>
+        <table>
+          <thead><tr>
+            <th>Username</th><th>Device ID</th><th>Event Type</th><th>Biometric ID</th><th>Matched IP</th><th>Timestamp</th>
+          </tr></thead>
+          <tbody id="bioBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ASSIGN ROLE MODAL -->
+<div class="modal-overlay" id="assignModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Assign Role to User</span>
+      <button class="modal-close" onclick="closeModal('assignModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field"><label>Username</label><input type="text" id="assignUsername" placeholder="e.g. finance"></div>
+      <div class="modal-field">
+        <label>Role</label>
+        <select id="assignRole">
+          <option value="super_admin">Super Administrator</option>
+          <option value="principal">Principal</option>
+          <option value="admin">Administrator</option>
+          <option value="finance_officer">Finance Officer</option>
+          <option value="accountant">Accountant</option>
+          <option value="hr_manager">HR Manager</option>
+          <option value="teacher">Teacher</option>
+          <option value="parent">Parent / Guardian</option>
+        </select>
+      </div>
+      <div class="modal-field"><label>Expires At (optional)</label><input type="datetime-local" id="assignExpires"></div>
+      <button class="btn-sm btn-navy" style="width:100%;padding:10px;" onclick="submitAssign()"><i class="fa fa-save"></i> Assign Role</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD IP MODAL -->
+<div class="modal-overlay" id="ipModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Add IP to Whitelist</span>
+      <button class="modal-close" onclick="closeModal('ipModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field"><label>Username (leave blank for role-wide)</label><input type="text" id="ipUsername" placeholder="e.g. finance (optional)"></div>
+      <div class="modal-field">
+        <label>Role (leave blank for global)</label>
+        <select id="ipRole">
+          <option value="">– Any role (global) –</option>
+          <option value="super_admin">Super Admin</option>
+          <option value="principal">Principal</option>
+          <option value="admin">Admin</option>
+          <option value="finance_officer">Finance Officer</option>
+          <option value="accountant">Accountant</option>
+          <option value="hr_manager">HR Manager</option>
+          <option value="teacher">Teacher</option>
+        </select>
+      </div>
+      <div class="modal-field">
+        <label>IP Address / CIDR</label>
+        <input type="text" id="ipAddress" placeholder="e.g. 192.168.1.0/24 or 203.0.113.45">
+      </div>
+      <div class="modal-field">
+        <label>Label</label>
+        <input type="text" id="ipLabel" placeholder="e.g. School Network, Home Office">
+      </div>
+      <button class="btn-sm btn-navy" style="width:100%;padding:10px;" onclick="submitIP()"><i class="fa fa-plus"></i> Add to Whitelist</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const BASE = '';
+let token = '', currentUser = '', currentRole = '';
+let allUserRoles = [];
+
+function authHeaders() { return { 'Content-Type':'application/json', 'Authorization':'Bearer '+token }; }
+function toast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'show'+(type?' '+type:'');
+  setTimeout(()=>t.className='',3000);
+}
+function roleBadge(r) {
+  const map = { super_admin:'#8b0000', principal:'#1a6091', admin:'var(--navy)',
+    finance_officer:'var(--teal)', accountant:'var(--orange)', hr_manager:'var(--purple)',
+    teacher:'var(--green)', parent:'var(--muted)' };
+  const c = map[r] || '#555';
+  return `<span style="background:${c}20;color:${c};padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;">${r||'–'}</span>`;
+}
+function fmt(ts) { return (ts||'–').replace('T',' ').slice(0,16); }
+
+// ── LOGIN ─────────────────────────────────────────────────────────────────────
+async function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value;
+  const err = document.getElementById('loginErr');
+  err.style.display='none';
+  try {
+    const r = await fetch(`${BASE}/api/admin/login`, { method:'POST',
+      headers:{'Content-Type':'application/json'}, body: JSON.stringify({username:u,password:p}) });
+    const d = await r.json();
+    if (!r.ok) { err.textContent=d.error||'Login failed'; err.style.display='block'; return; }
+    token=d.token; currentUser=u; currentRole=d.role||'admin';
+    localStorage.setItem('rbac_token',token);
+    localStorage.setItem('rbac_user',u);
+    showApp();
+  } catch(e) { err.textContent='Server error'; err.style.display='block'; }
+}
+function showApp() {
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('appLayout').style.display='flex';
+  document.getElementById('sbUser').textContent=currentUser;
+  document.getElementById('sbRole').textContent=currentRole;
+  loadRoles(); loadUserRoles(); loadPermissions(); loadIPWhitelist();
+}
+function logout() {
+  localStorage.removeItem('rbac_token');
+  localStorage.removeItem('rbac_user');
+  location.reload();
+}
+const _saved = localStorage.getItem('rbac_token');
+if (_saved) {
+  token=_saved; currentUser=localStorage.getItem('rbac_user')||'admin'; currentRole='admin';
+  showApp();
+}
+document.addEventListener('keydown', e => { if (e.key==='Enter' && document.getElementById('loginScreen').style.display!=='none') doLogin(); });
+
+// ── TABS ──────────────────────────────────────────────────────────────────────
+function showTab(name) {
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('pane-'+name)?.classList.add('active');
+  document.getElementById('tab-'+name)?.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.getAttribute('onclick')?.includes(name)));
+  if (name==='biometric') loadBiometric();
+}
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ── ROLES OVERVIEW ────────────────────────────────────────────────────────────
+async function loadRoles() {
+  try {
+    const r = await fetch(`${BASE}/api/rbac/roles`, { headers: authHeaders() });
+    const d = await r.json();
+    if (!d.roles?.length) { document.getElementById('rolesList').innerHTML='<div class="empty"><i class="fa fa-spin fa-spinner"></i></div>'; return; }
+    document.getElementById('rolesList').innerHTML = d.roles.map(role => `
+      <div class="role-card ${role.role_key}">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;">
+          <div style="flex:1;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+              <span class="role-key">${role.role_key}</span>
+              <span class="role-name">${role.role_name}</span>
+            </div>
+            <div class="role-desc">${role.description||''}</div>
+          </div>
+          <button class="btn-sm" style="background:#f0f3ff;color:var(--navy);white-space:nowrap;"
+            onclick="document.getElementById('permRoleFilter').value='${role.role_key}';showTab('permissions');loadPermissions();">
+            <i class="fa fa-key"></i> View Permissions
+          </button>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) { document.getElementById('rolesList').innerHTML='<div class="empty">Error loading roles</div>'; }
+}
+
+// ── USER ROLE ASSIGNMENTS ─────────────────────────────────────────────────────
+async function loadUserRoles() {
+  try {
+    const r = await fetch(`${BASE}/api/rbac/user-roles`, { headers: authHeaders() });
+    const d = await r.json();
+    allUserRoles = d.userRoles || [];
+    renderUserRoles(allUserRoles);
+  } catch(e) {}
+}
+function renderUserRoles(rows) {
+  const tbody = document.getElementById('userRolesBody');
+  if (!rows.length) { tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted);">No assignments found</td></tr>'; return; }
+  tbody.innerHTML = rows.map(r => `<tr>
+    <td><strong>${r.username}</strong></td>
+    <td>${roleBadge(r.role_key)}</td>
+    <td>${r.role_name||r.role_key}</td>
+    <td style="font-size:11px;">${r.assigned_by||'–'}</td>
+    <td style="font-size:11px;">${fmt(r.assigned_at)}</td>
+    <td style="font-size:11px;">${r.expires_at||'<span style="color:var(--green);">Never</span>'}</td>
+    <td>
+      <button class="btn-sm btn-red" onclick="revokeRole('${r.username}','${r.role_key}')"><i class="fa fa-trash"></i></button>
+    </td>
+  </tr>`).join('');
+}
+function filterUserRoles() {
+  const q = document.getElementById('urSearch').value.toLowerCase();
+  renderUserRoles(allUserRoles.filter(r=>r.username.toLowerCase().includes(q)||r.role_key.toLowerCase().includes(q)));
+}
+function openAssignModal() { document.getElementById('assignModal').classList.add('open'); }
+async function submitAssign() {
+  const username   = document.getElementById('assignUsername').value.trim();
+  const role_key   = document.getElementById('assignRole').value;
+  const expires_at = document.getElementById('assignExpires').value||null;
+  if (!username) { toast('Username required','error'); return; }
+  try {
+    const r = await fetch(`${BASE}/api/rbac/user-roles`, { method:'POST', headers:authHeaders(),
+      body: JSON.stringify({username, role_key, expires_at}) });
+    const d = await r.json();
+    closeModal('assignModal');
+    toast(d.message||'Role assigned','success');
+    loadUserRoles();
+  } catch(e) { toast('Error','error'); }
+}
+async function revokeRole(username, role_key) {
+  if (!confirm(`Revoke role '${role_key}' from '${username}'?`)) return;
+  try {
+    const r = await fetch(`${BASE}/api/rbac/user-roles/${encodeURIComponent(username)}/${encodeURIComponent(role_key)}`,
+      { method:'DELETE', headers:authHeaders() });
+    const d = await r.json();
+    toast(d.message||'Revoked','success');
+    loadUserRoles();
+  } catch(e) { toast('Error','error'); }
+}
+
+// ── PERMISSION MATRIX ─────────────────────────────────────────────────────────
+const ALL_ROLES = ['super_admin','principal','admin','finance_officer','accountant','hr_manager','teacher','parent'];
+const ALL_MODULES = ['students','attendance','marks','fees','admissions','payroll','hr','leave',
+  'teacher_mgmt','finance','accounting','budget','marketing','analytics','audit_log','security','user_mgmt','access_requests','ip_mgmt'];
+const PERM_COLS = ['can_view','can_create','can_edit','can_delete','can_export','can_approve','today_only'];
+const PERM_ICONS = { can_view:'👁', can_create:'✚', can_edit:'✎', can_delete:'🗑', can_export:'↓', can_approve:'✔', today_only:'📅' };
+
+async function loadPermissions() {
+  const roleFilter = document.getElementById('permRoleFilter')?.value || '';
+  // Populate role filter options
+  const prf = document.getElementById('permRoleFilter');
+  if (prf && prf.options.length <= 1) {
+    ALL_ROLES.forEach(r => {
+      const o = document.createElement('option'); o.value=r; o.textContent=r; prf.appendChild(o);
+    });
+    if (roleFilter) prf.value = roleFilter;
+  }
+  if (roleFilter) {
+    await loadSingleRolePermissions(roleFilter);
+  } else {
+    await loadAllPermissions();
+  }
+}
+
+async function loadAllPermissions() {
+  const head = document.getElementById('permHead');
+  const body = document.getElementById('permBody');
+  // Build matrix: module rows × role columns
+  // Fetch all role permissions
+  const data = {};
+  await Promise.all(ALL_ROLES.map(async role => {
+    try {
+      const r = await fetch(`${BASE}/api/rbac/permissions/${role}`, { headers: authHeaders() });
+      const d = await r.json();
+      d.permissions?.forEach(p => {
+        if (!data[p.module]) data[p.module] = {};
+        data[p.module][role] = p;
+      });
+    } catch(e) {}
+  }));
+  head.innerHTML = `<tr>
+    <th style="min-width:140px;">Module</th>
+    ${ALL_ROLES.map(r=>`<th style="min-width:90px;">${r.replace('_','<br>')}</th>`).join('')}
+  </tr>`;
+  body.innerHTML = ALL_MODULES.map(mod => {
+    const cells = ALL_ROLES.map(role => {
+      const p = data[mod]?.[role];
+      if (!p) return '<td style="background:#fafafa;">–</td>';
+      const bits = [];
+      if (p.can_view)   bits.push(`<span title="View">👁</span>`);
+      if (p.can_create) bits.push(`<span title="Create">✚</span>`);
+      if (p.can_edit)   bits.push(`<span title="Edit">✎</span>`);
+      if (p.can_delete) bits.push(`<span title="Delete">🗑</span>`);
+      if (p.can_export) bits.push(`<span title="Export">↓</span>`);
+      if (p.can_approve)bits.push(`<span title="Approve">✔</span>`);
+      const todayFlag = p.today_only ? `<span class="today-pill">TODAY</span>` : '';
+      return `<td>${bits.join('')}${todayFlag}</td>`;
+    }).join('');
+    return `<tr><td style="font-weight:600;">${mod}</td>${cells}</tr>`;
+  }).join('');
+}
+
+async function loadSingleRolePermissions(role) {
+  const head = document.getElementById('permHead');
+  const body = document.getElementById('permBody');
+  try {
+    const r = await fetch(`${BASE}/api/rbac/permissions/${role}`, { headers: authHeaders() });
+    const d = await r.json();
+    const perms = {};
+    d.permissions?.forEach(p => { perms[p.module] = p; });
+    head.innerHTML = `<tr>
+      <th>Module</th><th>View</th><th>Create</th><th>Edit</th><th>Delete</th><th>Export</th><th>Approve</th><th>Today Only</th>
+    </tr>`;
+    body.innerHTML = ALL_MODULES.map(mod => {
+      const p = perms[mod];
+      if (!p) return `<tr><td>${mod}</td><td colspan="7" style="text-align:center;color:#ccc;">No access</td></tr>`;
+      const ck = v => v ? '<span class="check fa fa-check"></span>' : '<span class="cross fa fa-minus"></span>';
+      return `<tr>
+        <td style="font-weight:600;">${mod}</td>
+        <td>${ck(p.can_view)}</td><td>${ck(p.can_create)}</td><td>${ck(p.can_edit)}</td>
+        <td>${ck(p.can_delete)}</td><td>${ck(p.can_export)}</td><td>${ck(p.can_approve)}</td>
+        <td>${p.today_only ? '<span class="today-pill">TODAY ONLY</span>' : '<span class="cross fa fa-minus"></span>'}</td>
+      </tr>`;
+    }).join('');
+  } catch(e) {}
+}
+
+// ── IP WHITELIST ──────────────────────────────────────────────────────────────
+async function loadIPWhitelist() {
+  try {
+    const r = await fetch(`${BASE}/api/rbac/ip-whitelist`, { headers: authHeaders() });
+    const d = await r.json();
+    const tbody = document.getElementById('ipBody');
+    if (!d.ips?.length) { tbody.innerHTML='<tr><td colspan="8" style="text-align:center;padding:24px;color:var(--muted);">No IPs registered yet</td></tr>'; return; }
+    tbody.innerHTML = d.ips.map(ip => `<tr>
+      <td><strong>#${ip.id}</strong></td>
+      <td>${ip.username||'<span style="color:var(--muted);">All users</span>'}</td>
+      <td>${ip.role_key?roleBadge(ip.role_key):'<span style="color:var(--muted);">All roles</span>'}</td>
+      <td style="font-family:monospace;font-size:12px;">${ip.ip_address}</td>
+      <td>${ip.ip_label||'–'}</td>
+      <td style="font-size:11px;">${ip.added_by||'–'}</td>
+      <td style="font-size:11px;">${fmt(ip.added_at)}</td>
+      <td><button class="btn-sm btn-red" onclick="removeIP(${ip.id})"><i class="fa fa-trash"></i></button></td>
+    </tr>`).join('');
+  } catch(e) {}
+}
+function openIPModal() { document.getElementById('ipModal').classList.add('open'); }
+async function submitIP() {
+  const ip_address = document.getElementById('ipAddress').value.trim();
+  const username   = document.getElementById('ipUsername').value.trim()||null;
+  const role_key   = document.getElementById('ipRole').value||null;
+  const ip_label   = document.getElementById('ipLabel').value.trim();
+  if (!ip_address) { toast('IP address required','error'); return; }
+  try {
+    const r = await fetch(`${BASE}/api/rbac/ip-whitelist`, { method:'POST', headers:authHeaders(),
+      body: JSON.stringify({username, role_key, ip_address, ip_label}) });
+    const d = await r.json();
+    closeModal('ipModal');
+    toast(d.message||'IP added','success');
+    loadIPWhitelist();
+  } catch(e) { toast('Error','error'); }
+}
+async function removeIP(id) {
+  if (!confirm('Remove this IP from whitelist?')) return;
+  try {
+    await fetch(`${BASE}/api/rbac/ip-whitelist/${id}`, { method:'DELETE', headers:authHeaders() });
+    toast('IP removed');
+    loadIPWhitelist();
+  } catch(e) { toast('Error','error'); }
+}
+
+// ── BIOMETRIC LOG ─────────────────────────────────────────────────────────────
+async function loadBiometric() {
+  const username = document.getElementById('bioUser')?.value?.trim()||'';
+  try {
+    const url = `${BASE}/api/rbac/biometric${username?'?username='+encodeURIComponent(username):''}`;
+    const r = await fetch(url, { headers: authHeaders() });
+    const d = await r.json();
+    const tbody = document.getElementById('bioBody');
+    if (!d.events?.length) {
+      tbody.innerHTML='<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted);">No biometric events yet. Sync your biometric device to start logging.</td></tr>';
+      return;
+    }
+    tbody.innerHTML = d.events.map(e => `<tr>
+      <td><strong>${e.username||'–'}</strong></td>
+      <td style="font-size:11px;font-family:monospace;">${e.device_id||'–'}</td>
+      <td>
+        <span style="background:${e.event_type==='CHECKIN'?'rgba(39,174,96,.12)':e.event_type==='CHECKOUT'?'rgba(52,152,219,.12)':'rgba(231,76,60,.12)'};color:${e.event_type==='CHECKIN'?'var(--green)':e.event_type==='CHECKOUT'?'var(--blue)':'var(--red)'};padding:2px 8px;border-radius:10px;font-size:10px;font-weight:700;">${e.event_type||'–'}</span>
+      </td>
+      <td style="font-size:11px;font-family:monospace;">${e.biometric_id||'–'}</td>
+      <td style="font-size:11px;font-family:monospace;">${e.matched_ip||'–'}</td>
+      <td style="font-size:11px;">${fmt(e.timestamp)}</td>
+    </tr>`).join('');
+  } catch(e) {}
+}
+</script>
+</body>
+</html>

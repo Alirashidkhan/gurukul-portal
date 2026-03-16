@@ -1,0 +1,6 @@
+node_modules/
+*.log
+.env
+/tmp/
+server/data/gurukul_live.db-shm
+server/data/gurukul_live.db-wal

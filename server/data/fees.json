@@ -1,0 +1,252 @@
+{
+  "STU001": [
+    {
+      "feeType": "Tuition Fee – Q1",
+      "amount": 6500,
+      "dueDate": "2026-04-10",
+      "paidDate": "2026-04-08",
+      "status": "Paid",
+      "receipt": "RCP-001"
+    },
+    {
+      "feeType": "Tuition Fee – Q2",
+      "amount": 6500,
+      "dueDate": "2026-07-10",
+      "paidDate": "2026-07-07",
+      "status": "Paid",
+      "receipt": "RCP-002"
+    },
+    {
+      "feeType": "Tuition Fee – Q3",
+      "amount": 6500,
+      "dueDate": "2026-10-10",
+      "paidDate": "",
+      "status": "Pending",
+      "receipt": ""
+    },
+    {
+      "feeType": "Annual Exam Fee",
+      "amount": 1200,
+      "dueDate": "2026-02-15",
+      "paidDate": "2026-02-14",
+      "status": "Paid",
+      "receipt": "RCP-003"
+    },
+    {
+      "feeType": "Sports & Activity",
+      "amount": 800,
+      "dueDate": "2026-06-01",
+      "paidDate": "",
+      "status": "Pending",
+      "receipt": ""
+    },
+    {
+      "feeType": "Library Fee",
+      "amount": 400,
+      "dueDate": "2026-04-10",
+      "paidDate": "2026-04-08",
+      "status": "Paid",
+      "receipt": "RCP-004"
+    }
+  ],
+  "STU002": [
+    {
+      "feeType": "Tuition Fee – Q1",
+      "amount": 6500,
+      "dueDate": "2026-04-10",
+      "paidDate": "2026-04-08",
+      "status": "Paid",
+      "receipt": "RCP-001"
+    },
+    {
+      "feeType": "Tuition Fee – Q2",
+      "amount": 6500,
+      "dueDate": "2026-07-10",
+      "paidDate": "2026-07-07",
+      "status": "Paid",
+      "receipt": "RCP-002"
+    },
+    {
+      "feeType": "Tuition Fee – Q3",
+      "amount": 6500,
+      "dueDate": "2026-10-10",
+      "paidDate": "",
+      "status": "Pending",
+      "receipt": ""
+    },
+    {
+      "feeType": "Annual Exam Fee",
+      "amount": 1200,
+      "dueDate": "2026-02-15",
+      "paidDate": "2026-02-14",
+      "status": "Paid",
+      "receipt": "RCP-003"
+    },
+    {
+      "feeType": "Sports & Activity",
+      "amount": 800,
+      "dueDate": "2026-06-01",
+      "paidDate": "",
+      "status": "Pending",
+      "receipt": ""
+    },
+    {
+      "feeType": "Library Fee",
+      "amount": 400,
+      "dueDate": "2026-04-10",
+      "paidDate": "2026-04-08",
+      "status": "Paid",
+      "receipt": "RCP-004"
+    }
+  ],
+  "STU003": [
+    {
+      "feeType": "Tuition Fee – Q1",
+      "amount": 6500,
+      "dueDate": "2026-04-10",
+      "paidDate": "2026-04-08",
+      "status": "Paid",
+      "receipt": "RCP-001"
+    },
+    {
+      "feeType": "Tuition Fee – Q2",
+      "amount": 6500,
+      "dueDate": "2026-07-10",
+      "paidDate": "2026-07-07",
+      "status": "Paid",
+      "receipt": "RCP-002"
+    },
+    {
+      "feeType": "Tuition Fee – Q3",
+      "amount": 6500,
+      "dueDate": "2026-10-10",
+      "paidDate": "",
+      "status": "Pending",
+      "receipt": ""
+    },
+    {
+      "feeType": "Annual Exam Fee",
+      "amount": 1200,
+      "dueDate": "2026-02-15",
+      "paidDate": "2026-02-14",
+      "status": "Paid",
+      "receipt": "RCP-003"
+    },
+    {
+      "feeType": "Sports & Activity",
+      "amount": 800,
+      "dueDate": "2026-06-01",
+      "paidDate": "",
+      "status": "Pending",
+      "receipt": ""
+    },
+    {
+      "feeType": "Library Fee",
+      "amount": 400,
+      "dueDate": "2026-04-10",
+      "paidDate": "2026-04-08",
+      "status": "Paid",
+      "receipt": "RCP-004"
+    }
+  ],
+  "STU004": [
+    {
+      "feeType": "Tuition Fee – Q1",
+      "amount": 6500,
+      "dueDate": "2026-04-10",
+      "paidDate": "2026-04-08",
+      "status": "Paid",
+      "receipt": "RCP-001"
+    },
+    {
+      "feeType": "Tuition Fee – Q2",
+      "amount": 6500,
+      "dueDate": "2026-07-10",
+      "paidDate": "2026-07-07",
+      "status": "Paid",
+      "receipt": "RCP-002"
+    },
+    {
+      "feeType": "Tuition Fee – Q3",
+      "amount": 6500,
+      "dueDate": "2026-10-10",
+      "paidDate": "",
+      "status": "Pending",
+      "receipt": ""
+    },
+    {
+      "feeType": "Annual Exam Fee",
+      "amount": 1200,
+      "dueDate": "2026-02-15",
+      "paidDate": "2026-02-14",
+      "status": "Paid",
+      "receipt": "RCP-003"
+    },
+    {
+      "feeType": "Sports & Activity",
+      "amount": 800,
+      "dueDate": "2026-06-01",
+      "paidDate": "",
+      "status": "Pending",
+      "receipt": ""
+    },
+    {
+      "feeType": "Library Fee",
+      "amount": 400,
+      "dueDate": "2026-04-10",
+      "paidDate": "2026-04-08",
+      "status": "Paid",
+      "receipt": "RCP-004"
+    }
+  ],
+  "STU005": [
+    {
+      "feeType": "Tuition Fee – Q1",
+      "amount": 6500,
+      "dueDate": "2026-04-10",
+      "paidDate": "2026-04-08",
+      "status": "Paid",
+      "receipt": "RCP-001"
+    },
+    {
+      "feeType": "Tuition Fee – Q2",
+      "amount": 6500,
+      "dueDate": "2026-07-10",
+      "paidDate": "2026-07-07",
+      "status": "Paid",
+      "receipt": "RCP-002"
+    },
+    {
+      "feeType": "Tuition Fee – Q3",
+      "amount": 6500,
+      "dueDate": "2026-10-10",
+      "paidDate": "",
+      "status": "Pending",
+      "receipt": ""
+    },
+    {
+      "feeType": "Annual Exam Fee",
+      "amount": 1200,
+      "dueDate": "2026-02-15",
+      "paidDate": "2026-02-14",
+      "status": "Paid",
+      "receipt": "RCP-003"
+    },
+    {
+      "feeType": "Sports & Activity",
+      "amount": 800,
+      "dueDate": "2026-06-01",
+      "paidDate": "",
+      "status": "Pending",
+      "receipt": ""
+    },
+    {
+      "feeType": "Library Fee",
+      "amount": 400,
+      "dueDate": "2026-04-10",
+      "paidDate": "2026-04-08",
+      "status": "Paid",
+      "receipt": "RCP-004"
+    }
+  ]
+}

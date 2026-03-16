@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Budget & Fund Management — The Gurukul High</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+:root {
+  --navy:   #0b2d59;
+  --teal:   #16a085;
+  --gold:   #c9a227;
+  --green:  #27ae60;
+  --red:    #e74c3c;
+  --purple: #8e44ad;
+  --orange: #e67e22;
+  --blue:   #2980b9;
+  --slate:  #f4f6fb;
+  --border: #e4e8f4;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',sans-serif;background:var(--slate);color:#222;min-height:100vh;}
+
+/* ─── LOGIN ─────────────────────────────────────────────────────────────────── */
+#loginScreen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:linear-gradient(135deg,var(--navy) 0%,#16a085 100%);}
+.login-box{background:#fff;border-radius:20px;padding:40px 36px;width:360px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.login-logo{display:flex;align-items:center;gap:14px;margin-bottom:26px;}
+.login-logo img{width:52px;height:52px;border-radius:50%;border:2px solid var(--navy);}
+.login-logo-text{font-size:15px;font-weight:800;color:var(--navy);line-height:1.3;}
+.login-logo-sub{font-size:11px;color:#888;font-weight:500;}
+.login-title{font-size:20px;font-weight:800;color:var(--navy);margin-bottom:6px;}
+.login-sub{font-size:12px;color:#888;margin-bottom:24px;}
+.fgroup{margin-bottom:16px;}
+.fgroup label{display:block;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.fgroup input{width:100%;border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-size:13px;outline:none;transition:border .2s;font-family:inherit;}
+.fgroup input:focus{border-color:var(--teal);}
+.btn-login{width:100%;background:linear-gradient(135deg,var(--navy),#16a085);color:#fff;border:none;border-radius:10px;padding:13px;font-size:14px;font-weight:700;cursor:pointer;letter-spacing:.3px;transition:opacity .2s;}
+.btn-login:hover{opacity:.9;}
+.login-hint{margin-top:12px;font-size:11px;color:#aaa;text-align:center;}
+.login-error{background:#fff0f0;color:var(--red);border:1px solid #fcc;border-radius:8px;padding:8px 12px;font-size:12px;margin-bottom:14px;display:none;}
+
+/* ─── MAIN APP ──────────────────────────────────────────────────────────────── */
+#app{display:none;}
+.topbar{background:linear-gradient(135deg,var(--navy),#16a085);color:#fff;padding:0 24px;height:62px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,.15);}
+.topbar-left{display:flex;align-items:center;gap:14px;}
+.topbar-logo{width:40px;height:40px;border-radius:8px;border:2px solid rgba(255,255,255,.4);object-fit:contain;}
+.topbar-title{font-size:16px;font-weight:800;letter-spacing:.2px;}
+.topbar-sub{font-size:11px;opacity:.7;margin-top:1px;}
+.topbar-right{display:flex;align-items:center;gap:14px;}
+.topbar-user{font-size:12px;opacity:.8;}
+#topbarYear{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;border-radius:8px;padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
+.btn-logout{background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;transition:background .2s;}
+.btn-logout:hover{background:rgba(255,255,255,.3);}
+.hamburger-btn{width:38px;height:38px;background:rgba(255,255,255,0.09);border:1.5px solid rgba(255,255,255,0.18);border-radius:10px;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:background .2s;flex-shrink:0;}
+.hamburger-btn:hover{background:rgba(255,255,255,0.22);}
+body.sidebar-hidden .layout .sidebar{transform:translateX(-100%);}
+body.sidebar-hidden .layout .main{margin-left:0!important;}
+.nav-section{font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;}
+.nav-section .chev{font-size:10px;transition:transform .25s;margin-right:4px;}
+.nav-section.collapsed .chev{transform:rotate(-90deg);}
+.nav-section-items{overflow:hidden;max-height:9999px;opacity:1;transition:max-height .28s ease,opacity .2s ease;flex-shrink:0;}
+.nav-section-items.collapsed{max-height:0;opacity:0;}
+.fqb-strip{display:flex;gap:6px;padding:14px 10px 12px;border-bottom:1.5px solid var(--border);}
+.fqb{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px 10px;border:1.5px solid rgba(13,27,94,0.1);background:rgba(13,27,94,0.04);border-radius:14px;cursor:pointer;font-family:inherit;transition:all .2s;min-width:0;overflow:hidden;}
+.fqb i{font-size:20px;color:#7b8aaa;}
+.fqb .fqb-lbl{font-size:9px;font-weight:700;color:#7b8aaa;text-transform:uppercase;letter-spacing:0;line-height:1;overflow:hidden;text-overflow:ellipsis;max-width:100%;display:block;text-align:center;}
+.fqb:hover{background:rgba(13,27,94,0.09);border-color:rgba(13,27,94,0.2);}
+.fqb:hover i,.fqb:hover .fqb-lbl{color:var(--navy);}
+.fqb.active{background:rgba(13,27,94,0.1);border-color:rgba(13,27,94,0.35);}
+.fqb.active i,.fqb.active .fqb-lbl{color:var(--teal);font-weight:800;}
+/* ── Notification Bell ── */
+.notif-bell{position:relative;display:inline-flex;}.notif-bell-btn{background:rgba(255,255,255,.12);border:none;border-radius:8px;color:#fff;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:background .2s;position:relative;}.notif-bell-btn:hover{background:rgba(255,255,255,.25);}.notif-badge{position:absolute;top:-5px;right:-5px;background:#f44336;color:#fff;font-size:9px;font-weight:700;min-width:16px;height:16px;border-radius:8px;display:none;align-items:center;justify-content:center;padding:0 3px;pointer-events:none;}.notif-badge.show{display:flex;}.notif-dropdown{position:absolute;top:calc(100% + 8px);right:0;width:320px;background:#1a1f2e;border:1px solid rgba(255,255,255,.12);border-radius:12px;box-shadow:0 8px 40px rgba(0,0,0,.55);z-index:99999;display:none;overflow:hidden;}.notif-dropdown.open{display:block;}.notif-dd-header{padding:11px 15px;border-bottom:1px solid rgba(255,255,255,.09);display:flex;align-items:center;justify-content:space-between;}.notif-dd-header span{font-size:13px;font-weight:700;color:#e0e0e0;font-family:'Poppins',sans-serif;}.notif-dd-mark{font-size:11px;color:#64b5f6;cursor:pointer;background:none;border:none;font-family:'Poppins',sans-serif;padding:0;}.notif-dd-mark:hover{color:#90caf9;}.notif-scroll{max-height:300px;overflow-y:auto;}.notif-row{padding:10px 15px;border-bottom:1px solid rgba(255,255,255,.05);display:flex;gap:9px;align-items:flex-start;transition:background .15s;}.notif-row:hover{background:rgba(255,255,255,.04);}.notif-row.unread{background:rgba(100,181,246,.07);}.notif-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px;}.notif-dot.info{background:#64b5f6;}.notif-dot.success{background:#66bb6a;}.notif-dot.warning{background:#ffb74d;}.notif-dot.danger,.notif-dot.urgent{background:#ef5350;}.notif-dot.announcement,.notif-dot.circular{background:#ab47bc;}.notif-dot.alert{background:#ff7043;}.notif-body{flex:1;min-width:0;}.notif-ttl{font-size:12px;font-weight:600;color:#e0e0e0;font-family:'Poppins',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}.notif-sub{font-size:11px;color:#9e9e9e;margin-top:2px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}.notif-ago{font-size:10px;color:#616161;margin-top:3px;font-family:'Poppins',sans-serif;}.notif-empty-msg{padding:20px;text-align:center;color:#616161;font-size:12px;font-family:'Poppins',sans-serif;}
+
+/* ─── LAYOUT ────────────────────────────────────────────────────────────────── */
+.layout{display:flex;min-height:calc(100vh - 60px);}
+.sidebar{width:220px;background:#fff;border-right:1.5px solid var(--border);padding:16px 0;flex-shrink:0;position:fixed;left:0;z-index:150;transition:transform .3s cubic-bezier(0.4,0,0.2,1);top:60px;height:calc(100vh - 60px);overflow-y:auto;}
+.nav-section{font-size:10px;font-weight:800;color:#bbb;text-transform:uppercase;letter-spacing:1px;padding:14px 18px 6px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 18px;font-size:14px;font-weight:600;color:#555;cursor:pointer;border-left:3px solid transparent;transition:all .15s;text-decoration:none;}
+.nav-item:hover{background:var(--slate);color:var(--navy);}
+.nav-item.active{background:rgba(22,160,133,.07);color:var(--teal);border-left-color:var(--teal);font-weight:700;}
+.nav-item i{width:18px;text-align:center;font-size:14px;}
+.nav-dept{display:flex;flex-direction:column;gap:2px;padding:0 10px;margin-bottom:6px;}
+.nav-dept-btn{display:flex;align-items:center;gap:9px;padding:9px 10px;font-size:12px;font-weight:600;border-radius:9px;cursor:pointer;border:none;background:transparent;color:#555;width:100%;text-align:left;transition:all .15s;}
+.nav-dept-btn:hover{background:var(--slate);}
+.nav-dept-btn.active{font-weight:700;color:#fff;background:var(--navy);}
+.nav-dept-btn .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.main{flex:1;padding:24px;overflow-y:auto;min-width:0;margin-left:220px;transition:margin-left .3s cubic-bezier(0.4,0,0.2,1);}
+.page{display:none;}
+.page.active{display:block;}
+
+/* ─── CARDS ─────────────────────────────────────────────────────────────────── */
+.card{background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1.5px solid var(--border);}
+.card-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;}
+.card-title{font-size:14px;font-weight:800;color:var(--navy);display:flex;align-items:center;gap:8px;}
+.card-body{padding:20px;}
+.page-title{font-size:20px;font-weight:800;color:var(--navy);margin-bottom:4px;}
+.page-sub{font-size:12px;color:#888;margin-bottom:20px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+
+/* ─── KPI CARDS ─────────────────────────────────────────────────────────────── */
+.kpi{background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1.5px solid var(--border);border-left:5px solid var(--teal);}
+.kpi.gold{border-left-color:var(--gold);}
+.kpi.red{border-left-color:var(--red);}
+.kpi.green{border-left-color:var(--green);}
+.kpi.purple{border-left-color:var(--purple);}
+.kpi-label{font-size:11px;font-weight:700;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.kpi-val{font-size:26px;font-weight:800;color:var(--navy);line-height:1;}
+.kpi-sub{font-size:11px;color:#aaa;margin-top:4px;}
+.kpi-icon{font-size:20px;margin-bottom:8px;}
+
+/* ─── DEPT BUDGET CARD ─────────────────────────────────────────────────────── */
+.dept-card{background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1.5px solid var(--border);cursor:pointer;transition:all .2s;position:relative;overflow:hidden;}
+.dept-card:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.1);}
+.dept-card .accent-bar{position:absolute;top:0;left:0;right:0;height:4px;}
+.dept-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;}
+.dept-card-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.dept-card-info{flex:1;margin-left:12px;}
+.dept-card-name{font-size:13px;font-weight:800;color:var(--navy);}
+.dept-card-year{font-size:10px;color:#bbb;margin-top:1px;}
+.dept-card-allocated{font-size:18px;font-weight:800;color:var(--navy);margin-top:4px;}
+.dept-card-allocated small{font-size:10px;font-weight:600;color:#aaa;}
+.progress-track{background:#f0f2f9;border-radius:999px;height:7px;overflow:hidden;margin:10px 0 6px;}
+.progress-fill{height:100%;border-radius:999px;transition:width .5s;}
+.dept-card-nums{display:flex;justify-content:space-between;font-size:11px;color:#888;}
+.dept-card-nums strong{color:var(--navy);}
+.badge-ok{display:inline-block;background:rgba(39,174,96,.12);color:var(--green);font-size:10px;font-weight:700;border-radius:6px;padding:2px 7px;}
+.badge-warn{display:inline-block;background:rgba(241,196,15,.15);color:#d4a017;font-size:10px;font-weight:700;border-radius:6px;padding:2px 7px;}
+.badge-over{display:inline-block;background:rgba(231,76,60,.12);color:var(--red);font-size:10px;font-weight:700;border-radius:6px;padding:2px 7px;}
+
+/* ─── ALLOCATE FORM ─────────────────────────────────────────────────────────── */
+.alloc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px;}
+.alloc-row{background:var(--slate);border-radius:10px;padding:14px 16px;display:flex;align-items:center;gap:12px;}
+.alloc-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;}
+.alloc-name{font-size:13px;font-weight:700;color:var(--navy);flex:1;}
+.alloc-input{border:1.5px solid var(--border);border-radius:8px;padding:8px 12px;font-size:13px;font-family:inherit;outline:none;width:130px;font-weight:700;}
+.alloc-input:focus{border-color:var(--teal);}
+
+/* ─── EXPENSE TABLE ─────────────────────────────────────────────────────────── */
+table{width:100%;border-collapse:collapse;}
+th{background:#f8faff;padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.4px;border-bottom:1.5px solid var(--border);}
+td{padding:10px 14px;font-size:13px;border-bottom:1px solid #f0f2f8;vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:#fafbff;}
+.tbl-wrap{overflow-x:auto;border-radius:12px;border:1.5px solid var(--border);}
+
+/* ─── BUTTONS ───────────────────────────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:inherit;transition:all .15s;}
+.btn-primary{background:linear-gradient(135deg,var(--navy),#16a085);color:#fff;}
+.btn-primary:hover{opacity:.9;}
+.btn-success{background:var(--green);color:#fff;}
+.btn-success:hover{opacity:.9;}
+.btn-outline{background:transparent;color:var(--navy);border:1.5px solid var(--border);}
+.btn-outline:hover{background:var(--slate);}
+.btn-danger{background:rgba(231,76,60,.1);color:var(--red);border:1.5px solid rgba(231,76,60,.2);}
+.btn-danger:hover{background:rgba(231,76,60,.2);}
+.btn-sm{padding:6px 12px;font-size:12px;}
+.btn-xs{padding:4px 9px;font-size:11px;}
+
+/* ─── ALERT / SUMMARY BAR ───────────────────────────────────────────────────── */
+.alert{padding:11px 16px;border-radius:9px;font-size:13px;margin-bottom:14px;display:none;}
+.alert.success{background:rgba(39,174,96,.1);color:#1e7e40;border:1px solid rgba(39,174,96,.3);}
+.alert.error{background:rgba(231,76,60,.08);color:var(--red);border:1px solid rgba(231,76,60,.25);}
+.alert.info{background:rgba(41,128,185,.08);color:#1a5278;border:1px solid rgba(41,128,185,.25);}
+.summary-banner{background:linear-gradient(135deg,var(--navy),#16a085);border-radius:14px;padding:16px 22px;display:flex;flex-wrap:wrap;gap:24px;align-items:center;margin-bottom:20px;}
+.sb-item{flex:1;min-width:120px;}
+.sb-label{color:rgba(255,255,255,.85);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;margin-bottom:3px;}
+.sb-val{color:#fff;font-size:22px;font-weight:800;}
+.sb-sub{color:rgba(255,255,255,.75);font-size:11px;font-weight:500;}
+.sb-divider{width:1px;background:rgba(255,255,255,.3);height:36px;align-self:center;}
+
+/* ─── DEPT DETAIL ───────────────────────────────────────────────────────────── */
+.detail-header{background:linear-gradient(135deg,var(--navy),#1a4a7a);border-radius:14px;padding:20px 24px;margin-bottom:18px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+.detail-icon{width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;background:rgba(255,255,255,.15);}
+.detail-info{flex:1;}
+.detail-name{color:#fff;font-size:20px;font-weight:800;}
+.detail-sub{color:rgba(255,255,255,.85);font-size:12px;margin-top:2px;}
+.detail-kpis{display:flex;gap:20px;flex-wrap:wrap;margin-top:4px;}
+.dk{flex:1;min-width:100px;background:rgba(255,255,255,.18);border-radius:10px;padding:10px 14px;}
+.dk-label{color:rgba(255,255,255,.85);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;}
+.dk-val{color:#fff;font-size:18px;font-weight:800;margin-top:2px;}
+
+/* ─── MONTHLY CHART ─────────────────────────────────────────────────────────── */
+.month-bars{display:flex;align-items:flex-end;gap:8px;height:120px;padding:0 4px;}
+.month-bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.month-bar{width:100%;border-radius:6px 6px 0 0;min-height:4px;transition:height .4s;}
+.month-bar-label{font-size:9px;color:#666;font-weight:700;white-space:nowrap;}
+.month-bar-val{font-size:9px;color:#444;font-weight:700;}
+
+/* ─── ADD EXPENSE MODAL ─────────────────────────────────────────────────────── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:#fff;border-radius:16px;padding:28px;width:460px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.modal-title{font-size:16px;font-weight:800;color:var(--navy);margin-bottom:18px;display:flex;align-items:center;gap:9px;}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+
+/* ─── UTILITY ───────────────────────────────────────────────────────────────── */
+.divider{height:1px;background:var(--border);margin:16px 0;}
+select{border:1.5px solid var(--border);border-radius:9px;padding:9px 12px;font-size:13px;font-family:inherit;outline:none;background:#fff;}
+select:focus{border-color:var(--teal);}
+@media(max-width:768px){
+  .sidebar{display:none;}
+  .grid2,.grid3,.grid4{grid-template-columns:1fr;}
+}
+</style>
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#C9A227">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Gurukul ERP">
+</head>
+<body>
+
+<!-- ── LOGIN SCREEN ──────────────────────────────────────────────────────────── -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <img src="../images/gurukul-logo.png" alt="Gurukul" onerror="this.style.display='none'">
+      <div>
+        <div class="login-logo-text">The Gurukul High</div>
+        <div class="login-logo-sub">Budget & Fund Management</div>
+      </div>
+    </div>
+    <div class="login-title">Sign In</div>
+    <div class="login-sub">Finance or Admin credentials required</div>
+    <div class="login-error" id="loginError"></div>
+    <div class="fgroup">
+      <label><i class="fa fa-user"></i> Username</label>
+      <input type="text" id="loginUser" placeholder="budget / finance / admin" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="fgroup">
+      <label><i class="fa fa-lock"></i> Password</label>
+      <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn-login" onclick="doLogin()"><i class="fa fa-sign-in"></i> Sign In</button>
+    <div class="login-hint"><i class="fa fa-key"></i> budget / budget@2026 &nbsp;|&nbsp; finance / finance@2026 &nbsp;|&nbsp; admin / gurukul@2026</div>
+  </div>
+</div>
+
+<!-- ── MAIN APP ───────────────────────────────────────────────────────────────── -->
+<div id="app">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="hamburger-btn" onclick="toggleSidebar()" title="Toggle Sidebar"><i class="fa fa-bars"></i></button>
+      <div>
+        <div class="topbar-title"><i class="fa fa-bank"></i> Budget & Fund Management</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;justify-content:center;">
+      <div style="width:38px;height:38px;border-radius:8px;border:2px solid rgba(255,255,255,.3);overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><img src="../images/gurukul-logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;" onerror="this.style.display='none'"></div>
+      <div style="color:#fff;font-size:17px;font-weight:700;letter-spacing:.2px;">The Gurukul High</div>
+    </div>
+    <div class="topbar-right">
+      <div class="topbar-user" id="topbarUser"></div>
+      <label style="color:rgba(255,255,255,.7);font-size:11px;font-weight:700;">Fiscal Year</label>
+      <select id="topbarYear" onchange="switchYear(this.value)"></select>
+      <div class="notif-bell" id="notifBell">
+        <button class="notif-bell-btn" onclick="toggleNotifDrop(event)" title="Notifications"><i class="fa fa-bell"></i><span class="notif-badge" id="notifBadge"></span></button>
+        <div class="notif-dropdown" id="notifDropdown">
+          <div class="notif-dd-header"><span>Notifications</span><button class="notif-dd-mark" onclick="markAllRead()">Mark all read</button></div>
+          <div class="notif-scroll" id="notifList"><div class="notif-empty-msg">Loading…</div></div>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="logout()"><i class="fa fa-sign-out"></i> Logout</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <!-- Sidebar -->
+    <div class="sidebar" id="mainSidebar">
+      <!-- Quick buttons -->
+      <div class="fqb-strip">
+        <button class="fqb" id="fqb-overview" onclick="showPage('overview');syncBudgetFqb('overview')"><i class="fa fa-tachometer"></i><span class="fqb-lbl">Overview</span></button>
+        <button class="fqb" id="fqb-allocate" onclick="showPage('allocate');syncBudgetFqb('allocate')"><i class="fa fa-sliders"></i><span class="fqb-lbl">Allocate</span></button>
+        <button class="fqb" id="fqb-dept" onclick="syncBudgetFqb('dept')"><i class="fa fa-building"></i><span class="fqb-lbl">Depts</span></button>
+      </div>
+      <div class="nav-section" onclick="toggleBudgetSection(this)">Navigation <i class="fa fa-chevron-down chev"></i></div>
+      <div class="nav-section-items">
+        <div class="nav-item active" id="nav-overview" onclick="showPage('overview')"><i class="fa fa-tachometer"></i> Overview</div>
+        <div class="nav-item" id="nav-allocate" onclick="showPage('allocate')"><i class="fa fa-sliders"></i> Set Allocations</div>
+      </div>
+      <div class="nav-section" onclick="toggleBudgetSection(this)">Departments <i class="fa fa-chevron-down chev"></i></div>
+      <div class="nav-section-items">
+        <div class="nav-dept" id="navDepts"></div>
+      </div>
+    </div>
+
+    <!-- Pages -->
+    <div class="main">
+
+      <!-- ── OVERVIEW PAGE ─────────────────────────────────────────────────── -->
+      <div class="page active" id="page-overview">
+        <div class="page-title"><i class="fa fa-tachometer" style="color:var(--teal);"></i> Budget Overview</div>
+        <div class="page-sub" id="overviewSubTitle">Loading fiscal year data…</div>
+
+        <div id="overviewAlert" class="alert"></div>
+
+        <!-- Summary Banner -->
+        <div class="summary-banner" id="summaryBanner">
+          <div class="sb-item">
+            <div class="sb-label"><i class="fa fa-rupee"></i> Total Allocated</div>
+            <div class="sb-val" id="sbAllocated">—</div>
+            <div class="sb-sub" id="sbFY">All Departments</div>
+          </div>
+          <div class="sb-divider"></div>
+          <div class="sb-item">
+            <div class="sb-label"><i class="fa fa-check"></i> Total Spent (YTD)</div>
+            <div class="sb-val" id="sbSpent" style="color:#ffd700;">—</div>
+            <div class="sb-sub" id="sbSpentPct">of allocated</div>
+          </div>
+          <div class="sb-divider"></div>
+          <div class="sb-item">
+            <div class="sb-label"><i class="fa fa-bank"></i> Total Remaining</div>
+            <div class="sb-val" id="sbRemaining" style="color:#7fffd4;">—</div>
+            <div class="sb-sub" id="sbRemainingNote">Available balance</div>
+          </div>
+          <div class="sb-divider"></div>
+          <div class="sb-item">
+            <div class="sb-label"><i class="fa fa-bar-chart"></i> Budget Used</div>
+            <div style="margin-top:6px;background:rgba(255,255,255,.2);border-radius:999px;height:10px;overflow:hidden;">
+              <div id="sbProgressBar" style="background:#ffd700;height:100%;border-radius:999px;width:0%;transition:width .5s;"></div>
+            </div>
+            <div class="sb-sub" id="sbPct" style="margin-top:4px;">0%</div>
+          </div>
+        </div>
+
+        <!-- Dept Cards Grid -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:24px;" id="deptCardsGrid"></div>
+
+        <!-- Charts Row -->
+        <div class="grid2" style="margin-bottom:18px;">
+          <!-- Monthly spend chart -->
+          <div class="card">
+            <div class="card-head"><div class="card-title"><i class="fa fa-bar-chart"></i> Monthly Spend (All Depts)</div></div>
+            <div class="card-body" style="padding:16px 20px;">
+              <div class="month-bars" id="overviewMonthBars" style="height:140px;"></div>
+            </div>
+          </div>
+          <!-- Dept allocation breakdown -->
+          <div class="card">
+            <div class="card-head"><div class="card-title"><i class="fa fa-pie-chart"></i> Allocation Breakdown</div></div>
+            <div class="card-body" id="allocBreakdown" style="padding:12px 20px;"></div>
+          </div>
+        </div>
+
+        <!-- Year vs Year comparison -->
+        <div class="card" id="yoyCard">
+          <div class="card-head"><div class="card-title"><i class="fa fa-exchange"></i> Year-over-Year Comparison</div></div>
+          <div class="card-body" id="yoyBody" style="padding:16px 20px;"></div>
+        </div>
+      </div>
+
+      <!-- ── ALLOCATE PAGE ──────────────────────────────────────────────────── -->
+      <div class="page" id="page-allocate">
+        <div class="page-title"><i class="fa fa-sliders" style="color:var(--teal);"></i> Set Annual Budget Allocations</div>
+        <div class="page-sub">Set the budget for each department for the selected fiscal year. Only Finance and Admin can save.</div>
+        <div id="allocateAlert" class="alert"></div>
+        <div class="card" style="margin-bottom:18px;">
+          <div class="card-head">
+            <div class="card-title"><i class="fa fa-calendar-o"></i> Fiscal Year: <span id="allocateFY" style="color:var(--teal);margin-left:4px;"></span></div>
+            <div style="font-size:12px;color:#aaa;"><i class="fa fa-info-circle"></i> HR budget is automatically synced to HR dashboard</div>
+          </div>
+          <div class="card-body">
+            <div class="alloc-grid" id="allocFields"></div>
+            <div class="divider"></div>
+            <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+              <div style="flex:1;">
+                <label style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;display:block;margin-bottom:6px;">Notes (optional)</label>
+                <input type="text" id="allocNotes" placeholder="e.g. Approved in board meeting March 2026" style="border:1.5px solid var(--border);border-radius:9px;padding:9px 14px;font-size:13px;font-family:inherit;outline:none;width:100%;" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--border)'">
+              </div>
+              <button class="btn btn-primary" onclick="saveAllocations()" style="height:40px;align-self:flex-end;"><i class="fa fa-save"></i> Save All Allocations</button>
+            </div>
+          </div>
+        </div>
+        <!-- Live totals preview -->
+        <div class="card">
+          <div class="card-head"><div class="card-title"><i class="fa fa-calculator"></i> Allocation Preview</div></div>
+          <div class="card-body" id="allocPreview" style="padding:16px 20px;"></div>
+        </div>
+      </div>
+
+      <!-- ── DEPT DETAIL PAGE ───────────────────────────────────────────────── -->
+      <div class="page" id="page-dept">
+        <div id="deptDetailContent"></div>
+      </div>
+
+    </div><!-- /main -->
+  </div><!-- /layout -->
+</div><!-- /app -->
+
+<!-- ── ADD EXPENSE MODAL ──────────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="expenseModal">
+  <div class="modal">
+    <div class="modal-title"><i class="fa fa-plus-circle" style="color:var(--teal);"></i> Add Expense</div>
+    <input type="hidden" id="expDeptKey">
+    <div class="fgroup">
+      <label>Description *</label>
+      <input type="text" id="expDesc" placeholder="e.g. Digital Marketing Campaign Q1" style="width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 14px;font-size:13px;font-family:inherit;outline:none;" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--border)'">
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div class="fgroup">
+        <label>Amount (₹) *</label>
+        <input type="number" id="expAmount" placeholder="0.00" min="0" step="0.01" style="width:100%;border:1.5px solid var(--border);border-radius:9px;padding:10px 14px;font-size:13px;font-family:inherit;outline:none;" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--border)'">
+      </div>
+      <div class="fgroup">
+        <label>Month</label>
+        <input type="month" id="expMonth" style="width:100%;border:1.5px solid var(--border);border-radius:9px;padding:9px 14px;font-size:13px;font-family:inherit;outline:none;" onfocus="this.style.borderColor='var(--teal)'" onblur="this.style.borderColor='var(--border)'">
+      </div>
+    </div>
+    <div class="fgroup">
+      <label>Category</label>
+      <select id="expCategory" style="width:100%;">
+        <option value="General">General</option>
+        <option value="Payroll">Payroll</option>
+        <option value="Equipment">Equipment</option>
+        <option value="Software">Software / Subscriptions</option>
+        <option value="Marketing">Marketing / Advertising</option>
+        <option value="Training">Training &amp; Development</option>
+        <option value="Travel">Travel &amp; Logistics</option>
+        <option value="Utilities">Utilities</option>
+        <option value="Maintenance">Maintenance</option>
+        <option value="Events">Events &amp; Programs</option>
+        <option value="Books">Books &amp; Materials</option>
+        <option value="Other">Other</option>
+      </select>
+    </div>
+    <div id="expenseModalAlert" class="alert"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeExpenseModal()">Cancel</button>
+      <button class="btn btn-success" onclick="submitExpense()"><i class="fa fa-check"></i> Add Expense</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+const API = '/api';
+const DEPT_META = {
+  hr:          { name:'Human Resources',     icon:'fa-users',          color:'#16a085', bg:'rgba(22,160,133,0.12)'  },
+  marketing:   { name:'Marketing',           icon:'fa-bullhorn',       color:'#8e44ad', bg:'rgba(142,68,173,0.12)'  },
+  operations:  { name:'Operations & Admin',  icon:'fa-cogs',           color:'#e67e22', bg:'rgba(230,126,34,0.12)'  },
+  academic:    { name:'Academic & Teaching', icon:'fa-graduation-cap', color:'#2980b9', bg:'rgba(41,128,185,0.12)'  },
+  it:          { name:'IT & Infrastructure', icon:'fa-desktop',        color:'#27ae60', bg:'rgba(39,174,96,0.12)'   },
+  transport:   { name:'Transport',           icon:'fa-bus',            color:'#c0392b', bg:'rgba(192,57,43,0.12)'   },
+};
+const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+let _token = null;
+let _role  = null;
+let _userName = '';
+let _year  = new Date().getFullYear().toString();
+let _overviewData = null;
+
+// ── AUTH ──────────────────────────────────────────────────────────────────────
+function authH() { return { 'Content-Type':'application/json', Authorization: 'Bearer '+(_token||'') }; }
+
+function fmt(n) { return '₹' + Math.round(n||0).toLocaleString('en-IN'); }
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── LOGIN ─────────────────────────────────────────────────────────────────────
+async function doLogin() {
+  const username = document.getElementById('loginUser').value.trim();
+  const password = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginError');
+  errEl.style.display = 'none';
+  if (!username || !password) { errEl.textContent = 'Please enter username and password.'; errEl.style.display = 'block'; return; }
+  try {
+    const r = await fetch(`${API}/budget/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ username, password }) });
+    const d = await r.json();
+    if (!r.ok) { errEl.textContent = d.error || 'Login failed.'; errEl.style.display = 'block'; return; }
+    _token = d.token; _role = d.role; _userName = d.name;
+    localStorage.setItem('budget_token', _token);
+    localStorage.setItem('budget_role', _role);
+    localStorage.setItem('budget_name', _userName);
+    initApp();
+  } catch(e) { errEl.textContent = 'Server unreachable. Make sure the server is running.'; errEl.style.display = 'block'; }
+}
+
+function logout() {
+  _token = null; _role = null;
+  localStorage.removeItem('budget_token');
+  localStorage.removeItem('budget_role');
+  localStorage.removeItem('budget_name');
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginPass').value = '';
+}
+
+// ── SESSION TIMEOUT CHECK ──
+function checkTokenExpiry() {
+  try {
+    if (!_token) return;
+    const parts = _token.split('.');
+    if (parts.length !== 3) return;
+    const payload = JSON.parse(atob(parts[1]));
+    if (!payload.exp) return;
+    const expiryTime = payload.exp * 1000;
+    const now = Date.now();
+    if (expiryTime < now) {
+      showSessionExpiredToast();
+    }
+  } catch (e) { }
+}
+
+function showSessionExpiredToast() {
+  const toast = document.createElement('div');
+  toast.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(220, 53, 69, 0.95);
+    color: white;
+    padding: 14px 18px;
+    border-radius: 8px;
+    z-index: 999999;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    animation: slideIn .3s ease;
+  `;
+  toast.textContent = '⚠ Session expired. Redirecting to login...';
+  document.body.appendChild(toast);
+
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideIn {
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  setTimeout(() => logout(), 2000);
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────────
+function initApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('topbarUser').textContent = _userName + ' (' + _role + ')';
+
+  // Year selector
+  const yrSel = document.getElementById('topbarYear');
+  yrSel.innerHTML = '';
+  const currentYear = new Date().getFullYear();
+  for (let y = currentYear + 1; y >= currentYear - 3; y--) {
+    const opt = document.createElement('option');
+    opt.value = y; opt.textContent = y;
+    if (y.toString() === _year) opt.selected = true;
+    yrSel.appendChild(opt);
+  }
+
+  // Show/hide Set Allocations based on role — only finance & admin can edit
+  const canEditBudget = ['finance', 'admin'].includes(_role);
+  const allocNav = document.getElementById('nav-allocate');
+  if (allocNav) allocNav.style.display = canEditBudget ? 'flex' : 'none';
+
+  // Build dept nav
+  buildDeptNav();
+  // Build allocate fields (still build so it works if role later changes)
+  buildAllocFields();
+  // Load overview
+  loadOverview();
+
+  // Start session timeout check
+  setInterval(checkTokenExpiry, 60000);
+
+  // Auto-refresh overview every 30 seconds
+  setInterval(() => {
+    const cur = document.querySelector('.page.active');
+    if (cur?.id === 'page-overview') loadOverview();
+  }, 30000);
+}
+
+function switchYear(year) {
+  _year = year;
+  const cur = document.querySelector('.page.active');
+  if (cur?.id === 'page-overview') loadOverview();
+  else if (cur?.id === 'page-allocate') loadAllocPage();
+  else if (cur?.id === 'page-dept') {
+    const active = document.querySelector('.nav-dept-btn.active');
+    if (active) loadDeptPage(active.dataset.key);
+  }
+}
+
+function buildDeptNav() {
+  const nav = document.getElementById('navDepts');
+  nav.innerHTML = Object.entries(DEPT_META).map(([key, m]) => `
+    <button class="nav-dept-btn" id="navd-${key}" data-key="${key}" onclick="loadDeptPage('${key}')">
+      <div class="dot" style="background:${m.color};"></div>
+      <i class="fa ${m.icon}" style="color:${m.color};font-size:13px;width:16px;text-align:center;"></i>
+      <span style="font-size:12px;">${m.name}</span>
+    </button>
+  `).join('');
+}
+
+function showPage(name) {
+  // Only finance & admin can access the allocate page
+  if (name === 'allocate' && !['finance', 'admin'].includes(_role)) {
+    alert('Only Finance or Admin can set budget allocations.');
+    return;
+  }
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item, .nav-dept-btn').forEach(n => n.classList.remove('active'));
+  document.getElementById(`page-${name}`)?.classList.add('active');
+  document.getElementById(`nav-${name}`)?.classList.add('active');
+  if (name === 'overview') loadOverview();
+  if (name === 'allocate') loadAllocPage();
+  budgetExpandForPage(name);
+}
+
+function setDeptNavActive(key) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.querySelectorAll('.nav-dept-btn').forEach(n => n.classList.remove('active'));
+  document.getElementById(`navd-${key}`)?.classList.add('active');
+}
+
+// ── OVERVIEW ─────────────────────────────────────────────────────────────────
+async function loadOverview() {
+  try {
+    const tok = localStorage.getItem('budgetToken') || '';
+    const r = await fetch(`/api/budget/overview?_nc=${Date.now()}`, { headers: tok ? {'Authorization':'Bearer '+tok} : {} });
+    const d = await r.json();
+    if (!r.ok) { showAlert('overviewAlert', d.error || 'Failed to load overview', 'error'); return; }
+    _overviewData = d;
+    renderOverview(d);
+  } catch(e) { showAlert('overviewAlert', 'Error: ' + e.message, 'error'); }
+}
+
+function renderOverview(d) {
+  document.getElementById('overviewSubTitle').textContent = `Fiscal Year ${d.year} — All Departments Budget Summary`;
+  document.getElementById('allocateFY').textContent = d.year;
+
+  // Summary banner
+  document.getElementById('sbAllocated').textContent = fmt(d.totalAllocated);
+  document.getElementById('sbSpent').textContent     = fmt(d.totalSpent);
+  document.getElementById('sbSpentPct').textContent  = d.totalAllocated > 0 ? Math.round(d.totalSpent/d.totalAllocated*100) + '% of allocated' : 'No budget set';
+  document.getElementById('sbFY').textContent        = `FY ${d.year} — ${Object.keys(DEPT_META).length} departments`;
+  const rem = d.totalRemaining;
+  document.getElementById('sbRemaining').textContent = fmt(rem);
+  document.getElementById('sbRemaining').style.color = rem < 0 ? '#ff6b6b' : '#7fffd4';
+  document.getElementById('sbRemainingNote').textContent = rem < 0 ? '⚠ Over budget!' : 'Available balance';
+  const pct = d.totalAllocated > 0 ? Math.min(100, Math.round(d.totalSpent/d.totalAllocated*100)) : 0;
+  document.getElementById('sbProgressBar').style.width = pct + '%';
+  document.getElementById('sbProgressBar').style.background = pct >= 90 ? '#ff6b6b' : pct >= 70 ? '#ffd700' : '#7fffd4';
+  document.getElementById('sbPct').textContent = pct + '% used';
+
+  // Dept cards
+  const grid = document.getElementById('deptCardsGrid');
+  grid.innerHTML = (d.depts || []).map(dept => {
+    const meta = DEPT_META[dept.dept_key] || { name: dept.dept_name, icon: 'fa-circle', color: '#666', bg: '#eee' };
+    const pct = dept.allocated > 0 ? Math.min(100, Math.round(dept.spent/dept.allocated*100)) : 0;
+    const isOver = dept.remaining < 0;
+    const isLow  = !isOver && pct >= 75;
+    const barColor = isOver ? '#e74c3c' : isLow ? '#f1c40f' : meta.color;
+    const badge = isOver ? `<span class="badge-over">⚠ Over</span>` : isLow ? `<span class="badge-warn">⚠ Low</span>` : dept.allocated > 0 ? `<span class="badge-ok">✓ OK</span>` : `<span class="badge-warn">Not set</span>`;
+    return `
+      <div class="dept-card" onclick="loadDeptPage('${dept.dept_key}')">
+        <div class="accent-bar" style="background:${meta.color};"></div>
+        <div class="dept-card-top">
+          <div style="display:flex;align-items:flex-start;gap:12px;flex:1;">
+            <div class="dept-card-icon" style="background:${meta.bg};color:${meta.color};"><i class="fa ${meta.icon}"></i></div>
+            <div class="dept-card-info">
+              <div class="dept-card-name">${dept.dept_name}</div>
+              <div style="margin-top:3px;">${badge}</div>
+            </div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:16px;font-weight:800;color:var(--navy);">${fmt(dept.allocated)}</div>
+            <div style="font-size:10px;color:#aaa;">allocated</div>
+          </div>
+        </div>
+        <div class="progress-track"><div class="progress-fill" style="width:${pct}%;background:${barColor};"></div></div>
+        <div class="dept-card-nums">
+          <div>Spent: <strong style="color:${barColor};">${fmt(dept.spent)}</strong></div>
+          <div style="font-size:10px;color:#aaa;">${pct}% used</div>
+          <div>Left: <strong style="color:${isOver ? 'var(--red)' : 'var(--green)'};">${fmt(dept.remaining)}</strong></div>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Monthly bars
+  renderMonthBars(d.monthly || [], 'overviewMonthBars', '#16a085');
+
+  // Allocation breakdown bars
+  const breakdownEl = document.getElementById('allocBreakdown');
+  const totalAlloc = d.totalAllocated || 1;
+  if (d.totalAllocated === 0) {
+    breakdownEl.innerHTML = `<div style="text-align:center;color:#aaa;padding:30px 0;">No allocations set yet.${['finance','admin'].includes(_role) ? '<br><button class="btn btn-outline btn-sm" style="margin-top:10px;" onclick="showPage(\'allocate\')">Set Allocations</button>' : ''}</div>`;
+  } else {
+    breakdownEl.innerHTML = (d.depts || []).sort((a,b) => b.allocated - a.allocated).map(dept => {
+      const meta = DEPT_META[dept.dept_key] || { color: '#666' };
+      const pct = Math.round(dept.allocated / totalAlloc * 100);
+      return `<div style="margin-bottom:10px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+          <span style="font-size:12px;font-weight:700;color:var(--navy);">${dept.dept_name}</span>
+          <span style="font-size:12px;color:#888;">${fmt(dept.allocated)} <span style="color:#bbb;">(${pct}%)</span></span>
+        </div>
+        <div style="background:#f0f2f9;border-radius:999px;height:6px;overflow:hidden;">
+          <div style="height:100%;border-radius:999px;background:${meta.color};width:${pct}%;"></div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  // Year-over-year
+  const yoyEl = document.getElementById('yoyBody');
+  yoyEl.innerHTML = `
+    <div style="display:flex;gap:18px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:200px;background:var(--slate);border-radius:12px;padding:16px 20px;">
+        <div style="font-size:11px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">FY ${d.year}</div>
+        <div style="font-size:22px;font-weight:800;color:var(--navy);">${fmt(d.totalAllocated)}</div>
+        <div style="font-size:12px;color:#888;margin-top:2px;">Allocated &nbsp;|&nbsp; <span style="color:var(--teal);">${fmt(d.totalSpent)} spent</span></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;font-size:22px;color:#bbb;"><i class="fa fa-arrow-right"></i></div>
+      <div style="flex:1;min-width:200px;background:var(--slate);border-radius:12px;padding:16px 20px;">
+        <div style="font-size:11px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">FY ${parseInt(d.year)-1}</div>
+        <div style="font-size:22px;font-weight:800;color:var(--navy);">${fmt(d.prevAllocated)}</div>
+        <div style="font-size:12px;color:#888;margin-top:2px;">Allocated &nbsp;|&nbsp; <span style="color:var(--teal);">${fmt(d.prevSpent)} spent</span></div>
+      </div>
+      ${d.prevAllocated > 0 ? `
+      <div style="flex:1;min-width:180px;background:var(--slate);border-radius:12px;padding:16px 20px;">
+        <div style="font-size:11px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">YoY Change</div>
+        <div style="font-size:22px;font-weight:800;color:${d.totalAllocated >= d.prevAllocated ? 'var(--green)':'var(--red)'};">
+          ${d.totalAllocated >= d.prevAllocated ? '+' : ''}${fmt(d.totalAllocated - d.prevAllocated)}
+        </div>
+        <div style="font-size:12px;color:#888;margin-top:2px;">${d.totalAllocated >= d.prevAllocated ? '▲' : '▼'} ${Math.abs(Math.round((d.totalAllocated-d.prevAllocated)/d.prevAllocated*100))}% vs prior year</div>
+      </div>` : ''}
+    </div>`;
+}
+
+function renderMonthBars(monthly, containerId, color) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  // Build 12-month map
+  const map = {};
+  monthly.forEach(m => { map[m.month] = m.total; });
+  const curYear = _year;
+  const months = MONTHS_SHORT.map((lbl, i) => {
+    const key = `${curYear}-${String(i+1).padStart(2,'0')}`;
+    return { lbl, val: map[key] || 0 };
+  });
+  const maxVal = Math.max(...months.map(m => m.val), 1);
+  el.innerHTML = months.map(m => {
+    const h = Math.max(4, Math.round(m.val / maxVal * 110));
+    return `<div class="month-bar-wrap">
+      <div class="month-bar-val">${m.val > 0 ? (m.val >= 100000 ? (m.val/100000).toFixed(1)+'L' : (m.val/1000).toFixed(0)+'K') : ''}</div>
+      <div class="month-bar" style="height:${h}px;background:${color};opacity:0.85;"></div>
+      <div class="month-bar-label">${m.lbl}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── ALLOCATE PAGE ────────────────────────────────────────────────────────────
+function buildAllocFields() {
+  const container = document.getElementById('allocFields');
+  container.innerHTML = Object.entries(DEPT_META).map(([key, m]) => `
+    <div class="alloc-row">
+      <div class="alloc-icon" style="background:${m.bg};color:${m.color};"><i class="fa ${m.icon}"></i></div>
+      <div class="alloc-name">${m.name}</div>
+      <input class="alloc-input" type="number" min="0" id="alloc-${key}" placeholder="₹ 0" oninput="updateAllocPreview()">
+    </div>
+  `).join('');
+}
+
+async function loadAllocPage() {
+  try {
+    const r = await fetch(`${API}/budget/overview?year=${_year}`, { headers: authH() });
+    const d = await r.json();
+    if (!r.ok) return;
+    document.getElementById('allocateFY').textContent = _year;
+    (d.depts || []).forEach(dept => {
+      const input = document.getElementById(`alloc-${dept.dept_key}`);
+      if (input && dept.allocated > 0) input.value = dept.allocated;
+    });
+    updateAllocPreview();
+  } catch(e) {}
+}
+
+function updateAllocPreview() {
+  const preview = document.getElementById('allocPreview');
+  let total = 0;
+  const rows = Object.entries(DEPT_META).map(([key, m]) => {
+    const val = parseFloat(document.getElementById(`alloc-${key}`)?.value) || 0;
+    total += val;
+    return { key, m, val };
+  });
+  if (!preview) return;
+  preview.innerHTML = `
+    <div style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:14px;">
+      ${rows.map(({key, m, val}) => `
+        <div style="background:var(--slate);border-radius:10px;padding:10px 14px;flex:1;min-width:140px;border-left:3px solid ${m.color};">
+          <div style="font-size:10px;font-weight:700;color:${m.color};text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px;"><i class="fa ${m.icon}"></i> ${m.name}</div>
+          <div style="font-size:17px;font-weight:800;color:var(--navy);">${val > 0 ? fmt(val) : '<span style="color:#ccc;">Not set</span>'}</div>
+        </div>`).join('')}
+    </div>
+    <div style="background:linear-gradient(135deg,var(--navy),#16a085);border-radius:10px;padding:12px 18px;display:flex;justify-content:space-between;align-items:center;">
+      <div style="color:rgba(255,255,255,.92);font-size:12px;font-weight:700;letter-spacing:.4px;">TOTAL ALLOCATION (FY ${_year})</div>
+      <div style="color:#fff;font-size:22px;font-weight:800;">${fmt(total)}</div>
+    </div>`;
+}
+
+async function saveAllocations() {
+  if (!['finance', 'admin'].includes(_role)) {
+    showAlert('allocateAlert', 'Only Finance or Admin can save budget allocations.', 'error');
+    return;
+  }
+  const allocations = {};
+  let anySet = false;
+  Object.keys(DEPT_META).forEach(key => {
+    const val = parseFloat(document.getElementById(`alloc-${key}`)?.value) || 0;
+    allocations[key] = val;
+    if (val > 0) anySet = true;
+  });
+  if (!anySet) { showAlert('allocateAlert', 'Please enter at least one allocation amount.', 'error'); return; }
+  const notes = document.getElementById('allocNotes').value;
+  try {
+    const r = await fetch(`${API}/budget/allocate`, {
+      method:'POST', headers: authH(),
+      body: JSON.stringify({ year: _year, allocations, notes })
+    });
+    const d = await r.json();
+    if (r.ok) {
+      showAlert('allocateAlert', '✅ Allocations saved successfully! All dashboards will reflect the updated budgets.', 'success');
+      _overviewData = null;
+      // Broadcast to other dashboards
+      try { new BroadcastChannel('gurukul_budget').postMessage({ type:'budget_updated', year: _year }); } catch(_) {}
+      try { new BroadcastChannel('gurukul_finance').postMessage({ type:'budget_updated', year: _year }); } catch(_) {}
+      try { new BroadcastChannel('gurukul_hr').postMessage({ type:'budget_updated', year: _year }); } catch(_) {}
+    } else {
+      showAlert('allocateAlert', d.error || 'Failed to save allocations.', 'error');
+    }
+  } catch(e) { showAlert('allocateAlert', 'Error: ' + e.message, 'error'); }
+}
+
+// ── DEPT DETAIL PAGE ─────────────────────────────────────────────────────────
+async function loadDeptPage(deptKey) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-dept').classList.add('active');
+  setDeptNavActive(deptKey);
+  const meta = DEPT_META[deptKey] || { name: deptKey, icon: 'fa-circle', color: '#666', bg: '#eee' };
+  const content = document.getElementById('deptDetailContent');
+  content.innerHTML = `<div style="color:#aaa;padding:40px;text-align:center;"><i class="fa fa-spinner fa-spin fa-2x"></i><br>Loading ${meta.name}…</div>`;
+  try {
+    const r = await fetch(`${API}/budget/dept/${deptKey}?year=${_year}`, { headers: authH() });
+    const d = await r.json();
+    if (!r.ok) { content.innerHTML = `<div style="color:var(--red);padding:30px;">${d.error}</div>`; return; }
+    renderDeptPage(deptKey, meta, d);
+  } catch(e) { content.innerHTML = `<div style="color:var(--red);padding:30px;">Error: ${e.message}</div>`; }
+}
+
+function renderDeptPage(deptKey, meta, d) {
+  const b = d.budget;
+  const pct = b.allocated > 0 ? Math.min(100, Math.round(b.spent/b.allocated*100)) : 0;
+  const isOver = b.remaining < 0;
+  const isLow  = !isOver && pct >= 75;
+  const barColor = isOver ? '#e74c3c' : isLow ? '#f1c40f' : meta.color;
+  const canEdit = ['finance','admin'].includes(_role);
+  const allExpenses = [...(d.systemExpenses||[]).map(e => ({...e, _system:true})), ...(d.expenses||[])];
+
+  // Monthly data
+  const monthMap = {};
+  (d.expenses||[]).forEach(e => { monthMap[e.month] = (monthMap[e.month]||0) + e.amount; });
+  (d.systemExpenses||[]).forEach(e => { monthMap[e.created_at] = (monthMap[e.created_at]||0) + e.amount; });
+  const monthlyArr = Object.entries(monthMap).sort(([a],[b])=>a.localeCompare(b)).map(([month,total])=>({month,total}));
+
+  document.getElementById('deptDetailContent').innerHTML = `
+    <!-- Header -->
+    <div class="detail-header" style="background:linear-gradient(135deg,${meta.color},${meta.color}cc);">
+      <div class="detail-icon" style="background:rgba(255,255,255,.2);color:#fff;font-size:24px;">
+        <i class="fa ${meta.icon}"></i>
+      </div>
+      <div class="detail-info">
+        <div class="detail-name">${b.dept_name}</div>
+        <div class="detail-sub">FY ${b.fiscal_year} Budget Report ${b.set_by ? '· Set by '+b.set_by : ''} ${b.updated_at ? '· Updated '+b.updated_at : ''}</div>
+        <div class="detail-kpis">
+          <div class="dk"><div class="dk-label">Allocated</div><div class="dk-val">${fmt(b.allocated)}</div></div>
+          <div class="dk"><div class="dk-label">Spent YTD</div><div class="dk-val">${fmt(b.spent)}</div></div>
+          <div class="dk" style="${isOver ? 'background:rgba(231,76,60,.35);' : isLow ? 'background:rgba(243,156,18,.35);' : ''}">
+            <div class="dk-label">Remaining</div>
+            <div class="dk-val">${fmt(b.remaining)}</div>
+          </div>
+          <div class="dk"><div class="dk-label">% Used</div><div class="dk-val">${pct}% ${isOver ? '⚠' : isLow ? '↑' : '✓'}</div></div>
+        </div>
+      </div>
+      ${canEdit ? `<button class="btn btn-sm" style="background:rgba(255,255,255,.2);color:#fff;border:1px solid rgba(255,255,255,.4);align-self:flex-start;" onclick="openExpenseModal('${deptKey}')"><i class="fa fa-plus"></i> Add Expense</button>` : ''}
+    </div>
+    <!-- Progress bar -->
+    <div style="background:#f0f2f9;border-radius:999px;height:10px;overflow:hidden;margin-bottom:20px;">
+      <div style="height:100%;border-radius:999px;background:${barColor};width:${pct}%;transition:width .5s;"></div>
+    </div>
+
+    <div id="deptAlert" class="alert"></div>
+
+    <div class="grid2" style="margin-bottom:18px;">
+      <!-- Monthly chart -->
+      <div class="card">
+        <div class="card-head"><div class="card-title"><i class="fa fa-bar-chart"></i> Monthly Spend (FY ${b.fiscal_year})</div></div>
+        <div class="card-body" style="padding:14px 18px;">
+          <div class="month-bars" id="deptMonthBars" style="height:130px;"></div>
+        </div>
+      </div>
+      <!-- Budget gauge -->
+      <div class="card">
+        <div class="card-head"><div class="card-title"><i class="fa fa-tachometer"></i> Budget Health</div></div>
+        <div class="card-body" style="padding:20px;">
+          <div style="text-align:center;">
+            <div style="font-size:48px;font-weight:900;color:${barColor};line-height:1;">${pct}%</div>
+            <div style="font-size:13px;color:#aaa;margin-bottom:16px;">of budget used</div>
+          </div>
+          <div style="background:#f0f2f9;border-radius:999px;height:12px;overflow:hidden;margin-bottom:12px;">
+            <div style="height:100%;border-radius:999px;background:${barColor};width:${pct}%;"></div>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div style="background:var(--slate);border-radius:9px;padding:10px;text-align:center;">
+              <div style="font-size:10px;color:#aaa;font-weight:700;text-transform:uppercase;">Allocated</div>
+              <div style="font-size:16px;font-weight:800;color:var(--navy);">${fmt(b.allocated)}</div>
+            </div>
+            <div style="background:var(--slate);border-radius:9px;padding:10px;text-align:center;">
+              <div style="font-size:10px;color:#aaa;font-weight:700;text-transform:uppercase;">Remaining</div>
+              <div style="font-size:16px;font-weight:800;color:${isOver ? 'var(--red)' : 'var(--green)'};">${fmt(b.remaining)}</div>
+            </div>
+          </div>
+          ${b.notes ? `<div style="margin-top:12px;font-size:12px;color:#888;font-style:italic;"><i class="fa fa-sticky-note-o"></i> ${esc(b.notes)}</div>` : ''}
+        </div>
+      </div>
+    </div>
+
+    <!-- Expense log -->
+    <div class="card">
+      <div class="card-head">
+        <div class="card-title"><i class="fa fa-list-alt"></i> Expense Log (FY ${b.fiscal_year})</div>
+        ${canEdit ? `<button class="btn btn-success btn-sm" onclick="openExpenseModal('${deptKey}')"><i class="fa fa-plus"></i> Add Expense</button>` : ''}
+      </div>
+      <div style="overflow-x:auto;">
+        <table id="deptExpenseTable">
+          <thead>
+            <tr>
+              <th>Date/Month</th>
+              <th>Description</th>
+              <th>Category</th>
+              <th style="text-align:right;">Amount</th>
+              <th>Added By</th>
+              ${canEdit ? '<th></th>' : ''}
+            </tr>
+          </thead>
+          <tbody id="deptExpenseBody">
+            ${allExpenses.length === 0 ? `<tr><td colspan="${canEdit ? 6 : 5}" style="text-align:center;color:#aaa;padding:30px;">No expenses recorded yet.</td></tr>` :
+              allExpenses.map(e => `
+                <tr>
+                  <td style="font-weight:700;color:var(--navy);">${e.month || e.created_at || '—'}</td>
+                  <td>${esc(e.description)}</td>
+                  <td><span style="background:var(--slate);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:700;color:#555;">${esc(e.category||'General')}</span></td>
+                  <td style="text-align:right;font-weight:800;color:${e._system ? 'var(--blue)' : 'var(--navy)'};">${fmt(e.amount)}</td>
+                  <td style="font-size:11px;color:#aaa;">${e._system ? '<i class="fa fa-cog"></i> System' : esc(e.created_by||'—')}</td>
+                  ${canEdit ? `<td>${e._system ? '' : `<button class="btn btn-danger btn-xs" onclick="deleteExpense(${e.id},'${deptKey}')"><i class="fa fa-trash"></i></button>`}</td>` : ''}
+                </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`;
+
+  // Render monthly bars
+  renderMonthBars(monthlyArr, 'deptMonthBars', meta.color);
+}
+
+// ── EXPENSE MODAL ────────────────────────────────────────────────────────────
+function openExpenseModal(deptKey) {
+  document.getElementById('expDeptKey').value = deptKey;
+  document.getElementById('expDesc').value = '';
+  document.getElementById('expAmount').value = '';
+  document.getElementById('expMonth').value = _year + '-' + String(new Date().getMonth()+1).padStart(2,'0');
+  document.getElementById('expCategory').value = 'General';
+  document.getElementById('expenseModalAlert').style.display = 'none';
+  document.getElementById('expenseModal').classList.add('open');
+  setTimeout(() => document.getElementById('expDesc').focus(), 100);
+}
+
+function closeExpenseModal() {
+  document.getElementById('expenseModal').classList.remove('open');
+}
+
+async function submitExpense() {
+  const deptKey  = document.getElementById('expDeptKey').value;
+  const desc     = document.getElementById('expDesc').value.trim();
+  const amount   = parseFloat(document.getElementById('expAmount').value);
+  const month    = document.getElementById('expMonth').value;
+  const category = document.getElementById('expCategory').value;
+  const alertEl  = document.getElementById('expenseModalAlert');
+  alertEl.style.display = 'none';
+  if (!desc) { alertEl.textContent = 'Description is required.'; alertEl.className = 'alert error'; alertEl.style.display = 'block'; return; }
+  if (!amount || amount <= 0) { alertEl.textContent = 'Enter a valid amount.'; alertEl.className = 'alert error'; alertEl.style.display = 'block'; return; }
+  try {
+    const r = await fetch(`${API}/budget/dept/${deptKey}/expenses`, {
+      method:'POST', headers: authH(),
+      body: JSON.stringify({ description: desc, amount, month, category, year: _year })
+    });
+    const d = await r.json();
+    if (r.ok) {
+      closeExpenseModal();
+      loadDeptPage(deptKey);
+      try { new BroadcastChannel('gurukul_budget').postMessage({ type:'expense_added', dept: deptKey, year: _year }); } catch(_) {}
+    } else {
+      alertEl.textContent = d.error || 'Failed to add expense.';
+      alertEl.className = 'alert error';
+      alertEl.style.display = 'block';
+    }
+  } catch(e) { alertEl.textContent = 'Error: ' + e.message; alertEl.className = 'alert error'; alertEl.style.display = 'block'; }
+}
+
+async function deleteExpense(expId, deptKey) {
+  if (!confirm('Delete this expense? This cannot be undone.')) return;
+  try {
+    const r = await fetch(`${API}/budget/expenses/${expId}`, { method:'DELETE', headers: authH() });
+    const d = await r.json();
+    if (r.ok) loadDeptPage(deptKey);
+    else alert(d.error || 'Failed to delete');
+  } catch(e) { alert('Error: ' + e.message); }
+}
+
+// ── UTILITIES ────────────────────────────────────────────────────────────────
+function showAlert(id, msg, type) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = msg;
+  el.className = `alert ${type}`;
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, type === 'success' ? 4000 : 8000);
+}
+
+// Close modal on overlay click
+document.getElementById('expenseModal').addEventListener('click', function(e) {
+  if (e.target === this) closeExpenseModal();
+});
+
+// ── LISTEN TO BROADCAST CHANNEL ─────────────────────────────────────────────
+try {
+  const bc = new BroadcastChannel('gurukul_budget');
+  bc.onmessage = e => {
+    if (e.data?.type === 'budget_updated' || e.data?.type === 'expense_added') {
+      const cur = document.querySelector('.page.active');
+      if (cur?.id === 'page-overview') loadOverview();
+      else if (cur?.id === 'page-dept') {
+        const active = document.querySelector('.nav-dept-btn.active');
+        if (active) loadDeptPage(active.dataset.key);
+      }
+    }
+  };
+  // Also listen to HR payroll updates to refresh HR budget
+  const hrBC = new BroadcastChannel('gurukul_hr');
+  hrBC.onmessage = e => {
+    if (e.data?.type === 'payroll_updated') {
+      const cur = document.querySelector('.page.active');
+      if (cur?.id === 'page-overview') loadOverview();
+      else if (cur?.id === 'page-dept') {
+        const active = document.querySelector('.nav-dept-btn.active');
+        if (active?.dataset?.key === 'hr') loadDeptPage('hr');
+      }
+    }
+  };
+} catch(_) {}
+
+// ── BOOT ─────────────────────────────────────────────────────────────────────
+(function() {
+  const savedToken = localStorage.getItem('budget_token');
+  const savedRole  = localStorage.getItem('budget_role');
+  const savedName  = localStorage.getItem('budget_name');
+  if (savedToken && savedRole) {
+    _token = savedToken; _role = savedRole; _userName = savedName || 'User';
+    initApp();
+  }
+})();
+// ── Notification Bell ──────────────────────────────────────────────────────
+(function(){
+  let _nd=[],_unread=0,_open=false;
+  function nH(){ return {Authorization:'Bearer '+(_token||'')}; }
+  function ago(s){ if(!s) return ''; const sec=Math.round((Date.now()-new Date(s.replace(' ','T')))/1000); if(sec<60) return sec+'s ago'; if(sec<3600) return Math.round(sec/60)+'m ago'; if(sec<86400) return Math.round(sec/3600)+'h ago'; return Math.round(sec/86400)+'d ago'; }
+  function renderB(){ const b=document.getElementById('notifBadge'); if(!b) return; b.textContent=_unread>99?'99+':String(_unread); b.classList.toggle('show',_unread>0); }
+  function renderL(){ const el=document.getElementById('notifList'); if(!el) return; if(!_nd.length){el.innerHTML='<div class="notif-empty-msg">No notifications</div>';return;} el.innerHTML=_nd.map(n=>`<div class="notif-row${n.is_read?'':' unread'}"><div class="notif-dot ${n.type||'info'}"></div><div class="notif-body"><div class="notif-ttl">${n.title||''}</div><div class="notif-sub">${n.message||n.body||''}</div><div class="notif-ago">${ago(n.created_at)}</div></div></div>`).join(''); }
+  async function load(){ try{ const r=await fetch('/api/notifications',{headers:nH()}); if(!r.ok) return; const d=await r.json(); const ann=(d.announcements||[]).map(a=>({id:'a'+a.id,title:a.title,message:a.body,type:a.type||'announcement',is_read:1,created_at:a.created_at})); _nd=[...(d.notifications||[]),...ann].sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).slice(0,20); _unread=d.unread_count||0; renderB(); if(_open) renderL(); }catch(e){} }
+  window.toggleNotifDrop=function(e){ e.stopPropagation(); const dd=document.getElementById('notifDropdown'); _open=!_open; dd.classList.toggle('open',_open); if(_open){renderL();markAllRead();} };
+  window.markAllRead=async function(){ try{ await fetch('/api/notifications/read',{method:'POST',headers:{...nH(),'Content-Type':'application/json'}}); _nd.forEach(n=>n.is_read=1); _unread=0; renderB(); if(_open) renderL(); }catch(e){} };
+  document.addEventListener('click',function(e){ if(_open&&!document.getElementById('notifBell')?.contains(e.target)){_open=false;document.getElementById('notifDropdown')?.classList.remove('open');} });
+  load(); setInterval(load,30000);
+})();
+
+// ── Sidebar Toggle & Sections ─────────────────────────────────────────────
+function toggleSidebar() {
+  document.body.classList.toggle('sidebar-hidden');
+}
+function toggleBudgetSection(titleEl) {
+  const items = titleEl.nextElementSibling;
+  if (!items || !items.classList.contains('nav-section-items')) return;
+  const isCollapsed = items.classList.toggle('collapsed');
+  titleEl.classList.toggle('collapsed', isCollapsed);
+}
+function budgetExpandForPage(pageId) {
+  const navEl = document.getElementById('nav-' + pageId);
+  if (!navEl) return;
+  const section = navEl.closest('.nav-section-items');
+  if (section && section.classList.contains('collapsed')) {
+    section.classList.remove('collapsed');
+    const title = section.previousElementSibling;
+    if (title) title.classList.remove('collapsed');
+  }
+}
+function syncBudgetFqb(name) {
+  document.querySelectorAll('.fqb').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById('fqb-' + name);
+  if (btn) btn.classList.add('active');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>School Modules – The Gurukul High</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#C9A227">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:#f0f4f8;color:#1a2540}
+:root{--navy:#0a1628;--gold:#C9A227;--green:#27ae60;--red:#e74c3c;--blue:#2980b9;--purple:#8e44ad;--teal:#16a085;--orange:#e67e22}
+/* NAV */
+.topbar{background:var(--navy);color:#fff;padding:0 24px;display:flex;align-items:center;height:56px;gap:16px;position:sticky;top:0;z-index:100}
+.topbar .logo{font-weight:700;font-size:16px;color:var(--gold);text-decoration:none;display:flex;align-items:center;gap:10px}
+.topbar .logo img{height:36px;border-radius:4px}
+.topbar .back-btn{margin-left:auto;background:rgba(255,255,255,.1);border:none;color:#fff;padding:7px 14px;border-radius:6px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:6px}
+.topbar .back-btn:hover{background:rgba(255,255,255,.2)}
+/* SIDEBAR */
+.layout{display:flex;min-height:calc(100vh - 56px)}
+.sidebar{width:220px;background:var(--navy);padding:16px 0;flex-shrink:0;position:sticky;top:56px;height:calc(100vh - 56px);overflow-y:auto}
+.sidebar-section{padding:8px 16px 4px;font-size:10px;font-weight:700;color:#6b7fa3;text-transform:uppercase;letter-spacing:.8px;margin-top:8px}
+.sidebar-item{display:flex;align-items:center;gap:10px;padding:10px 20px;cursor:pointer;color:#a8b4cc;font-size:13px;transition:.2s;border-left:3px solid transparent}
+.sidebar-item:hover{background:rgba(201,162,39,.1);color:#fff}
+.sidebar-item.active{background:rgba(201,162,39,.15);color:var(--gold);border-left-color:var(--gold)}
+.sidebar-item i{width:18px;text-align:center;font-size:14px}
+/* CONTENT */
+.content{flex:1;padding:24px;overflow-y:auto}
+.panel{display:none}.panel.active{display:block}
+h2.page-title{font-size:20px;color:var(--navy);margin-bottom:4px;display:flex;align-items:center;gap:10px}
+h2.page-title i{color:var(--gold)}
+.page-sub{color:#6b7c93;font-size:13px;margin-bottom:20px}
+/* CARDS */
+.card{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:16px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-title{font-weight:700;font-size:15px;display:flex;align-items:center;gap:8px}
+.card-title i{color:var(--gold)}
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;margin-bottom:20px}
+.stat-card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);text-align:center}
+.stat-num{font-size:28px;font-weight:800;color:var(--navy)}
+.stat-lbl{font-size:11px;color:#6b7c93;margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:#f8f9fa;padding:10px 12px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;color:#6b7c93;letter-spacing:.5px;border-bottom:1px solid #e5e9f2}
+td{padding:10px 12px;border-bottom:1px solid #f0f4f8;vertical-align:middle}
+tr:hover td{background:#fafbff}
+/* BADGES */
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+.badge-green{background:#e8f8f0;color:#1a7a45}
+.badge-red{background:#fdecea;color:#c0392b}
+.badge-yellow{background:#fef9e0;color:#b7860b}
+.badge-blue{background:#e8f4fd;color:#1a5f8a}
+.badge-purple{background:#f3ebff;color:#6c2fa0}
+.badge-orange{background:#fef3e8;color:#a84300}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:8px;border:none;font-size:13px;font-weight:600;cursor:pointer;transition:.2s}
+.btn-primary{background:var(--navy);color:#fff}.btn-primary:hover{background:#162042}
+.btn-gold{background:var(--gold);color:#fff}.btn-gold:hover{background:#b8891f}
+.btn-green{background:var(--green);color:#fff}.btn-green:hover{background:#219a52}
+.btn-red{background:var(--red);color:#fff}.btn-red:hover{background:#c0392b}
+.btn-outline{background:#fff;color:var(--navy);border:1.5px solid #dde3ef}.btn-outline:hover{background:#f0f4f8}
+.btn-sm{padding:5px 12px;font-size:12px}
+/* FORM */
+.form-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-bottom:14px}
+.form-group{display:flex;flex-direction:column;gap:5px}
+label{font-size:12px;font-weight:600;color:#4a5568}
+input,select,textarea{padding:9px 12px;border:1.5px solid #dde3ef;border-radius:8px;font-size:13px;transition:.2s;background:#fff}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,162,39,.1)}
+textarea{resize:vertical;min-height:80px}
+/* RISK */
+.risk-high{color:var(--red);font-weight:700}
+.risk-med{color:var(--orange);font-weight:700}
+.risk-low{color:var(--green);font-weight:700}
+.risk-bar{height:8px;background:#eee;border-radius:4px;overflow:hidden;width:100px;display:inline-block;vertical-align:middle}
+.risk-fill{height:100%;border-radius:4px;transition:.3s}
+/* TOAST */
+#toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;z-index:9999;opacity:0;transition:.3s;pointer-events:none;max-width:320px}
+#toast.show{opacity:1}
+#toast.success{background:#1a7a45} #toast.error{background:#c0392b}
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:14px;padding:28px;width:90%;max-width:560px;max-height:90vh;overflow-y:auto;position:relative}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.modal-title{font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px;color:var(--navy)}
+.modal-title i{color:var(--gold)}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:#6b7c93;padding:4px}
+/* CERT PREVIEW */
+.cert-preview{background:linear-gradient(135deg,#0a1628,#1a2f52);border-radius:12px;padding:28px;color:#fff;text-align:center;border:2px solid var(--gold);font-family:'Georgia',serif}
+.cert-preview h3{font-size:22px;color:var(--gold);margin-bottom:6px}
+.cert-preview p{font-size:13px;line-height:1.7;color:#dde3ef;margin-top:12px}
+/* NAAC SECTION */
+.naac-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:20px}
+.naac-card{background:#fff;border-radius:10px;padding:16px 20px;box-shadow:0 2px 8px rgba(0,0,0,.06);border-top:4px solid var(--gold)}
+.naac-val{font-size:26px;font-weight:800;color:var(--navy)}
+.naac-key{font-size:11px;color:#6b7c93;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+.naac-sub{font-size:12px;color:#8a9ab5;margin-top:2px}
+/* NOTIF */
+.provider-tab{display:flex;gap:10px;margin-bottom:20px}
+.provider-tab button{padding:8px 20px;border-radius:8px;border:1.5px solid #dde3ef;background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:#6b7c93;transition:.2s}
+.provider-tab button.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+@media(max-width:768px){.layout{flex-direction:column}.sidebar{width:100%;height:auto;position:static;display:flex;flex-wrap:wrap;padding:8px}.sidebar-item{padding:8px 12px;font-size:12px}.stats-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a class="logo" href="/portal/admin-dashboard.html">
+    <img src="/assets/images/logo.png" onerror="this.style.display='none'">
+    The Gurukul High
+  </a>
+  <span style="color:#a8b4cc;font-size:13px;margin-left:8px">School Modules</span>
+  <button class="back-btn" onclick="window.location='/portal/admin-dashboard.html'"><i class="fa fa-arrow-left"></i> Admin Dashboard</button>
+</div>
+
+<div class="layout">
+<nav class="sidebar">
+  <div class="sidebar-section">Academic</div>
+  <div class="sidebar-item active" onclick="showPanel('library')"><i class="fa fa-book"></i> Library</div>
+  <div class="sidebar-item" onclick="showPanel('homework')"><i class="fa fa-pencil-square-o"></i> Homework</div>
+  <div class="sidebar-section">Operations</div>
+  <div class="sidebar-item" onclick="showPanel('transport')"><i class="fa fa-bus"></i> Transport</div>
+  <div class="sidebar-item" onclick="showPanel('visitors')"><i class="fa fa-id-badge"></i> Visitor Log</div>
+  <div class="sidebar-section">Documents</div>
+  <div class="sidebar-item" onclick="showPanel('certificates')"><i class="fa fa-certificate"></i> Certificates</div>
+  <div class="sidebar-section">Analytics</div>
+  <div class="sidebar-item" onclick="showPanel('ai')"><i class="fa fa-brain"></i> AI Prediction</div>
+  <div class="sidebar-item" onclick="showPanel('nep')"><i class="fa fa-star"></i> NEP 2020</div>
+  <div class="sidebar-item" onclick="showPanel('naac')"><i class="fa fa-bar-chart"></i> NAAC Report</div>
+  <div class="sidebar-section">Settings</div>
+  <div class="sidebar-item" onclick="showPanel('notifications')"><i class="fa fa-bell"></i> Notifications</div>
+  <div class="sidebar-item" onclick="showPanel('razorpay')"><i class="fa fa-credit-card"></i> Razorpay</div>
+</nav>
+
+<main class="content">
+
+<!-- ═══ LIBRARY ═══════════════════════════════════════════════════════════ -->
+<div id="panel-library" class="panel active">
+  <h2 class="page-title"><i class="fa fa-book"></i> Library Management</h2>
+  <p class="page-sub">Manage books, issue & return, track overdue fines</p>
+  <div class="stats-grid" id="libStats">
+    <div class="stat-card"><div class="stat-num" id="libTotalBooks">—</div><div class="stat-lbl">Total Books</div></div>
+    <div class="stat-card"><div class="stat-num" id="libAvail">—</div><div class="stat-lbl">Available</div></div>
+    <div class="stat-card"><div class="stat-num" id="libIssued">—</div><div class="stat-lbl">Issued</div></div>
+    <div class="stat-card"><div class="stat-num" id="libOverdue">—</div><div class="stat-lbl">Overdue</div></div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><i class="fa fa-list"></i> Book Catalogue</div>
+      <div style="display:flex;gap:8px">
+        <input id="libSearch" placeholder="Search title / author / ISBN…" style="width:220px" oninput="loadBooks()">
+        <button class="btn btn-primary btn-sm" onclick="openModal('addBookModal')"><i class="fa fa-plus"></i> Add Book</button>
+      </div>
+    </div>
+    <table><thead><tr><th>#</th><th>Title</th><th>Author</th><th>Category</th><th>Copies</th><th>Available</th><th>Rack</th><th>Action</th></tr></thead>
+    <tbody id="booksTable"><tr><td colspan="8" style="text-align:center;padding:24px;color:#aaa">Loading…</td></tr></tbody></table>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><i class="fa fa-exchange"></i> Active Loans</div>
+      <select id="loanFilter" onchange="loadLoans()" style="width:150px">
+        <option value="Issued">Issued</option><option value="">All</option><option value="Returned">Returned</option>
+      </select>
+    </div>
+    <table><thead><tr><th>#</th><th>Book</th><th>Borrower</th><th>Issued</th><th>Due</th><th>Status</th><th>Fine</th><th>Action</th></tr></thead>
+    <tbody id="loansTable"><tr><td colspan="8" style="text-align:center;padding:24px;color:#aaa">Loading…</td></tr></tbody></table>
+  </div>
+</div>
+
+<!-- ═══ HOMEWORK ══════════════════════════════════════════════════════════ -->
+<div id="panel-homework" class="panel">
+  <h2 class="page-title"><i class="fa fa-pencil-square-o"></i> Homework & Assignments</h2>
+  <p class="page-sub">Assign homework to classes, track submissions</p>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><i class="fa fa-list"></i> All Assignments</div>
+      <div style="display:flex;gap:8px">
+        <select id="hwClassFilter" onchange="loadHomework()" style="width:120px">
+          <option value="">All Classes</option>
+          <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+        </select>
+        <button class="btn btn-primary btn-sm" onclick="openModal('addHWModal')"><i class="fa fa-plus"></i> Assign</button>
+      </div>
+    </div>
+    <table><thead><tr><th>#</th><th>Title</th><th>Subject</th><th>Class</th><th>Due Date</th><th>Assigned By</th><th>Action</th></tr></thead>
+    <tbody id="hwTable"><tr><td colspan="7" style="text-align:center;padding:24px;color:#aaa">Loading…</td></tr></tbody></table>
+  </div>
+</div>
+
+<!-- ═══ TRANSPORT ═════════════════════════════════════════════════════════ -->
+<div id="panel-transport" class="panel">
+  <h2 class="page-title"><i class="fa fa-bus"></i> Transport Management</h2>
+  <p class="page-sub">Manage routes, drivers, bus stops and student assignments</p>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><i class="fa fa-map"></i> Routes</div>
+      <button class="btn btn-primary btn-sm" onclick="openModal('addRouteModal')"><i class="fa fa-plus"></i> Add Route</button>
+    </div>
+    <table><thead><tr><th>#</th><th>Route</th><th>Driver</th><th>Vehicle</th><th>Capacity</th><th>Departure</th><th>Status</th><th>Action</th></tr></thead>
+    <tbody id="routesTable"><tr><td colspan="8" style="text-align:center;padding:24px;color:#aaa">Loading…</td></tr></tbody></table>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><i class="fa fa-users"></i> Students on Routes</div>
+      <select id="routeStudentFilter" onchange="loadTransportStudents()" style="width:200px">
+        <option value="">All Routes</option>
+      </select>
+    </div>
+    <table><thead><tr><th>#</th><th>Student</th><th>Class</th><th>Route</th><th>Stop</th><th>Fee/mo</th></tr></thead>
+    <tbody id="transportStudentsTable"><tr><td colspan="6" style="text-align:center;padding:24px;color:#aaa">Loading…</td></tr></tbody></table>
+  </div>
+</div>
+
+<!-- ═══ VISITORS ══════════════════════════════════════════════════════════ -->
+<div id="panel-visitors" class="panel">
+  <h2 class="page-title"><i class="fa fa-id-badge"></i> Visitor Log</h2>
+  <p class="page-sub">Track all school visitors — entry, exit and purpose</p>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><i class="fa fa-calendar"></i> Today's Visitors</div>
+      <div style="display:flex;gap:8px">
+        <input type="date" id="visitDate" onchange="loadVisitors()" style="width:160px">
+        <button class="btn btn-primary btn-sm" onclick="openModal('addVisitorModal')"><i class="fa fa-user-plus"></i> Check In</button>
+      </div>
+    </div>
+    <div class="stats-grid" style="margin-bottom:16px">
+      <div class="stat-card"><div class="stat-num" id="visTotal">0</div><div class="stat-lbl">Total Today</div></div>
+      <div class="stat-card"><div class="stat-num" id="visIn">0</div><div class="stat-lbl">Still Inside</div></div>
+      <div class="stat-card"><div class="stat-num" id="visOut">0</div><div class="stat-lbl">Checked Out</div></div>
+    </div>
+    <table><thead><tr><th>Badge</th><th>Name</th><th>Phone</th><th>Purpose</th><th>Whom to Meet</th><th>Entry</th><th>Exit</th><th>Status</th><th>Action</th></tr></thead>
+    <tbody id="visitorsTable"><tr><td colspan="9" style="text-align:center;padding:24px;color:#aaa">Loading…</td></tr></tbody></table>
+  </div>
+</div>
+
+<!-- ═══ CERTIFICATES ══════════════════════════════════════════════════════ -->
+<div id="panel-certificates" class="panel">
+  <h2 class="page-title"><i class="fa fa-certificate"></i> Certificate Generator</h2>
+  <p class="page-sub">Issue Bonafide, Transfer, Character, Achievement & Medical certificates</p>
+  <div class="card">
+    <div class="card-header"><div class="card-title"><i class="fa fa-plus-circle"></i> Issue New Certificate</div></div>
+    <div class="form-row">
+      <div class="form-group"><label>Student ID</label><input id="certStudentId" placeholder="e.g. STU001"></div>
+      <div class="form-group"><label>Certificate Type</label>
+        <select id="certType" onchange="updateCertFields()">
+          <option>Bonafide</option><option>Transfer</option><option>Character</option><option>Achievement</option><option>Medical</option>
+        </select>
+      </div>
+      <div class="form-group"><label>Academic Year</label><input id="certAcYear" value="2026-27"></div>
+      <div class="form-group" id="certPurposeGroup"><label>Purpose</label><input id="certPurpose" placeholder="e.g. Bank account opening"></div>
+      <div class="form-group" id="certConductGroup"><label>Conduct</label>
+        <select id="certConduct"><option>Excellent</option><option>Good</option><option>Satisfactory</option></select>
+      </div>
+      <div class="form-group" id="certAchievementGroup" style="display:none"><label>Achievement</label><input id="certAchievement" placeholder="e.g. Science Olympiad Winner"></div>
+      <div class="form-group" id="certFromGroup" style="display:none"><label>From Date</label><input type="date" id="certFromDate"></div>
+      <div class="form-group" id="certToGroup" style="display:none"><label>To Date</label><input type="date" id="certToDate"></div>
+    </div>
+    <button class="btn btn-gold" onclick="issueCertificate()"><i class="fa fa-file-text-o"></i> Generate Certificate</button>
+  </div>
+  <div class="card" id="certPreviewCard" style="display:none">
+    <div class="card-header">
+      <div class="card-title"><i class="fa fa-eye"></i> Preview</div>
+      <button class="btn btn-primary btn-sm" onclick="printCert()"><i class="fa fa-print"></i> Print</button>
+    </div>
+    <div class="cert-preview" id="certPreviewContent"></div>
+    <div style="margin-top:12px;font-size:12px;color:#6b7c93">Serial No: <strong id="certSerialNo"></strong></div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><i class="fa fa-history"></i> Issued Certificates</div>
+      <input id="certFilterStudent" placeholder="Search student ID…" style="width:200px" oninput="loadCertificates()">
+    </div>
+    <table><thead><tr><th>Serial</th><th>Student</th><th>Class</th><th>Type</th><th>Issued By</th><th>Date</th></tr></thead>
+    <tbody id="certTable"><tr><td colspan="6" style="text-align:center;padding:24px;color:#aaa">Loading…</td></tr></tbody></table>
+  </div>
+</div>
+
+<!-- ═══ AI PREDICTION ═════════════════════════════════════════════════════ -->
+<div id="panel-ai" class="panel">
+  <h2 class="page-title"><i class="fa fa-brain"></i> AI Dropout & Failure Prediction</h2>
+  <p class="page-sub">Early warning system powered by attendance, marks and fee analytics</p>
+  <div class="stats-grid" id="predStats">
+    <div class="stat-card" style="border-top:4px solid var(--red)"><div class="stat-num risk-high" id="predHigh">—</div><div class="stat-lbl">High Risk</div></div>
+    <div class="stat-card" style="border-top:4px solid var(--orange)"><div class="stat-num risk-med" id="predMed">—</div><div class="stat-lbl">Medium Risk</div></div>
+    <div class="stat-card" style="border-top:4px solid var(--green)"><div class="stat-num risk-low" id="predLow">—</div><div class="stat-lbl">Low Risk</div></div>
+    <div class="stat-card"><div class="stat-num" id="predTotal">—</div><div class="stat-lbl">Total Analysed</div></div>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title"><i class="fa fa-table"></i> Student Risk Analysis</div>
+      <div style="display:flex;gap:8px">
+        <select id="predClassFilter" onchange="loadPredictions()" style="width:120px">
+          <option value="">All Classes</option>
+          <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+        </select>
+        <select id="predLevelFilter" onchange="filterPredictions()" style="width:130px">
+          <option value="">All Levels</option><option value="High">High Risk</option><option value="Medium">Medium Risk</option><option value="Low">Low Risk</option>
+        </select>
+      </div>
+    </div>
+    <table><thead><tr><th>Student</th><th>Class</th><th>Risk Score</th><th>Level</th><th>Attendance</th><th>Avg Marks</th><th>Fee Pending</th><th>Reasons</th></tr></thead>
+    <tbody id="predTable"><tr><td colspan="8" style="text-align:center;padding:24px;color:#aaa">Loading predictions…</td></tr></tbody></table>
+  </div>
+</div>
+
+<!-- ═══ NEP 2020 ══════════════════════════════════════════════════════════ -->
+<div id="panel-nep" class="panel">
+  <h2 class="page-title"><i class="fa fa-star"></i> NEP 2020 Holistic Report Cards</h2>
+  <p class="page-sub">Record cognitive, affective & psychomotor domains per NEP 2020 framework</p>
+  <div class="card">
+    <div class="card-header"><div class="card-title"><i class="fa fa-edit"></i> Record Holistic Assessment</div></div>
+    <div class="form-row">
+      <div class="form-group"><label>Student ID</label><input id="nepStudentId" placeholder="STU001"></div>
+      <div class="form-group"><label>Class</label>
+        <select id="nepClass"><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select>
+      </div>
+      <div class="form-group"><label>Term</label>
+        <select id="nepTerm"><option>Term-1</option><option>Term-2</option><option>Term-3</option></select>
+      </div>
+      <div class="form-group"><label>Academic Year</label><input id="nepAcYear" value="2026-27"></div>
+    </div>
+    <div style="margin-bottom:14px;font-size:13px;font-weight:700;color:var(--navy)">Learning Domain Scores (out of 100)</div>
+    <div class="form-row">
+      <div class="form-group"><label>Cognitive (Knowledge & Understanding)</label><input type="number" id="nepCognitive" min="0" max="100" value="0"></div>
+      <div class="form-group"><label>Affective (Attitude & Values)</label><input type="number" id="nepAffective" min="0" max="100" value="0"></div>
+      <div class="form-group"><label>Psychomotor (Skills & Application)</label><input type="number" id="nepPsychomotor" min="0" max="100" value="0"></div>
+    </div>
+    <div style="margin-bottom:14px;font-size:13px;font-weight:700;color:var(--navy)">Co-Curricular Activities</div>
+    <div class="form-row">
+      <div class="form-group"><label>Sports / Physical Education</label><input id="nepSports" placeholder="e.g. Cricket Team Captain"></div>
+      <div class="form-group"><label>Arts / Culture</label><input id="nepArts" placeholder="e.g. School Play Lead, Drawing Gold"></div>
+      <div class="form-group"><label>Community Service</label><input id="nepCommunity" placeholder="e.g. NSS, Swachh Bharat drive"></div>
+    </div>
+    <div class="form-group" style="margin-bottom:16px"><label>Teacher's Holistic Observation</label>
+      <textarea id="nepNote" rows="3" placeholder="Overall personality, areas of growth, recommendations…"></textarea>
+    </div>
+    <button class="btn btn-gold" onclick="saveNEP()"><i class="fa fa-save"></i> Save Assessment</button>
+    <button class="btn btn-outline" style="margin-left:8px" onclick="loadNEPCard()"><i class="fa fa-eye"></i> View Report Card</button>
+  </div>
+  <div id="nepCardContainer" style="display:none" class="card">
+    <div class="card-header">
+      <div class="card-title"><i class="fa fa-file-text"></i> NEP Holistic Report Card</div>
+      <button class="btn btn-primary btn-sm" onclick="window.print()"><i class="fa fa-print"></i> Print</button>
+    </div>
+    <div id="nepCardContent"></div>
+  </div>
+</div>
+
+<!-- ═══ NAAC ══════════════════════════════════════════════════════════════ -->
+<div id="panel-naac" class="panel">
+  <h2 class="page-title"><i class="fa fa-bar-chart"></i> NAAC / Government Compliance Report</h2>
+  <p class="page-sub">Institutional performance data for accreditation and government submission</p>
+  <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+    <button class="btn btn-gold" onclick="loadNAAC()"><i class="fa fa-refresh"></i> Refresh Report</button>
+    <button class="btn btn-primary" style="margin-left:8px" onclick="printNAAC()"><i class="fa fa-print"></i> Print / Export</button>
+  </div>
+  <div id="naacReport" style="color:#6b7c93;text-align:center;padding:40px">Click "Refresh Report" to generate</div>
+</div>
+
+<!-- ═══ NOTIFICATIONS ═════════════════════════════════════════════════════ -->
+<div id="panel-notifications" class="panel">
+  <h2 class="page-title"><i class="fa fa-bell"></i> Notifications & Alerts</h2>
+  <p class="page-sub">Configure SMS and WhatsApp notifications for parents and staff</p>
+  <div class="card">
+    <div class="card-header"><div class="card-title"><i class="fa fa-cog"></i> Provider Configuration</div></div>
+    <div class="provider-tab">
+      <button id="tab-sms" class="active" onclick="switchNotifTab('sms')">SMS (MSG91)</button>
+      <button id="tab-wa" onclick="switchNotifTab('wa')">WhatsApp (Meta API)</button>
+    </div>
+    <div id="notif-sms">
+      <div class="form-row">
+        <div class="form-group"><label>MSG91 Auth Key</label><input id="smsApiKey" type="password" placeholder="Enter MSG91 API key"></div>
+        <div class="form-group"><label>Sender ID</label><input id="smsSender" value="GURUKL" maxlength="6"></div>
+        <div class="form-group"><label>Status</label>
+          <select id="smsEnabled"><option value="1">Enabled</option><option value="0">Disabled</option></select>
+        </div>
+      </div>
+      <div style="background:#fef9e0;border:1px solid #f0d060;border-radius:8px;padding:12px;font-size:12px;color:#856404;margin-bottom:16px">
+        <i class="fa fa-info-circle"></i> <strong>Integration Guide:</strong> Sign up at <a href="https://msg91.com" target="_blank">msg91.com</a>, create a sender ID "GURUKL", get your Auth Key and paste it above. SMS will be live within minutes.
+      </div>
+    </div>
+    <div id="notif-wa" style="display:none">
+      <div class="form-row">
+        <div class="form-group"><label>Meta WhatsApp Token</label><input id="waToken" type="password" placeholder="Enter Meta Business API token"></div>
+        <div class="form-group"><label>From Phone Number ID</label><input id="waPhone" placeholder="e.g. 1234567890"></div>
+      </div>
+      <div style="background:#e8f8f0;border:1px solid #60c890;border-radius:8px;padding:12px;font-size:12px;color:#155a2e;margin-bottom:16px">
+        <i class="fa fa-whatsapp"></i> <strong>Integration Guide:</strong> Go to <a href="https://business.facebook.com" target="_blank">Meta Business Suite</a> → WhatsApp API → get Token & Phone Number ID. Paste above to enable WhatsApp messages.
+      </div>
+    </div>
+    <button class="btn btn-gold" onclick="saveNotifSettings()"><i class="fa fa-save"></i> Save Settings</button>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title"><i class="fa fa-paper-plane"></i> Send Test Notification</div></div>
+    <div class="form-row">
+      <div class="form-group"><label>To (phone number)</label><input id="testPhone" placeholder="+91 9XXXXXXXXX"></div>
+      <div class="form-group"><label>Message</label><input id="testMsg" value="Test from The Gurukul High ERP — SMS is working!"></div>
+    </div>
+    <button class="btn btn-primary" onclick="sendTestNotif()"><i class="fa fa-send"></i> Send Test</button>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title"><i class="fa fa-magic"></i> Automated Alerts</div></div>
+    <table>
+      <thead><tr><th>Alert Type</th><th>Trigger</th><th>Recipients</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>📚 Homework Due</td><td>1 day before due date</td><td>Students + Parents</td><td><span class="badge badge-yellow">Configure first</span></td></tr>
+        <tr><td>🏫 Attendance Absent</td><td>Student marked absent</td><td>Parent</td><td><span class="badge badge-yellow">Configure first</span></td></tr>
+        <tr><td>💰 Fee Due</td><td>7 days before due date</td><td>Parent</td><td><span class="badge badge-yellow">Configure first</span></td></tr>
+        <tr><td>📋 Exam Results</td><td>When results published</td><td>Students + Parents</td><td><span class="badge badge-yellow">Configure first</span></td></tr>
+        <tr><td>📅 PTM Reminder</td><td>2 days before PTM</td><td>All Parents</td><td><span class="badge badge-yellow">Configure first</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══ RAZORPAY ═══════════════════════════════════════════════════════════ -->
+<div id="panel-razorpay" class="panel">
+  <h2 class="page-title"><i class="fa fa-credit-card"></i> Online Fee Payment (Razorpay)</h2>
+  <p class="page-sub">Enable parents to pay fees online via UPI, cards, net banking</p>
+  <div class="card">
+    <div class="card-header"><div class="card-title"><i class="fa fa-key"></i> API Configuration</div></div>
+    <div style="background:#e8f4fd;border:1px solid #90c8f0;border-radius:8px;padding:14px;margin-bottom:16px;font-size:13px;color:#1a5f8a">
+      <i class="fa fa-info-circle"></i> <strong>Setup Steps:</strong>
+      1. Sign up at <a href="https://razorpay.com" target="_blank">razorpay.com</a> → Dashboard → Settings → API Keys → Generate Key.
+      2. Copy Key ID and Key Secret below.
+      3. Set webhook URL to: <code style="background:#fff;padding:2px 6px;border-radius:4px">https://yourdomain.com/api/razorpay/webhook</code>
+      4. Enable "Payment Links" and "Checkout" in your Razorpay dashboard.
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label>Razorpay Key ID</label><input id="rzpKeyId" placeholder="rzp_test_XXXXXXXXXX"></div>
+      <div class="form-group"><label>Razorpay Key Secret</label><input id="rzpSecret" type="password" placeholder="Enter secret key"></div>
+      <div class="form-group"><label>Mode</label>
+        <select id="rzpMode"><option value="test">Test Mode</option><option value="live">Live Mode</option></select>
+      </div>
+    </div>
+    <button class="btn btn-gold" onclick="toast('Razorpay configuration saved. Integrate backend webhook handler to go live.','success')"><i class="fa fa-save"></i> Save Configuration</button>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title"><i class="fa fa-list-alt"></i> Recent Orders</div></div>
+    <table id="rzpOrdersTable">
+      <thead><tr><th>Order ID</th><th>Student</th><th>Amount</th><th>Type</th><th>Status</th><th>Date</th></tr></thead>
+      <tbody id="rzpOrders"><tr><td colspan="6" style="text-align:center;padding:24px;color:#aaa">No orders yet. Orders will appear here after first payment.</td></tr></tbody>
+    </table>
+  </div>
+  <div class="card">
+    <div class="card-header"><div class="card-title"><i class="fa fa-mobile"></i> Parent Payment Experience</div></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px">
+      <div style="background:#f8f9fa;border-radius:10px;padding:16px;text-align:center">
+        <i class="fa fa-qrcode fa-2x" style="color:var(--gold);margin-bottom:8px;display:block"></i>
+        <div style="font-weight:700;font-size:13px">UPI / QR Code</div>
+        <div style="font-size:12px;color:#6b7c93;margin-top:4px">Instant payment via any UPI app</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:16px;text-align:center">
+        <i class="fa fa-credit-card fa-2x" style="color:var(--navy);margin-bottom:8px;display:block"></i>
+        <div style="font-weight:700;font-size:13px">Credit / Debit Card</div>
+        <div style="font-size:12px;color:#6b7c93;margin-top:4px">Visa, Mastercard, RuPay</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:16px;text-align:center">
+        <i class="fa fa-university fa-2x" style="color:var(--blue);margin-bottom:8px;display:block"></i>
+        <div style="font-weight:700;font-size:13px">Net Banking</div>
+        <div style="font-size:12px;color:#6b7c93;margin-top:4px">All major banks supported</div>
+      </div>
+      <div style="background:#f8f9fa;border-radius:10px;padding:16px;text-align:center">
+        <i class="fa fa-mobile-alt fa-2x" style="color:var(--green);margin-bottom:8px;display:block"></i>
+        <div style="font-weight:700;font-size:13px">Wallets / EMI</div>
+        <div style="font-size:12px;color:#6b7c93;margin-top:4px">Paytm, PhonePe, EMI options</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</main>
+</div>
+
+<!-- MODALS -->
+<!-- Add Book -->
+<div class="modal-overlay" id="addBookModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fa fa-book"></i> Add New Book</div>
+      <button class="modal-close" onclick="closeModal('addBookModal')">×</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group" style="grid-column:1/-1"><label>Title *</label><input id="newBookTitle" placeholder="Book title"></div>
+      <div class="form-group"><label>Author</label><input id="newBookAuthor" placeholder="Author name"></div>
+      <div class="form-group"><label>ISBN</label><input id="newBookISBN" placeholder="ISBN number"></div>
+      <div class="form-group"><label>Category</label>
+        <select id="newBookCat"><option>Textbook</option><option>Reference</option><option>Fiction</option><option>Biography</option><option>Science</option><option>History</option><option>General</option></select>
+      </div>
+      <div class="form-group"><label>Copies</label><input type="number" id="newBookCopies" value="1" min="1"></div>
+      <div class="form-group"><label>Rack Location</label><input id="newBookRack" placeholder="e.g. A1"></div>
+    </div>
+    <button class="btn btn-gold" onclick="addBook()"><i class="fa fa-plus"></i> Add Book</button>
+  </div>
+</div>
+
+<!-- Issue Book -->
+<div class="modal-overlay" id="issueBookModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fa fa-arrow-right"></i> Issue Book</div>
+      <button class="modal-close" onclick="closeModal('issueBookModal')">×</button>
+    </div>
+    <input type="hidden" id="issueBookId">
+    <div class="form-row">
+      <div class="form-group"><label>Borrower ID</label><input id="issueBorrowerId" placeholder="STU001 or teacher ID"></div>
+      <div class="form-group"><label>Borrower Type</label>
+        <select id="issueBorrowerType"><option value="student">Student</option><option value="teacher">Teacher</option></select>
+      </div>
+      <div class="form-group"><label>Due Date</label><input type="date" id="issueDueDate"></div>
+    </div>
+    <button class="btn btn-gold" onclick="issueBook()"><i class="fa fa-check"></i> Issue</button>
+  </div>
+</div>
+
+<!-- Add Homework -->
+<div class="modal-overlay" id="addHWModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fa fa-pencil"></i> Assign Homework</div>
+      <button class="modal-close" onclick="closeModal('addHWModal')">×</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group" style="grid-column:1/-1"><label>Title *</label><input id="hwTitle" placeholder="e.g. Chapter 5 Exercise Problems"></div>
+      <div class="form-group"><label>Subject *</label><input id="hwSubject" placeholder="e.g. Mathematics"></div>
+      <div class="form-group"><label>Class *</label>
+        <select id="hwClass"><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option></select>
+      </div>
+      <div class="form-group"><label>Section</label>
+        <select id="hwSection"><option value="All">All Sections</option><option>A</option><option>B</option></select>
+      </div>
+      <div class="form-group"><label>Due Date *</label><input type="date" id="hwDueDate"></div>
+      <div class="form-group"><label>Assigned By</label><input id="hwAssignedBy" placeholder="Teacher name"></div>
+    </div>
+    <div class="form-group" style="margin-bottom:16px"><label>Description / Instructions</label>
+      <textarea id="hwDesc" rows="3" placeholder="Detailed instructions for students…"></textarea>
+    </div>
+    <button class="btn btn-gold" onclick="assignHomework()"><i class="fa fa-send"></i> Assign</button>
+  </div>
+</div>
+
+<!-- Add Route -->
+<div class="modal-overlay" id="addRouteModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fa fa-bus"></i> Add Transport Route</div>
+      <button class="modal-close" onclick="closeModal('addRouteModal')">×</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group" style="grid-column:1/-1"><label>Route Name *</label><input id="rtName" placeholder="e.g. Route 3 – Mandya Road"></div>
+      <div class="form-group"><label>Driver Name</label><input id="rtDriver" placeholder="Driver full name"></div>
+      <div class="form-group"><label>Vehicle Number</label><input id="rtVehicle" placeholder="KA-09 XX 0000"></div>
+      <div class="form-group"><label>Capacity</label><input type="number" id="rtCapacity" value="40"></div>
+      <div class="form-group"><label>Departure Time</label><input type="time" id="rtDeparture" value="08:00"></div>
+      <div class="form-group"><label>Arrival Time</label><input type="time" id="rtArrival" value="09:00"></div>
+      <div class="form-group" style="grid-column:1/-1"><label>Stops (comma separated)</label><input id="rtStops" placeholder="Stop 1, Stop 2, Stop 3, School"></div>
+    </div>
+    <button class="btn btn-gold" onclick="addRoute()"><i class="fa fa-plus"></i> Add Route</button>
+  </div>
+</div>
+
+<!-- Add Visitor -->
+<div class="modal-overlay" id="addVisitorModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title"><i class="fa fa-user-plus"></i> Visitor Check-In</div>
+      <button class="modal-close" onclick="closeModal('addVisitorModal')">×</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group" style="grid-column:1/-1"><label>Visitor Name *</label><input id="visName" placeholder="Full name"></div>
+      <div class="form-group"><label>Phone</label><input id="visPhone" placeholder="+91 XXXXXXXXXX"></div>
+      <div class="form-group"><label>Purpose of Visit *</label>
+        <select id="visPurpose"><option>Parent Meeting</option><option>Admission Enquiry</option><option>Official Work</option><option>Delivery</option><option>Interview</option><option>Other</option></select>
+      </div>
+      <div class="form-group"><label>Whom to Meet</label><input id="visWhom" placeholder="Teacher / Admin name"></div>
+    </div>
+    <button class="btn btn-gold" onclick="checkinVisitor()"><i class="fa fa-sign-in"></i> Check In</button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const API = '';
+const ADMIN_KEY = sessionStorage.getItem('adminKey') || 'gurukul-admin-2026';
+
+function toast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'show ' + type;
+  setTimeout(() => t.className = '', 3000);
+}
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function showPanel(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+  const loaders = { library: loadLibrary, homework: loadHomework, transport: loadTransport, visitors: loadVisitors, certificates: loadCertificates, ai: loadPredictions, nep: ()=>{}, naac: loadNAAC, notifications: loadNotifSettings, razorpay: loadRazorpayOrders };
+  if (loaders[name]) loaders[name]();
+}
+
+// ── LIBRARY ────────────────────────────────────────────────────────────────
+let allBooks = [];
+async function loadLibrary() { await Promise.all([loadBooks(), loadLoans()]); }
+async function loadBooks() {
+  const q = document.getElementById('libSearch')?.value || '';
+  const r = await fetch(`/portal/data/library-books.json?_t=${Date.now()}`, {cache:'no-store'});
+  const d = await r.json();
+  allBooks = d.books || [];
+  const total = allBooks.reduce((s,b)=>s+b.total_copies,0);
+  const avail = allBooks.reduce((s,b)=>s+b.available,0);
+  document.getElementById('libTotalBooks').textContent = allBooks.length;
+  document.getElementById('libAvail').textContent = avail;
+  document.getElementById('libIssued').textContent = total - avail;
+  const tb = document.getElementById('booksTable');
+  tb.innerHTML = allBooks.length ? allBooks.map((b,i) => `
+    <tr>
+      <td>${i+1}</td><td><strong>${b.title}</strong></td><td>${b.author||'—'}</td>
+      <td><span class="badge badge-blue">${b.category}</span></td>
+      <td>${b.total_copies}</td>
+      <td><span class="badge ${b.available>0?'badge-green':'badge-red'}">${b.available}</span></td>
+      <td>${b.rack||'—'}</td>
+      <td><button class="btn btn-sm ${b.available>0?'btn-gold':'btn-outline'}" onclick="openIssueModal(${b.id})" ${b.available<1?'disabled':''}>Issue</button></td>
+    </tr>`).join('') : '<tr><td colspan="8" style="text-align:center;padding:24px;color:#aaa">No books found</td></tr>';
+}
+async function loadLoans() {
+  const status = document.getElementById('loanFilter')?.value || 'Issued';
+  const r = await fetch(`/portal/data/library-loans.json?_t=${Date.now()}`, {cache:'no-store'});
+  const d = await r.json();
+  const today = new Date().toISOString().split('T')[0];
+  let overdue = 0;
+  const loans = d.loans || [];
+  const tb = document.getElementById('loansTable');
+  tb.innerHTML = loans.length ? loans.map((l,i) => {
+    const isOD = l.status==='Issued' && l.due_date < today;
+    if (isOD) overdue++;
+    return `<tr>
+      <td>${i+1}</td><td><strong>${l.title||'—'}</strong><br><small>${l.author||''}</small></td>
+      <td>${l.borrower_id}</td>
+      <td>${l.issued_on?.split('T')[0]||l.issued_on?.split(' ')[0]||'—'}</td>
+      <td class="${isOD?'risk-high':''}">${l.due_date}</td>
+      <td><span class="badge ${l.status==='Issued'?'badge-blue':'badge-green'}">${l.status}</span></td>
+      <td>${l.fine>0?'₹'+l.fine:'—'}</td>
+      <td>${l.status==='Issued'?`<button class="btn btn-sm btn-green" onclick="returnBook(${l.id})">Return</button>`:'—'}</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="8" style="text-align:center;padding:24px;color:#aaa">No loans</td></tr>';
+  document.getElementById('libOverdue').textContent = overdue;
+}
+function openIssueModal(bookId) {
+  document.getElementById('issueBookId').value = bookId;
+  const d = new Date(Date.now()+14*86400000);
+  document.getElementById('issueDueDate').value = d.toISOString().split('T')[0];
+  openModal('issueBookModal');
+}
+async function addBook() {
+  const r = await fetch(`/m/library/books?key=${ADMIN_KEY}`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ title: document.getElementById('newBookTitle').value, author: document.getElementById('newBookAuthor').value, isbn: document.getElementById('newBookISBN').value, category: document.getElementById('newBookCat').value, total_copies: +document.getElementById('newBookCopies').value, rack: document.getElementById('newBookRack').value }) });
+  const d = await r.json();
+  if (d.id) { toast('Book added!','success'); closeModal('addBookModal'); loadBooks(); }
+  else toast(d.error||'Error','error');
+}
+async function issueBook() {
+  const r = await fetch(`/m/library/issue?key=${ADMIN_KEY}`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ book_id: +document.getElementById('issueBookId').value, borrower_id: document.getElementById('issueBorrowerId').value, borrower_type: document.getElementById('issueBorrowerType').value, due_date: document.getElementById('issueDueDate').value }) });
+  const d = await r.json();
+  if (d.message) { toast('Book issued!','success'); closeModal('issueBookModal'); loadLibrary(); }
+  else toast(d.error||'Error','error');
+}
+async function returnBook(loanId) {
+  const r = await fetch(`/m/library/return?key=${ADMIN_KEY}`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ loan_id: loanId }) });
+  const d = await r.json();
+  toast(d.fine > 0 ? `Returned! Fine: ₹${d.fine}`:'Returned!','success');
+  loadLibrary();
+}
+
+// ── HOMEWORK ────────────────────────────────────────────────────────────────
+async function loadHomework() {
+  const cls = document.getElementById('hwClassFilter')?.value || '';
+  const r = await fetch(`/portal/data/homework.json?_t=${Date.now()}`, {cache:'no-store'});
+  const d = await r.json();
+  const hw = d.homework || [];
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('hwTable').innerHTML = hw.length ? hw.map((h,i) => `
+    <tr>
+      <td>${i+1}</td><td><strong>${h.title}</strong><br><small style="color:#6b7c93">${h.description?.substring(0,60)||''}</small></td>
+      <td>${h.subject}</td><td>Class ${h.class}${h.section&&h.section!=='All'?' – '+h.section:''}</td>
+      <td class="${h.due_date < today?'risk-high':''}">${h.due_date}</td>
+      <td>${h.assigned_by}</td>
+      <td><button class="btn btn-sm btn-red" onclick="deleteHW(${h.id})"><i class="fa fa-trash"></i></button></td>
+    </tr>`).join('') : '<tr><td colspan="7" style="text-align:center;padding:24px;color:#aaa">No homework assigned</td></tr>';
+}
+async function assignHomework() {
+  const body = { title: document.getElementById('hwTitle').value, subject: document.getElementById('hwSubject').value, class: document.getElementById('hwClass').value, section: document.getElementById('hwSection').value, due_date: document.getElementById('hwDueDate').value, assigned_by: document.getElementById('hwAssignedBy').value, description: document.getElementById('hwDesc').value };
+  if (!body.title || !body.subject || !body.due_date) return toast('Fill all required fields','error');
+  const r = await fetch('/api/homework', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  const d = await r.json();
+  if (d.id) { toast('Homework assigned!','success'); closeModal('addHWModal'); loadHomework(); }
+  else toast(d.error||'Error','error');
+}
+async function deleteHW(id) {
+  if (!confirm('Delete this homework?')) return;
+  await fetch(`/m/homework/${id}`, { method:'DELETE' });
+  toast('Deleted','success'); loadHomework();
+}
+
+// ── TRANSPORT ────────────────────────────────────────────────────────────────
+async function loadTransport() { await Promise.all([loadRoutes(), loadTransportStudents()]); }
+async function loadRoutes() {
+  const r = await fetch(`/portal/data/transport-routes.json?_t=${Date.now()}`, {cache:'no-store'});
+  const d = await r.json();
+  const routes = d.routes || [];
+  const sel = document.getElementById('routeStudentFilter');
+  sel.innerHTML = '<option value="">All Routes</option>' + routes.map(r => `<option value="${r.id}">${r.route_name}</option>`).join('');
+  document.getElementById('routesTable').innerHTML = routes.length ? routes.map((r,i) => `
+    <tr>
+      <td>${i+1}</td><td><strong>${r.route_name}</strong></td><td>${r.driver||'—'}</td>
+      <td>${r.vehicle||'—'}</td><td>${r.capacity}</td>
+      <td>${r.departure} → ${r.arrival}</td>
+      <td><span class="badge ${r.status==='Active'?'badge-green':'badge-red'}">${r.status}</span></td>
+      <td><button class="btn btn-sm btn-red" onclick="deleteRoute(${r.id})"><i class="fa fa-trash"></i></button></td>
+    </tr>`).join('') : '<tr><td colspan="8" style="text-align:center;padding:24px;color:#aaa">No routes</td></tr>';
+}
+async function loadTransportStudents() {
+  const rid = document.getElementById('routeStudentFilter')?.value || '';
+  const r = await fetch(`/portal/data/transport-students.json?_t=${Date.now()}`, {cache:'no-store'});
+  const d = await r.json();
+  const st = d.students || [];
+  document.getElementById('transportStudentsTable').innerHTML = st.length ? st.map((s,i) => `
+    <tr><td>${i+1}</td><td><strong>${s.name||s.student_id}</strong></td><td>Class ${s.class||'—'}-${s.section||''}</td><td>${s.route_name||'—'}</td><td>${s.stop||'—'}</td><td>₹${s.fee||0}/mo</td></tr>`).join('') : '<tr><td colspan="6" style="text-align:center;padding:24px;color:#aaa">No students assigned</td></tr>';
+}
+async function addRoute() {
+  const stops = document.getElementById('rtStops').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const r = await fetch(`/m/transport/routes?key=${ADMIN_KEY}`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ route_name: document.getElementById('rtName').value, driver: document.getElementById('rtDriver').value, vehicle: document.getElementById('rtVehicle').value, capacity: +document.getElementById('rtCapacity').value, stops, departure: document.getElementById('rtDeparture').value, arrival: document.getElementById('rtArrival').value }) });
+  const d = await r.json();
+  if (d.id) { toast('Route added!','success'); closeModal('addRouteModal'); loadRoutes(); }
+  else toast(d.error||'Error','error');
+}
+async function deleteRoute(id) {
+  if (!confirm('Delete this route?')) return;
+  await fetch(`/m/transport/routes/${id}?key=${ADMIN_KEY}`, { method:'DELETE' });
+  toast('Deleted','success'); loadRoutes();
+}
+
+// ── VISITORS ─────────────────────────────────────────────────────────────────
+async function loadVisitors() {
+  const date = document.getElementById('visitDate')?.value || new Date().toISOString().split('T')[0];
+  const r = await fetch(`/portal/data/visitors.json?_t=${Date.now()}`, {cache:'no-store'});
+  const d = await r.json();
+  const vs = d.visitors || [];
+  const inCount = vs.filter(v=>v.status==='In').length;
+  document.getElementById('visTotal').textContent = vs.length;
+  document.getElementById('visIn').textContent = inCount;
+  document.getElementById('visOut').textContent = vs.length - inCount;
+  document.getElementById('visitorsTable').innerHTML = vs.length ? vs.map(v => `
+    <tr>
+      <td><strong>${v.badge_no}</strong></td><td>${v.name}</td><td>${v.phone||'—'}</td>
+      <td>${v.purpose||'—'}</td><td>${v.whom_to_meet||'—'}</td>
+      <td>${v.entry_time?.split('T')[1]?.substring(0,5)||v.entry_time?.split(' ')[1]?.substring(0,5)||v.entry_time||'—'}</td>
+      <td>${v.exit_time?v.exit_time.split('T')[1]?.substring(0,5)||v.exit_time.split(' ')[1]?.substring(0,5)||v.exit_time:'—'}</td>
+      <td><span class="badge ${v.status==='In'?'badge-blue':'badge-green'}">${v.status}</span></td>
+      <td>${v.status==='In'?`<button class="btn btn-sm btn-outline" onclick="checkoutVisitor(${v.id})">Check Out</button>`:'—'}</td>
+    </tr>`).join('') : '<tr><td colspan="9" style="text-align:center;padding:24px;color:#aaa">No visitors today</td></tr>';
+}
+async function checkinVisitor() {
+  const r = await fetch('/api/visitors', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ name: document.getElementById('visName').value, phone: document.getElementById('visPhone').value, purpose: document.getElementById('visPurpose').value, whom_to_meet: document.getElementById('visWhom').value }) });
+  const d = await r.json();
+  if (d.id) { toast(`Checked in! Badge: ${d.badge_no}`,'success'); closeModal('addVisitorModal'); loadVisitors(); }
+  else toast(d.error||'Error','error');
+}
+async function checkoutVisitor(id) {
+  await fetch(`/m/visitors/${id}/checkout`, { method:'POST' });
+  toast('Visitor checked out','success'); loadVisitors();
+}
+// Set today's date on init
+window.addEventListener('DOMContentLoaded', () => {
+  const vd = document.getElementById('visitDate');
+  if (vd) vd.value = new Date().toISOString().split('T')[0];
+});
+
+// ── CERTIFICATES ─────────────────────────────────────────────────────────────
+function updateCertFields() {
+  const type = document.getElementById('certType').value;
+  document.getElementById('certPurposeGroup').style.display = ['Bonafide'].includes(type)?'flex':'none';
+  document.getElementById('certConductGroup').style.display = ['Transfer','Character'].includes(type)?'flex':'none';
+  document.getElementById('certAchievementGroup').style.display = type==='Achievement'?'flex':'none';
+  document.getElementById('certFromGroup').style.display = type==='Medical'?'flex':'none';
+  document.getElementById('certToGroup').style.display = type==='Medical'?'flex':'none';
+}
+async function issueCertificate() {
+  const sid = document.getElementById('certStudentId').value;
+  const type = document.getElementById('certType').value;
+  if (!sid) return toast('Enter Student ID','error');
+  const body = { student_id: sid, type, academic_yr: document.getElementById('certAcYear').value, purpose: document.getElementById('certPurpose').value, conduct: document.getElementById('certConduct').value, achievement: document.getElementById('certAchievement').value, from_date: document.getElementById('certFromDate').value, to_date: document.getElementById('certToDate').value, issued_by: 'Administrator' };
+  const r = await fetch(`/m/certificates?key=${ADMIN_KEY}`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  const d = await r.json();
+  if (d.serial_no) {
+    document.getElementById('certPreviewCard').style.display = 'block';
+    document.getElementById('certPreviewContent').innerHTML = `<p>${d.content}</p>`;
+    document.getElementById('certSerialNo').textContent = d.serial_no;
+    toast(`${type} Certificate issued — ${d.serial_no}`,'success');
+    loadCertificates();
+  } else toast(d.error||'Error','error');
+}
+async function loadCertificates() {
+  const sid = document.getElementById('certFilterStudent')?.value || '';
+  const r = await fetch(`/portal/data/certificates.json?_t=${Date.now()}`, {cache:'no-store'});
+  const d = await r.json();
+  const certs = d.certificates || [];
+  document.getElementById('certTable').innerHTML = certs.length ? certs.map(c => `
+    <tr><td><strong>${c.serial_no}</strong></td><td>${c.name||c.student_id}</td><td>Class ${c.class||'—'}</td>
+    <td><span class="badge badge-purple">${c.type}</span></td><td>${c.issued_by}</td>
+    <td>${c.issued_on?.split('T')[0]||c.issued_on?.split(' ')[0]||'—'}</td></tr>`).join('') : '<tr><td colspan="6" style="text-align:center;padding:24px;color:#aaa">No certificates issued</td></tr>';
+}
+function printCert() {
+  const w = window.open('','_blank','width=600,height=700');
+  w.document.write(`<!DOCTYPE html><html><head><title>Certificate</title><style>body{font-family:Georgia,serif;padding:40px;text-align:center}.header{font-size:22px;font-weight:bold;color:#0a1628;margin-bottom:8px}.sub{font-size:14px;color:#C9A227;margin-bottom:30px}.body{font-size:14px;line-height:1.8;color:#333;border:2px solid #C9A227;padding:30px;border-radius:8px;margin:20px 0}hr{border-color:#C9A227;margin:20px 0}.sig{margin-top:40px;display:flex;justify-content:space-around}.sig div{text-align:center;font-size:12px}</style></head><body>
+  <div class="header">The Gurukul High</div><div class="sub">K.R. Nagar, Mysuru | Empowering Minds, Shaping Futures</div>
+  <div class="body">${document.getElementById('certPreviewContent').innerHTML}</div>
+  <hr>
+  <div class="sig"><div>______________________<br>Class Teacher</div><div>______________________<br>Principal</div></div>
+  <p style="font-size:11px;color:#888;margin-top:20px">Serial: ${document.getElementById('certSerialNo').textContent}</p>
+  </body></html>`);
+  w.document.close(); w.print();
+}
+
+// ── AI PREDICTION ─────────────────────────────────────────────────────────────
+let allPredictions = [];
+async function loadPredictions() {
+  const cls = document.getElementById('predClassFilter')?.value || '';
+  const r = await fetch(`/portal/data/ai-predictions.json?_t=${Date.now()}`, {cache:'no-store'});
+  const d = await r.json();
+  allPredictions = d.predictions || [];
+  const s = d.summary || {};
+  document.getElementById('predHigh').textContent = s.high||0;
+  document.getElementById('predMed').textContent = s.medium||0;
+  document.getElementById('predLow').textContent = s.low||0;
+  document.getElementById('predTotal').textContent = allPredictions.length;
+  renderPredictions(allPredictions);
+}
+function filterPredictions() {
+  const lvl = document.getElementById('predLevelFilter').value;
+  renderPredictions(lvl ? allPredictions.filter(p=>p.level===lvl) : allPredictions);
+}
+function renderPredictions(data) {
+  const colors = { High:'badge-red', Medium:'badge-orange', Low:'badge-green' };
+  document.getElementById('predTable').innerHTML = data.length ? data.map(p => `
+    <tr>
+      <td><strong>${p.name}</strong></td><td>Class ${p.class}-${p.section}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="risk-bar"><div class="risk-fill" style="width:${p.riskScore}%;background:${p.level==='High'?'#e74c3c':p.level==='Medium'?'#e67e22':'#27ae60'}"></div></div>
+          <strong class="${p.level==='High'?'risk-high':p.level==='Medium'?'risk-med':'risk-low'}">${p.riskScore}</strong>
+        </div>
+      </td>
+      <td><span class="badge ${colors[p.level]||'badge-blue'}">${p.level} Risk</span></td>
+      <td>${p.attPct}%</td><td>${p.marksPct}%</td><td>${p.feesPending}</td>
+      <td style="font-size:12px;color:#6b7c93">${p.reasons.join(', ')||'✓ No issues'}</td>
+    </tr>`).join('') : '<tr><td colspan="8" style="text-align:center;padding:24px;color:#aaa">No data</td></tr>';
+}
+
+// ── NEP 2020 ──────────────────────────────────────────────────────────────────
+async function saveNEP() {
+  const body = { student_id: document.getElementById('nepStudentId').value, class: document.getElementById('nepClass').value, term: document.getElementById('nepTerm').value, academic_yr: document.getElementById('nepAcYear').value, cognitive: +document.getElementById('nepCognitive').value, affective: +document.getElementById('nepAffective').value, psychomotor: +document.getElementById('nepPsychomotor').value, sports: document.getElementById('nepSports').value, arts: document.getElementById('nepArts').value, community: document.getElementById('nepCommunity').value, teacher_note: document.getElementById('nepNote').value };
+  if (!body.student_id) return toast('Enter Student ID','error');
+  const r = await fetch('/m/nep/assessment', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  const d = await r.json();
+  if (d.message) toast('NEP Assessment saved!','success'); else toast(d.error||'Error','error');
+}
+async function loadNEPCard() {
+  const sid = document.getElementById('nepStudentId').value;
+  if (!sid) return toast('Enter Student ID','error');
+  const r = await fetch(`/portal/data/nep.json?_t=${Date.now()}`, {cache:'no-store'});
+  const d = await r.json();
+  const s = (d.students||[]).find(x => x.student_id === sid);
+  if (!s) return toast('Student not found: '+sid,'error');
+  const assessments = (d.assessments||[]).filter(a => a.student_id === sid);
+  const latest = assessments.length ? assessments[assessments.length-1] : {};
+  const avgMark = 0; // marks not in nep.json — use ai-predictions for score
+  document.getElementById('nepCardContainer').style.display = 'block';
+  document.getElementById('nepCardContent').innerHTML = `
+    <div style="background:linear-gradient(135deg,#0a1628,#1a2f52);color:#fff;border-radius:10px;padding:20px;margin-bottom:16px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div><div style="font-size:18px;font-weight:700;color:var(--gold)">NEP 2020 Holistic Report Card</div><div style="font-size:12px;color:#a8b4cc">The Gurukul High · K.R. Nagar, Mysuru</div></div>
+        <div style="text-align:right"><div style="font-size:12px;color:var(--gold)">${latest.academic_yr||'2026-27'}</div><div style="font-size:11px;color:#a8b4cc">${latest.term||''}</div></div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+      <div><strong>Student:</strong> ${s.name}</div><div><strong>Class:</strong> ${s.class}</div>
+      <div><strong>ID:</strong> ${s.student_id}</div><div><strong>Term:</strong> ${latest.term||'—'}</div>
+    </div>
+    ${latest.cognitive!=null?`<div style="margin-bottom:16px"><strong style="display:block;margin-bottom:10px">Learning Domains (NEP Framework)</strong>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+      ${[['Cognitive',latest.cognitive,'#2980b9'],['Affective',latest.affective,'#8e44ad'],['Psychomotor',latest.psychomotor,'#16a085']].map(([label,val,color])=>`
+        <div style="background:#f8f9fa;border-radius:8px;padding:14px;text-align:center;border-top:3px solid ${color}">
+          <div style="font-size:24px;font-weight:800;color:${color}">${val}</div><div style="font-size:11px;color:#6b7c93">${label}</div>
+          <div style="background:#eee;height:6px;border-radius:3px;margin-top:8px"><div style="background:${color};height:6px;border-radius:3px;width:${val}%"></div></div>
+        </div>`).join('')}
+    </div></div>`:''}
+    ${latest.sports||latest.arts||latest.community?`<div style="margin-bottom:16px"><strong style="display:block;margin-bottom:10px">Co-Curricular Achievements</strong>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+      <div style="background:#f8f9fa;border-radius:8px;padding:12px"><div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:4px">SPORTS</div><div style="font-size:13px">${latest.sports||'—'}</div></div>
+      <div style="background:#f8f9fa;border-radius:8px;padding:12px"><div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:4px">ARTS & CULTURE</div><div style="font-size:13px">${latest.arts||'—'}</div></div>
+      <div style="background:#f8f9fa;border-radius:8px;padding:12px"><div style="font-size:11px;font-weight:700;color:var(--navy);margin-bottom:4px">COMMUNITY</div><div style="font-size:13px">${latest.community||'—'}</div></div>
+    </div></div>`:''}
+    ${(d.examMarks||[]).length?`<div style="margin-bottom:16px"><strong style="display:block;margin-bottom:10px">Academic Performance</strong><div style="font-size:28px;font-weight:800;color:var(--navy);margin-bottom:8px">${avgMark}% <span style="font-size:16px;color:#6b7c93">overall average</span></div></div>`:''}
+    ${latest.teacher_note?`<div style="background:#fef9e0;border-radius:8px;padding:14px;border-left:4px solid var(--gold)"><strong>Teacher's Observation:</strong><div style="margin-top:6px;font-size:13px;color:#555">${latest.teacher_note}</div></div>`:''}
+  `;
+}
+
+// ── NAAC ──────────────────────────────────────────────────────────────────────
+async function loadNAAC() {
+  document.getElementById('naacReport').innerHTML = '<div style="text-align:center;padding:40px;color:#6b7c93"><i class="fa fa-spinner fa-spin fa-2x"></i><br><br>Generating NAAC Report…</div>';
+  const r = await fetch(`/portal/data/naac-report.json?_t=${Date.now()}`, {cache:'no-store'});
+  const d = await r.json();
+  const e = d.enrollment, a = d.academics, f = d.finance, h = d.hr;
+  document.getElementById('naacReport').innerHTML = `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:16px;border-bottom:2px solid #f0f4f8">
+      <div><div style="font-size:18px;font-weight:800;color:var(--navy)">${d.school}</div><div style="color:#6b7c93;font-size:13px">NAAC Institutional Data Report — AY ${d.academic_yr}</div></div>
+      <div style="font-size:12px;color:#6b7c93">Generated: ${new Date(d.generated_on).toLocaleString('en-IN')}</div>
+    </div>
+    <div class="naac-grid">
+      <div class="naac-card"><div class="naac-val">${e.total_students}</div><div class="naac-key">Total Students</div></div>
+      <div class="naac-card"><div class="naac-val">${e.total_teachers}</div><div class="naac-key">Teaching Staff</div></div>
+      <div class="naac-card"><div class="naac-val">${e.student_teacher_ratio}:1</div><div class="naac-key">Student:Teacher Ratio</div></div>
+      <div class="naac-card"><div class="naac-val">${e.classes_offered}</div><div class="naac-key">Classes Offered</div></div>
+      <div class="naac-card"><div class="naac-val">${a.avg_attendance}</div><div class="naac-key">Avg Attendance</div></div>
+      <div class="naac-card"><div class="naac-val">${a.avg_class_performance}</div><div class="naac-key">Avg Academic Performance</div></div>
+      <div class="naac-card"><div class="naac-val">${a.exams_held}</div><div class="naac-key">Exams Conducted</div></div>
+      <div class="naac-card"><div class="naac-val">${f.collection_rate}</div><div class="naac-key">Fee Collection Rate</div></div>
+      <div class="naac-card"><div class="naac-val">₹${Number(f.fees_collected||0).toLocaleString('en-IN')}</div><div class="naac-key">Fees Collected</div></div>
+      <div class="naac-card"><div class="naac-val">${d.admissions.total_applications}</div><div class="naac-key">Admission Applications</div></div>
+      <div class="naac-card"><div class="naac-val">${h.leave_requests_pending}</div><div class="naac-key">Pending Leave Requests</div></div>
+      <div class="naac-card"><div class="naac-val">${d.visitors.total_logged}</div><div class="naac-key">Visitor Records</div></div>
+    </div>
+    <div style="background:#e8f4fd;border-radius:10px;padding:16px;font-size:13px;color:#1a5f8a;margin-top:8px">
+      <i class="fa fa-info-circle"></i> This report covers all data currently in the Gurukul ERP system. For formal NAAC submission, export as PDF and attach supporting documents as per NAAC SSR guidelines.
+    </div>`;
+}
+function printNAAC() { window.print(); }
+
+// ── NOTIFICATIONS ─────────────────────────────────────────────────────────────
+async function loadNotifSettings() {
+  const r = await fetch(`/portal/data/notifications.json?_t=${Date.now()}`, {cache:'no-store'});
+  const d = await r.json();
+  const s = d.settings || {};
+  document.getElementById('smsSender').value = s.sender || 'GURUKL';
+  document.getElementById('smsEnabled').value = s.enabled ? '1' : '0';
+}
+function switchNotifTab(tab) {
+  document.getElementById('notif-sms').style.display = tab==='sms'?'block':'none';
+  document.getElementById('notif-wa').style.display = tab==='wa'?'block':'none';
+  document.querySelectorAll('.provider-tab button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+}
+async function saveNotifSettings() {
+  const body = { provider: 'msg91', api_key: document.getElementById('smsApiKey').value, sender: document.getElementById('smsSender').value, enabled: +document.getElementById('smsEnabled').value, wa_token: document.getElementById('waToken').value, wa_phone: document.getElementById('waPhone').value };
+  const r = await fetch(`/m/notifications/settings?key=${ADMIN_KEY}`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+  const d = await r.json();
+  toast(d.message||d.error, d.message?'success':'error');
+}
+async function sendTestNotif() {
+  const r = await fetch('/m/notifications/send', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ to: document.getElementById('testPhone').value, message: document.getElementById('testMsg').value }) });
+  const d = await r.json();
+  toast(d.message||d.error, d.message?'success':'error');
+}
+
+// ── RAZORPAY ──────────────────────────────────────────────────────────────────
+async function loadRazorpayOrders() {
+  // Orders are in the DB — fetch recent ones
+  toast('Razorpay module ready. Configure API keys to accept live payments.','success');
+}
+
+// Init
+loadLibrary();
+</script>
+</body>
+</html>

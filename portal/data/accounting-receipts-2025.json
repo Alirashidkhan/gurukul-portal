@@ -1,0 +1,43 @@
+{
+  "feeByType": [
+    {
+      "fee_type": "Tuition Fee",
+      "total": 28000
+    },
+    {
+      "fee_type": "Exam Fee",
+      "total": 6600
+    },
+    {
+      "fee_type": "Transport Fee",
+      "total": 5000
+    },
+    {
+      "fee_type": "Board Exam Fee",
+      "total": 3000
+    },
+    {
+      "fee_type": "Lab Fee",
+      "total": 2700
+    },
+    {
+      "fee_type": "Sports Fee",
+      "total": 1400
+    },
+    {
+      "fee_type": "Activity Fee",
+      "total": 600
+    },
+    {
+      "fee_type": "Computer Fee",
+      "total": 300
+    }
+  ],
+  "donations": 0,
+  "manualReceipts": [],
+  "salaryByMonth": [],
+  "pfPaid": 0,
+  "esiPaid": 0,
+  "manualPayments": [],
+  "year": "2025"
+}

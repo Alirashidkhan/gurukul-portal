@@ -1,0 +1,30 @@
+{
+  "generated_on": "2026-03-16T13:52:20.228Z",
+  "school": "The Gurukul High",
+  "academic_yr": "2025-26",
+  "enrollment": {
+    "total_students": 5,
+    "total_teachers": 5,
+    "total_staff": 12,
+    "student_teacher_ratio": 1,
+    "classes_offered": 5
+  },
+  "academics": {
+    "avg_attendance": "90%",
+    "avg_class_performance": "75%",
+    "exams_held": 1
+  },
+  "finance": {
+    "collection_rate": "67%",
+    "fees_collected": 73000
+  },
+  "hr": {
+    "leave_requests_pending": 0
+  },
+  "admissions": {
+    "total_applications": 0
+  },
+  "visitors": {
+    "total_logged": 4
+  }
+}
