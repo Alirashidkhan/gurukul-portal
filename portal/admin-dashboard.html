@@ -694,6 +694,22 @@ tr:hover td{background:#fafbff;}
             </div>
           </div>
 
+          <!-- Audit & Footprint Dashboard -->
+          <div class="ql-card" style="border-top-color:#3d5afe;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+              <div class="ql-icon" style="background:rgba(61,90,254,0.1);color:#3d5afe;margin-bottom:0;"><i class="fa fa-history"></i></div>
+              <div>
+                <div class="ql-name" style="margin-bottom:1px;">Audit &amp; Footprint</div>
+                <div class="ql-desc" style="margin:0;">User Activity · Digital Footprint · Access Logs · Alerts</div>
+              </div>
+            </div>
+            <div style="margin-bottom:8px;font-size:10px;background:rgba(61,90,254,0.08);color:#3d5afe;padding:3px 8px;border-radius:8px;display:inline-block;font-weight:700;"><i class="fa fa-key"></i> audit / audit@2026</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <a href="/portal/audit-dashboard.html" target="_blank" class="ql-link-btn" style="background:rgba(61,90,254,0.12);color:#3d5afe;"><i class="fa fa-sign-in"></i> Login</a>
+              <a href="/portal/audit-dashboard.html" target="_blank" class="ql-link-btn" style="background:rgba(61,90,254,0.08);color:#3d5afe;"><i class="fa fa-tachometer"></i> Audit Dashboard</a>
+            </div>
+          </div>
+
           <!-- Dev Monitor Dashboard -->
           <div class="ql-card" style="border-top-color:#58a6ff;">
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
@@ -3189,7 +3205,7 @@ function renderClassGrid(counts) {
 async function loadAdminBudget() {
   try {
     const year = new Date().getFullYear().toString();
-    const r = await fetch(`/api/budget/overview?key=${encodeURIComponent(adminKey)}&_nc=${Date.now()}`);
+    const r = await fetch(`/api/budget/overview?year=${year}&_nc=${Date.now()}`, { headers: { Authorization: 'Bearer ' + adminToken } });
     if (!r.ok) return;
     const d = await r.json();
     if (d.error) return;
