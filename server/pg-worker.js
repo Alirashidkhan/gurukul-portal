@@ -67,10 +67,29 @@ function translateSQL(rawSql, rawParams) {
   // ── 6.  datetime / date helpers ──────────────────────────────────────────
   const IST_TS  = "to_char(NOW() AT TIME ZONE 'Asia/Kolkata','YYYY-MM-DD HH24:MI:SS')";
   const IST_DT  = "to_char(NOW() AT TIME ZONE 'Asia/Kolkata','YYYY-MM-DD')";
+
+  // 3-arg: datetime('now', '-N unit', 'localtime') → shifted IST timestamp
+  sql = sql.replace(/datetime\s*\(\s*'now'\s*,\s*'([^']+)'\s*,\s*'localtime'\s*\)/gi, (_, iv) => {
+    return `to_char((NOW() + INTERVAL '${iv}') AT TIME ZONE 'Asia/Kolkata','YYYY-MM-DD HH24:MI:SS')`;
+  });
   sql = sql.replace(/datetime\s*\(\s*'now'\s*,\s*'localtime'\s*\)/gi, IST_TS);
   sql = sql.replace(/datetime\s*\(\s*'now'\s*\)/gi,                   IST_TS);
   sql = sql.replace(/date\s*\(\s*'now'\s*,\s*'localtime'\s*\)/gi,     IST_DT);
   sql = sql.replace(/date\s*\(\s*'now'\s*\)/gi,                       IST_DT);
+
+  // ── 6b. strftime → to_char ────────────────────────────────────────────────
+  sql = sql.replace(/strftime\s*\(\s*'([^']+)'\s*,\s*([^,)]+)\s*\)/gi, (_, fmt, col) => {
+    const pgFmt = fmt
+      .replace(/%Y/g, 'YYYY').replace(/%m/g, 'MM').replace(/%d/g, 'DD')
+      .replace(/%H/g, 'HH24').replace(/%M/g, 'MI').replace(/%S/g, 'SS');
+    return `to_char(${col.trim()}, '${pgFmt}')`;
+  });
+
+  // ── 6c. SQLite pragma functions → PostgreSQL equivalents ─────────────────
+  // pragma_page_count() / pragma_page_size() → pg_database_size() fallback
+  if (/pragma_page_count|pragma_page_size/i.test(sql)) {
+    return { pgSql: "SELECT pg_database_size(current_database()) AS sz", pgParams: [] };
+  }
 
   // ── 7.  INSERT OR IGNORE → INSERT … ON CONFLICT DO NOTHING ──────────────
   sql = sql.replace(/\bINSERT\s+OR\s+IGNORE\s+INTO\b/gi, 'INSERT INTO');
