@@ -8656,13 +8656,13 @@ function handleAccountingReceiptsPayments(req, res) {
   // Receipts
   const feeByType = db.prepare(`SELECT fee_type, SUM(amount) AS total FROM finance_fees WHERE status='Paid' AND paid_date>=? AND paid_date<=? GROUP BY fee_type ORDER BY total DESC`).all(from,to);
   const donations = db.prepare(`SELECT COALESCE(SUM(amount),0) AS total FROM donations WHERE donated_date>=? AND donated_date<=?`).get(from,to)?.total || 0;
-  const manualReceipts = db.prepare(`SELECT je.account_code, ca.name, SUM(je.credit) AS total FROM journal_entries je JOIN chart_of_accounts ca ON je.account_code=ca.code WHERE ca.type='Income' AND je.source IN ('manual','expense') AND je.date>=? AND je.date<=? GROUP BY je.account_code`).all(from,to);
+  const manualReceipts = db.prepare(`SELECT je.account_code, ca.name, SUM(je.credit) AS total FROM journal_entries je JOIN chart_of_accounts ca ON je.account_code=ca.code WHERE ca.type='Income' AND je.source IN ('manual','expense') AND je.date>=? AND je.date<=? GROUP BY je.account_code, ca.name`).all(from,to);
 
   // Payments
   const salaryByMonth = db.prepare(`SELECT month, SUM(net_pay) AS total FROM payroll_entries WHERE month>=? AND month<=? GROUP BY month ORDER BY month`).all(yr+'-04',`${parseInt(yr)+1}-03`);
   const pfPaid   = db.prepare(`SELECT COALESCE(SUM(pf_deduction),0) AS total FROM payroll_entries WHERE month>=? AND month<=?`).get(yr+'-04',`${parseInt(yr)+1}-03`)?.total||0;
   const esiPaid  = db.prepare(`SELECT COALESCE(SUM(esi_deduction),0) AS total FROM payroll_entries WHERE month>=? AND month<=?`).get(yr+'-04',`${parseInt(yr)+1}-03`)?.total||0;
-  const manualPayments = db.prepare(`SELECT je.account_code, ca.name, SUM(je.debit) AS total FROM journal_entries je JOIN chart_of_accounts ca ON je.account_code=ca.code WHERE ca.type='Expense' AND je.source IN ('manual','expense') AND je.date>=? AND je.date<=? GROUP BY je.account_code`).all(from,to);
+  const manualPayments = db.prepare(`SELECT je.account_code, ca.name, SUM(je.debit) AS total FROM journal_entries je JOIN chart_of_accounts ca ON je.account_code=ca.code WHERE ca.type='Expense' AND je.source IN ('manual','expense') AND je.date>=? AND je.date<=? GROUP BY je.account_code, ca.name`).all(from,to);
 
   send(res, 200, { feeByType, donations, manualReceipts, salaryByMonth, pfPaid, esiPaid, manualPayments, year:yr });
 }
