@@ -47,7 +47,7 @@ const IS_CLOUD     = true;  // always treat as cloud when using PostgreSQL
 // ── 3.  Remove the FEE_BACKUP constant (SQLite-only) ────────────────────────
 src = src.replace(
   /const FEE_BACKUP\s*=\s*path\.join\(DATA_DIR.*?\);\s*\n/,
-  '// FEE_BACKUP removed (not needed with PostgreSQL)\n'
+  "const FEE_BACKUP = path.join('/tmp', 'finance_fees_backup.json'); // use /tmp for PostgreSQL\n"
 );
 
 // ── 4.  Remove the SQLite startup file-copy try/catch block ─────────────────
