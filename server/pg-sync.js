@@ -109,9 +109,9 @@ class DatabaseSync {
     this._port.postMessage({ id, sql, params, mode });
 
     // Block until pg-worker notifies us (timeout = 30 s)
-    const waitResult = Atomics.wait(this._signal, 0, 0, 30000);
+    const waitResult = Atomics.wait(this._signal, 0, 0, 90000);
     if (waitResult === 'timed-out') {
-      throw new Error(`[pg-sync] query timed out after 30 s  (sql: ${sql.slice(0, 80)})`);
+      throw new Error(`[pg-sync] query timed out after 90 s  (sql: ${sql.slice(0, 80)})`);
     }
 
     // Read the response
