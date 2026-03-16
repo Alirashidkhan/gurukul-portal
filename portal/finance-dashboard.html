@@ -897,7 +897,13 @@ tbody tr:last-child td{border-bottom:none;}
           </select>
           <select id="recFilterType" onchange="loadFeeRecords()" style="font-size:12px;border:1.5px solid #e0e4ef;border-radius:8px;padding:7px 12px;font-family:inherit;outline:none;background:#fff;">
             <option value="">All Types</option>
-            <option value="Tuition">Tuition</option>
+            <option value="Tuition Fee">Tuition Fee</option>
+            <option value="Exam Fee">Exam Fee</option>
+            <option value="Library Fee">Library Fee</option>
+            <option value="Sports Fee">Sports Fee</option>
+            <option value="Lab Fee">Lab Fee</option>
+            <option value="Transport Fee">Transport Fee</option>
+            <option value="Annual Fee">Annual Fee</option>
             <option value="Uniform">Uniform</option>
             <option value="Transport">Transport</option>
             <option value="Books">Books</option>
@@ -1711,9 +1717,9 @@ function populateYears() {
     for (let y = yr + 1; y >= 2022; y--) {
       const o = document.createElement('option');
       o.value = y.toString(); o.textContent = y.toString();
-      if (y.toString() === currentYear) o.selected = true;
       sel.appendChild(o);
     }
+    sel.value = currentYear;  // explicitly set default to current year (e.g. 2026)
   });
 }
 
@@ -2377,8 +2383,9 @@ async function loadDashboard() {
     const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     const trend  = Array(12).fill(0);
     (d.monthly_trend||[]).forEach(row => {
-      const m = parseInt((row.month||'').slice(5,7),10);
-      if (m>=1&&m<=12) trend[m-1] = row.total||0;
+      const key = row.mon || row.month || '';   // API returns 'mon', fallback to 'month'
+      const m = parseInt(key.slice(5,7),10);
+      if (m>=1&&m<=12) trend[m-1] = (trend[m-1]||0) + (row.total||0);
     });
     if (trendChartInst) trendChartInst.destroy();
     const tCtx = document.getElementById('trendChart').getContext('2d');
