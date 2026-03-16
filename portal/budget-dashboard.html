@@ -620,7 +620,7 @@ function setDeptNavActive(key) {
 // ── OVERVIEW ─────────────────────────────────────────────────────────────────
 async function loadOverview() {
   try {
-    const tok = localStorage.getItem('budgetToken') || '';
+    const tok = localStorage.getItem('budget_token') || localStorage.getItem('budgetToken') || '';
     const r = await fetch(`/api/budget/overview?_nc=${Date.now()}`, { headers: tok ? {'Authorization':'Bearer '+tok} : {} });
     const d = await r.json();
     if (!r.ok) { showAlert('overviewAlert', d.error || 'Failed to load overview', 'error'); return; }

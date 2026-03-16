@@ -1406,8 +1406,8 @@ function showPage(name) {
 // ── OVERVIEW ──────────────────────────────────────────────────────────────────
 async function loadOverview() {
   try {
-    const tok = localStorage.getItem('hrToken') || '';
-    const r = await fetch(`/api/hr/overview?_nc=${Date.now()}`, { headers: tok ? {'Authorization':'Bearer '+tok} : {} });
+    const tok = sessionStorage.getItem('hrToken') || localStorage.getItem('hrToken') || '';
+    const r = await fetch(`/api/hr/overview?_nc=${Date.now()}`, { headers: tok ? {'Authorization':'Bearer '+tok, 'Content-Type':'application/json'} : {} });
     const d = await r.json();
     document.getElementById('kpiTotalStaff').textContent = d.totalStaff;
     document.getElementById('kpiStaffBreak').textContent  = `${d.totalTeachers} teachers + ${d.totalSupport} support`;

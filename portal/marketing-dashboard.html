@@ -1033,7 +1033,7 @@ function showPage(name) {
 // ── OVERVIEW ──────────────────────────────────────────────────────────────────
 async function loadOverview() {
   try {
-    const tok = localStorage.getItem('marketingToken') || '';
+    const tok = sessionStorage.getItem('mktToken') || localStorage.getItem('marketingToken') || localStorage.getItem('mktToken') || '';
     const r = await fetch(`/api/marketing/overview?_nc=${Date.now()}`, { headers: tok ? {'Authorization':'Bearer '+tok} : {} });
     const d = await r.json();
     document.getElementById('kpiTotalLeads').textContent = d.totalLeads ?? '0';
@@ -1088,7 +1088,7 @@ async function loadOverview() {
 async function loadMktBudget() {
   try {
     const year = new Date().getFullYear().toString();
-    const tok = localStorage.getItem('marketingToken') || '';
+    const tok = sessionStorage.getItem('mktToken') || localStorage.getItem('marketingToken') || localStorage.getItem('mktToken') || '';
     const r = await fetch(`/api/budget/overview?_nc=${Date.now()}`, { headers: tok ? {'Authorization':'Bearer '+tok} : {} });
     if (!r.ok) return;
     const d = await r.json();
