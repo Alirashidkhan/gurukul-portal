@@ -14,8 +14,13 @@
 
 'use strict';
 
-const { workerData, parentPort } = require('worker_threads');
-const { Pool }                   = require('pg');
+const { workerData } = require('worker_threads');
+const { Pool }       = require('pg');
+
+// pg-sync communicates via the MessageChannel port transferred in workerData,
+// NOT via parentPort (which is the built-in worker↔spawner channel).
+const port = workerData.port;
+port.on('error', e => console.error('[pg-worker] port error:', e.message));
 
 // ── Connection pool ──────────────────────────────────────────────────────────
 const pool = new Pool({
@@ -107,7 +112,7 @@ function appendReplaceConflict(sql) {
     payroll_entries     : 'staff_id,staff_type,month,fiscal_year',
     fee_schedules       : 'class,fee_type,academic_yr,term',
     exam_marks          : 'exam_id,student_id,subject',
-    marks               : 'student_id,subject,exam',
+    marks               : 'student_id,subject,exam',          // no unique defined, skip
     homework_submissions: 'homework_id,student_id',
     transport_students  : 'student_id',
     nep_assessments     : 'student_id,class,term,academic_yr',
@@ -120,20 +125,25 @@ function appendReplaceConflict(sql) {
 
   const conflictCols = conflictMap[tbl];
   if (!conflictCols) {
+    // Unknown table – use DO NOTHING as safe fallback
     return sql.trimEnd().replace(/;?\s*$/, '') + ' ON CONFLICT DO NOTHING';
   }
 
+  // Build SET clause (exclude the conflict columns + serial id)
   const skipCols = new Set(['id', ...conflictCols.split(',').map(c => c.trim())]);
   const setCols  = allCols.filter(c => !skipCols.has(c));
   if (!setCols.length) {
-    return sql.trimEnd().replace(/;?\s*$/, '') + ` ON CONFLICT (${conflictCols}) DM NOTHING`;
+    return sql.trimEnd().replace(/;?\s*$/, '') + ` ON CONFLICT (${conflictCols}) DO NOTHING`;
   }
   const setClause = setCols.map(c => `${c}=EXCLUDED.${c}`).join(',');
   return sql.trimEnd().replace(/;?\s*$/, '') +
          ` ON CONFLICT (${conflictCols}) DO UPDATE SET ${setClause}`;
 }
 
+// ── Schema helpers  (convert DDL blocks) ─────────────────────────────────────
 function translateSchemaSql(block) {
+  // Split on semicolons, translate each statement
+  // Preserve CREATE INDEX / TABLE IF NOT EXISTS logic
   return block
     .split(';')
     .map(s => s.trim())
@@ -146,20 +156,24 @@ function translateSchemaSql(block) {
     .join(';\n');
 }
 
+// ── Message handler ──────────────────────────────────────────────────────────
 const signal = new Int32Array(workerData.signalSab);
 
-parentPort.on('message', async (msg) => {
+port.on('message', async (msg) => {
   const { id, sql, params, mode } = msg;
 
   try {
     let data;
 
     if (mode === 'exec') {
+      // DDL multi-statement block
       const translated = translateSchemaSql(sql);
       if (translated) {
+        // Run each statement individually
         const stmts = translated.split(';').map(s => s.trim()).filter(Boolean);
         for (const stmt of stmts) {
           try { await pool.query(stmt); } catch(e) {
+            // Log but don't crash on "already exists" / idempotent errors
             if (!/(already exists|does not exist|duplicate|relation.*exists)/i.test(e.message)) {
               console.warn('[pg-worker] exec warning:', e.message.slice(0, 120));
               console.warn('  stmt:', stmt.slice(0, 80));
@@ -173,9 +187,10 @@ parentPort.on('message', async (msg) => {
       if (!pgSql) {
         data = mode === 'get' ? null : mode === 'all' ? [] : { changes: 0, lastInsertRowid: 0 };
       } else {
+        // Add RETURNING id for INSERT/UPDATE/DELETE so we can get lastInsertRowid
         let execSql = pgSql;
         const isInsert = /^\s*INSERT\s/i.test(pgSql);
-        if (isInsert && !/\bRETURNING\bi.test(pgSql)) {
+        if (isInsert && !/\bRETURNING\b/i.test(pgSql)) {
           execSql = pgSql + ' RETURNING id';
         }
 
@@ -183,6 +198,7 @@ parentPort.on('message', async (msg) => {
         try {
           result = await pool.query(execSql, pgParams);
         } catch(e) {
+          // RETURNING id fails if table has no id column → retry without
           if (isInsert && /column.*does not exist/i.test(e.message)) {
             result = await pool.query(pgSql, pgParams);
           } else {
@@ -195,18 +211,20 @@ parentPort.on('message', async (msg) => {
         } else if (mode === 'all') {
           data = result.rows;
         } else {
+          // run
           const lid = result.rows?.[0]?.id ?? 0;
           data = { changes: result.rowCount || 0, lastInsertRowid: lid };
         }
       }
     }
 
-    parentPort.postMessage({ id, data, error: null });
+    port.postMessage({ id, data, error: null });
   } catch(e) {
     console.error('[pg-worker] query error:', e.message);
     console.error('  sql:', (sql||'').slice(0, 120));
-    parentPort.postMessage({ id, data: null, error: e.message });
+    port.postMessage({ id, data: null, error: e.message });
   } finally {
+    // Wake up the waiting server-worker thread
     Atomics.store(signal, 0, 1);
     Atomics.notify(signal, 0, 1);
   }
