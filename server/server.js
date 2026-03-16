@@ -4668,7 +4668,7 @@ function handleFinanceSummary(req, res) {
     SELECT COALESCE(NULLIF(month,''), SUBSTR(COALESCE(paid_date,recorded_at,'2026-01'), 1, 7)) AS mon,
            SUM(amount) AS total
     FROM finance_fees WHERE status IN ('Paid','Partial') AND ${yrClause}
-    GROUP BY mon ORDER BY mon
+    GROUP BY COALESCE(NULLIF(month,''), SUBSTR(COALESCE(paid_date,recorded_at,'2026-01'), 1, 7)) ORDER BY mon
   `).all(acYr, yr);
 
   // Outstanding dues

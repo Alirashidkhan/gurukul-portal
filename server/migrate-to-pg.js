@@ -145,3 +145,31 @@ if (fs.existsSync(rbacPath)) {
   fs.writeFileSync(rbacPath, rbac, 'utf8');
   console.log('✅  Patched rbac.js – fixed PostgreSQL GROUP BY in getActiveUsers()');
 }
+
+// ── 14.  Patch server.js – fix monthly_trend GROUP BY alias for PostgreSQL ──
+//  PostgreSQL does not allow GROUP BY <alias>. Replace GROUP BY mon with the
+//  full COALESCE expression so it runs correctly on Neon.
+const serverPath = path.join(__dirname, 'server.js');
+if (fs.existsSync(serverPath)) {
+  let srv = fs.readFileSync(serverPath, 'utf8');
+  srv = srv.replace(
+    /GROUP BY mon ORDER BY mon/g,
+    "GROUP BY COALESCE(NULLIF(month,''), SUBSTR(COALESCE(paid_date,recorded_at,'2026-01'), 1, 7)) ORDER BY mon"
+  );
+  fs.writeFileSync(serverPath, srv, 'utf8');
+  console.log('✅  Patched server.js – fixed monthly_trend GROUP BY alias');
+}
+
+// ── 15.  Run production seed (teachers, finance, HR, donations, etc.) ────────
+const seedPath = path.join(__dirname, 'seed-production.js');
+if (fs.existsSync(seedPath) && process.env.DATABASE_URL) {
+  try {
+    require('child_process').execSync(`node "${seedPath}"`, {
+      env: process.env,
+      stdio: 'inherit',
+      timeout: 60000
+    });
+  } catch(e) {
+    console.warn('⚠️  seed-production.js failed (non-fatal):', e.message.slice(0,120));
+  }
+}
