@@ -114,7 +114,16 @@ function translateSQL(rawSql, rawParams) {
 
   // ── 9.  Inline SQLite comments  (-- text in multi-stmt exec)  are fine ───
 
-  // ── 10. GROUP BY completeness – ca.name must be in GROUP BY when selected ───
+  // ── 10a. Disambiguate bare 'value' in ON CONFLICT counter update (server_meta) ──
+//   SQLite: CAST(CAST(value AS INTEGER)+1 AS TEXT) — PG needs table qualification
+sql = sql.replace(
+  /\bCAST\s*\(\s*CAST\s*\(\s*value\s+AS\s+INTEGER\s*\)/gi,
+  'CAST(CAST(server_meta.value AS INTEGER)');
+
+// ── 10b. Fix DEFAULT "" → DEFAULT '' (PG treats "" as zero-length identifier) ──
+sql = sql.replace(/DEFAULT\s+""/gi, "DEFAULT ''");
+
+// ── 10. GROUP BY completeness – ca.name must be in GROUP BY when selected ───
   if (/\bca\.name\b/i.test(sql) && /\bSUM\s*\(/i.test(sql)) {
     sql = sql.replace(/\bGROUP\s+BY\s+je\.account_code\b(?!\s*,\s*ca\.name)/gi,
                       'GROUP BY je.account_code, ca.name');
