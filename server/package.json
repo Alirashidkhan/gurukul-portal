@@ -4,6 +4,7 @@
   "description": "Student Portal Backend – The Gurukul High",
   "main": "index.js",
   "scripts": {
+    "prestart": "node migrate-to-pg.js",
     "start": "node index.js",
     "dev": "node index.js"
   },
