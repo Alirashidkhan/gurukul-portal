@@ -130,3 +130,18 @@ pkg.main = 'index.js';
 
 fs.writeFileSync(pkgPath, JSON.stringify(pkg, null, 2) + '\n', 'utf8');
 console.log(`✅  Updated package.json  (start → node index.js, added pg dependency)`);
+
+// ── 13.  Patch rbac.js – fix PostgreSQL strict GROUP BY in getActiveUsers ────
+//  PostgreSQL requires all non-aggregate SELECT columns in GROUP BY.
+//  The original query selects role_key and ip_address without aggregation,
+//  which works in SQLite but breaks on PostgreSQL.
+const rbacPath = path.join(__dirname, 'rbac.js');
+if (fs.existsSync(rbacPath)) {
+  let rbac = fs.readFileSync(rbacPath, 'utf8');
+  rbac = rbac.replace(
+    /SELECT username, role_key, COUNT\(\*\) as actions, MAX\(timestamp\) as last_seen, ip_address/g,
+    'SELECT username, MAX(role_key) as role_key, COUNT(*) as actions, MAX(timestamp) as last_seen, MAX(ip_address) as ip_address'
+  );
+  fs.writeFileSync(rbacPath, rbac, 'utf8');
+  console.log('✅  Patched rbac.js – fixed PostgreSQL GROUP BY in getActiveUsers()');
+}
