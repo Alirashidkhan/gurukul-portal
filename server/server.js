@@ -3644,7 +3644,7 @@ function handleAdminSalarySummary(req, res) {
     SUM(tc.early_mins) as total_early_mins,
     SUM(tc.deduction)  as total_deduction
     FROM teacher_checkins tc JOIN teachers t ON tc.teacher_id=t.id
-    WHERE tc.date LIKE ? GROUP BY tc.teacher_id ORDER BY t.name`).all(`${month}%`);
+    WHERE tc.date LIKE ? GROUP BY tc.teacher_id, t.name ORDER BY t.name`).all(`${month}%`);
 
   const summary = rows.map(r => ({
     ...r,
@@ -5161,8 +5161,9 @@ function handleMonitorStats(req, res) {
   const eventsToday = db.prepare(`SELECT COUNT(*) AS c FROM security_events WHERE timestamp >= date('now','localtime')`).get().c;
   const eventsWeek  = db.prepare(`SELECT COUNT(*) AS c FROM security_events WHERE timestamp >= datetime('now','-7 days','localtime')`).get().c;
   // DB size
-  const dbSize      = db.prepare(`SELECT page_count * page_size AS sz FROM pragma_page_count(), pragma_page_size()`).get()?.sz || 0;
-  const dbSizeKB    = Math.round(dbSize / 1024);
+  let dbSizeKB = 0;
+  try { const _r = db.prepare(`SELECT pg_database_size(current_database()) AS sz`).get(); dbSizeKB = Math.round((_r?.sz || 0) / 1024); } catch(_) {}
+  const dbSize = dbSizeKB * 1024;
   // Active paths in last 5 min
   const activePaths = db.prepare(`SELECT COUNT(DISTINCT path) AS c FROM api_call_logs WHERE timestamp >= datetime('now','-5 minutes','localtime')`).get().c;
   send(res, 200, {
@@ -5586,7 +5587,8 @@ function handleAnalyticsOverview(req, res) {
   const deToday   = db.prepare(`SELECT COUNT(*) AS c FROM data_events WHERE timestamp >= date('now','localtime')`).get().c;
   const deHour    = db.prepare(`SELECT COUNT(*) AS c FROM data_events WHERE timestamp >= datetime('now','-1 hour','localtime')`).get().c;
   const activeSSE = _sseClients.size;
-  const dbSize    = db.prepare(`SELECT page_count * page_size AS sz FROM pragma_page_count(), pragma_page_size()`).get()?.sz || 0;
+  let dbSize = 0;
+  try { const _r = db.prepare(`SELECT pg_database_size(current_database()) AS sz`).get(); dbSize = (_r?.sz || 0); } catch(_) {}
   // Hourly page views (last 24h)
   const pvHourly  = db.prepare(`SELECT to_char(timestamp::timestamp AT TIME ZONE 'Asia/Kolkata','HH24') AS hr, COUNT(*) AS cnt FROM page_views WHERE timestamp >= to_char((NOW() - INTERVAL '24 hours') AT TIME ZONE 'Asia/Kolkata','YYYY-MM-DD HH24:MI:SS') GROUP BY 1 ORDER BY 1`).all();
   // Hourly data events (last 24h)
@@ -5605,7 +5607,8 @@ function handleAnalyticsOverview(req, res) {
 
 function handleAnalyticsStorage(req, res) {
   if (!requireAdmin(req, res)) return;
-  const dbSize = db.prepare(`SELECT page_count * page_size AS sz FROM pragma_page_count(), pragma_page_size()`).get()?.sz || 0;
+  let dbSize = 0;
+  try { const _r = db.prepare(`SELECT pg_database_size(current_database()) AS sz`).get(); dbSize = (_r?.sz || 0); } catch(_) {}
   const tables = [
     'students','teachers','attendance','marks','fees','admissions',
     'data_events','page_views','security_events','api_call_logs',

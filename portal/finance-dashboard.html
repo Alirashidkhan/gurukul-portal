@@ -2604,7 +2604,7 @@ async function deleteSchedule(id) {
 async function loadDonations() {
   const yr   = document.getElementById('donYear')?.value || currentYear;
   const tbody = document.getElementById('donBody');
-  tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:20px;color:var(--muted);">Loading…</td></tr>`;
+  tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:20px;color:var(--muted);">Loading…</td></tr>`;
   try {
     const r = await fetch(`${API}/finance/donations?year=${yr}`, { headers: authHeaders() });
     const d = await r.json();
