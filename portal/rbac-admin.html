@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>RBAC Admin — The Gurukul High</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
@@ -170,6 +170,120 @@ body.sidebar-mobile-open .sidebar-backdrop{display:block;}
   table td{padding:4px;font-size:8px;}
 }
 
+/* ═══════════════════════════════════════
+   COMPREHENSIVE MOBILE FIX - App-like feel
+   ═══════════════════════════════════════ */
+html,body{overflow-x:hidden;max-width:100%;-webkit-overflow-scrolling:touch;}
+*{-webkit-tap-highlight-color:transparent;box-sizing:border-box;}
+button,a,input,select,textarea{touch-action:manipulation;}
+
+/* Prevent notification/dropdown overflow on mobile */
+@media(max-width:768px){
+  .notif-dropdown{width:calc(100vw - 32px);right:-10px;max-width:340px;}
+  .notif-dropdown.open{display:block;}
+}
+
+/* ── HEADER MOBILE FIX ── */
+@media(max-width:768px){
+  /* Compress header to just 2 zones: left(hamburger+name) and right(bell+logout) */
+  .header{padding:0 12px;}
+  .header-inner{
+    grid-template-columns:auto 1fr auto !important;
+    height:54px !important;
+    gap:8px;
+    padding:0 4px;
+  }
+  /* Left zone */
+  .header-left .portal-school,
+  .header-left .portal-tag span:not(.fa){display:none;}
+
+  /* CENTER LOGO: hide on mobile to save space */
+  .header-logo .name,.header-logo .sub,.header-logo img+div{display:none !important;}
+  .header-logo{gap:6px;}
+  .header-logo img{width:30px;height:30px;}
+
+  /* RIGHT zone: hide teacher/student name text, keep avatar + bell + logout */
+  .teacher-badge .t-name,
+  .teacher-badge .t-sub,
+  .student-chip-name,
+  .student-chip-class,
+  .header-right-group > div:not(.notif-bell),
+  .t-name,.t-sub,
+  .portal-school{display:none !important;}
+
+  /* But keep the avatar/icon visible */
+  .t-avatar,.student-avatar{display:flex !important;}
+
+  /* Compact logout/profile buttons */
+  .logout-btn,.btn-logout{padding:6px 10px;font-size:11px;}
+  .hamburger-btn{width:36px;height:36px;flex-shrink:0;}
+}
+
+@media(max-width:480px){
+  .header{padding:0 8px;}
+  .header-inner{height:50px !important;gap:6px;}
+  .header-logo{display:none !important;}
+  .logout-btn,.btn-logout{padding:5px 8px;font-size:10px;}
+}
+
+/* ── SIDEBAR DRAWER FIX (all dashboards) ── */
+@media(max-width:768px){
+  /* Force all sidebar variants to be drawer */
+  .teacher-sidebar,.admin-sidebar,.student-sidebar,
+  .sidebar,.nav-sidebar,.left-sidebar{
+    position:fixed !important;
+    top:0 !important;
+    left:0 !important;
+    height:100vh !important;
+    z-index:9000 !important;
+    transform:translateX(-100%) !important;
+    transition:transform .3s cubic-bezier(0.4,0,0.2,1) !important;
+    width:280px !important;
+    min-width:280px !important;
+    max-width:80vw !important;
+    overflow-y:auto !important;
+  }
+  body.sidebar-mobile-open .teacher-sidebar,
+  body.sidebar-mobile-open .admin-sidebar,
+  body.sidebar-mobile-open .student-sidebar,
+  body.sidebar-mobile-open .sidebar,
+  body.sidebar-mobile-open .nav-sidebar,
+  body.sidebar-mobile-open .left-sidebar{
+    transform:translateX(0) !important;
+  }
+  /* Main content always full width */
+  .main,.main-content,.dashboard-main,.content-area{
+    margin-left:0 !important;
+    width:100% !important;
+    max-width:100% !important;
+    padding:12px !important;
+  }
+}
+
+/* ── GENERAL LAYOUT FIXES ── */
+@media(max-width:768px){
+  /* All grids collapse properly */
+  .stats-grid,.kpi-grid,.stat-grid,.cards-grid,.grid-4,.grid-3{
+    grid-template-columns:1fr 1fr !important;
+    gap:10px !important;
+  }
+  /* Fix any overflow elements */
+  img,canvas,iframe{max-width:100% !important;}
+  /* Tables scroll horizontally */
+  table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;width:100%;}
+  /* Modals fit screen */
+  .modal,.modal-box,.modal-lg,.modal-md{
+    width:calc(100vw - 24px) !important;
+    max-width:calc(100vw - 24px) !important;
+    margin:12px auto !important;
+  }
+}
+@media(max-width:480px){
+  .stats-grid,.kpi-grid,.stat-grid,.cards-grid,.grid-4,.grid-3{
+    grid-template-columns:1fr !important;
+  }
+  .main,.main-content{padding:10px !important;}
+}
 </style>
 </head>
 <body>
