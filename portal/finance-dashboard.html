@@ -1186,8 +1186,8 @@ tbody tr:last-child td{border-bottom:none;}
         </div>
         <div class="tbl-wrap" style="padding:0 0 10px;">
           <table>
-            <thead><tr><th>#</th><th>Donor</th><th>Phone</th><th>Purpose</th><th>Amount</th><th>Date</th><th>Mode</th><th>Receipt</th><th></th></tr></thead>
-            <tbody id="donBody"><tr><td colspan="9" style="text-align:center;padding:30px;color:var(--muted);">Loading…</td></tr></tbody>
+            <thead><tr><th>#</th><th>Donor</th><th>Phone</th><th>Purpose</th><th>Amount</th><th>Donated Date</th><th>Mode</th><th>Receipt</th><th>Recorded At</th><th></th></tr></thead>
+            <tbody id="donBody"><tr><td colspan="10" style="text-align:center;padding:30px;color:var(--muted);">Loading…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -2608,7 +2608,7 @@ async function loadDonations() {
   try {
     const r = await fetch(`${API}/finance/donations?year=${yr}`, { headers: authHeaders() });
     const d = await r.json();
-    if (!d.donations?.length) { tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;padding:30px;color:var(--muted);">No donations recorded.</td></tr>`; return; }
+    if (!d.donations?.length) { tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;padding:30px;color:var(--muted);">No donations recorded.</td></tr>`; return; }
     tbody.innerHTML = d.donations.map((don,i)=>`<tr>
       <td>${i+1}</td>
       <td><strong>${don.donor_name}</strong></td>
@@ -2618,9 +2618,10 @@ async function loadDonations() {
       <td>${don.donated_date}</td>
       <td style="font-size:11px;">${don.payment_mode}</td>
       <td style="font-size:11px;color:var(--muted);">${don.receipt_no||'—'}</td>
+      <td style="font-size:10.5px;color:var(--muted);white-space:nowrap;">${don.recorded_at ? String(don.recorded_at).replace('T',' ').slice(0,16) : '—'}</td>
       <td><button onclick="deleteDon(${don.id})" class="btn btn-sm" style="background:none;color:var(--red);padding:3px 8px;"><i class="fa fa-trash"></i></button></td>
     </tr>`).join('');
-  } catch(e) { tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;color:var(--red);">Failed.</td></tr>`; }
+  } catch(e) { tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;color:var(--red);">Failed.</td></tr>`; }
 }
 
 async function saveDonation() {
