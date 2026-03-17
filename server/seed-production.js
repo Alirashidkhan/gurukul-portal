@@ -87,10 +87,15 @@ async function main() {
     ['TCH002','6','A','Science'],    ['TCH002','7','A','Science'],    ['TCH002','8','A','Science'],
     ['TCH003','6','A','English'],    ['TCH003','7','A','English'],    ['TCH003','8','A','English'],
     ['TCH004','6','A','Social Studies'],['TCH004','7','A','Social Studies'],
+    ['TCH004','8','A','Social Studies'],['TCH004','9','A','Social Studies'],['TCH004','10','A','Social Studies'],
     ['TCH005','6','A','Kannada'],    ['TCH005','7','A','Kannada'],
     ['TCH006','6','A','Hindi'],      ['TCH006','7','A','Hindi'],
     ['TCH007','6','A','Physical Education'],['TCH007','7','A','Physical Education'],
     ['TCH008','8','A','Computer Science'],
+    // Classes 9 and 10 — core subjects
+    ['TCH001','9','A','Mathematics'], ['TCH001','10','A','Mathematics'],
+    ['TCH002','9','A','Science'],     ['TCH002','10','A','Science'],
+    ['TCH003','9','A','English'],     ['TCH003','10','A','English'],
   ];
   for (const [tid,cls,sec,subj] of assignments) {
     await q(`INSERT INTO teacher_assignments (teacher_id,class,section,subject)
@@ -745,6 +750,39 @@ async function main() {
     console.log('✅ Class timetables seeded');
   } else {
     console.log('✅ Class timetables already exist — skipping');
+  }
+
+  // ── TIMETABLE PATCH: ensure classes 7, 9, 10 exist (may have been missed in initial seed) ──
+  const weekStart = '2026-03-16';
+  const missingClasses = [
+    { cls: '7',  room: 'Room 102', extra: [['TCH005','7','A','Kannada','Tuesday','10:00','10:45','Room 102',weekStart],['TCH006','7','A','Hindi','Wednesday','08:45','09:30','Room 102',weekStart],['TCH007','7','A','Physical Education','Thursday','10:00','10:45','Ground',weekStart]] },
+    { cls: '9',  room: 'Room 301', extra: [] },
+    { cls: '10', room: 'Room 302', extra: [] },
+  ];
+  for (const { cls, room, extra } of missingClasses) {
+    const chk = await q(`SELECT COUNT(*) AS c FROM class_timetables WHERE class_name=$1`, [cls]);
+    if (parseInt(chk.rows[0].c) === 0) {
+      const slots = [
+        ['TCH001',cls,'A','Mathematics','Monday',   '08:00','08:45',room,weekStart],
+        ['TCH002',cls,'A','Science',    'Monday',   '08:45','09:30',room,weekStart],
+        ['TCH003',cls,'A','English',    'Monday',   '10:00','10:45',room,weekStart],
+        ['TCH001',cls,'A','Mathematics','Tuesday',  '08:00','08:45',room,weekStart],
+        ['TCH004',cls,'A','Social Studies','Tuesday','08:45','09:30',room,weekStart],
+        ['TCH002',cls,'A','Science',    'Wednesday','08:00','08:45',room,weekStart],
+        ['TCH003',cls,'A','English',    'Thursday', '08:00','08:45',room,weekStart],
+        ['TCH001',cls,'A','Mathematics','Friday',   '08:00','08:45',room,weekStart],
+        ['TCH002',cls,'A','Science',    'Friday',   '08:45','09:30',room,weekStart],
+        ...extra,
+      ];
+      for (const [tid,c,sec,subj,day,st,et,rm,ws] of slots) {
+        await q(`INSERT INTO class_timetables (teacher_id,class_name,section,subject,day_of_week,start_time,end_time,room,week_start,created_at,updated_at)
+                 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,NOW(),NOW())`,
+          [tid,c,sec,subj,day,st,et,rm,ws]);
+      }
+      console.log(`✅ Timetable seeded for class ${cls}`);
+    } else {
+      console.log(`✅ Timetable for class ${cls} already exists — skipping`);
+    }
   }
 
   // ── HOLIDAYS ──────────────────────────────────────────────────────────────
