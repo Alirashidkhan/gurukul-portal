@@ -9126,7 +9126,7 @@ function handleTransportStudents(req, res) {
 function handleVisitorList(req, res) {
   const q = url.parse(req.url, true).query;
   const date = q.date || new Date().toISOString().split('T')[0];
-  const visitors = db.prepare("SELECT * FROM visitors WHERE date(entry_time)=? ORDER BY entry_time DESC").all(date);
+  const visitors = db.prepare("SELECT * FROM visitors WHERE LEFT(COALESCE(entry_time::text,''),10)=? ORDER BY entry_time DESC").all(date);
   send(res, 200, { visitors, date });
 }
 function handleVisitorCheckin(req, res) {
