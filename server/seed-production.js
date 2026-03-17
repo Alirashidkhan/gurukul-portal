@@ -184,6 +184,16 @@ async function main() {
   }
 
   // ── DONATIONS ─────────────────────────────────────────────────────────────
+  // First: clean up any duplicate seed rows from previous deploys (keep lowest id per receipt_no)
+  const seedReceiptNos = ['DON25000','DON10000','DON50000','DON30000','DON75000','DON15000','DON20000','DON35000'];
+  await q(`DELETE FROM donations
+           WHERE receipt_no = ANY($1::text[])
+           AND id NOT IN (
+             SELECT MIN(id) FROM donations
+             WHERE receipt_no = ANY($1::text[])
+             GROUP BY receipt_no
+           )`, [seedReceiptNos]);
+  // Now insert only if each record doesn't already exist (guard by receipt_no)
   const donors = [
     ['Ramesh Gowda','9900001001','ramesh@gmail.com',25000,'Infrastructure','Cheque','2026-01-15'],
     ['Sujatha Rao','9900001002','sujatha@gmail.com',10000,'Scholarship','Online','2026-02-20'],
@@ -195,9 +205,11 @@ async function main() {
     ['Mysuru Lions Club','9900001008','lions@mysuru.com',35000,'Infrastructure','NEFT','2025-11-30'],
   ];
   for (const [donor_name,donor_phone,donor_email,amount,purpose,payment_mode,donated_date] of donors) {
+    const receipt = 'DON'+String(amount);
     await q(`INSERT INTO donations (donor_name,donor_phone,donor_email,amount,purpose,payment_mode,receipt_no,donated_date,recorded_at)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,NOW()) ON CONFLICT DO NOTHING`,
-      [donor_name,donor_phone,donor_email,amount,purpose,payment_mode,'DON'+String(amount),donated_date]);
+             SELECT $1,$2,$3,$4,$5,$6,$7,$8,NOW()
+             WHERE NOT EXISTS (SELECT 1 FROM donations WHERE receipt_no=$7)`,
+      [donor_name,donor_phone,donor_email,amount,purpose,payment_mode,receipt,donated_date]);
   }
   console.log('✅ Donations seeded');
 
