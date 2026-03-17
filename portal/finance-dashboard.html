@@ -534,6 +534,67 @@ img,canvas,iframe,video{max-width:100%!important;}
   .card{padding:10px!important;border-radius:10px!important;}
 }
 /* ════ END DEEP MOBILE FIX v3 ════ */
+
+/* ════ WIDGET / CARD MOBILE FIX v4 ════ */
+@media(max-width:768px){
+  /* ALL grid containers → 2 columns */
+  .leave-balance-row,.checkin-hero,.report-grid,.sal-summary-grid,
+  .dr-preview-meta,.mp-grid,.stats-grid,.kpi-grid,.fn-kpi-grid,
+  .pr-summary-grid,.sp-stats,.adm-stats-row,.classes-grid,.marks-grid,
+  .fees-summary,.att-summary,.bio-summary,.receipt-info-grid,
+  .alloc-grid,.insights-grid,.perf-top,.naac-grid,.letter-grid,
+  .grid2,.grid3,.grid4,.three-col,.two-col,.col-2,.col2 {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+  /* Single-column layouts */
+  .pr-charts-row,.fn-charts-row,.fn-charts-row2,.fn-don-row,
+  .perf-charts,.charts-row,.two-col,.form-grid,
+  .sp-grid,.leave-form,.etpl-fields,.mp-fields,
+  .sp-form-grid,.sp-salary-calc,.settle-grid,.slip-emp-row,
+  .adm-detail-grid,.dr-row-top,.jl-head,.jl-row,
+  .chart-grid,.kanban-board,.funnel-board,.user-grid {
+    grid-template-columns: 1fr !important;
+  }
+  /* lb-card: fix cramped leave balance cards */
+  .lb-card {
+    flex-direction: row !important;
+    align-items: center !important;
+    padding: 14px 16px !important;
+    gap: 12px !important;
+  }
+  .lb-icon { width: 40px !important; height: 40px !important; flex-shrink: 0 !important; }
+  .lb-info { min-width: 0 !important; flex: 1 !important; }
+  .lb-num { font-size: 22px !important; }
+  .lb-label { font-size: 11px !important; }
+  /* Stat/KPI cards */
+  .stat-card,.kpi-card { padding: 14px !important; }
+  .stat-num,.kpi-val { font-size: 20px !important; }
+  /* Form rows: always single column */
+  .form-row,.form-row.col2,.form-row.col3,.form-row.col4,
+  .fld-row,.fld-group-row { grid-template-columns: 1fr !important; }
+  .full,.full3,.two,.three { grid-column: span 1 !important; }
+  /* dr-row (daily report) */
+  .dr-row-top { grid-template-columns: 1fr 1fr !important; }
+  .dr-row-top > :last-child { grid-column: span 2; }
+  /* Charts fixed height */
+  .chart-box, [id$="Chart"], [id*="chart"] { max-width: 100% !important; }
+  /* tt-grid timetable */
+  .tt-grid { overflow-x: auto !important; display: block !important; }
+}
+@media(max-width:480px){
+  /* All grids → 1 column on small phones */
+  .leave-balance-row,.checkin-hero,.sal-summary-grid,
+  .pr-summary-grid,.sp-stats,.adm-stats-row,.classes-grid,
+  .marks-grid,.fees-summary,.att-summary,.bio-summary,
+  .alloc-grid,.insights-grid,.naac-grid,.grid2,.grid3,.grid4 {
+    grid-template-columns: 1fr !important;
+  }
+  /* lb-card at 480 still row but more compact */
+  .lb-card { padding: 12px !important; gap: 10px !important; }
+  .lb-num { font-size: 20px !important; }
+}
+/* ════ END WIDGET / CARD MOBILE FIX v4 ════ */
 </style>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#C9A227">
@@ -3926,5 +3987,46 @@ function closeMobileSidebar(){
   document.body.classList.remove('sidebar-mobile-open');
 }
 </script>
+
+<script>
+/* ── Mobile Inline Grid Fixer ── */
+(function(){
+  function fixMobileGrids(){
+    if(window.innerWidth > 768) return;
+    // Override any inline grid-template-columns
+    document.querySelectorAll('[style*="grid-template-columns"]').forEach(function(el){
+      var s = el.style.gridTemplateColumns || '';
+      // Count how many columns
+      var cols = s.split(/\s+(?=\d|auto|min|max|fr|repeat|calc)/).length;
+      if(window.innerWidth <= 480){
+        el.style.gridTemplateColumns = '1fr';
+      } else {
+        // Keep max 2 columns on tablet/small mobile
+        if(cols > 2){
+          el.style.gridTemplateColumns = '1fr 1fr';
+        } else if(s.includes('380px') || s.includes('360px') || s.includes('390px') || s.includes('1fr 1.4fr') || s.includes('1.7fr')){
+          el.style.gridTemplateColumns = '1fr';
+        }
+      }
+    });
+    // Also fix any flex rows that overflow
+    document.querySelectorAll('[style*="display:flex"],[style*="display: flex"]').forEach(function(el){
+      if(!el.style.flexWrap || el.style.flexWrap === 'nowrap'){
+        el.style.flexWrap = 'wrap';
+      }
+    });
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', fixMobileGrids);
+  } else {
+    fixMobileGrids();
+  }
+  window.addEventListener('resize', fixMobileGrids);
+  // Run again after any dynamic content loads
+  setTimeout(fixMobileGrids, 500);
+  setTimeout(fixMobileGrids, 1500);
+})();
+</script>
+
 </body>
 </html>
