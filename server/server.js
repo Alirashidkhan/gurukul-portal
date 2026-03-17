@@ -9117,7 +9117,8 @@ function handleTransportAssignStudent(req, res) {
 }
 function handleTransportStudents(req, res) {
   const q = url.parse(req.url, true).query;
-  const rows = db.prepare('SELECT ts.*, s.name, s.class, s.section, tr.route_name FROM transport_students ts LEFT JOIN students s ON s.id=ts.student_id LEFT JOIN transport_routes tr ON tr.id=ts.route_id WHERE (?1 IS NULL OR ts.route_id=?1)').all(q.route_id||null);
+  const routeFilter = q.route_id || null;
+  const rows = db.prepare('SELECT ts.*, s.name, s.class, s.section, tr.route_name FROM transport_students ts LEFT JOIN students s ON s.id=ts.student_id LEFT JOIN transport_routes tr ON tr.id=ts.route_id WHERE (? IS NULL OR ts.route_id=?)').all(routeFilter, routeFilter);
   send(res, 200, { students: rows });
 }
 
@@ -9167,7 +9168,8 @@ function generateCertContent(type, student, b) {
 }
 function handleCertificateList(req, res) {
   const q = url.parse(req.url, true).query;
-  const certs = db.prepare('SELECT c.*, s.name, s.class FROM certificates c LEFT JOIN students s ON s.id=c.student_id WHERE (?1 IS NULL OR c.student_id=?1) ORDER BY c.issued_on DESC LIMIT 100').all(q.student_id||null);
+  const certFilter = q.student_id || null;
+  const certs = db.prepare('SELECT c.*, s.name, s.class FROM certificates c LEFT JOIN students s ON s.id=c.student_id WHERE (? IS NULL OR c.student_id=?) ORDER BY c.issued_on DESC LIMIT 100').all(certFilter, certFilter);
   send(res, 200, { certificates: certs });
 }
 
