@@ -2119,6 +2119,30 @@ function handleAdmissionSubmit(req, res) {
   });
 }
 
+// ── Website Enquiry Popup → saves to marketing_leads ─────────────────────────
+function handleWebsiteEnquiry(req, res) {
+  parseBody(req, (data) => {
+    const name  = (data.parent_name  || data.student_name || '').trim();
+    const phone = (data.parent_phone || '').trim();
+    const email = (data.parent_email || '').trim();
+    const cls   = (data.class_applying || '').trim();
+    if (!name && !phone) return send(res, 400, { error: 'Missing required fields' });
+
+    const notes = [
+      data.student_name   ? `Student: ${data.student_name.trim()}`     : '',
+      data.current_school ? `School: ${data.current_school.trim()}`    : '',
+    ].filter(Boolean).join(' | ');
+
+    db.prepare(`INSERT INTO marketing_leads
+      (name, phone, email, class_interested, source, stage, assigned_to, notes, created_at, updated_at)
+      VALUES (?, ?, ?, ?, 'Website Popup', 'Inquiry', 'admin', ?, datetime('now','localtime'), datetime('now','localtime'))
+    `).run(name, phone, email, cls, notes);
+
+    console.log(`\n📬 New website enquiry: ${name} — Class ${cls} — ${phone}`);
+    send(res, 200, { success: true, message: 'Enquiry received. We will contact you soon!' });
+  });
+}
+
 function handleAdmissionsList(req, res) {
   if (!requireAdmin(req, res)) return;
   const submissions = stmts.allAdmissions.all().map(rowToAdmission);
@@ -7561,7 +7585,8 @@ const server = http.createServer((req, res) => {
   if (pathname === '/api/health')                                        return send(res, 200, { status:'ok', db:'SQLite', school:'The Gurukul High' });
 
   // ── Admissions ──
-  if (pathname === '/api/admissions/submit'   && req.method === 'POST')  return handleAdmissionSubmit(req, res);
+  if (pathname === '/api/admissions'          && req.method === 'POST')  return handleWebsiteEnquiry(req, res);   // website popup enquiry
+  if (pathname === '/api/admissions/submit'   && req.method === 'POST')  return handleAdmissionSubmit(req, res);  // full admission form
   if (pathname === '/api/admissions/list'     && req.method === 'GET')   return handleAdmissionsList(req, res);
   if (pathname.match(/^\/api\/admissions\/APP\d+\/status$/) && req.method === 'PATCH') return handleAdmissionStatusUpdate(req, res);
 
