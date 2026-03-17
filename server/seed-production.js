@@ -554,6 +554,89 @@ async function main() {
     console.log('✅ Fee schedules already exist — skipping');
   }
 
+  // ── LIBRARY BOOKS ─────────────────────────────────────────────────────────
+  // Schema: title, author, isbn, category, total_copies, available, rack
+  const existingLB = await q(`SELECT COUNT(*) AS c FROM library_books`);
+  if (!existingLB || parseInt(existingLB.rows[0].c) === 0) {
+    const books = [
+      ['Mathematics for Class 10','R.D. Sharma','9788193623400','Mathematics',5,4,'A1'],
+      ['Science Textbook Class 9','NCERT','9788174504944','Science',6,5,'A2'],
+      ['English Literature Anthology','Pearson','9780521605052','English',4,4,'B1'],
+      ['Social Studies Class 8','NCERT','9788174509802','Social Studies',5,3,'B2'],
+      ['Computer Science Basics','BPB Publications','9789386551498','Computer Science',3,3,'C1'],
+      ['Hindi Sahitya Sanchayan','NCERT','9788174508751','Hindi',4,4,'B3'],
+      ['Kannada Parichaya','Karnataka Govt','9788179871300','Kannada',4,3,'B4'],
+      ['Physics Fundamentals','H.C. Verma','9788177091366','Science',3,2,'A3'],
+      ['Chemistry Class 11','NCERT','9788174506788','Science',4,4,'A4'],
+      ['The Story of My Experiments with Truth','M.K. Gandhi','9780807059098','Biography',2,2,'D1'],
+      ['Wings of Fire','A.P.J. Abdul Kalam','9788173711466','Biography',3,3,'D1'],
+      ['A Brief History of Time','Stephen Hawking','9780553380163','Science',2,2,'D2'],
+      ['Discovery of India','Jawaharlal Nehru','9780195623598','History',2,2,'D3'],
+      ['Mathematics Olympiad Problems','Titu Andreescu','9780817643270','Mathematics',2,2,'A1'],
+      ['English Grammar in Use','Raymond Murphy','9780521189392','English',3,2,'B1'],
+      ['Atlas of World Geography','Oxford','9780195663631','Geography',2,2,'E1'],
+      ['Encyclopaedia Britannica Vol 1','Britannica','9780852299616','Reference',1,1,'E2'],
+      ['Harry Potter and the Sorcerer Stone','J.K. Rowling','9780439708180','Fiction',3,3,'F1'],
+      ['The Alchemist','Paulo Coelho','9780061122415','Fiction',2,2,'F1'],
+      ['Diary of a Wimpy Kid','Jeff Kinney','9780810993136','Fiction',2,2,'F2'],
+    ];
+    for (const [title,author,isbn,category,total_copies,available,rack] of books) {
+      await q(`INSERT INTO library_books (title,author,isbn,category,total_copies,available,rack)
+               VALUES ($1,$2,$3,$4,$5,$6,$7) ON CONFLICT DO NOTHING`,
+        [title,author,isbn,category,total_copies,available,rack]);
+    }
+    console.log('✅ Library books seeded');
+  } else {
+    console.log('✅ Library books already exist — skipping');
+  }
+
+  // ── TRANSPORT ROUTES ──────────────────────────────────────────────────────
+  // Schema: route_name, driver, vehicle, capacity, stops (JSON), departure, arrival, status
+  const existingTR = await q(`SELECT COUNT(*) AS c FROM transport_routes`);
+  if (!existingTR || parseInt(existingTR.rows[0].c) === 0) {
+    const routes = [
+      ['Route 1 – Jayanagar','Raju Naik','KA-01-AB-1234',40,'["Jayanagar 4th Block","Jayanagar 9th Block","Lalbagh Gate","School"]','07:30','08:15','Active'],
+      ['Route 2 – Koramangala','Suresh Kumar','KA-01-CD-5678',45,'["Koramangala 5th Block","Koramangala 1st Block","Silk Board","School"]','07:15','08:10','Active'],
+      ['Route 3 – HSR Layout','Mohan Das','KA-01-EF-9012',40,'["HSR Layout Sector 1","HSR Layout Sector 6","Agara Lake","School"]','07:20','08:15','Active'],
+      ['Route 4 – Electronic City','Venkat Rao','KA-01-GH-3456',50,'["Electronic City Phase 1","Electronic City Phase 2","Bommanahalli","School"]','07:00','08:15','Active'],
+    ];
+    for (const [route_name,driver,vehicle,capacity,stops,departure,arrival,status] of routes) {
+      await q(`INSERT INTO transport_routes (route_name,driver,vehicle,capacity,stops,departure,arrival,status)
+               VALUES ($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT DO NOTHING`,
+        [route_name,driver,vehicle,capacity,stops,departure,arrival,status]);
+    }
+    console.log('✅ Transport routes seeded');
+  } else {
+    console.log('✅ Transport routes already exist — skipping');
+  }
+
+  // ── TRANSPORT STUDENTS ────────────────────────────────────────────────────
+  // Schema: student_id, route_id, stop, fee  UNIQUE(student_id)
+  const existingTS = await q(`SELECT COUNT(*) AS c FROM transport_students`);
+  if (!existingTS || parseInt(existingTS.rows[0].c) === 0) {
+    const transportStudents = [
+      ['STU001','Route 1 – Jayanagar','Jayanagar 4th Block',1200],
+      ['STU002','Route 1 – Jayanagar','Jayanagar 9th Block',1200],
+      ['STU003','Route 2 – Koramangala','Koramangala 5th Block',1200],
+      ['STU004','Route 2 – Koramangala','Koramangala 1st Block',1200],
+      ['STU005','Route 3 – HSR Layout','HSR Layout Sector 1',1200],
+      ['STU006','Route 3 – HSR Layout','HSR Layout Sector 6',1200],
+      ['STU007','Route 4 – Electronic City','Electronic City Phase 1',1400],
+      ['STU008','Route 4 – Electronic City','Electronic City Phase 2',1400],
+      ['STU009','Route 1 – Jayanagar','Lalbagh Gate',1200],
+      ['STU010','Route 2 – Koramangala','Silk Board',1200],
+    ];
+    for (const [student_id, route_name, stop, fee] of transportStudents) {
+      await q(`INSERT INTO transport_students (student_id, route_id, stop, fee)
+               SELECT $1, id, $2, $3 FROM transport_routes WHERE route_name=$4 LIMIT 1
+               ON CONFLICT (student_id) DO NOTHING`,
+        [student_id, stop, fee, route_name]);
+    }
+    console.log('✅ Transport students seeded');
+  } else {
+    console.log('✅ Transport students already exist — skipping');
+  }
+
   // ── SECURITY EVENTS ───────────────────────────────────────────────────────
   const secEvents = [
     ['login_success','admin','127.0.0.1','admin','Admin login','info'],
