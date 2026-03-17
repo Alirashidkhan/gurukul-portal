@@ -97,6 +97,46 @@ body::before{
   margin-bottom:20px;
 }
 .hint-box strong{color:var(--gold-l);}
+
+/* Responsive Mobile Styles */
+@media(max-width:768px){
+  .login-wrap{max-width:95%;}
+  .login-card{padding:28px 24px;}
+  .brand img{width:56px;height:56px;}
+  .brand h1{font-size:18px;}
+  .brand p{font-size:11px;}
+  .fld input{padding:11px 12px;font-size:13px;}
+  .btn-login{padding:12px;font-size:14px;}
+}
+
+@media(max-width:480px){
+  body{padding:16px;}
+  .login-wrap{max-width:100%;}
+  .login-card{padding:24px 18px;}
+  .brand{margin-bottom:24px;}
+  .brand img{width:48px;height:48px;margin-bottom:10px;}
+  .brand h1{font-size:16px;margin-bottom:2px;}
+  .brand p{font-size:10px;}
+  .login-title{font-size:12px;}
+  .fld{margin-bottom:14px;}
+  .fld label{font-size:10px;}
+  .fld input{padding:10px 12px;font-size:12px;}
+  .btn-login{padding:11px;font-size:13px;gap:6px;}
+  .error-msg{font-size:12px;padding:8px 12px;}
+  .back-link{font-size:11px;margin-top:16px;}
+  .hint-box{font-size:11px;padding:10px 12px;}
+}
+
+@media(max-width:375px){
+  .login-card{padding:20px 16px;}
+  .brand{margin-bottom:20px;}
+  .brand img{width:44px;height:44px;margin-bottom:8px;}
+  .brand h1{font-size:15px;}
+  .brand p{font-size:9px;}
+  .login-title{font-size:11px;}
+  .fld input{padding:9px 10px;font-size:11px;}
+  .btn-login{padding:10px;font-size:12px;}
+}
 </style>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#C9A227">

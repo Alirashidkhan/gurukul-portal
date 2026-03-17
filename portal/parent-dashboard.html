@@ -197,23 +197,210 @@ a{text-decoration:none;color:inherit;}
 
 /* ── Responsive ── */
 @media(max-width:768px){
-  .main{margin-left:0;padding:16px;}
-  .parent-sidebar{width:170px;min-width:170px;}
-  .stats-grid{grid-template-columns:repeat(2,1fr);}
-  .fees-summary{grid-template-columns:1fr 1fr;}
-  .att-summary{grid-template-columns:repeat(2,1fr);}
+  .main{margin-left:0;padding:14px;}
+  .parent-sidebar{width:220px;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
+  .fees-summary{grid-template-columns:1fr 1fr;gap:12px;}
+  .att-summary{grid-template-columns:repeat(2,1fr);gap:12px;}
+  .perf-top{grid-template-columns:repeat(2,1fr);gap:12px;}
+  .perf-charts{grid-template-columns:1fr;gap:14px;}
+  .insights-grid{grid-template-columns:1fr;}
   .student-header{flex-direction:column;align-items:center;text-align:center;}
-  .topbar{justify-content:center;text-align:center;}
+  .student-photo{width:80px;height:80px;}
+  .student-name{font-size:16px;}
+  .student-info{font-size:12px;}
+  .topbar{justify-content:center;text-align:center;font-size:11px;}
+  .header-inner{grid-template-columns:1fr auto;gap:8px;}
+  .header-logo img{width:36px;height:36px;}
+  .header-logo-text .name{font-size:15px;}
+  .parent-chip{padding:5px 12px 5px 5px;}
+  .parent-avatar{width:30px;height:30px;font-size:12px;}
+  .parent-chip-name{font-size:11px;}
+  .parent-chip-role{font-size:9px;}
+  .btn-logout{padding:6px 12px;font-size:11px;}
+  .hamburger-btn{width:34px;height:34px;font-size:13px;}
+  .card{padding:18px;margin-bottom:16px;}
+  .card-title{font-size:15px;}
+  .att-table,.fee-table,.marks-table,.rank-table,.bio-log-table{font-size:12px;}
+  .att-table th,.fee-table th,.marks-table th,.rank-table th,.bio-log-table th{font-size:10px;padding:8px;}
+  .att-table td,.fee-table td,.marks-table td,.rank-table td,.bio-log-table td{font-size:11px;padding:8px;}
+  .att-filters select{font-size:12px;padding:7px 10px;}
+  .form-row{grid-template-columns:1fr;}
+  .tt-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
+  .tt-day-head,.tt-period{font-size:11px;padding:7px 10px;}
+  .mock-card{gap:12px;}
+  .mock-icon{width:40px;height:40px;font-size:16px;}
+  .mock-title{font-size:13px;}
+  .ptm-form{padding:16px;}
+  .ptm-card{margin-bottom:10px;padding:14px;}
+}
+@media(max-width:600px){
+  .main{padding:12px;margin-left:0;}
+  .parent-sidebar{width:170px;min-width:170px;transform:translateX(-100%);}
+  body.sidebar-mobile-open .parent-sidebar{transform:translateX(0);}
+  .header-inner{grid-template-columns:auto 1fr;}
+  .header-left{font-size:9px;}
+  .header-logo{justify-content:flex-start;flex:1;}
+  .header-logo img{width:32px;height:32px;}
+  .header-logo-text .name{font-size:13px;}
+  .parent-chip{gap:6px;padding:4px 10px 4px 4px;}
+  .parent-avatar{width:28px;height:28px;font-size:11px;}
+  .parent-chip-name{font-size:10px;}
+  .stats-grid{grid-template-columns:1fr;gap:10px;}
+  .stat-card{padding:14px;border-left-width:3px;}
+  .stat-card .num{font-size:22px;}
+  .stat-card .lbl{font-size:10px;}
+  .att-summary{grid-template-columns:1fr;gap:10px;}
+  .att-stat{padding:14px;}
+  .att-stat .n{font-size:24px;}
+  .fees-summary{grid-template-columns:1fr;gap:10px;}
+  .fee-stat{padding:14px 16px;gap:12px;}
+  .fee-icon{width:40px;height:40px;font-size:16px;}
+  .perf-top{grid-template-columns:1fr;gap:10px;}
+  .perf-kpi .num{font-size:22px;}
+  .perf-charts{gap:14px;}
+  .insights-grid{gap:10px;}
+  .student-header{padding:16px;gap:16px;}
+  .student-photo{width:70px;height:70px;font-size:32px;}
+  .student-name{font-size:15px;}
+  .topbar{font-size:10px;}
+  .card{padding:16px;margin-bottom:14px;}
+  .card-title{font-size:14px;}
+  .att-table,.fee-table,.marks-table{font-size:11px;}
+  .att-table th,.fee-table th,.marks-table th{font-size:9px;padding:7px;}
+  .att-table td,.fee-table td,.marks-table td{font-size:10px;padding:7px;}
+  .att-filters select{font-size:11px;padding:6px 8px;}
+  .term-filter select{font-size:11px;padding:8px 10px;}
+  .form-row{gap:8px;margin-bottom:10px;}
+  .form-group label{font-size:11px;}
+  .form-group input,.form-group select,.form-group textarea{font-size:12px;padding:7px 10px;}
+  .tt-grid{grid-template-columns:1fr;gap:8px;}
+  .tt-period{font-size:11px;}
+  .tt-subj{font-size:12px;}
+  .tt-time{font-size:10px;}
+  .bio-summary{grid-template-columns:1fr 1fr;gap:10px;}
+  .bio-stat{padding:12px;}
+  .bio-stat .val{font-size:18px;}
+  .bio-log-table{font-size:11px;}
+  .bio-log-table th,.bio-log-table td{font-size:10px;padding:8px;}
+  .hol-list{gap:8px;}
+  .hol-item{padding:10px 12px;gap:10px;}
+  .hol-date .day{font-size:20px;}
+  .hol-info .name{font-size:13px;}
+  .mock-card{padding:12px;}
+  .mock-icon{width:36px;height:36px;font-size:14px;}
+  .mock-title{font-size:12px;}
+  .ptm-card{padding:12px;margin-bottom:8px;}
+  .ptm-tabs{gap:6px;}
+  .ptm-tab{padding:6px 12px;font-size:11px;}
+  .ptm-form{padding:14px;}
+  .ttPulse{display:none;}
 }
 @media(max-width:480px){
-  .header-inner{height:62px;}
-  .header-logo img{width:40px;height:40px;}
-  .parent-chip-name{display:none;}
-  .parent-sidebar{width:170px;min-width:170px;}
-  .sidebar-item{padding:8px 12px;font-size:11px;}
-  .stats-grid{grid-template-columns:1fr;}
-  .fees-summary{grid-template-columns:1fr;}
-  .att-summary{grid-template-columns:1fr;}
+  .header-inner{height:auto;gap:4px;padding:6px;}
+  .hamburger-btn{width:32px;height:32px;font-size:12px;}
+  .header-left{font-size:8px;}
+  .header-logo img{width:28px;height:28px;}
+  .header-logo-text .name{font-size:12px;}
+  .parent-chip{display:none;}
+  .parent-sidebar{width:140px;font-size:11px;}
+  .sidebar-item{padding:7px 10px;font-size:10px;}
+  .sidebar-item i{font-size:11px;}
+  .main{padding:10px;}
+  .stats-grid{gap:8px;}
+  .stat-card{padding:12px;}
+  .stat-card .num{font-size:20px;}
+  .stat-card .lbl{font-size:9px;}
+  .att-summary{gap:8px;}
+  .att-stat{padding:12px;}
+  .att-stat .n{font-size:20px;}
+  .fees-summary{gap:8px;}
+  .fee-stat{padding:10px 12px;gap:10px;}
+  .fee-icon{width:36px;height:36px;font-size:14px;}
+  .perf-top{gap:8px;}
+  .perf-kpi{padding:14px;}
+  .perf-kpi .num{font-size:20px;}
+  .perf-kpi .lbl{font-size:10px;}
+  .perf-charts{gap:10px;}
+  .insights-grid{gap:8px;}
+  .insight-card{padding:12px;gap:10px;}
+  .insight-icon{width:32px;height:32px;font-size:14px;}
+  .insight-body .title{font-size:11px;}
+  .student-header{padding:12px;gap:12px;}
+  .student-photo{width:60px;height:60px;font-size:28px;}
+  .student-name{font-size:14px;margin-bottom:0;}
+  .student-info{font-size:11px;}
+  .topbar{font-size:9px;}
+  .card{padding:14px;margin-bottom:12px;border-radius:10px;}
+  .card-title{font-size:13px;}
+  .badge{font-size:9px;padding:2px 7px;}
+  .att-table,.fee-table,.marks-table,.rank-table,.bio-log-table{font-size:10px;}
+  .att-table th,.fee-table th,.marks-table th,.rank-table th,.bio-log-table th{font-size:8px;padding:6px;}
+  .att-table td,.fee-table td,.marks-table td,.rank-table td,.bio-log-table td{font-size:9px;padding:6px;}
+  .att-filters select,.term-filter select{font-size:10px;padding:5px 6px;}
+  .form-row{grid-template-columns:1fr;gap:6px;margin-bottom:8px;}
+  .form-group label{font-size:10px;}
+  .form-group input,.form-group select,.form-group textarea{font-size:11px;padding:6px 8px;}
+  .tt-grid{gap:6px;}
+  .tt-day-card{overflow:hidden;}
+  .tt-day-head{padding:6px 8px;font-size:10px;}
+  .tt-period{padding:6px 8px;font-size:10px;}
+  .tt-subj{font-size:11px;}
+  .tt-time{font-size:9px;}
+  .bio-summary{gap:6px;}
+  .bio-stat{padding:10px;}
+  .bio-stat .val{font-size:16px;}
+  .hol-list{gap:6px;}
+  .hol-item{padding:8px 10px;gap:8px;}
+  .hol-date .day{font-size:18px;}
+  .hol-date .mon{font-size:10px;}
+  .hol-info .name{font-size:12px;}
+  .mock-card{padding:10px;gap:10px;}
+  .mock-icon{width:32px;height:32px;font-size:12px;}
+  .mock-title{font-size:11px;}
+  .mock-meta{font-size:10px;}
+  .diff-easy,.diff-medium,.diff-hard{font-size:8px;padding:1px 6px;}
+  .ptm-card{padding:10px;margin-bottom:6px;border-left-width:3px;}
+  .ptm-meta{gap:6px;margin-bottom:6px;}
+  .ptm-date{font-size:11px;}
+  .ptm-status{font-size:8px;padding:1px 6px;}
+  .ptm-title{font-size:12px;}
+  .ptm-details{font-size:11px;}
+  .ptm-form{padding:12px;}
+  .ptm-form h4{font-size:12px;margin-bottom:10px;}
+  .ptm-tabs{gap:4px;}
+  .ptm-tab{padding:5px 10px;font-size:10px;}
+}
+@media(max-width:375px){
+  .header-inner{gap:2px;}
+  .hamburger-btn{width:30px;height:30px;font-size:11px;}
+  .header-left{font-size:7px;}
+  .header-logo img{width:26px;height:26px;}
+  .header-logo-text .name{font-size:11px;}
+  .parent-sidebar{width:120px;font-size:10px;}
+  .sidebar-item{padding:6px 8px;font-size:9px;}
+  .main{padding:8px;}
+  .stats-grid{gap:6px;}
+  .stat-card{padding:10px;}
+  .stat-card .num{font-size:18px;}
+  .att-summary{gap:6px;}
+  .att-stat{padding:10px;}
+  .att-stat .n{font-size:18px;}
+  .fees-summary{gap:6px;}
+  .fee-stat{padding:8px 10px;gap:8px;}
+  .fee-icon{width:32px;height:32px;font-size:12px;}
+  .perf-top{gap:6px;}
+  .perf-kpi{padding:12px;}
+  .perf-kpi .num{font-size:18px;}
+  .student-header{padding:10px;gap:10px;}
+  .student-photo{width:56px;height:56px;font-size:24px;}
+  .card{padding:12px;margin-bottom:10px;}
+  .att-table,.fee-table,.marks-table{font-size:9px;}
+  .form-group input,.form-group select{font-size:10px;padding:5px 6px;}
+  .tt-grid{gap:4px;}
+  .tt-day-head,.tt-period{font-size:9px;padding:4px 6px;}
+  .bio-stat{padding:8px;}
+  .hol-item{padding:6px 8px;gap:6px;}
 }
 /* ── Collapsible sidebar sections ── */
 .sidebar-section-title{font-size:11px;font-weight:800;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:1.5px;padding:14px 20px 6px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none;transition:color .18s;}

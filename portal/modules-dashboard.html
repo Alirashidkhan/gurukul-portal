@@ -100,7 +100,53 @@ textarea{resize:vertical;min-height:80px}
 .provider-tab{display:flex;gap:10px;margin-bottom:20px}
 .provider-tab button{padding:8px 20px;border-radius:8px;border:1.5px solid #dde3ef;background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:#6b7c93;transition:.2s}
 .provider-tab button.active{background:var(--navy);color:#fff;border-color:var(--navy)}
-@media(max-width:768px){.layout{flex-direction:column}.sidebar{width:100%;height:auto;position:static;display:flex;flex-wrap:wrap;padding:8px}.sidebar-item{padding:8px 12px;font-size:12px}.stats-grid{grid-template-columns:repeat(2,1fr)}}
+.sidebar{width:100%;height:auto;position:static;display:flex;flex-wrap:wrap;padding:8px}.sidebar-item{padding:8px 12px;font-size:12px}.stats-grid{grid-template-columns:repeat(2,1fr)}}
+/* Mobile Responsive Design */
+@media(max-width:768px){
+  .sidebar{display:none;width:200px;}
+  .main-content,.main{padding:14px;margin-left:0;}
+  .navbar{padding:0 16px;}
+  .navbar-title{font-size:14px;}
+  .kpi-grid,.stats-grid,.chart-grid{grid-template-columns:1fr 1fr;gap:12px;}
+  .kpi-card,.stat-card,.card{padding:14px;margin-bottom:12px;}
+  .kpi-val,.stat-val,.card-title{font-size:14px;}
+  table{font-size:12px;}
+  table th{font-size:10px;padding:7px;}
+  table td{font-size:11px;padding:7px;}
+}
+@media(max-width:600px){
+  .sidebar{display:none;width:170px;}
+  .main-content,.main{padding:12px;}
+  .navbar{padding:0 12px;}
+  .navbar-title{font-size:12px;}
+  .kpi-grid,.stats-grid,.chart-grid{grid-template-columns:1fr;gap:10px;}
+  .kpi-card,.stat-card{padding:12px;}
+  .kpi-val,.stat-val{font-size:20px;}
+  .card{padding:14px;margin-bottom:10px;}
+  table{font-size:11px;}
+  table th{font-size:9px;padding:6px;}
+  table td{font-size:10px;padding:6px;}
+}
+@media(max-width:480px){
+  .main-content,.main{padding:10px;}
+  .navbar{padding:0 10px;}
+  .kpi-grid,.stats-grid,.chart-grid{gap:8px;}
+  .kpi-card,.stat-card{padding:10px;border-radius:10px;}
+  .kpi-val,.stat-val{font-size:18px;}
+  table{font-size:10px;}
+  table th{font-size:8px;padding:5px;}
+  table td{font-size:9px;padding:5px;}
+  .card{padding:12px;margin-bottom:8px;}
+}
+@media(max-width:375px){
+  .main-content,.main{padding:8px;}
+  .navbar{padding:0 8px;}
+  .kpi-card,.stat-card{padding:8px;}
+  .kpi-val,.stat-val{font-size:16px;}
+  table th{padding:4px;font-size:7px;}
+  table td{padding:4px;font-size:8px;}
+}
+
 </style>
 </head>
 <body>
@@ -813,7 +859,53 @@ async function loadCertificates() {
 }
 function printCert() {
   const w = window.open('','_blank','width=600,height=700');
-  w.document.write(`<!DOCTYPE html><html><head><title>Certificate</title><style>body{font-family:Georgia,serif;padding:40px;text-align:center}.header{font-size:22px;font-weight:bold;color:#0a1628;margin-bottom:8px}.sub{font-size:14px;color:#C9A227;margin-bottom:30px}.body{font-size:14px;line-height:1.8;color:#333;border:2px solid #C9A227;padding:30px;border-radius:8px;margin:20px 0}hr{border-color:#C9A227;margin:20px 0}.sig{margin-top:40px;display:flex;justify-content:space-around}.sig div{text-align:center;font-size:12px}</style></head><body>
+  w.document.write(`<!DOCTYPE html><html><head><title>Certificate</title><style>body{font-family:Georgia,serif;padding:40px;text-align:center}.header{font-size:22px;font-weight:bold;color:#0a1628;margin-bottom:8px}.sub{font-size:14px;color:#C9A227;margin-bottom:30px}.body{font-size:14px;line-height:1.8;color:#333;border:2px solid #C9A227;padding:30px;border-radius:8px;margin:20px 0}hr{border-color:#C9A227;margin:20px 0}.sig{margin-top:40px;display:flex;justify-content:space-around}.sig div{text-align:center;font-size:12px}/* Mobile Responsive Design */
+@media(max-width:768px){
+  .sidebar{display:none;width:200px;}
+  .main-content,.main{padding:14px;margin-left:0;}
+  .navbar{padding:0 16px;}
+  .navbar-title{font-size:14px;}
+  .kpi-grid,.stats-grid,.chart-grid{grid-template-columns:1fr 1fr;gap:12px;}
+  .kpi-card,.stat-card,.card{padding:14px;margin-bottom:12px;}
+  .kpi-val,.stat-val,.card-title{font-size:14px;}
+  table{font-size:12px;}
+  table th{font-size:10px;padding:7px;}
+  table td{font-size:11px;padding:7px;}
+}
+@media(max-width:600px){
+  .sidebar{display:none;width:170px;}
+  .main-content,.main{padding:12px;}
+  .navbar{padding:0 12px;}
+  .navbar-title{font-size:12px;}
+  .kpi-grid,.stats-grid,.chart-grid{grid-template-columns:1fr;gap:10px;}
+  .kpi-card,.stat-card{padding:12px;}
+  .kpi-val,.stat-val{font-size:20px;}
+  .card{padding:14px;margin-bottom:10px;}
+  table{font-size:11px;}
+  table th{font-size:9px;padding:6px;}
+  table td{font-size:10px;padding:6px;}
+}
+@media(max-width:480px){
+  .main-content,.main{padding:10px;}
+  .navbar{padding:0 10px;}
+  .kpi-grid,.stats-grid,.chart-grid{gap:8px;}
+  .kpi-card,.stat-card{padding:10px;border-radius:10px;}
+  .kpi-val,.stat-val{font-size:18px;}
+  table{font-size:10px;}
+  table th{font-size:8px;padding:5px;}
+  table td{font-size:9px;padding:5px;}
+  .card{padding:12px;margin-bottom:8px;}
+}
+@media(max-width:375px){
+  .main-content,.main{padding:8px;}
+  .navbar{padding:0 8px;}
+  .kpi-card,.stat-card{padding:8px;}
+  .kpi-val,.stat-val{font-size:16px;}
+  table th{padding:4px;font-size:7px;}
+  table td{padding:4px;font-size:8px;}
+}
+
+</style></head><body>
   <div class="header">The Gurukul High</div><div class="sub">K.R. Nagar, Mysuru | Empowering Minds, Shaping Futures</div>
   <div class="body">${document.getElementById('certPreviewContent').innerHTML}</div>
   <hr>

@@ -318,14 +318,182 @@ tr:hover td{background:#fafbff;}
 .hol-item.School    .hol-type{background:rgba(13,110,253,0.1);color:#0d6efd;}
 
 @media(max-width:768px){
-  .teacher-sidebar{width:180px;min-width:180px;}
-  .sidebar-item{padding:8px 12px;font-size:11px;}
-  .selector-row{flex-direction:column;align-items:stretch;}
+  .header-inner{grid-template-columns:1fr auto;gap:8px;}
+  .header-logo img{width:36px;height:36px;}
+  .header-logo .name{font-size:15px;}
+  .teacher-sidebar{width:200px;}
+  .sidebar-item{padding:9px 14px;font-size:12px;}
+  .main{padding:14px;margin-left:0;}
+  .selector-row{flex-wrap:wrap;gap:10px;}
   .sel-group select,.sel-group input{width:100%;}
+  .sel-group label{font-size:11px;}
   .status-btn{width:32px;height:32px;font-size:12px;}
   .s-name{font-size:13px;}
+  .s-tab{padding:6px 12px;font-size:11px;}
   .checkin-hero{grid-template-columns:1fr;}
+  .ci-summary{padding:14px;gap:12px;}
+  .ci-stat{padding:12px;}
+  .ci-stat .num{font-size:22px;}
   .report-grid{grid-template-columns:1fr;}
+  .card{padding:16px;margin-bottom:12px;}
+  .card-head{margin-bottom:12px;}
+  .r-day{padding:6px;font-size:11px;}
+  .etpl-fields{grid-template-columns:1fr;}
+  .mp-grid{grid-template-columns:1fr 1fr;gap:12px;}
+  .mp-section.full{grid-column:span 2;}
+  .mp-hero{gap:16px;padding:20px;}
+  .mp-avatar{width:60px;height:60px;font-size:20px;}
+  .mp-hero-name{font-size:18px;}
+}
+@media(max-width:600px){
+  .header-inner{grid-template-columns:auto 1fr;}
+  .header-left{font-size:9px;}
+  .header-logo{justify-content:flex-start;flex:1;}
+  .header-logo img{width:32px;height:32px;}
+  .header-logo .name{font-size:13px;}
+  .hamburger-btn{width:34px;height:34px;font-size:13px;}
+  .teacher-sidebar{width:170px;min-width:170px;transform:translateX(-100%);}
+  body.sidebar-mobile-open .teacher-sidebar{transform:translateX(0);}
+  .sidebar-item{padding:8px 12px;font-size:11px;}
+  .sidebar-item i{font-size:12px;}
+  .main{padding:12px;margin-left:0;}
+  .selector-row{flex-direction:column;align-items:stretch;}
+  .sel-group{width:100%;}
+  .sel-group select,.sel-group input{width:100%;font-size:12px;padding:7px 10px;}
+  .sel-group label{font-size:10px;}
+  .status-btn{width:30px;height:30px;font-size:11px;}
+  .s-name{font-size:12px;}
+  .s-tab{padding:5px 10px;font-size:10px;}
+  .checkin-hero{gap:14px;padding:16px;}
+  .ci-summary{padding:12px;gap:10px;grid-template-columns:1fr;row-gap:8px;}
+  .ci-stat{padding:10px;border-radius:8px;}
+  .ci-stat .num{font-size:20px;}
+  .ci-stat .lbl{font-size:10px;}
+  .ci-map{display:none;}
+  .report-grid{gap:12px;}
+  .r-day{padding:4px 6px;font-size:10px;}
+  .r-hours{font-size:11px;}
+  .r-status{font-size:9px;}
+  .card{padding:14px;margin-bottom:10px;}
+  .card-head{margin-bottom:10px;}
+  .card-title{font-size:13px;}
+  .badge{font-size:9px;padding:2px 7px;}
+  .att-table,.r-table{font-size:11px;}
+  .att-table th,.r-table th{font-size:9px;padding:6px 8px;}
+  .att-table td,.r-table td{font-size:10px;padding:6px 8px;}
+  .etpl-header{padding:14px 16px;}
+  .etpl-icon-wrap{width:36px;height:36px;}
+  .etpl-title{font-size:13px;}
+  .etpl-subtitle{font-size:10px;}
+  .etpl-fields{grid-template-columns:1fr;gap:10px;}
+  .etpl-input{font-size:12px;padding:8px 10px;}
+  .etpl-actions{gap:8px;}
+  .etpl-copy-btn,.etpl-send-btn{padding:8px 14px;font-size:12px;}
+  .mp-grid{grid-template-columns:1fr;}
+  .mp-section.full,.mp-section.two{grid-column:span 1;}
+  .mp-hero{flex-direction:column;gap:14px;padding:16px;}
+  .mp-avatar{width:56px;height:56px;font-size:18px;}
+  .mp-hero-name{font-size:16px;}
+  .mp-hero-role{font-size:11px;}
+  .mp-fields{grid-template-columns:1fr;gap:10px;padding:14px;}
+  .mp-section{margin-bottom:12px;}
+  .salary-lock{padding:30px 20px;}
+  .salary-lock-icon{width:60px;height:60px;font-size:24px;}
+  .salary-lock h2{font-size:16px;}
+  .salary-lock p{font-size:12px;}
+  .pin-input-row{gap:8px;}
+  .pin-digit{width:40px;height:44px;font-size:18px;}
+  .pin-unlock-btn{padding:11px 24px;font-size:12px;}
+  .sal-summary-grid{grid-template-columns:repeat(2,1fr);gap:10px;}
+  .sal-stat{padding:14px;}
+  .sal-stat .val{font-size:20px;}
+}
+@media(max-width:480px){
+  .header-inner{gap:2px;padding:4px;}
+  .hamburger-btn{width:32px;height:32px;font-size:12px;}
+  .header-left{font-size:8px;}
+  .header-logo img{width:28px;height:28px;}
+  .header-logo .name{font-size:12px;}
+  .teacher-sidebar{width:140px;font-size:11px;}
+  .sidebar-item{padding:7px 10px;font-size:10px;}
+  .main{padding:10px;}
+  .selector-row{gap:6px;}
+  .sel-group select,.sel-group input{font-size:11px;padding:6px 8px;}
+  .sel-group label{font-size:9px;}
+  .status-btn{width:28px;height:28px;font-size:10px;}
+  .s-name{font-size:11px;}
+  .s-tab{padding:4px 8px;font-size:9px;}
+  .s-row{padding:6px;font-size:10px;}
+  .checkin-hero{gap:12px;padding:12px;}
+  .ci-sum-row{grid-template-columns:1fr;}
+  .ci-stat{padding:8px;}
+  .ci-stat .num{font-size:18px;}
+  .ci-stat .lbl{font-size:9px;}
+  .checkin-form{padding:14px;}
+  .checkin-form h3{font-size:12px;}
+  .fm-row{gap:6px;margin-bottom:8px;}
+  .fm-grp input,.fm-grp select{font-size:11px;padding:6px 8px;}
+  .fm-grp label{font-size:9px;}
+  .report-grid{gap:10px;}
+  .r-row{padding:6px;}
+  .r-day{padding:3px 5px;font-size:9px;}
+  .r-hours{font-size:10px;}
+  .r-status{font-size:8px;}
+  .card{padding:12px;margin-bottom:8px;border-radius:10px;}
+  .card-head{margin-bottom:8px;}
+  .card-title{font-size:12px;}
+  .badge{font-size:8px;padding:1px 6px;}
+  .att-table,.r-table{font-size:10px;}
+  .att-table th,.r-table th{font-size:8px;padding:5px 6px;}
+  .att-table td,.r-table td{font-size:9px;padding:5px 6px;}
+  .etpl-header{padding:12px 14px;}
+  .etpl-icon-wrap{width:32px;height:32px;}
+  .etpl-title{font-size:12px;}
+  .etpl-subtitle{font-size:9px;}
+  .etpl-body{gap:12px;padding:12px;}
+  .etpl-fields{gap:8px;}
+  .etpl-input{font-size:11px;padding:6px 8px;}
+  .etpl-copy-btn,.etpl-send-btn{padding:7px 12px;font-size:11px;}
+  .etpl-preview-wrap{padding:12px;}
+  .etpl-preview{font-size:11px;}
+  .mp-hero{padding:12px;gap:10px;}
+  .mp-avatar{width:48px;height:48px;font-size:16px;}
+  .mp-hero-name{font-size:14px;}
+  .mp-hero-role{font-size:10px;}
+  .mp-fields{padding:12px;gap:8px;}
+  .mp-field .lbl{font-size:9px;}
+  .mp-field .val{font-size:11px;}
+  .mp-chip{font-size:9px;padding:3px 8px;margin:2px;}
+  .mp-sec-head{padding:10px 14px;font-size:10px;}
+  .salary-lock{padding:20px 16px;}
+  .salary-lock-icon{width:52px;height:52px;font-size:20px;}
+  .salary-lock h2{font-size:14px;}
+  .salary-lock p{font-size:11px;}
+  .pin-input-row{gap:6px;}
+  .pin-digit{width:36px;height:40px;font-size:16px;}
+  .pin-unlock-btn{padding:9px 18px;font-size:11px;}
+  .sal-summary-grid{grid-template-columns:1fr;gap:8px;}
+  .sal-stat{padding:12px;}
+  .sal-stat .val{font-size:18px;}
+  .sal-stat .lbl{font-size:9px;}
+}
+@media(max-width:375px){
+  .header-inner{gap:2px;}
+  .hamburger-btn{width:30px;height:30px;font-size:11px;}
+  .header-left{font-size:7px;}
+  .header-logo img{width:26px;height:26px;}
+  .header-logo .name{font-size:11px;}
+  .teacher-sidebar{width:120px;font-size:10px;}
+  .sidebar-item{padding:6px 8px;font-size:9px;}
+  .main{padding:8px;}
+  .selector-row{gap:4px;}
+  .sel-group select,.sel-group input{font-size:10px;padding:5px 6px;}
+  .checkin-hero{padding:10px;gap:10px;}
+  .ci-stat{padding:6px;}
+  .ci-stat .num{font-size:16px;}
+  .card{padding:10px;margin-bottom:6px;}
+  .att-table th,.r-table th{padding:4px;}
+  .att-table td,.r-table td{padding:4px;font-size:8px;}
 }
 
 /* ── Email Templates ── */

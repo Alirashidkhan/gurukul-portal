@@ -282,15 +282,76 @@ footer span{color:rgba(201,162,39,0.4);}
   .stat-item{flex:1;min-width:140px;justify-content:center;}
   .cards-wrap.grid-3{grid-template-columns:1fr 1fr;}
 }
+@media(max-width:768px){
+  header{padding:12px 20px;height:56px;}
+  .hdr-left,.hdr-right{gap:8px;}
+  .hdr-link{font-size:13px;padding:5px 10px;}
+  .btn-gold{padding:8px 16px;font-size:12px;}
+  .hero{padding:60px 4% 40px;}
+  .hero h1{font-size:clamp(28px,5vw,42px);}
+  .hero-sub{font-size:14px;}
+  .hero-actions{gap:10px;}
+  .stats-bar{gap:12px;}
+  .stat-item{flex:1;}
+  .stat-num{font-size:24px;}
+  .cards-wrap{grid-template-columns:1fr 1fr;padding:0 20px 16px;gap:12px;}
+  .card-item{padding:16px;}
+  .section-label{padding:0 20px;font-size:13px;margin-bottom:20px;}
+  .quick-strip{padding:0 20px 32px;gap:12px;}
+  .quick-card{padding:12px;}
+}
 @media(max-width:640px){
-  header{padding:14px 18px;}
+  header{padding:10px 16px;height:52px;}
   .hdr-right .hdr-link:not(.gold){display:none;}
-  .hero{padding:32px 18px 24px;}
-  .hero h1{font-size:26px;}
+  .hdr-logo{width:32px;height:32px;}
+  .hdr-title{font-size:13px;}
+  .btn-ghost,.btn-gold{padding:6px 12px;font-size:11px;}
+  .hero{padding:50px 3% 30px;}
+  .hero h1{font-size:clamp(24px,4vw,36px);}
+  .hero-sub{font-size:13px;}
+  .hero-actions{flex-direction:column;gap:8px;}
+  .btn-hero{width:100%;padding:12px;}
   .stats-bar{display:none;}
-  .cards-wrap{grid-template-columns:1fr !important;padding:0 18px 16px;}
-  .section-label{padding:0 18px;}
-  .quick-strip{padding:0 18px 40px;}
+  .cards-wrap{grid-template-columns:1fr !important;padding:0 16px 12px;gap:10px;}
+  .card-item{padding:14px;}
+  .section-label{padding:0 16px;font-size:12px;margin-bottom:16px;}
+  .quick-strip{padding:0 16px 24px;gap:10px;}
+  .quick-card{padding:10px;border-radius:10px;}
+  .btn{padding:10px 16px;font-size:11px;}
+}
+@media(max-width:480px){
+  header{padding:8px 12px;height:48px;}
+  .hdr-logo{width:28px;height:28px;}
+  .hdr-title{font-size:12px;}
+  .btn-gold{padding:6px 12px;font-size:10px;}
+  .hero{padding:40px 3% 20px;}
+  .hero h1{font-size:clamp(20px,4.5vw,28px);}
+  .hero-sub{font-size:12px;margin-bottom:16px;}
+  .hero-actions{gap:6px;}
+  .btn-hero{padding:10px;font-size:10px;}
+  .compliance-row{gap:4px;margin-bottom:12px;}
+  .cbadge{font-size:9px;padding:3px 8px;}
+  .cards-wrap{padding:0 12px 10px;gap:8px;}
+  .card-item{padding:12px;}
+  .card-title{font-size:13px;}
+  .card-desc{font-size:11px;}
+  .section-label{padding:0 12px;font-size:11px;margin-bottom:12px;}
+  .quick-strip{padding:0 12px 20px;gap:8px;}
+  .quick-card{padding:8px;font-size:10px;}
+  .quick-card h3{font-size:12px;}
+  .btn{padding:8px 12px;font-size:10px;}
+}
+@media(max-width:375px){
+  header{padding:6px 10px;height:44px;}
+  .hdr-logo{width:24px;height:24px;}
+  .hdr-title{font-size:11px;}
+  .hero{padding:30px 2% 15px;}
+  .hero h1{font-size:clamp(18px,5vw,24px);}
+  .hero-sub{font-size:11px;}
+  .cards-wrap{padding:0 10px 8px;}
+  .card-item{padding:10px;}
+  .quick-strip{padding:0 10px 16px;}
+  .quick-card{padding:6px;}
 }
 </style>
   <link rel="manifest" href="/manifest.json">

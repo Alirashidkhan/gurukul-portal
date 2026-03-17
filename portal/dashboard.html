@@ -214,25 +214,154 @@ a{text-decoration:none;color:inherit;}
 
 /* ── Responsive ── */
 @media(max-width:768px){
-  .main{padding:16px;}
-  .welcome{padding:18px;}
+  .main{padding:14px;margin-left:0;}
+  .student-sidebar{width:220px;}
+  .welcome{padding:16px;flex-direction:column;align-items:flex-start;}
   .welcome-left h2{font-size:18px;}
-  .welcome-right{gap:8px;}
-  .stat-chip{min-width:70px;padding:10px 12px;}
+  .welcome-right{gap:6px;width:100%;}
+  .stat-chip{min-width:60px;padding:9px 11px;font-size:13px;}
   .stat-chip .num{font-size:18px;}
   .att-summary{grid-template-columns:repeat(2,1fr);}
   .fees-summary{grid-template-columns:1fr 1fr;}
   .marks-grid{grid-template-columns:1fr 1fr;}
-  .topbar{justify-content:center;text-align:center;}
+  .topbar{justify-content:center;text-align:center;font-size:11px;}
+  .card{padding:18px;margin-bottom:16px;}
+  .card-header{margin-bottom:16px;}
+  .att-table,.fee-table{font-size:12px;}
+  .att-table th,.fee-table th{padding:8px 10px;font-size:11px;}
+  .att-table td,.fee-table td{padding:8px 10px;font-size:12px;}
+  .att-stat{padding:12px;font-size:13px;}
+  .att-stat .n{font-size:24px;}
+  .fee-stat{padding:14px 16px;gap:12px;}
+  .modal-box{max-width:90%;padding:20px;}
+}
+@media(max-width:600px){
+  .main{padding:12px;margin-left:0;}
+  .header-inner{grid-template-columns:1fr;}
+  .header-right{justify-content:flex-end;}
+  .student-sidebar{transform:translateX(-100%);width:200px;}
+  body.sidebar-mobile-open .student-sidebar{transform:translateX(0);}
+  .welcome{padding:14px;gap:12px;}
+  .welcome-left h2{font-size:16px;}
+  .welcome-left p{font-size:12px;}
+  .stat-chip{min-width:50px;padding:8px 10px;}
+  .stat-chip .num{font-size:16px;}
+  .stat-chip .lbl{font-size:9px;}
+  .att-summary{grid-template-columns:1fr 1fr;gap:10px;}
+  .att-stat{padding:10px;gap:8px;}
+  .att-stat .n{font-size:22px;}
+  .att-stat .l{font-size:10px;}
+  .fees-summary{grid-template-columns:1fr;gap:12px;}
+  .fee-stat{padding:12px 14px;}
+  .fee-icon{width:40px;height:40px;font-size:16px;}
+  .fee-stat .amt{font-size:18px;}
+  .marks-grid{grid-template-columns:1fr;}
+  .marks-card{padding:12px;}
+  .card{padding:16px;margin-bottom:14px;}
+  .card-title{font-size:15px;}
+  .att-table,.fee-table{font-size:11px;}
+  .att-table th,.fee-table th{padding:7px 8px;font-size:10px;}
+  .att-table td,.fee-table td{padding:7px 8px;font-size:11px;}
+  .modal-box{max-width:92%;padding:18px;max-height:80vh;overflow-y:auto;}
+  .modal-field input,.modal-field select{font-size:12px;padding:9px 10px;}
+  .btn-pay{padding:6px 12px;font-size:11px;}
 }
 @media(max-width:480px){
-  .header-inner{height:62px;}
-  .header-logo img{width:40px;height:40px;}
+  .header-inner{height:auto;padding:8px;gap:8px;}
+  .header-logo{gap:6px;}
+  .header-logo img{width:36px;height:36px;}
+  .header-logo-text .name{font-size:15px;}
+  .student-chip{padding:5px 12px 5px 4px;}
+  .student-avatar{width:30px;height:30px;font-size:12px;}
   .student-chip-name{display:none;}
+  .btn-logout{padding:6px 12px;font-size:11px;}
+  .hamburger-btn{width:34px;height:34px;font-size:13px;}
   .student-sidebar{width:170px;min-width:170px;}
-  .sidebar-item{padding:8px 12px;font-size:11px;}
+  .sqb{padding:10px 2px 8px;gap:4px;}
+  .sqb i{font-size:16px;}
+  .sqb .sqb-lbl{font-size:8px;}
+  .sidebar-item{padding:8px 12px;font-size:10px;}
+  .main{padding:10px;margin-left:0;}
+  .welcome{padding:12px;}
+  .welcome-left h2{font-size:15px;}
+  .welcome-left p{font-size:11px;}
+  .welcome-right{gap:6px;flex-direction:column;}
+  .stat-chip{min-width:45px;padding:7px 9px;font-size:12px;}
+  .stat-chip .num{font-size:14px;}
+  .stat-chip .lbl{font-size:8px;}
+  .att-summary{grid-template-columns:1fr;gap:8px;}
+  .att-stat{padding:8px;}
+  .att-stat .n{font-size:20px;}
+  .att-stat .l{font-size:9px;}
+  .fee-stat{padding:10px 12px;gap:10px;}
+  .fee-stat .amt{font-size:16px;}
+  .fee-icon{width:36px;height:36px;font-size:14px;}
   .marks-grid{grid-template-columns:1fr;}
+  .marks-card{padding:10px;border-left-width:3px;}
+  .marks-card .subject{font-size:12px;}
+  .marks-card .exam-name{font-size:10px;}
+  .marks-card .score .m{font-size:22px;}
+  .marks-card .score .max{font-size:12px;}
+  .card{padding:14px;margin-bottom:12px;border-radius:10px;}
+  .card-header{margin-bottom:12px;flex-direction:column;align-items:flex-start;}
+  .card-title{font-size:14px;}
+  .badge{font-size:10px;padding:2px 8px;}
+  .att-table,.fee-table{font-size:10px;}
+  .att-table th,.fee-table th{padding:6px 8px;font-size:9px;}
+  .att-table td,.fee-table td{padding:6px 8px;font-size:10px;}
   .att-table th:nth-child(3),.att-table td:nth-child(3){display:none;}
+  .modal-box{max-width:95%;padding:16px;max-height:75vh;border-radius:14px;}
+  .modal-title{font-size:16px;margin-bottom:14px;}
+  .modal-field{margin-bottom:12px;}
+  .modal-field label{font-size:11px;margin-bottom:4px;}
+  .modal-field input,.modal-field select{font-size:11px;padding:8px 10px;}
+  .modal-info-row{grid-template-columns:1fr;gap:6px;padding:10px;margin-bottom:12px;}
+  .modal-info-lbl{font-size:10px;}
+  .modal-info-val{font-size:13px;}
+  .modal-btns{gap:8px;margin-top:14px;}
+  .btn-cancel,.btn-submit-pay{padding:8px 16px;font-size:12px;}
+  .btn-pay{padding:5px 10px;font-size:10px;}
+}
+@media(max-width:375px){
+  .header-inner{grid-template-columns:1fr;}
+  .header-logo img{width:32px;height:32px;}
+  .header-logo-text .name{font-size:13px;}
+  .student-avatar{width:28px;height:28px;font-size:11px;}
+  .student-chip-class{font-size:8px;}
+  .btn-logout{padding:5px 10px;font-size:10px;}
+  .hamburger-btn{width:32px;height:32px;font-size:12px;}
+  .student-sidebar{width:150px;}
+  .sqb i{font-size:14px;}
+  .sqb .sqb-lbl{font-size:7px;}
+  .sidebar-item{padding:7px 10px;font-size:9px;}
+  .sidebar-section-title{font-size:10px;padding:10px 14px 4px;}
+  .main{padding:8px;}
+  .welcome{padding:10px;gap:8px;}
+  .welcome-left h2{font-size:14px;margin-bottom:2px;}
+  .welcome-left p{font-size:10px;}
+  .stat-chip{min-width:40px;padding:6px 8px;}
+  .stat-chip .num{font-size:12px;}
+  .att-summary{gap:6px;}
+  .att-stat{padding:6px;}
+  .att-stat .n{font-size:18px;}
+  .progress-bar{height:6px;}
+  .fees-summary{gap:8px;}
+  .fee-stat{padding:8px 10px;gap:8px;}
+  .fee-stat .amt{font-size:14px;}
+  .fee-icon{width:32px;height:32px;font-size:12px;}
+  .marks-grid{gap:8px;}
+  .marks-card{padding:8px;border-left-width:2px;}
+  .marks-card .subject{font-size:11px;}
+  .marks-card .exam-name{font-size:9px;}
+  .marks-card .score .m{font-size:20px;}
+  .card{padding:12px;margin-bottom:10px;}
+  .card-title{font-size:13px;}
+  .att-table th,.fee-table th{font-size:8px;}
+  .att-table td,.fee-table td{font-size:9px;}
+  .modal-box{max-width:96%;padding:14px;max-height:70vh;}
+  .modal-title{font-size:14px;margin-bottom:12px;}
+  .modal-field input,.modal-field select{font-size:10px;}
+  .modal-info-row{padding:8px;}
 }
 
 /* ── Print Styles ── */

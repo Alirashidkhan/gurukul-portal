@@ -220,8 +220,77 @@ tbody tr:last-child td{border-bottom:none;}
 .tab-btn{padding:10px 20px;background:none;border:none;font-size:12px;font-weight:600;color:#888;cursor:pointer;font-family:inherit;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;}
 .tab-btn.active{color:var(--pink);border-bottom-color:var(--pink);font-weight:700;}
 
-@media(max-width:1100px){.kpi-grid{grid-template-columns:repeat(2,1fr);}.funnel-board{grid-template-columns:repeat(3,1fr);}.chart-grid{grid-template-columns:1fr;}}
-@media(max-width:768px){.sidebar{display:none;}.main-content{margin-left:0;}}
+@media(max-width:1100px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr);}
+  .funnel-board{grid-template-columns:repeat(3,1fr);}
+  .chart-grid{grid-template-columns:1fr;}
+}
+@media(max-width:768px){
+  .sidebar{display:none;}
+  .main-content{margin-left:0;padding:14px;}
+  .navbar{padding:0 16px;}
+  .navbar-title{font-size:14px;}
+  .kpi-grid{grid-template-columns:1fr;gap:10px;}
+  .kpi-card{padding:14px;}
+  .kpi-val{font-size:22px;}
+  .kpi-lbl{font-size:10px;}
+  .funnel-board{grid-template-columns:1fr;gap:10px;}
+  .funnel-stage{padding:12px;}
+  .chart-grid{gap:14px;}
+  .card{padding:16px;margin-bottom:12px;}
+  .card-title{font-size:14px;}
+  .card table{font-size:12px;}
+  .card table th{font-size:10px;padding:7px;}
+  .card table td{font-size:11px;padding:7px;}
+  .tab-bar{gap:0;margin-bottom:14px;}
+  .tab-btn{padding:8px 16px;font-size:11px;}
+  .section-hdr{padding:8px 12px;font-size:11px;}
+}
+@media(max-width:600px){
+  .navbar{padding:0 12px;}
+  .navbar-title{font-size:12px;}
+  .main-content{padding:12px;}
+  .kpi-grid{gap:8px;}
+  .kpi-card{padding:12px;}
+  .kpi-val{font-size:20px;}
+  .funnel-board{gap:8px;}
+  .funnel-stage{padding:10px;font-size:12px;}
+  .card{padding:14px;margin-bottom:10px;}
+  .card-title{font-size:13px;}
+  .card table{font-size:11px;}
+  .card table th{font-size:9px;padding:6px;}
+  .card table td{font-size:10px;padding:6px;}
+  .tab-btn{padding:7px 12px;font-size:10px;}
+  .section-hdr{padding:8px;font-size:10px;}
+}
+@media(max-width:480px){
+  .navbar{padding:0 10px;}
+  .navbar-title{font-size:11px;}
+  .main-content{padding:10px;}
+  .kpi-grid{gap:6px;}
+  .kpi-card{padding:10px;}
+  .kpi-val{font-size:18px;}
+  .kpi-lbl{font-size:8px;}
+  .funnel-board{gap:6px;}
+  .funnel-stage{padding:8px;font-size:11px;}
+  .card{padding:12px;margin-bottom:8px;border-radius:10px;}
+  .card-title{font-size:12px;}
+  .card table{font-size:10px;}
+  .card table th{font-size:8px;padding:5px;}
+  .card table td{font-size:9px;padding:5px;}
+  .tab-btn{padding:6px 10px;font-size:9px;}
+  .section-hdr{padding:6px;font-size:9px;}
+}
+@media(max-width:375px){
+  .navbar{padding:0 8px;}
+  .main-content{padding:8px;}
+  .kpi-grid{gap:4px;}
+  .kpi-card{padding:8px;}
+  .kpi-val{font-size:16px;}
+  .card{padding:10px;margin-bottom:6px;}
+  .card table th{padding:4px;font-size:7px;}
+  .card table td{padding:4px;font-size:8px;}
+}
 </style>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#C9A227">

@@ -255,6 +255,98 @@ tbody tr:last-child td{border-bottom:none;}
   .form-row.col3,.form-row.col4{grid-template-columns:1fr 1fr;}
   .charts-row{grid-template-columns:1fr;}
 }
+@media(max-width:768px){
+  .navbar{padding:0 16px;}
+  .navbar-title{font-size:14px;}
+  .navbar-group button{font-size:11px;padding:6px 12px;}
+  .sidebar{width:200px;}
+  .sidebar-item{padding:9px 14px;font-size:12px;}
+  .main-content{padding:14px;margin-left:0;}
+  .kpi-grid{grid-template-columns:1fr 1fr;gap:12px;}
+  .kpi-card{padding:14px;}
+  .kpi-val{font-size:22px;}
+  .form-row{gap:10px;margin-bottom:10px;}
+  .form-row.col2{grid-template-columns:1fr;}
+  .form-row.col3{grid-template-columns:1fr;}
+  .form-row.col4{grid-template-columns:1fr 1fr;}
+  .form-group label{font-size:11px;}
+  .form-group input,.form-group select{font-size:12px;padding:8px 10px;}
+  .btn{padding:8px 14px;font-size:11px;}
+  .card{padding:16px;margin-bottom:12px;}
+  .card-title{font-size:14px;}
+  .card table{font-size:12px;}
+  .card table th{font-size:10px;padding:7px 10px;}
+  .card table td{font-size:11px;padding:7px 10px;}
+  .charts-row{gap:14px;}
+  .chart-card{padding:14px;}
+}
+@media(max-width:600px){
+  .navbar{padding:0 12px;flex-wrap:wrap;}
+  .navbar-group{order:2;width:100%;margin-top:8px;}
+  .navbar-group button{width:100%;font-size:11px;}
+  .sidebar{width:170px;min-width:170px;transform:translateX(-100%);}
+  body.sidebar-mobile-open .sidebar{transform:translateX(0);}
+  .sidebar-item{padding:8px 12px;font-size:11px;}
+  .main-content{padding:12px;}
+  .kpi-grid{grid-template-columns:1fr;gap:10px;}
+  .kpi-card{padding:12px;}
+  .kpi-val{font-size:20px;}
+  .kpi-lbl{font-size:10px;}
+  .form-row,.form-row.col2,.form-row.col3,.form-row.col4{grid-template-columns:1fr;gap:8px;}
+  .form-group label{font-size:10px;}
+  .form-group input,.form-group select{font-size:11px;padding:7px 8px;}
+  .btn{padding:7px 12px;font-size:10px;}
+  .card{padding:14px;margin-bottom:10px;}
+  .card-title{font-size:13px;}
+  .card table{font-size:11px;}
+  .card table th{font-size:9px;padding:6px 8px;}
+  .card table td{font-size:10px;padding:6px 8px;}
+  .charts-row{grid-template-columns:1fr;gap:10px;}
+  .chart-card{padding:12px;}
+  .voucher-list-table{font-size:11px;}
+  .voucher-list-table th{font-size:9px;padding:7px 8px;}
+  .voucher-list-table td{padding:7px 8px;}
+  .pv-badge{font-size:9px;}
+}
+@media(max-width:480px){
+  .navbar{padding:0 10px;gap:6px;}
+  .navbar-title{font-size:12px;}
+  .navbar-group button{font-size:10px;padding:5px 10px;}
+  .sidebar{width:140px;}
+  .sidebar-item{padding:7px 10px;font-size:10px;}
+  .main-content{padding:10px;}
+  .kpi-grid{gap:8px;}
+  .kpi-card{padding:10px;}
+  .kpi-val{font-size:18px;}
+  .kpi-lbl{font-size:9px;}
+  .form-group label{font-size:9px;}
+  .form-group input,.form-group select{font-size:10px;padding:6px 8px;}
+  .btn{padding:6px 10px;font-size:9px;}
+  .card{padding:12px;margin-bottom:8px;border-radius:10px;}
+  .card-title{font-size:12px;}
+  .card table{font-size:10px;}
+  .card table th{font-size:8px;padding:5px 6px;}
+  .card table td{font-size:9px;padding:5px 6px;}
+  .charts-row{gap:8px;}
+  .chart-card{padding:10px;}
+  .voucher-list-table{font-size:10px;}
+  .voucher-list-table th{font-size:8px;padding:5px 6px;}
+  .voucher-list-table td{padding:5px 6px;font-size:9px;}
+}
+@media(max-width:375px){
+  .navbar{padding:0 8px;}
+  .navbar-title{font-size:11px;}
+  .sidebar{width:120px;font-size:9px;}
+  .sidebar-item{padding:6px 8px;}
+  .main-content{padding:8px;}
+  .kpi-grid{gap:6px;}
+  .kpi-card{padding:8px;}
+  .kpi-val{font-size:16px;}
+  .form-group input,.form-group select{font-size:9px;padding:5px 6px;}
+  .card{padding:10px;margin-bottom:6px;}
+  .card table th{padding:4px;}
+  .card table td{padding:4px;font-size:8px;}
+}
 
 /* ── PAYMENT VOUCHER ── */
 .voucher-list-table{width:100%;border-collapse:collapse;font-size:12px;}

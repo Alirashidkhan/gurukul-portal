@@ -115,13 +115,58 @@ tr:hover td{background:#fafbff;}
 .empty-state{text-align:center;padding:60px;color:#aaa;font-size:14px;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
-@media(max-width:1024px){.stats-row{grid-template-columns:repeat(3,1fr);}}
-@media(max-width:768px){
-  .stats-row{grid-template-columns:1fr 1fr;}
+}
+
   .detail-grid{grid-template-columns:1fr;}
   .detail-item.full{grid-column:span 1;}
   th:nth-child(5),td:nth-child(5),th:nth-child(6),td:nth-child(6){display:none;}
 }
+/* Mobile Responsive Design */
+@media(max-width:768px){
+  .sidebar{display:none;width:200px;}
+  .main-content,.main{padding:14px;margin-left:0;}
+  .navbar{padding:0 16px;}
+  .navbar-title{font-size:14px;}
+  .kpi-grid,.stats-grid,.chart-grid{grid-template-columns:1fr 1fr;gap:12px;}
+  .kpi-card,.stat-card,.card{padding:14px;margin-bottom:12px;}
+  .kpi-val,.stat-val,.card-title{font-size:14px;}
+  table{font-size:12px;}
+  table th{font-size:10px;padding:7px;}
+  table td{font-size:11px;padding:7px;}
+}
+@media(max-width:600px){
+  .sidebar{display:none;width:170px;}
+  .main-content,.main{padding:12px;}
+  .navbar{padding:0 12px;}
+  .navbar-title{font-size:12px;}
+  .kpi-grid,.stats-grid,.chart-grid{grid-template-columns:1fr;gap:10px;}
+  .kpi-card,.stat-card{padding:12px;}
+  .kpi-val,.stat-val{font-size:20px;}
+  .card{padding:14px;margin-bottom:10px;}
+  table{font-size:11px;}
+  table th{font-size:9px;padding:6px;}
+  table td{font-size:10px;padding:6px;}
+}
+@media(max-width:480px){
+  .main-content,.main{padding:10px;}
+  .navbar{padding:0 10px;}
+  .kpi-grid,.stats-grid,.chart-grid{gap:8px;}
+  .kpi-card,.stat-card{padding:10px;border-radius:10px;}
+  .kpi-val,.stat-val{font-size:18px;}
+  table{font-size:10px;}
+  table th{font-size:8px;padding:5px;}
+  table td{font-size:9px;padding:5px;}
+  .card{padding:12px;margin-bottom:8px;}
+}
+@media(max-width:375px){
+  .main-content,.main{padding:8px;}
+  .navbar{padding:0 8px;}
+  .kpi-card,.stat-card{padding:8px;}
+  .kpi-val,.stat-val{font-size:16px;}
+  table th{padding:4px;font-size:7px;}
+  table td{padding:4px;font-size:8px;}
+}
+
 </style>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#C9A227">
