@@ -2135,7 +2135,7 @@ function handleWebsiteEnquiry(req, res) {
 
     db.prepare(`INSERT INTO marketing_leads
       (name, phone, email, class_interested, source, stage, assigned_to, notes, created_at, updated_at)
-      VALUES (?, ?, ?, ?, 'Website Popup', 'Inquiry', 'admin', ?, datetime('now','localtime'), datetime('now','localtime'))
+      VALUES (?, ?, ?, ?, 'Website Enquiry', 'Enquiry', 'admin', ?, datetime('now','localtime'), datetime('now','localtime'))
     `).run(name, phone, email, cls, notes);
 
     console.log(`\n📬 New website enquiry: ${name} — Class ${cls} — ${phone}`);

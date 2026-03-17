@@ -122,6 +122,7 @@ tbody tr:last-child td{border-bottom:none;}
 
 /* ── BADGES ── */
 .badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:700;}
+.badge-enquiry   {background:rgba(233,30,140,.12);color:#e91e8c;}
 .badge-inquiry   {background:rgba(41,128,185,.12);color:#2980b9;}
 .badge-contacted {background:rgba(243,156,18,.14);color:#d68910;}
 .badge-visit     {background:rgba(142,68,173,.12);color:#8e44ad;}
@@ -522,7 +523,7 @@ tbody tr:last-child td{border-bottom:none;}
           </div>
           <select id="leadFilterStage" onchange="filterLeads()" style="border:1.5px solid #e0e4ef;border-radius:9px;padding:8px 12px;font-size:12px;outline:none;background:#fff;">
             <option value="">All Stages</option>
-            <option>Inquiry</option><option>Contacted</option><option>Visit Scheduled</option><option>Applied</option><option>Admitted</option><option>Enrolled</option>
+            <option>Enquiry</option><option>Inquiry</option><option>Contacted</option><option>Visit Scheduled</option><option>Applied</option><option>Admitted</option><option>Enrolled</option>
           </select>
           <select id="leadFilterSource" onchange="filterLeads()" style="border:1.5px solid #e0e4ef;border-radius:9px;padding:8px 12px;font-size:12px;outline:none;background:#fff;">
             <option value="">All Sources</option>
@@ -779,7 +780,7 @@ tbody tr:last-child td{border-bottom:none;}
         </div>
         <div class="fgroup"><label>Stage</label>
           <select id="lStage">
-            <option>Inquiry</option><option>Contacted</option><option>Visit Scheduled</option><option>Applied</option><option>Admitted</option><option>Enrolled</option>
+            <option>Enquiry</option><option>Inquiry</option><option>Contacted</option><option>Visit Scheduled</option><option>Applied</option><option>Admitted</option><option>Enrolled</option>
           </select>
         </div>
       </div>
@@ -1066,8 +1067,8 @@ async function loadOverview() {
     });
 
     // Funnel strip
-    const STAGES = ['Inquiry','Contacted','Visit Scheduled','Applied','Admitted','Enrolled'];
-    const COLORS  = ['#2980b9','#e67e22','#8e44ad','#16a085','#27ae60','#0d1b5e'];
+    const STAGES = ['Enquiry','Inquiry','Contacted','Visit Scheduled','Applied','Admitted','Enrolled'];
+    const COLORS  = ['#e91e8c','#2980b9','#e67e22','#8e44ad','#16a085','#27ae60','#0d1b5e'];
     const stageMap = {};
     (d.stageRows||[]).forEach(r=>stageMap[r.stage]=r.c);
     const total = STAGES.reduce((sum,s)=>sum+(stageMap[s]||0),0)||1;
@@ -1119,7 +1120,7 @@ async function loadMktBudget() {
 
 // ── BADGE HELPER ─────────────────────────────────────────────────────────────
 function stageBadge(stage) {
-  const map = { 'Inquiry':'inquiry','Contacted':'contacted','Visit Scheduled':'visit','Applied':'applied','Admitted':'admitted','Enrolled':'enrolled' };
+  const map = { 'Enquiry':'enquiry','Inquiry':'inquiry','Contacted':'contacted','Visit Scheduled':'visit','Applied':'applied','Admitted':'admitted','Enrolled':'enrolled' };
   return `<span class="badge badge-${map[stage]||'inquiry'}">${stage||'—'}</span>`;
 }
 function campaignStatusBadge(s) {
@@ -1508,8 +1509,8 @@ async function loadAnalytics() {
       options:{ responsive:true, plugins:{ legend:{ position:'right', labels:{ font:{size:11}, boxWidth:14 } } } }
     });
     // Funnel Bar
-    const STAGES = ['Inquiry','Contacted','Visit Scheduled','Applied','Admitted','Enrolled'];
-    const COLORS  = ['#2980b9','#e67e22','#8e44ad','#16a085','#27ae60','#0d1b5e'];
+    const STAGES = ['Enquiry','Inquiry','Contacted','Visit Scheduled','Applied','Admitted','Enrolled'];
+    const COLORS  = ['#e91e8c','#2980b9','#e67e22','#8e44ad','#16a085','#27ae60','#0d1b5e'];
     const stageMap = {}; (d.stageRows||[]).forEach(r=>stageMap[r.stage]=r.c);
     const stageCounts = STAGES.map(s=>stageMap[s]||0);
     if (_analyticsFunnel) _analyticsFunnel.destroy();
