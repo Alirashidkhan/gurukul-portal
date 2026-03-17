@@ -27,6 +27,38 @@ async function q(sql, params = []) {
 async function main() {
   console.log('🌱 Starting production seed...');
 
+  // ── STUDENTS ─────────────────────────────────────────────────────────────
+  // Schema: id, name, class, section, dob, parent_name, parent_phone, username, password_hash, email, address
+  const existingStudents = await q(`SELECT COUNT(*) AS c FROM students`);
+  if (!existingStudents || parseInt(existingStudents.rows[0].c) === 0) {
+    const students = [
+      ['STU001','Aarav Sharma',       '6','A','2013-04-12','Ramesh Sharma',   '9845100001','aarav.sharma',   '$2b$10$hash001','aarav@school.edu',  'Jayanagar, Bengaluru'],
+      ['STU002','Ananya Gupta',       '6','A','2013-07-22','Suresh Gupta',    '9845100002','ananya.gupta',   '$2b$10$hash002','ananya@school.edu', 'Koramangala, Bengaluru'],
+      ['STU003','Rohan Nair',         '6','A','2013-02-08','Vijay Nair',      '9845100003','rohan.nair',     '$2b$10$hash003','rohan@school.edu',  'HSR Layout, Bengaluru'],
+      ['STU004','Priya Menon',        '7','A','2012-09-15','Anil Menon',      '9845100004','priya.menon',    '$2b$10$hash004','priya@school.edu',  'Indiranagar, Bengaluru'],
+      ['STU005','Karthik Reddy',      '7','A','2012-11-30','Srini Reddy',     '9845100005','karthik.reddy',  '$2b$10$hash005','karthik@school.edu','Whitefield, Bengaluru'],
+      ['STU006','Sneha Pillai',       '7','A','2012-06-18','Kumar Pillai',    '9845100006','sneha.pillai',   '$2b$10$hash006','sneha@school.edu',  'Banashankari, Bengaluru'],
+      ['STU007','Arjun Kumar',        '8','A','2011-03-25','Mohan Kumar',     '9845100007','arjun.kumar',    '$2b$10$hash007','arjun@school.edu',  'Malleshwaram, Bengaluru'],
+      ['STU008','Divya Krishnan',     '8','A','2011-08-10','Rajan Krishnan',  '9845100008','divya.krishnan', '$2b$10$hash008','divya@school.edu',  'Rajajinagar, Bengaluru'],
+      ['STU009','Amit Joshi',         '8','A','2011-12-05','Prakash Joshi',   '9845100009','amit.joshi',     '$2b$10$hash009','amit@school.edu',   'Vijayanagar, Bengaluru'],
+      ['STU010','Kavya Singh',        '9','A','2010-05-20','Deepak Singh',    '9845100010','kavya.singh',    '$2b$10$hash010','kavya@school.edu',  'JP Nagar, Bengaluru'],
+      ['STU011','Rahul Verma',        '9','A','2010-01-14','Sunil Verma',     '9845100011','rahul.verma',    '$2b$10$hash011','rahul@school.edu',  'Yelahanka, Bengaluru'],
+      ['STU012','Meghna Iyer',        '9','A','2010-10-28','Srinivas Iyer',   '9845100012','meghna.iyer',    '$2b$10$hash012','meghna@school.edu', 'Jayanagar, Bengaluru'],
+      ['STU013','Vikram Patel',       '10','A','2009-07-03','Harish Patel',   '9845100013','vikram.patel',   '$2b$10$hash013','vikram@school.edu', 'Koramangala, Bengaluru'],
+      ['STU014','Nithya Bhat',        '10','A','2009-04-17','Ramakrishna Bhat','9845100014','nithya.bhat',   '$2b$10$hash014','nithya@school.edu', 'Sadashivanagar, Bengaluru'],
+      ['STU015','Suresh Rao',         '10','A','2009-11-22','Narayana Rao',   '9845100015','suresh.rao',     '$2b$10$hash015','suresh@school.edu', 'Basavanagudi, Bengaluru'],
+    ];
+    for (const [id,name,cls,section,dob,parent_name,parent_phone,username,password_hash,email,address] of students) {
+      await q(`INSERT INTO students (id,name,class,section,dob,parent_name,parent_phone,username,password_hash,email,address,created_at)
+               VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,NOW())
+               ON CONFLICT (id) DO NOTHING`,
+        [id,name,cls,section,dob,parent_name,parent_phone,username,password_hash,email,address]);
+    }
+    console.log('✅ Students seeded (15 records)');
+  } else {
+    console.log('✅ Students already exist — skipping');
+  }
+
   // ── TEACHERS ─────────────────────────────────────────────────────────────
   // Schema: id, name, username, password_hash, email, phone, subject,
   //         created_at, + migrations: gender, designation, department,
@@ -635,6 +667,208 @@ async function main() {
     console.log('✅ Transport students seeded');
   } else {
     console.log('✅ Transport students already exist — skipping');
+  }
+
+  // ── MARKS (for report cards and performance analytics) ───────────────────
+  // Schema: student_id, subject, exam, marks, max_marks, term, date
+  const existingMarks = await q(`SELECT COUNT(*) AS c FROM marks`);
+  if (!existingMarks || parseInt(existingMarks.rows[0].c) === 0) {
+    // Subjects per class — matches teacher_assignments
+    const subjectsByClass = {
+      '6':  ['Mathematics','Science','English','Social Studies','Kannada','Hindi','Physical Education'],
+      '7':  ['Mathematics','Science','English','Social Studies','Kannada','Hindi','Physical Education'],
+      '8':  ['Mathematics','Science','English','Social Studies','Computer Science'],
+      '9':  ['Mathematics','Science','English','Social Studies'],
+      '10': ['Mathematics','Science','English','Social Studies'],
+    };
+    const students6to10 = [
+      ['STU001','6'],['STU002','6'],['STU003','6'],
+      ['STU004','7'],['STU005','7'],['STU006','7'],
+      ['STU007','8'],['STU008','8'],['STU009','8'],
+      ['STU010','9'],['STU011','9'],['STU012','9'],
+      ['STU013','10'],['STU014','10'],['STU015','10'],
+    ];
+    const exams   = [['Mid Term','Term-1','2025-10-07'],['Unit Test 1','Term-1','2026-01-15']];
+    const getRand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+    for (const [sid, cls] of students6to10) {
+      for (const [exam, term, date] of exams) {
+        for (const subj of (subjectsByClass[cls] || [])) {
+          const maxM = exam === 'Unit Test 1' ? 25 : 100;
+          const minScore = Math.floor(maxM * 0.55);
+          const scored = getRand(minScore, maxM);
+          await q(`INSERT INTO marks (student_id,subject,exam,marks,max_marks,term,date)
+                   VALUES ($1,$2,$3,$4,$5,$6,$7) ON CONFLICT DO NOTHING`,
+            [sid, subj, exam, scored, maxM, term, date]);
+        }
+      }
+    }
+    console.log('✅ Marks seeded');
+  } else {
+    console.log('✅ Marks already exist — skipping');
+  }
+
+  // ── CLASS TIMETABLES ──────────────────────────────────────────────────────
+  // Schema: teacher_id, class_name, section, subject, day_of_week, start_time, end_time, room, week_start
+  const existingTT = await q(`SELECT COUNT(*) AS c FROM class_timetables`);
+  if (!existingTT || parseInt(existingTT.rows[0].c) === 0) {
+    const weekStart = '2026-03-16'; // Monday of this week
+    const timetable = [
+      // Class 6
+      ['TCH001','6','A','Mathematics','Monday',   '08:00','08:45','Room 101',weekStart],
+      ['TCH002','6','A','Science',    'Monday',   '08:45','09:30','Room 101',weekStart],
+      ['TCH003','6','A','English',    'Monday',   '10:00','10:45','Room 101',weekStart],
+      ['TCH001','6','A','Mathematics','Tuesday',  '08:00','08:45','Room 101',weekStart],
+      ['TCH004','6','A','Social Studies','Tuesday','08:45','09:30','Room 101',weekStart],
+      ['TCH005','6','A','Kannada',    'Tuesday',  '10:00','10:45','Room 101',weekStart],
+      ['TCH002','6','A','Science',    'Wednesday','08:00','08:45','Room 101',weekStart],
+      ['TCH006','6','A','Hindi',      'Wednesday','08:45','09:30','Room 101',weekStart],
+      ['TCH003','6','A','English',    'Thursday', '08:00','08:45','Room 101',weekStart],
+      ['TCH007','6','A','Physical Education','Thursday','10:00','10:45','Ground',weekStart],
+      ['TCH001','6','A','Mathematics','Friday',   '08:00','08:45','Room 101',weekStart],
+      ['TCH002','6','A','Science',    'Friday',   '08:45','09:30','Room 101',weekStart],
+      // Class 8
+      ['TCH001','8','A','Mathematics','Monday',   '09:30','10:15','Room 201',weekStart],
+      ['TCH002','8','A','Science',    'Monday',   '10:15','11:00','Lab 1',   weekStart],
+      ['TCH003','8','A','English',    'Tuesday',  '09:30','10:15','Room 201',weekStart],
+      ['TCH008','8','A','Computer Science','Tuesday','10:15','11:00','Lab 2',weekStart],
+      ['TCH001','8','A','Mathematics','Wednesday','09:30','10:15','Room 201',weekStart],
+      ['TCH002','8','A','Science',    'Thursday', '09:30','10:15','Lab 1',   weekStart],
+      ['TCH008','8','A','Computer Science','Friday','09:30','10:15','Lab 2', weekStart],
+    ];
+    for (const [tid,cls,sec,subj,day,st,et,room,ws] of timetable) {
+      await q(`INSERT INTO class_timetables (teacher_id,class_name,section,subject,day_of_week,start_time,end_time,room,week_start,created_at,updated_at)
+               VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,NOW(),NOW()) ON CONFLICT DO NOTHING`,
+        [tid,cls,sec,subj,day,st,et,room,ws]);
+    }
+    console.log('✅ Class timetables seeded');
+  } else {
+    console.log('✅ Class timetables already exist — skipping');
+  }
+
+  // ── HOLIDAYS ──────────────────────────────────────────────────────────────
+  // Schema: date TEXT UNIQUE, name, type (National|State|School)
+  const existingHol = await q(`SELECT COUNT(*) AS c FROM holidays`);
+  if (!existingHol || parseInt(existingHol.rows[0].c) === 0) {
+    const holidays = [
+      ['2026-01-26','Republic Day','National'],
+      ['2026-02-19','Chhatrapati Shivaji Maharaj Jayanti','State'],
+      ['2026-03-17','Holi','National'],
+      ['2026-03-25','Annual Day (School Holiday)','School'],
+      ['2026-04-05','Ram Navami','National'],
+      ['2026-04-10','Good Friday','National'],
+      ['2026-04-14','Dr. Ambedkar Jayanti','National'],
+      ['2026-04-15','Summer Vacation Begins','School'],
+      ['2026-06-01','School Reopens','School'],
+      ['2026-08-15','Independence Day','National'],
+      ['2026-08-19','Ganesh Chaturthi','State'],
+      ['2026-10-02','Gandhi Jayanti','National'],
+      ['2026-10-15','Dasara (Vijayadashami)','State'],
+      ['2026-11-04','Diwali','National'],
+      ['2026-11-05','Diwali Holiday','National'],
+    ];
+    for (const [date, name, type] of holidays) {
+      await q(`INSERT INTO holidays (date,name,type) VALUES ($1,$2,$3) ON CONFLICT (date) DO NOTHING`,
+        [date, name, type]);
+    }
+    console.log('✅ Holidays seeded');
+  } else {
+    console.log('✅ Holidays already exist — skipping');
+  }
+
+  // ── ACADEMIC CALENDAR ─────────────────────────────────────────────────────
+  // Schema: title, event_type, start_date, end_date, class, description, is_active, created_by
+  const existingAC = await q(`SELECT COUNT(*) AS c FROM academic_calendar`);
+  if (!existingAC || parseInt(existingAC.rows[0].c) === 0) {
+    const calEvents = [
+      ['Term 1 Begins','Term','2025-06-02','2025-10-15','All','First academic term 2025-26',1,'Admin'],
+      ['Mid Term Examinations','Exam','2025-10-01','2025-10-07','All','Mid-term exams for all classes',1,'Admin'],
+      ['Dussehra Vacation','Vacation','2025-10-08','2025-10-20','All','Dussehra break',1,'Admin'],
+      ['Term 2 Begins','Term','2025-10-21','2026-03-31','All','Second academic term 2025-26',1,'Admin'],
+      ['Unit Test 1','Test','2026-01-15','2026-01-15','All','Class 6-8 unit test',1,'Admin'],
+      ['Annual Day Celebrations','Event','2026-03-25','2026-03-25','All','Cultural programme and prize distribution',1,'Admin'],
+      ['Final Examinations','Exam','2026-04-05','2026-04-12','All','Annual examinations for all classes',1,'Admin'],
+      ['Summer Vacation','Vacation','2026-04-15','2026-05-31','All','Summer break',1,'Admin'],
+      ['PTM – Term 1 Results','PTM','2025-11-10','2025-11-10','All','Parent-teacher meeting for Term 1 results',1,'Admin'],
+      ['PTM – Unit Test 1','PTM','2026-01-25','2026-01-25','All','Parent-teacher meeting post unit test',1,'Admin'],
+    ];
+    for (const [title,event_type,start_date,end_date,cls,description,is_active,created_by] of calEvents) {
+      await q(`INSERT INTO academic_calendar (title,event_type,start_date,end_date,class,description,is_active,created_by)
+               VALUES ($1,$2,$3,$4,$5,$6,$7,$8) ON CONFLICT DO NOTHING`,
+        [title,event_type,start_date,end_date,cls,description,is_active,created_by]);
+    }
+    console.log('✅ Academic calendar seeded');
+  } else {
+    console.log('✅ Academic calendar already exist — skipping');
+  }
+
+  // ── HOMEWORK ──────────────────────────────────────────────────────────────
+  // Schema: title, description, subject, class, section, due_date, assigned_by
+  const existingHW = await q(`SELECT COUNT(*) AS c FROM homework`);
+  if (!existingHW || parseInt(existingHW.rows[0].c) === 0) {
+    const homework = [
+      ['Chapter 5 – Linear Equations','Solve exercises 5.1 to 5.3 from NCERT textbook','Mathematics','6','A','2026-03-20','TCH001'],
+      ['Light & Reflection Lab Report','Write a 1-page lab report on the mirror experiment done in class','Science','6','A','2026-03-21','TCH002'],
+      ['Essay – My Favourite Season','Write a 200-word essay on your favourite season','English','7','A','2026-03-19','TCH003'],
+      ['Maps – South India','Draw and label the political map of South India','Social Studies','7','A','2026-03-22','TCH004'],
+      ['Python Basics Practice','Complete exercises 1-10 from the Python workbook','Computer Science','8','A','2026-03-21','TCH008'],
+      ['Algebra Worksheet','Complete the worksheet on factoring quadratic expressions','Mathematics','8','A','2026-03-20','TCH001'],
+      ['Chemistry – Periodic Table','Memorise groups 1, 2, 17 and 18 of the periodic table and write their properties','Science','9','A','2026-03-22','TCH002'],
+      ['History – World War II Summary','Write a 300-word summary of key events of World War II','Social Studies','10','A','2026-03-24','TCH004'],
+    ];
+    for (const [title,description,subject,cls,section,due_date,assigned_by] of homework) {
+      await q(`INSERT INTO homework (title,description,subject,class,section,due_date,assigned_by)
+               VALUES ($1,$2,$3,$4,$5,$6,$7) ON CONFLICT DO NOTHING`,
+        [title,description,subject,cls,section,due_date,assigned_by]);
+    }
+    console.log('✅ Homework seeded');
+  } else {
+    console.log('✅ Homework already exist — skipping');
+  }
+
+  // ── ADMISSIONS ────────────────────────────────────────────────────────────
+  // Schema: first_name, last_name, dob, gender, blood_group, grade_applying,
+  //         prev_school, last_grade, last_percentage, father_name, father_mobile, father_email,
+  //         mother_name, mother_mobile, address, city, pin, hear_about, reason_admission, status
+  const existingAdm = await q(`SELECT COUNT(*) AS c FROM admissions`);
+  if (!existingAdm || parseInt(existingAdm.rows[0].c) === 0) {
+    const admissions = [
+      ['Ishaan','Mehta','2014-05-10','Male','B+','6','St. Joseph School','5','88.0','Rakesh Mehta','9845201001','rakesh@gmail.com','Sunita Mehta','9845201002','12 MG Road','Bengaluru','560001','Google Search','Better academic environment','Pending'],
+      ['Shreya','Nanda','2013-11-20','Female','O+','7','The International School','6','92.5','Praveen Nanda','9845201003','praveen@gmail.com','Deepa Nanda','9845201004','45 Residency Road','Bengaluru','560025','Referral','Recommended by neighbour','Under Review'],
+      ['Aditya','Kulkarni','2012-03-15','Male','A+','8','DPS North','7','79.0','Sanjeev Kulkarni','9845201005','sanjeev@gmail.com','Priya Kulkarni','9845201006','23 Sadashivanagar','Bengaluru','560080','Social Media','Excellent sports facilities','Accepted'],
+      ['Pooja','Hegde','2011-07-04','Female','B-','9','Baldwin Girls','8','85.5','Sudhir Hegde','9845201007','sudhir@gmail.com','Kavitha Hegde','9845201008','67 Basavanagudi','Bengaluru','560004','Walk-in Visit','Close to home','Pending'],
+      ['Nikhil','Shetty','2010-09-30','Male','AB+','10','Kendriya Vidyalaya','9','91.0','Dinesh Shetty','9845201009','dinesh@gmail.com','Usha Shetty','9845201010','89 Jayanagar','Bengaluru','560041','Newspaper Ad','Quality education and discipline','Rejected'],
+      ['Tanvi','Rao','2014-01-25','Female','O-','6','Government School','5','76.0','Venkat Rao','9845201011','venkat@gmail.com','Latha Rao','9845201012','5 BTM Layout','Bengaluru','560076','Friend Referral','Affordable fee structure','Accepted'],
+    ];
+    for (const [fn,ln,dob,gender,bg,grade,prev,lg,lp,fname,fmob,femail,mname,mmob,addr,city,pin,hear,reason,status] of admissions) {
+      await q(`INSERT INTO admissions (first_name,last_name,dob,gender,blood_group,grade_applying,prev_school,last_grade,last_percentage,father_name,father_mobile,father_email,mother_name,mother_mobile,address,city,pin,hear_about,reason_admission,status,submitted_at)
+               VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,NOW()) ON CONFLICT DO NOTHING`,
+        [fn,ln,dob,gender,bg,grade,prev,lg,parseFloat(lp),fname,fmob,femail,mname,mmob,addr,city,pin,hear,reason,status]);
+    }
+    console.log('✅ Admissions seeded');
+  } else {
+    console.log('✅ Admissions already exist — skipping');
+  }
+
+  // ── PTM MEETINGS ──────────────────────────────────────────────────────────
+  // Schema: student_id, title, scheduled_at, teacher_name, teacher_subject, location, status
+  const existingPTM = await q(`SELECT COUNT(*) AS c FROM ptm_meetings`);
+  if (!existingPTM || parseInt(existingPTM.rows[0].c) === 0) {
+    const ptms = [
+      [1,'Progress Review – Term 1','2025-11-10 10:00:00','Rajesh Kumar','Mathematics','Room 101','completed'],
+      [4,'Progress Review – Term 1','2025-11-10 10:30:00','Priya Sharma','Science','Room 102','completed'],
+      [7,'Progress Review – Term 1','2025-11-10 11:00:00','Suresh Nair','English','Room 103','completed'],
+      [1,'Unit Test 1 Feedback','2026-01-25 10:00:00','Rajesh Kumar','Mathematics','Room 101','scheduled'],
+      [4,'Unit Test 1 Feedback','2026-01-25 10:30:00','Priya Sharma','Science','Room 102','scheduled'],
+      [10,'Annual Progress Meeting','2026-03-28 11:00:00','Anitha Rao','Social Studies','Room 104','scheduled'],
+    ];
+    for (const [student_id,title,scheduled_at,teacher_name,teacher_subject,location,status] of ptms) {
+      await q(`INSERT INTO ptm_meetings (student_id,title,scheduled_at,teacher_name,teacher_subject,location,status)
+               VALUES ($1,$2,$3,$4,$5,$6,$7) ON CONFLICT DO NOTHING`,
+        [student_id,title,scheduled_at,teacher_name,teacher_subject,location,status]);
+    }
+    console.log('✅ PTM meetings seeded');
+  } else {
+    console.log('✅ PTM meetings already exist — skipping');
   }
 
   // ── SECURITY EVENTS ───────────────────────────────────────────────────────
