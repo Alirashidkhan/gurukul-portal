@@ -8578,7 +8578,7 @@ function handleAccountingSummary(req, res) {
   const cashBal      = totalIncome - totalExpense; // simplified
 
   // Month-wise fee trend
-  const monthTrend = db.prepare(`SELECT strftime('%Y-%m',paid_date) AS m, COALESCE(SUM(amount),0) AS total FROM finance_fees WHERE status='Paid' AND paid_date>=? AND paid_date<=? GROUP BY m ORDER BY m`).all(from,to);
+  const monthTrend = db.prepare(`SELECT LEFT(COALESCE(paid_date::text,''),7) AS m, COALESCE(SUM(amount),0) AS total FROM finance_fees WHERE status='Paid' AND paid_date>=? AND paid_date<=? GROUP BY 1 ORDER BY 1`).all(from,to);
 
   send(res, 200, { feeTotal, feePend, donTotal, salaryTot, pfTot, esiTot, manualExp, totalIncome, totalExpense, surplus, cashBal, monthTrend, year:yr });
 }

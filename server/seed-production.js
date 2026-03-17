@@ -261,6 +261,48 @@ async function main() {
   }
   console.log('✅ Marketing campaigns seeded');
 
+  // ── MARKETING EVENTS ──────────────────────────────────────────────────────
+  // Schema: name, type, event_date, venue, description, registrations, attendees, status
+  const existingME = await q(`SELECT COUNT(*) AS c FROM marketing_events`);
+  if (!existingME || parseInt(existingME.rows[0].c) === 0) {
+    const mktEvents = [
+      ['Open House 2026-27','Open Day','2026-02-15','School Auditorium','Annual open house for prospective parents',85,72,'Completed'],
+      ['Science Exhibition','Exhibition','2026-03-10','School Grounds','Annual science fair open to public',120,110,'Completed'],
+      ['Annual Day 2026','Annual Event','2026-03-25','School Auditorium','Cultural day with performances and prize distribution',250,0,'Upcoming'],
+      ['Admissions Orientation','Orientation','2026-04-05','Conference Hall','Orientation for new students and parents for 2026-27',60,0,'Upcoming'],
+    ];
+    for (const [name,type,event_date,venue,description,registrations,attendees,status] of mktEvents) {
+      await q(`INSERT INTO marketing_events (name,type,event_date,venue,description,registrations,attendees,status,created_at,updated_at)
+               VALUES ($1,$2,$3,$4,$5,$6,$7,$8,NOW(),NOW()) ON CONFLICT DO NOTHING`,
+        [name,type,event_date,venue,description,registrations,attendees,status]);
+    }
+    console.log('✅ Marketing events seeded');
+  } else {
+    console.log('✅ Marketing events already exist — skipping');
+  }
+
+  // ── MARKETING SOCIAL POSTS ────────────────────────────────────────────────
+  // Schema: platform, content, scheduled_date, status, reach, engagement
+  const existingSP = await q(`SELECT COUNT(*) AS c FROM marketing_social_posts`);
+  if (!existingSP || parseInt(existingSP.rows[0].c) === 0) {
+    const socialPosts = [
+      ['Instagram','Annual Day is coming on March 25! Join us for performances. #GurukulHighSchool #AnnualDay2026','2026-03-20','Scheduled',0,0],
+      ['Facebook','Admissions Open for 2026-27! Grades 1-10. Limited seats. Call 080-12345678. #Admissions','2026-03-18','Scheduled',0,0],
+      ['Instagram','Congratulations to our Science Exhibition participants! #ScienceExhibition #Gurukul','2026-03-11','Published',412,89],
+      ['WhatsApp','Dear Parents, Fee payment deadline is March 31, 2026. Please ensure timely payment.','2026-03-15','Published',380,0],
+      ['Facebook','Open House was a success! Thank you to the 72 families who visited us.','2026-02-16','Published',620,145],
+      ['Instagram','Library corner spotlight: New books added this month! #LibraryLife #GurukulHighSchool','2026-02-20','Published',290,67],
+    ];
+    for (const [platform,content,scheduled_date,status,reach,engagement] of socialPosts) {
+      await q(`INSERT INTO marketing_social_posts (platform,content,scheduled_date,status,reach,engagement,created_at,updated_at)
+               VALUES ($1,$2,$3,$4,$5,$6,NOW(),NOW()) ON CONFLICT DO NOTHING`,
+        [platform,content,scheduled_date,status,reach,engagement]);
+    }
+    console.log('✅ Marketing social posts seeded');
+  } else {
+    console.log('✅ Marketing social posts already exist — skipping');
+  }
+
   // ── JOURNAL ENTRIES ───────────────────────────────────────────────────────
   // Schema: date, voucher_no, voucher_type, narration, account_code, debit, credit, source, created_by
   const journals = [
