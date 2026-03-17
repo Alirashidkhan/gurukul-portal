@@ -1742,7 +1742,7 @@ const stmts = {
     SUM(CASE WHEN a.status='L' THEN 1 ELSE 0 END) as leave
     FROM students s LEFT JOIN attendance a ON s.id=a.student_id
     WHERE s.class=? AND s.section=?
-    GROUP BY s.id ORDER BY s.name`),
+    GROUP BY s.id, s.name ORDER BY s.name`),
   attHistoryForClass:    db.prepare(`SELECT a.date, a.student_id, a.status, s.name
     FROM attendance a JOIN students s ON a.student_id=s.id
     WHERE s.class=? AND s.section=? AND a.date BETWEEN ? AND ?
