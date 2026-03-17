@@ -534,46 +534,48 @@ async function main() {
   // ── FEE SCHEDULES ─────────────────────────────────────────────────────────
   // Needed for Fee Schedule page AND fee defaulters calculation (primary source)
   // Schema: class, fee_type, amount, academic_yr, term, UNIQUE(class, fee_type, academic_yr, term)
+  // Normalize any previously seeded '2025-26' records to '2026' (API queries by calendar year)
+  await q(`UPDATE fee_schedules SET academic_yr='2026' WHERE academic_yr='2025-26'`);
   const existingFS = await q(`SELECT COUNT(*) AS c FROM fee_schedules`);
   if (!existingFS || parseInt(existingFS.rows[0].c) === 0) {
-    // Fee breakdown per class per fee_type for academic year 2025-26
+    // Fee breakdown per class per fee_type for academic year 2026 (calendar year, matches API)
     // Amounts sum to the annual_fee for each class (from class_fees above)
     const feeSchedules = [
       // Class 6  — annual total: 15000
-      ['6','Tuition Fee',   9000,'2025-26','Annual'],
-      ['6','Exam Fee',      1500,'2025-26','Annual'],
-      ['6','Library Fee',   1000,'2025-26','Annual'],
-      ['6','Sports Fee',    1500,'2025-26','Annual'],
-      ['6','Lab Fee',       1250,'2025-26','Annual'],
-      ['6','Transport Fee', 750, '2025-26','Annual'],
+      ['6','Tuition Fee',   9000,'2026','Annual'],
+      ['6','Exam Fee',      1500,'2026','Annual'],
+      ['6','Library Fee',   1000,'2026','Annual'],
+      ['6','Sports Fee',    1500,'2026','Annual'],
+      ['6','Lab Fee',       1250,'2026','Annual'],
+      ['6','Transport Fee', 750, '2026','Annual'],
       // Class 7  — annual total: 15000
-      ['7','Tuition Fee',   9000,'2025-26','Annual'],
-      ['7','Exam Fee',      1500,'2025-26','Annual'],
-      ['7','Library Fee',   1000,'2025-26','Annual'],
-      ['7','Sports Fee',    1500,'2025-26','Annual'],
-      ['7','Lab Fee',       1250,'2025-26','Annual'],
-      ['7','Transport Fee', 750, '2025-26','Annual'],
+      ['7','Tuition Fee',   9000,'2026','Annual'],
+      ['7','Exam Fee',      1500,'2026','Annual'],
+      ['7','Library Fee',   1000,'2026','Annual'],
+      ['7','Sports Fee',    1500,'2026','Annual'],
+      ['7','Lab Fee',       1250,'2026','Annual'],
+      ['7','Transport Fee', 750, '2026','Annual'],
       // Class 8  — annual total: 16000
-      ['8','Tuition Fee',  10000,'2025-26','Annual'],
-      ['8','Exam Fee',      1500,'2025-26','Annual'],
-      ['8','Library Fee',   1000,'2025-26','Annual'],
-      ['8','Sports Fee',    1500,'2025-26','Annual'],
-      ['8','Lab Fee',       1250,'2025-26','Annual'],
-      ['8','Transport Fee', 750, '2025-26','Annual'],
+      ['8','Tuition Fee',  10000,'2026','Annual'],
+      ['8','Exam Fee',      1500,'2026','Annual'],
+      ['8','Library Fee',   1000,'2026','Annual'],
+      ['8','Sports Fee',    1500,'2026','Annual'],
+      ['8','Lab Fee',       1250,'2026','Annual'],
+      ['8','Transport Fee', 750, '2026','Annual'],
       // Class 9  — annual total: 17000
-      ['9','Tuition Fee',  11000,'2025-26','Annual'],
-      ['9','Exam Fee',      1500,'2025-26','Annual'],
-      ['9','Library Fee',   1000,'2025-26','Annual'],
-      ['9','Sports Fee',    1500,'2025-26','Annual'],
-      ['9','Lab Fee',       1250,'2025-26','Annual'],
-      ['9','Transport Fee', 750, '2025-26','Annual'],
+      ['9','Tuition Fee',  11000,'2026','Annual'],
+      ['9','Exam Fee',      1500,'2026','Annual'],
+      ['9','Library Fee',   1000,'2026','Annual'],
+      ['9','Sports Fee',    1500,'2026','Annual'],
+      ['9','Lab Fee',       1250,'2026','Annual'],
+      ['9','Transport Fee', 750, '2026','Annual'],
       // Class 10 — annual total: 18000
-      ['10','Tuition Fee', 12000,'2025-26','Annual'],
-      ['10','Exam Fee',     1500,'2025-26','Annual'],
-      ['10','Library Fee',  1000,'2025-26','Annual'],
-      ['10','Sports Fee',   1500,'2025-26','Annual'],
-      ['10','Lab Fee',      1250,'2025-26','Annual'],
-      ['10','Transport Fee', 750,'2025-26','Annual'],
+      ['10','Tuition Fee', 12000,'2026','Annual'],
+      ['10','Exam Fee',     1500,'2026','Annual'],
+      ['10','Library Fee',  1000,'2026','Annual'],
+      ['10','Sports Fee',   1500,'2026','Annual'],
+      ['10','Lab Fee',      1250,'2026','Annual'],
+      ['10','Transport Fee', 750,'2026','Annual'],
     ];
     for (const [cls, fee_type, amount, academic_yr, term] of feeSchedules) {
       await q(`INSERT INTO fee_schedules (class, fee_type, amount, academic_yr, term)
