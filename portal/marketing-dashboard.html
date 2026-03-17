@@ -1234,8 +1234,8 @@ async function deleteLead(id) {
 
 // ── FUNNEL ────────────────────────────────────────────────────────────────────
 function loadFunnel() {
-  const STAGES = ['Inquiry','Contacted','Visit Scheduled','Applied','Admitted','Enrolled'];
-  const COLORS  = ['#2980b9','#e67e22','#8e44ad','#16a085','#27ae60','#0d1b5e'];
+  const STAGES = ['Enquiry','Inquiry','Contacted','Visit Scheduled','Applied','Admitted','Enrolled'];
+  const COLORS  = ['#e91e8c','#2980b9','#e67e22','#8e44ad','#16a085','#27ae60','#0d1b5e'];
   const board = document.getElementById('funnelBoard');
   if (!board) return;
   const byStage = {};
