@@ -668,66 +668,115 @@ img,canvas,iframe,video{max-width:100%!important;}
 }
 /* ════ END DEEP MOBILE FIX v3 ════ */
 
-/* ════ WIDGET / CARD MOBILE FIX v4 ════ */
-@media(max-width:768px){
-  /* ALL grid containers → 2 columns */
-  .leave-balance-row,.checkin-hero,.report-grid,.sal-summary-grid,
-  .dr-preview-meta,.mp-grid,.stats-grid,.kpi-grid,.fn-kpi-grid,
-  .pr-summary-grid,.sp-stats,.adm-stats-row,.classes-grid,.marks-grid,
-  .fees-summary,.att-summary,.bio-summary,.receipt-info-grid,
-  .alloc-grid,.insights-grid,.perf-top,.naac-grid,.letter-grid,
-  .grid2,.grid3,.grid4,.three-col,.two-col,.col-2,.col2 {
-    grid-template-columns: 1fr 1fr !important;
+/* ═══════════════════════════════════════════════════════════
+   COMPREHENSIVE MOBILE FIX — injected
+   ═══════════════════════════════════════════════════════════ */
+
+/* Base defaults */
+html, body { overflow-x: hidden !important; }
+img, video, canvas, iframe { max-width: 100%; }
+.tbl-wrap, .table-wrap, .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+/* ── Tablet (769px – 1024px): sidebar hidden, full-width main ── */
+@media (max-width: 1024px) {
+  .student-sidebar, .parent-sidebar, .teacher-sidebar,
+  .sidebar, .admin-sidebar, .nav-sidebar {
+    transform: translateX(-260px) !important;
+    position: fixed !important;
+    z-index: 300 !important;
+    transition: transform 0.28s ease !important;
+    top: 0 !important;
+    height: 100vh !important;
+    overflow-y: auto !important;
+  }
+  .student-sidebar.open, .parent-sidebar.open, .teacher-sidebar.open,
+  .sidebar.open, .admin-sidebar.open, .nav-sidebar.open {
+    transform: translateX(0) !important;
+  }
+  .main, .main-content, .page-main, .content-area {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  /* Stat / KPI grids: 2 columns on tablet */
+  .stats-grid, .kpi-grid, .stat-cards, .overview-cards,
+  .grid-4, [style*="repeat(4"], .cards-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  /* 3-col grids → 2 col */
+  .grid-3, [style*="repeat(3"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* ── Mobile (max 768px) ── */
+@media (max-width: 768px) {
+  /* Header */
+  .header, .top-bar, .dash-header, .portal-header,
+  .page-header { padding: 0 12px !important; }
+
+  /* Sidebar overlay backdrop */
+  .sidebar-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 299;
+  }
+  .sidebar-overlay.active { display: block !important; }
+
+  /* Main content */
+  .main, .main-content, .page-main {
+    padding: 12px !important;
+  }
+
+  /* Grids → 2 col */
+  .stats-grid, .kpi-grid, .stat-cards, .overview-cards,
+  .grid-4, .grid-3, .cards-row {
+    grid-template-columns: repeat(2, 1fr) !important;
     gap: 10px !important;
   }
-  /* Single-column layouts */
-  .pr-charts-row,.fn-charts-row,.fn-charts-row2,.fn-don-row,
-  .perf-charts,.charts-row,.two-col,.form-grid,
-  .sp-grid,.leave-form,.etpl-fields,.mp-fields,
-  .sp-form-grid,.sp-salary-calc,.settle-grid,.slip-emp-row,
-  .adm-detail-grid,.dr-row-top,.jl-head,.jl-row,
-  .chart-grid,.kanban-board,.funnel-board,.user-grid {
+
+  /* Charts */
+  .charts-row, .chart-grid, .charts-grid {
     grid-template-columns: 1fr !important;
   }
-  /* lb-card: fix cramped leave balance cards */
-  .lb-card {
-    flex-direction: row !important;
-    align-items: center !important;
-    padding: 14px 16px !important;
-    gap: 12px !important;
+
+  /* Tables */
+  table { min-width: 520px; }
+  .tbl-wrap, .table-wrap { overflow-x: auto !important; }
+
+  /* Cards */
+  .card, .widget, .panel, .section-card {
+    padding: 14px 12px !important;
   }
-  .lb-icon { width: 40px !important; height: 40px !important; flex-shrink: 0 !important; }
-  .lb-info { min-width: 0 !important; flex: 1 !important; }
-  .lb-num { font-size: 22px !important; }
-  .lb-label { font-size: 11px !important; }
-  /* Stat/KPI cards */
-  .stat-card,.kpi-card { padding: 14px !important; }
-  .stat-num,.kpi-val { font-size: 20px !important; }
-  /* Form rows: always single column */
-  .form-row,.form-row.col2,.form-row.col3,.form-row.col4,
-  .fld-row,.fld-group-row { grid-template-columns: 1fr !important; }
-  .full,.full3,.two,.three { grid-column: span 1 !important; }
-  /* dr-row (daily report) */
-  .dr-row-top { grid-template-columns: 1fr 1fr !important; }
-  .dr-row-top > :last-child { grid-column: span 2; }
-  /* Charts fixed height */
-  .chart-box, [id$="Chart"], [id*="chart"] { max-width: 100% !important; }
-  /* tt-grid timetable */
-  .tt-grid { overflow-x: auto !important; display: block !important; }
+
+  /* Typography */
+  .page-title, h1 { font-size: 20px !important; }
+  h2 { font-size: 17px !important; }
+  .stat-value, .kpi-value { font-size: 22px !important; }
+
+  /* Attendance / form rows */
+  .student-row, .form-row-flex {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+
+  /* Buttons */
+  .btn, button:not(.icon-btn) { min-height: 42px; }
 }
-@media(max-width:480px){
-  /* All grids → 1 column on small phones */
-  .leave-balance-row,.checkin-hero,.sal-summary-grid,
-  .pr-summary-grid,.sp-stats,.adm-stats-row,.classes-grid,
-  .marks-grid,.fees-summary,.att-summary,.bio-summary,
-  .alloc-grid,.insights-grid,.naac-grid,.grid2,.grid3,.grid4 {
+
+/* ── Small phones (max 480px) ── */
+@media (max-width: 480px) {
+  .stats-grid, .kpi-grid, .stat-cards, .overview-cards,
+  .grid-4, .grid-3, .grid-2, .cards-row {
     grid-template-columns: 1fr !important;
   }
-  /* lb-card at 480 still row but more compact */
-  .lb-card { padding: 12px !important; gap: 10px !important; }
-  .lb-num { font-size: 20px !important; }
+  .main, .main-content { padding: 10px 8px !important; }
+  .card, .widget, .panel { padding: 12px 10px !important; }
+  .page-title, h1 { font-size: 18px !important; }
 }
-/* ════ END WIDGET / CARD MOBILE FIX v4 ════ */
 </style>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#C9A227">
@@ -2271,6 +2320,41 @@ window.addEventListener('scroll', updateSidebarTop, { passive: true });
   // Run again after any dynamic content loads
   setTimeout(fixMobileGrids, 500);
   setTimeout(fixMobileGrids, 1500);
+})();
+</script>
+
+<!-- Mobile sidebar toggle -->
+<script>
+(function() {
+  const toggle = document.querySelector('.hamburger, .menu-toggle, #menuToggle, [data-toggle="sidebar"], .sidebar-toggle, .hamburger-btn');
+  const sidebar = document.querySelector('.student-sidebar, .parent-sidebar, .teacher-sidebar, .sidebar, .admin-sidebar');
+  let overlay = document.getElementById('sidebarOverlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.className = 'sidebar-overlay';
+    overlay.id = 'sidebarOverlay';
+    document.body.prepend(overlay);
+  }
+  if (toggle && sidebar) {
+    toggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('active');
+    });
+    overlay.addEventListener('click', function() {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+    });
+    // Close on nav link click (mobile)
+    sidebar.querySelectorAll('a').forEach(function(a) {
+      a.addEventListener('click', function() {
+        if (window.innerWidth <= 1024) {
+          sidebar.classList.remove('open');
+          overlay.classList.remove('active');
+        }
+      });
+    });
+  }
 })();
 </script>
 

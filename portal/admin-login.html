@@ -137,6 +137,82 @@ body::before{
   .fld input{padding:9px 10px;font-size:11px;}
   .btn-login{padding:10px;font-size:12px;}
 }
+/* MOBILE-FIX-APPLIED-v2 */
+
+    /* ===== MOBILE RESPONSIVE FIX ===== */
+    @media (max-width: 1024px) {
+      .student-sidebar, .parent-sidebar, .teacher-sidebar,
+      .admin-sidebar, .finance-sidebar, .hr-sidebar,
+      .budget-sidebar, .marketing-sidebar, .analytics-sidebar,
+      .audit-sidebar, .modules-sidebar, .monitor-sidebar,
+      .sidebar, [class*="-sidebar"] {
+        transform: translateX(-280px) !important;
+        position: fixed !important;
+        top: 0; left: 0; height: 100vh !important;
+        z-index: 300 !important;
+        transition: transform 0.28s ease !important;
+      }
+      .sidebar.open, [class*="-sidebar"].open { transform: translateX(0) !important; }
+      .main, .main-content, .content-area, .dashboard-content,
+      [class*="main-content"], [class*="-content"] {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+      }
+      .stats-grid, .kpi-grid, .metrics-grid, .card-grid,
+      .grid-4, .grid-3, [class*="stats-grid"], [class*="kpi-grid"] {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+      }
+      .top-bar, .topbar, .header-bar, nav.top-nav {
+        padding-left: 16px !important;
+        padding-right: 16px !important;
+      }
+      .hamburger, .menu-toggle, #menuToggle, .sidebar-toggle,
+      [class*="hamburger"], [class*="menu-toggle"] {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+      table { font-size: 13px !important; }
+      .table-container, .table-wrapper, [class*="table-wrap"] {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+      }
+      .form-row, .form-grid, [class*="form-row"] {
+        grid-template-columns: 1fr !important;
+        flex-direction: column !important;
+      }
+      .chart-container, .chart-wrap, [class*="chart"] {
+        min-width: 0 !important;
+        overflow-x: auto !important;
+      }
+      .modal-content, .modal-body { 
+        max-width: 95vw !important; 
+        padding: 16px !important;
+      }
+    }
+    @media (max-width: 640px) {
+      .stats-grid, .kpi-grid, .metrics-grid, .card-grid,
+      .grid-4, .grid-3, .grid-2, [class*="stats-grid"], [class*="kpi-grid"] {
+        grid-template-columns: 1fr !important;
+      }
+      .top-bar h1, .topbar h1, .page-title, .dashboard-title {
+        font-size: 16px !important;
+      }
+      .btn, button[class*="btn"] {
+        padding: 8px 14px !important;
+        font-size: 13px !important;
+      }
+    }
+    .sidebar-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.45); z-index: 299;
+    }
+    .sidebar-overlay.active { display: block; }
+    /* ===== END MOBILE RESPONSIVE FIX ===== */
+
 </style>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#C9A227">
@@ -251,5 +327,39 @@ async function doLogin(e) {
   }
 }
 </script>
+
+<script>
+/* ===== SIDEBAR MOBILE TOGGLE ===== */
+(function() {
+  var toggleBtn = document.querySelector('.hamburger, .menu-toggle, #menuToggle, .sidebar-toggle, [data-toggle="sidebar"]');
+  var sidebar = document.querySelector('.student-sidebar, .parent-sidebar, .teacher-sidebar, .admin-sidebar, .finance-sidebar, .hr-sidebar, .budget-sidebar, .marketing-sidebar, .analytics-sidebar, .audit-sidebar, .modules-sidebar, .monitor-sidebar, .sidebar, [class*="-sidebar"]:not(.sidebar-overlay)');
+  var overlay = document.getElementById('sidebarOverlay');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.className = 'sidebar-overlay';
+    overlay.id = 'sidebarOverlay';
+    document.body.prepend(overlay);
+  }
+  function closeSidebar() {
+    if (sidebar) sidebar.classList.remove('open');
+    overlay.classList.remove('active');
+  }
+  if (toggleBtn && sidebar) {
+    toggleBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('active');
+    });
+  }
+  overlay.addEventListener('click', closeSidebar);
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeSidebar(); });
+  // Handle window resize
+  window.addEventListener('resize', function() {
+    if (window.innerWidth > 1024) closeSidebar();
+  });
+})();
+/* ===== END SIDEBAR MOBILE TOGGLE ===== */
+</script>
+
 </body>
 </html>
