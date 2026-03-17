@@ -20,7 +20,6 @@ const DEPT_META = {
   it:          { name: 'IT & Infrastructure' },
   transport:   { name: 'Transport'           },
 };
-const { DatabaseSync } = require('node:sqlite');
 const fs   = require('fs');
 const path = require('path');
 
@@ -145,31 +144,29 @@ function syncAll(db) {
 
   // ── NAAC Report ───────────────────────────────────────────────────────
   try {
-    // Open a fresh connection for NAAC to avoid any shared-db state issues
-    const naacDb = new DatabaseSync('/tmp/gurukul_working.db');
-    const totalStudents  = naacDb.prepare('SELECT COUNT(*) AS c FROM students').get().c;
-    const classes        = naacDb.prepare("SELECT COUNT(DISTINCT class) AS c FROM students").get().c;
-    const attRows = naacDb.prepare("SELECT student_id, COUNT(*) AS tot, SUM(CASE WHEN status='P' THEN 1 ELSE 0 END) AS pres FROM attendance GROUP BY student_id").all();
+    // Use the shared pg-worker db (routes to PostgreSQL in production)
+    const totalStudents  = db.prepare('SELECT COUNT(*) AS c FROM students').get().c;
+    const classes        = db.prepare("SELECT COUNT(DISTINCT class) AS c FROM students").get().c;
+    const attRows = db.prepare("SELECT student_id, COUNT(*) AS tot, SUM(CASE WHEN status='P' THEN 1 ELSE 0 END) AS pres FROM attendance GROUP BY student_id").all();
     const avgAttNum = attRows.length > 0
       ? Math.round(attRows.reduce((s, r) => s + (r.tot > 0 ? r.pres * 100 / r.tot : 0), 0) / attRows.length)
       : 0;
-    const marksRows     = naacDb.prepare('SELECT marks, max_marks FROM marks').all();
+    const marksRows     = db.prepare('SELECT marks, max_marks FROM marks').all();
     const avgPerf       = marksRows.length > 0
       ? Math.round(marksRows.reduce((s, r) => s + (r.max_marks > 0 ? r.marks * 100 / r.max_marks : 0), 0) / marksRows.length)
       : 0;
-    const examsHeld     = naacDb.prepare("SELECT COUNT(*) AS c FROM exams WHERE status='Completed'").get().c || naacDb.prepare("SELECT COUNT(DISTINCT exam) AS c FROM marks").get().c;
-    const feeRows       = naacDb.prepare("SELECT SUM(amount) AS total, SUM(CASE WHEN status='Paid' THEN amount ELSE 0 END) AS paid FROM fees").get();
+    const examsHeld     = db.prepare("SELECT COUNT(*) AS c FROM exams WHERE status='Completed'").get().c || db.prepare("SELECT COUNT(DISTINCT exam) AS c FROM marks").get().c;
+    const feeRows       = db.prepare("SELECT SUM(amount) AS total, SUM(CASE WHEN status='Paid' THEN amount ELSE 0 END) AS paid FROM fees").get();
     const feeTotal      = feeRows && feeRows.total ? feeRows.total : 0;
     const feePaid       = feeRows && feeRows.paid ? feeRows.paid : 0;
     const feeRate       = feeTotal > 0 ? Math.round(feePaid * 100 / feeTotal) + '%' : '0%';
-    const admissions    = naacDb.prepare("SELECT COUNT(*) AS c FROM admissions WHERE status IN ('approved','Approved')").get().c;
-    const totalApps     = naacDb.prepare('SELECT COUNT(*) AS c FROM admissions').get().c;
-    const visitorsCount = naacDb.prepare('SELECT COUNT(*) AS c FROM visitors').get().c;
-    const totalTeachers = naacDb.prepare('SELECT COUNT(*) AS c FROM teachers').get().c;
-    const totalSupport  = naacDb.prepare('SELECT COUNT(*) AS c FROM support_staff').get().c;
+    const admissions    = db.prepare("SELECT COUNT(*) AS c FROM admissions WHERE status IN ('approved','Approved')").get().c;
+    const totalApps     = db.prepare('SELECT COUNT(*) AS c FROM admissions').get().c;
+    const visitorsCount = db.prepare('SELECT COUNT(*) AS c FROM visitors').get().c;
+    const totalTeachers = db.prepare('SELECT COUNT(*) AS c FROM teachers').get().c;
+    const totalSupport  = db.prepare('SELECT COUNT(*) AS c FROM support_staff').get().c;
     const totalStaff    = totalTeachers + totalSupport;
-    const pendingLeave  = naacDb.prepare("SELECT COUNT(*) AS c FROM leave_applications WHERE status='Pending'").get().c;
-    naacDb.close();
+    const pendingLeave  = db.prepare("SELECT COUNT(*) AS c FROM leave_applications WHERE status='Pending'").get().c;
     write('naac-report.json', {
       generated_on: new Date().toISOString(),
       school: 'The Gurukul High',
