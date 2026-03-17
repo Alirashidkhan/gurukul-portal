@@ -423,6 +423,95 @@ async function main() {
     console.log('✅ Exams already exist — skipping');
   }
 
+  // ── FIX CORRUPT MONTH VALUES IN FINANCE_FEES ─────────────────────────────
+  // Old records have month='April'/'October' (text names) instead of ISO '2025-04'/'2025-10'
+  // Map month names → ISO format for academic year 2025-26
+  const monthNameMap = {
+    'January':'2026-01','February':'2026-02','March':'2026-03',
+    'April':'2025-04','May':'2025-05','June':'2025-06',
+    'July':'2025-07','August':'2025-08','September':'2025-09',
+    'October':'2025-10','November':'2025-11','December':'2025-12'
+  };
+  for (const [name, iso] of Object.entries(monthNameMap)) {
+    await q(`UPDATE finance_fees SET month=$1 WHERE month=$2`, [iso, name]);
+  }
+  console.log('✅ Finance_fees month names normalized to ISO format');
+
+  // ── CLASS FEES ────────────────────────────────────────────────────────────
+  // Needed for fee defaulters calculation (fallback when no fee_schedules)
+  const existingCF = await q(`SELECT COUNT(*) AS c FROM class_fees`);
+  if (!existingCF || parseInt(existingCF.rows[0].c) === 0) {
+    const classFeesList = [
+      ['1',12000,500],['2',12000,500],['3',13000,500],['4',13000,500],['5',14000,500],
+      ['6',15000,750],['7',15000,750],['8',16000,750],['9',17000,1000],['10',18000,1000],
+      ['11',20000,1000],['12',21000,1000]
+    ];
+    for (const [cls, annual_fee, processing_fee] of classFeesList) {
+      await q(`INSERT INTO class_fees (class, annual_fee, processing_fee, updated_at)
+               VALUES ($1, $2, $3, NOW())
+               ON CONFLICT (class) DO NOTHING`,
+        [cls, annual_fee, processing_fee]);
+    }
+    console.log('✅ Class fees seeded');
+  } else {
+    console.log('✅ Class fees already exist — skipping');
+  }
+
+  // ── FEE SCHEDULES ─────────────────────────────────────────────────────────
+  // Needed for Fee Schedule page AND fee defaulters calculation (primary source)
+  // Schema: class, fee_type, amount, academic_yr, term, UNIQUE(class, fee_type, academic_yr, term)
+  const existingFS = await q(`SELECT COUNT(*) AS c FROM fee_schedules`);
+  if (!existingFS || parseInt(existingFS.rows[0].c) === 0) {
+    // Fee breakdown per class per fee_type for academic year 2025-26
+    // Amounts sum to the annual_fee for each class (from class_fees above)
+    const feeSchedules = [
+      // Class 6  — annual total: 15000
+      ['6','Tuition Fee',   9000,'2025-26','Annual'],
+      ['6','Exam Fee',      1500,'2025-26','Annual'],
+      ['6','Library Fee',   1000,'2025-26','Annual'],
+      ['6','Sports Fee',    1500,'2025-26','Annual'],
+      ['6','Lab Fee',       1250,'2025-26','Annual'],
+      ['6','Transport Fee', 750, '2025-26','Annual'],
+      // Class 7  — annual total: 15000
+      ['7','Tuition Fee',   9000,'2025-26','Annual'],
+      ['7','Exam Fee',      1500,'2025-26','Annual'],
+      ['7','Library Fee',   1000,'2025-26','Annual'],
+      ['7','Sports Fee',    1500,'2025-26','Annual'],
+      ['7','Lab Fee',       1250,'2025-26','Annual'],
+      ['7','Transport Fee', 750, '2025-26','Annual'],
+      // Class 8  — annual total: 16000
+      ['8','Tuition Fee',  10000,'2025-26','Annual'],
+      ['8','Exam Fee',      1500,'2025-26','Annual'],
+      ['8','Library Fee',   1000,'2025-26','Annual'],
+      ['8','Sports Fee',    1500,'2025-26','Annual'],
+      ['8','Lab Fee',       1250,'2025-26','Annual'],
+      ['8','Transport Fee', 750, '2025-26','Annual'],
+      // Class 9  — annual total: 17000
+      ['9','Tuition Fee',  11000,'2025-26','Annual'],
+      ['9','Exam Fee',      1500,'2025-26','Annual'],
+      ['9','Library Fee',   1000,'2025-26','Annual'],
+      ['9','Sports Fee',    1500,'2025-26','Annual'],
+      ['9','Lab Fee',       1250,'2025-26','Annual'],
+      ['9','Transport Fee', 750, '2025-26','Annual'],
+      // Class 10 — annual total: 18000
+      ['10','Tuition Fee', 12000,'2025-26','Annual'],
+      ['10','Exam Fee',     1500,'2025-26','Annual'],
+      ['10','Library Fee',  1000,'2025-26','Annual'],
+      ['10','Sports Fee',   1500,'2025-26','Annual'],
+      ['10','Lab Fee',      1250,'2025-26','Annual'],
+      ['10','Transport Fee', 750,'2025-26','Annual'],
+    ];
+    for (const [cls, fee_type, amount, academic_yr, term] of feeSchedules) {
+      await q(`INSERT INTO fee_schedules (class, fee_type, amount, academic_yr, term)
+               VALUES ($1, $2, $3, $4, $5)
+               ON CONFLICT (class, fee_type, academic_yr, term) DO NOTHING`,
+        [cls, fee_type, amount, academic_yr, term]);
+    }
+    console.log('✅ Fee schedules seeded');
+  } else {
+    console.log('✅ Fee schedules already exist — skipping');
+  }
+
   // ── SECURITY EVENTS ───────────────────────────────────────────────────────
   const secEvents = [
     ['login_success','admin','127.0.0.1','admin','Admin login','info'],
