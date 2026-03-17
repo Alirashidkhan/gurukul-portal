@@ -199,6 +199,17 @@ tr:hover td{background:#fafbff;}
 .amt{font-family:'Courier New',monospace;font-weight:700;}
 .amt-pos{color:#1e5631;}
 .amt-neg{color:var(--red);}
+
+/* Mobile hamburger and backdrop */
+.sidebar-backdrop{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:99;cursor:pointer;}
+.hamburger-btn{display:none !important;}
+@media(max-width:768px){
+  .hamburger-btn{display:block !important;}
+  .sidebar-backdrop{display:block;}
+  .tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  table{width:100%;}
+}
+
 /* Mobile Responsive Design */
 @media(max-width:768px){
   .sidebar{display:none;width:200px;}
@@ -211,6 +222,11 @@ tr:hover td{background:#fafbff;}
   table{font-size:12px;}
   table th{font-size:10px;padding:7px;}
   table td{font-size:11px;padding:7px;}
+  .two-col{grid-template-columns:1fr;}
+  .three-col{grid-template-columns:1fr;}
+  .topbar{grid-template-columns:1fr;}
+  .topbar-left,.topbar-center{grid-column:1;}
+  .topbar-right{grid-column:1;}
 }
 @media(max-width:600px){
   .sidebar{display:none;width:170px;}
@@ -255,6 +271,8 @@ tr:hover td{background:#fafbff;}
 </head>
 <body>
 
+<div class="sidebar-backdrop" onclick="closeMobileSidebar()"></div>
+
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="topbar-left">
@@ -275,6 +293,9 @@ tr:hover td{background:#fafbff;}
     <button class="topbar-btn" onclick="refreshAll()"><i class="fa fa-refresh"></i> Refresh</button>
     <a href="/portal/admin-dashboard.html#finance" class="topbar-btn"><i class="fa fa-arrow-left"></i> Admin</a>
     <button class="topbar-btn danger" onclick="doLogout()"><i class="fa fa-sign-out"></i> Logout</button>
+    <button class="hamburger-btn" onclick="toggleSidebar()" style="display:none;background:rgba(255,255,255,.1);color:#fff;font-size:16px;cursor:pointer;padding:5px 10px;border:1px solid rgba(255,255,255,.2);border-radius:6px;">
+      <i class="fa fa-bars"></i>
+    </button>
   </div>
 </div>
 
@@ -518,6 +539,16 @@ tr:hover td{background:#fafbff;}
 <div class="toast" id="toast"></div>
 
 <script>
+// ── Mobile sidebar toggle ──────────────────────────────────────────────────
+function toggleSidebar(){
+  if(window.innerWidth <= 768){
+    document.body.classList.toggle('sidebar-mobile-open');
+  }
+}
+function closeMobileSidebar(){
+  document.body.classList.remove('sidebar-mobile-open');
+}
+
 // Relative API paths — works on any host (local or cloud)
 const DATA_PORT = '';
 const API = '/api';

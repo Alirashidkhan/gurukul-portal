@@ -101,18 +101,28 @@ textarea{resize:vertical;min-height:80px}
 .provider-tab button{padding:8px 20px;border-radius:8px;border:1.5px solid #dde3ef;background:#fff;cursor:pointer;font-size:13px;font-weight:600;color:#6b7c93;transition:.2s}
 .provider-tab button.active{background:var(--navy);color:#fff;border-color:var(--navy)}
 .sidebar{width:100%;height:auto;position:static;display:flex;flex-wrap:wrap;padding:8px}.sidebar-item{padding:8px 12px;font-size:12px}.stats-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* Mobile hamburger and backdrop */
+.sidebar-backdrop{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:99;cursor:pointer;}
+.hamburger-btn{display:none !important;}
+body.sidebar-mobile-open .sidebar-backdrop{display:block;}
+
 /* Mobile Responsive Design */
 @media(max-width:768px){
-  .sidebar{display:none;width:200px;}
-  .main-content,.main{padding:14px;margin-left:0;}
+  .hamburger-btn{display:block !important;}
+  .sidebar{position:fixed;left:0;top:56px;z-index:100;width:220px;height:calc(100vh - 56px);transform:translateX(-100%);transition:transform .3s ease;display:flex;flex-direction:column;}
+  body.sidebar-mobile-open .sidebar{transform:translateX(0);}
+  .layout{flex-direction:column;}
+  .content{padding:14px;margin-left:0;}
   .navbar{padding:0 16px;}
   .navbar-title{font-size:14px;}
   .kpi-grid,.stats-grid,.chart-grid{grid-template-columns:1fr 1fr;gap:12px;}
   .kpi-card,.stat-card,.card{padding:14px;margin-bottom:12px;}
   .kpi-val,.stat-val,.card-title{font-size:14px;}
-  table{font-size:12px;}
+  table{font-size:12px;width:100%;}
   table th{font-size:10px;padding:7px;}
   table td{font-size:11px;padding:7px;}
+  .form-row{grid-template-columns:1fr;}
 }
 @media(max-width:600px){
   .sidebar{display:none;width:170px;}
@@ -151,6 +161,8 @@ textarea{resize:vertical;min-height:80px}
 </head>
 <body>
 
+<div class="sidebar-backdrop" onclick="closeMobileSidebar()"></div>
+
 <div class="topbar">
   <a class="logo" href="/portal/admin-dashboard.html">
     <img src="/assets/images/logo.png" onerror="this.style.display='none'">
@@ -158,6 +170,9 @@ textarea{resize:vertical;min-height:80px}
   </a>
   <span style="color:#a8b4cc;font-size:13px;margin-left:8px">School Modules</span>
   <button class="back-btn" onclick="window.location='/portal/admin-dashboard.html'"><i class="fa fa-arrow-left"></i> Admin Dashboard</button>
+  <button class="hamburger-btn" onclick="toggleSidebar()" style="display:none;background:rgba(255,255,255,.1);color:#fff;font-size:16px;cursor:pointer;padding:7px 12px;border:none;border-radius:6px;margin-left:auto;">
+    <i class="fa fa-bars"></i>
+  </button>
 </div>
 
 <div class="layout">
@@ -628,6 +643,16 @@ textarea{resize:vertical;min-height:80px}
 <div id="toast"></div>
 
 <script>
+// ── Mobile sidebar toggle ──────────────────────────────────────────────────
+function toggleSidebar(){
+  if(window.innerWidth <= 768){
+    document.body.classList.toggle('sidebar-mobile-open');
+  }
+}
+function closeMobileSidebar(){
+  document.body.classList.remove('sidebar-mobile-open');
+}
+
 const API = '';
 const ADMIN_KEY = sessionStorage.getItem('adminKey') || 'gurukul-admin-2026';
 

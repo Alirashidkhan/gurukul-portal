@@ -199,9 +199,13 @@ tr:hover td{background:#fafbff;}
 .divider{height:1px;background:var(--border);margin:16px 0;}
 select{border:1.5px solid var(--border);border-radius:9px;padding:9px 12px;font-size:13px;font-family:inherit;outline:none;background:#fff;}
 select:focus{border-color:var(--teal);}
+/* Mobile sidebar drawer */
+.sidebar-backdrop{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:149;cursor:pointer;}
+body.sidebar-mobile-open .sidebar-backdrop{display:block;}
 /* Mobile Responsive Design */
 @media(max-width:768px){
-  .sidebar{display:none;}
+  .sidebar{position:fixed;left:0;top:0;z-index:150;width:260px;min-width:260px;height:100vh;transform:translateX(-100%);transition:transform .3s ease;}
+  body.sidebar-mobile-open .sidebar{transform:translateX(0);}
   .main-content{padding:14px;margin-left:0;}
   .grid2,.grid3,.grid4{grid-template-columns:1fr;}
   .kpi-card{padding:14px;margin-bottom:12px;}
@@ -236,6 +240,8 @@ select:focus{border-color:var(--teal);}
   <meta name="apple-mobile-web-app-title" content="Gurukul ERP">
 </head>
 <body>
+
+<div class="sidebar-backdrop" onclick="closeMobileSidebar()"></div>
 
 <!-- ── LOGIN SCREEN ──────────────────────────────────────────────────────────── -->
 <div id="loginScreen">
@@ -1112,7 +1118,14 @@ try {
 
 // ── Sidebar Toggle & Sections ─────────────────────────────────────────────
 function toggleSidebar() {
-  document.body.classList.toggle('sidebar-hidden');
+  if(window.innerWidth <= 768){
+    document.body.classList.toggle('sidebar-mobile-open');
+  } else {
+    document.body.classList.toggle('sidebar-hidden');
+  }
+}
+function closeMobileSidebar(){
+  document.body.classList.remove('sidebar-mobile-open');
 }
 function toggleBudgetSection(titleEl) {
   const items = titleEl.nextElementSibling;
