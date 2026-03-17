@@ -5100,7 +5100,7 @@ function handleMonitorSecEvents(req, res) {
   const successToday = db.prepare(`SELECT COUNT(*) AS c FROM security_events WHERE event_type='login_success' AND timestamp >= date('now','localtime')`).get().c;
   const critCount = db.prepare(`SELECT COUNT(*) AS c FROM security_events WHERE severity='critical' AND timestamp >= datetime('now','-1 hour','localtime')`).get().c;
   const byDash = db.prepare(`SELECT dashboard, COUNT(*) AS total, SUM(CASE WHEN event_type='login_failed' THEN 1 ELSE 0 END) AS failed FROM security_events GROUP BY dashboard ORDER BY total DESC`).all();
-  const suspIPs = db.prepare(`SELECT ip, COUNT(*) AS cnt FROM security_events WHERE event_type='login_failed' GROUP BY ip HAVING cnt >= 3 ORDER BY cnt DESC LIMIT 20`).all();
+  const suspIPs = db.prepare(`SELECT ip, COUNT(*) AS cnt FROM security_events WHERE event_type='login_failed' GROUP BY ip HAVING COUNT(*) >= 3 ORDER BY COUNT(*) DESC LIMIT 20`).all();
   send(res, 200, { events, total, failedToday, successToday, critCount, byDash, suspIPs });
 }
 
@@ -5594,7 +5594,7 @@ function handleAnalyticsOverview(req, res) {
   // Top pages
   const topPages  = db.prepare(`SELECT page, COUNT(*) AS hits FROM page_views WHERE timestamp >= date('now','-7 days','localtime') GROUP BY page ORDER BY hits DESC LIMIT 10`).all();
   // Top actors
-  const topActors = db.prepare(`SELECT actor, role, COUNT(*) AS actions FROM data_events WHERE timestamp >= date('now','localtime') GROUP BY actor ORDER BY actions DESC LIMIT 10`).all();
+  const topActors = db.prepare(`SELECT actor, role, COUNT(*) AS actions FROM data_events WHERE timestamp >= date('now','localtime') GROUP BY actor, role ORDER BY COUNT(*) DESC LIMIT 10`).all();
   // Module activity
   const byModule  = db.prepare(`SELECT module, COUNT(*) AS cnt FROM data_events WHERE timestamp >= date('now','localtime') GROUP BY module ORDER BY cnt DESC`).all();
   // Recent events
@@ -5644,7 +5644,7 @@ function handleAnalyticsUsers(req, res) {
   const loginsToday= db.prepare(`SELECT COUNT(*) AS c FROM security_events WHERE event_type='login_success' AND timestamp >= date('now','localtime')`).get().c;
   const loginsFail = db.prepare(`SELECT COUNT(*) AS c FROM security_events WHERE event_type='login_failed' AND timestamp >= date('now','localtime')`).get().c;
   const byRole     = db.prepare(`SELECT dashboard AS role, COUNT(*) AS logins FROM security_events WHERE event_type='login_success' AND timestamp >= date('now','localtime') GROUP BY dashboard ORDER BY logins DESC`).all();
-  const actorActivity = db.prepare(`SELECT actor, role, COUNT(*) AS actions, MAX(timestamp) AS last_active FROM data_events WHERE timestamp >= date('now','-7 days','localtime') GROUP BY actor ORDER BY actions DESC LIMIT 20`).all();
+  const actorActivity = db.prepare(`SELECT actor, role, COUNT(*) AS actions, MAX(timestamp) AS last_active FROM data_events WHERE timestamp >= date('now','-7 days','localtime') GROUP BY actor, role ORDER BY COUNT(*) DESC LIMIT 20`).all();
   const hourlyLogins  = db.prepare(`SELECT to_char(timestamp::timestamp AT TIME ZONE 'Asia/Kolkata','HH24') AS hr, COUNT(*) AS cnt FROM security_events WHERE event_type='login_success' AND timestamp >= to_char((NOW() - INTERVAL '24 hours') AT TIME ZONE 'Asia/Kolkata','YYYY-MM-DD HH24:MI:SS') GROUP BY 1 ORDER BY 1`).all();
   const loginHistory  = db.prepare(`SELECT * FROM security_events WHERE event_type IN ('login_success','login_failed') ORDER BY id DESC LIMIT 40`).all();
   send(res, 200, { students, teachers, loginsToday, loginsFail, byRole, actorActivity, hourlyLogins, loginHistory });
@@ -6898,7 +6898,7 @@ function handleAdminPerformance(req, res) {
   const tp = [];
   if (cls)  { topQ += ' AND s.class=?'; tp.push(cls); }
   if (term) { topQ += ' AND m.term=?';  tp.push(term); }
-  topQ += ' GROUP BY m.student_id ORDER BY avg_pct DESC LIMIT 10';
+  topQ += ' GROUP BY m.student_id, s.name, s.class, s.section ORDER BY AVG(m.marks/m.max_marks*100) DESC LIMIT 10';
   const topPerformers = db.prepare(topQ).all(...tp);
 
   // Attendance analytics

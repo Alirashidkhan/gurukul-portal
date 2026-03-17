@@ -105,6 +105,14 @@ function translateSQL(rawSql, rawParams) {
   });
   sql = sql.replace(/datetime\s*\(\s*'now'\s*,\s*'localtime'\s*\)/gi, IST_TS);
   sql = sql.replace(/datetime\s*\(\s*'now'\s*\)/gi,                   IST_TS);
+  // 3-arg: date('now', '-N unit', 'localtime') → shifted IST date
+  sql = sql.replace(/date\s*\(\s*'now'\s*,\s*'([^']+)'\s*,\s*'localtime'\s*\)/gi, (_, iv) => {
+    return `to_char((NOW() + INTERVAL '${iv}') AT TIME ZONE 'Asia/Kolkata','YYYY-MM-DD')`;
+  });
+  // 2-arg: date('now', '-N unit') → shifted UTC date (no localtime)
+  sql = sql.replace(/date\s*\(\s*'now'\s*,\s*'(-[^']+)'\s*\)/gi, (_, iv) => {
+    return `to_char(NOW() + INTERVAL '${iv}','YYYY-MM-DD')`;
+  });
   sql = sql.replace(/date\s*\(\s*'now'\s*,\s*'localtime'\s*\)/gi,     IST_DT);
   sql = sql.replace(/date\s*\(\s*'now'\s*\)/gi,                       IST_DT);
 
