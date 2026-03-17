@@ -251,9 +251,12 @@ async function main() {
     ['marketing','2026','2026-01','Admissions Campaign',20000,'Campaign'],
     ['marketing','2026','2026-02','Print Materials',15000,'Print'],
   ];
+  // Clean up duplicates from previous deploys (keep lowest id per description)
+  await q(`DELETE FROM budget_expenses WHERE id NOT IN (SELECT MIN(id) FROM budget_expenses GROUP BY description)`);
   for (const [dept_key,fiscal_year,month,description,amount,category] of expenses) {
     await q(`INSERT INTO budget_expenses (dept_key,fiscal_year,month,description,amount,category,created_by,created_at)
-             VALUES ($1,$2,$3,$4,$5,$6,'admin',NOW()) ON CONFLICT DO NOTHING`,
+             SELECT $1,$2,$3,$4,$5,$6,'admin',NOW()
+             WHERE NOT EXISTS (SELECT 1 FROM budget_expenses WHERE description=$4)`,
       [dept_key,fiscal_year,month,description,amount,category]);
   }
   console.log('✅ Budget expenses seeded');
@@ -272,9 +275,12 @@ async function main() {
     ['Administrative Assistant','Admin','K.R. Nagar, Mysuru','Full-time','Graduate with computer skills.','Graduate, MS Office',1,'Open','2026-02-01','2026-03-31'],
     ['Lab Assistant','Science','K.R. Nagar, Mysuru','Part-time','BSc with lab experience.','BSc Science, Lab exp',1,'Open','2026-02-10','2026-04-15'],
   ];
+  // Clean up duplicates from previous deploys (keep lowest id per title+department)
+  await q(`DELETE FROM job_postings WHERE id NOT IN (SELECT MIN(id) FROM job_postings GROUP BY title, department)`);
   for (const [title,department,location,type,description,requirements,vacancies,status,posted_date,closing_date] of jobs) {
     await q(`INSERT INTO job_postings (title,department,location,type,description,requirements,vacancies,status,posted_date,closing_date,created_by,created_at)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,'hr',NOW()) ON CONFLICT DO NOTHING`,
+             SELECT $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,'hr',NOW()
+             WHERE NOT EXISTS (SELECT 1 FROM job_postings WHERE title=$1 AND department=$2)`,
       [title,department,location,type,description,requirements,vacancies,status,posted_date,closing_date]);
   }
   console.log('✅ Job postings seeded');
@@ -289,9 +295,12 @@ async function main() {
     ['Ravi Shankar','9901001005','ravi@gmail.com','9','Google Ads','Inquiry','admin','New inquiry'],
     ['Usha Srinivas','9901001006','usha@gmail.com','7','Referral','Contacted','admin','Referred by alumni'],
   ];
+  // Clean up duplicates from previous deploys (keep lowest id per email)
+  await q(`DELETE FROM marketing_leads WHERE id NOT IN (SELECT MIN(id) FROM marketing_leads GROUP BY email)`);
   for (const [name,phone,email,class_interested,source,stage,assigned_to,notes] of leads) {
     await q(`INSERT INTO marketing_leads (name,phone,email,class_interested,source,stage,assigned_to,notes,created_at,updated_at)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,NOW(),NOW()) ON CONFLICT DO NOTHING`,
+             SELECT $1,$2,$3,$4,$5,$6,$7,$8,NOW(),NOW()
+             WHERE NOT EXISTS (SELECT 1 FROM marketing_leads WHERE email=$3)`,
       [name,phone,email,class_interested,source,stage,assigned_to,notes]);
   }
   console.log('✅ Marketing leads seeded');
@@ -303,9 +312,12 @@ async function main() {
     ['Alumni Donation Drive','Email','Completed','Alumni batch 2010-2020',15000,800,65,'2026-02-01','2026-02-28','Email + WhatsApp'],
     ['Annual Day Promotion','Event','Active','School community',20000,1200,300,'2026-03-01','2026-03-25','Social Media + Posters'],
   ];
+  // Clean up duplicates from previous deploys (keep lowest id per campaign name)
+  await q(`DELETE FROM marketing_campaigns WHERE id NOT IN (SELECT MIN(id) FROM marketing_campaigns GROUP BY name)`);
   for (const [name,type,status,target_audience,budget,reach,conversions,start_date,end_date,notes] of campaigns) {
     await q(`INSERT INTO marketing_campaigns (name,type,status,target_audience,budget,reach,conversions,start_date,end_date,notes,created_at,updated_at)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,NOW(),NOW()) ON CONFLICT DO NOTHING`,
+             SELECT $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,NOW(),NOW()
+             WHERE NOT EXISTS (SELECT 1 FROM marketing_campaigns WHERE name=$1)`,
       [name,type,status,target_audience,budget,reach,conversions,start_date,end_date,notes]);
   }
   console.log('✅ Marketing campaigns seeded');
@@ -366,9 +378,12 @@ async function main() {
     ['2026-02-10','JV-2602-003','Payment','Lab Equipment Purchase','LAB-EXP',42000,0,'manual','admin'],
     ['2026-02-10','JV-2602-004','Payment','Lab Equipment Purchase','BANK',0,42000,'manual','admin'],
   ];
+  // Clean up duplicates from previous deploys (keep lowest id per voucher_no)
+  await q(`DELETE FROM journal_entries WHERE id NOT IN (SELECT MIN(id) FROM journal_entries GROUP BY voucher_no)`);
   for (const [date,voucher_no,voucher_type,narration,account_code,debit,credit,source,created_by] of journals) {
     await q(`INSERT INTO journal_entries (date,voucher_no,voucher_type,narration,account_code,debit,credit,source,created_by,created_at)
-             VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,NOW()) ON CONFLICT DO NOTHING`,
+             SELECT $1,$2,$3,$4,$5,$6,$7,$8,$9,NOW()
+             WHERE NOT EXISTS (SELECT 1 FROM journal_entries WHERE voucher_no=$2)`,
       [date,voucher_no,voucher_type,narration,account_code,debit,credit,source,created_by]);
   }
   console.log('✅ Journal entries seeded');
@@ -381,9 +396,12 @@ async function main() {
     ['Fee Payment Reminder','Last date for term fee payment is March 31, 2026.','alert','["all"]','Admin'],
     ['Holiday Notice - Ugadi','School closed March 22 for Ugadi. Resumes March 24.','announcement','["all"]','Admin'],
   ];
+  // Clean up duplicates from previous deploys (keep lowest id per title)
+  await q(`DELETE FROM announcements WHERE id NOT IN (SELECT MIN(id) FROM announcements GROUP BY title)`);
   for (const [title,body,type,target_roles,created_by] of announcements) {
     await q(`INSERT INTO announcements (title,body,type,target_roles,created_by,created_at,is_active)
-             VALUES ($1,$2,$3,$4,$5,NOW(),1) ON CONFLICT DO NOTHING`,
+             SELECT $1,$2,$3,$4,$5,NOW(),1
+             WHERE NOT EXISTS (SELECT 1 FROM announcements WHERE title=$1)`,
       [title,body,type,target_roles,created_by]);
   }
   console.log('✅ Announcements seeded');
@@ -934,9 +952,12 @@ async function main() {
     ['password_change','admin','127.0.0.1','priya.sharma','Password changed','info'],
     ['unusual_access','monitor','10.0.0.5','unknown','Multiple failed attempts','high'],
   ];
+  // Clean up duplicates from previous deploys (keep lowest id per event_type+username+details)
+  await q(`DELETE FROM security_events WHERE id NOT IN (SELECT MIN(id) FROM security_events GROUP BY event_type, username, details)`);
   for (const [event_type,dashboard,ip,username,details,severity] of secEvents) {
     await q(`INSERT INTO security_events (event_type,dashboard,ip,username,details,severity,timestamp)
-             VALUES ($1,$2,$3,$4,$5,$6,NOW()) ON CONFLICT DO NOTHING`,
+             SELECT $1,$2,$3,$4,$5,$6,NOW()
+             WHERE NOT EXISTS (SELECT 1 FROM security_events WHERE event_type=$1 AND username=$4 AND details=$5)`,
       [event_type,dashboard,ip,username,details,severity]);
   }
   console.log('✅ Security events seeded');
