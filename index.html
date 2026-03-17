@@ -3,8 +3,8 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Gurukul High School – Mysore | Excellence in Education Since 1965</title>
-	<meta name="description" content="Gurukul High School, Mysore – Nurturing young minds with a blend of modern knowledge, traditional values and spiritual wisdom. CBSE affiliated school in Mysore, Karnataka.">
+	<title>The Gurukul High – Gurukula Vidya Samsthe, K.R. Nagar, Mysuru</title>
+	<meta name="description" content="The Gurukul High – Gurukula Vidya Samsthe, K.R. Nagar, Mysuru – Nurturing young minds with a blend of modern knowledge, traditional values and spiritual wisdom. State Syllabus (Karnataka SSLC) school in K.R. Nagar, Mysuru(D), Karnataka.">
 
 	<!-- Fonts -->
 	<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,16 +15,12 @@
 	<link rel="stylesheet" href="css/font-awesome.css" type="text/css" media="all">
 	<link rel="stylesheet" href="css/all.css" type="text/css" media="all">
 	<link rel="stylesheet" href="css/elegant-font.css" type="text/css" media="all">
-	<link rel="stylesheet" href="css/style_1.css" type="text/css" media="all">
-	<link rel="stylesheet" href="css/page-builder.css" type="text/css" media="all">
-	<link rel="stylesheet" href="css/style-core.css" type="text/css" media="all">
-	<link rel="stylesheet" href="css/kingster-style-custom.css" type="text/css" media="all">
-	<link rel="stylesheet" href="css/dashicons.min.css" type="text/css" media="all">
-
+					
 	<style>
 		/* ===== CSS RESET & BASE ===== */
 		*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-		html { scroll-behavior: smooth; }
+		html { scroll-behavior: smooth; overflow-x: hidden; }
+		body { overflow-x: hidden !important; overflow-y: auto !important; }
 		body {
 			font-family: 'Poppins', sans-serif;
 			font-size: 15px;
@@ -40,8 +36,8 @@
 		:root {
 			--primary:   #0D1B5E;   /* Deep Navy Blue */
 			--primary-d: #091245;
-			--gold:      #3D8B37;   /* Leaf Green */
-			--gold-l:    #5CB85C;   /* Light Green */
+			--gold:      #C9A227;   /* Rich Gold */
+			--gold-l:    #E6C86A;   /* Light Gold */
 			--dark:      #060D2E;   /* Very Dark Navy */
 			--text:      #444;
 			--light-bg:  #f0f2f8;
@@ -112,7 +108,7 @@
 			font-weight: 800;
 			flex-shrink: 0;
 			letter-spacing: -1px;
-			box-shadow: 0 4px 15px rgba(139,26,46,0.35);
+			box-shadow: 0 4px 15px rgba(13,27,94,0.35);
 		}
 		.logo-text-wrap { display: flex; flex-direction: column; }
 		.logo-name {
@@ -123,11 +119,12 @@
 			line-height: 1.1;
 		}
 		.logo-tagline {
-			font-size: 10px;
+			font-size: 9px;
 			color: var(--gold);
-			letter-spacing: 2px;
+			letter-spacing: 1.2px;
 			text-transform: uppercase;
 			font-weight: 600;
+			white-space: nowrap;
 		}
 		.nav-menu {
 			display: flex;
@@ -145,10 +142,10 @@
 			transition: all .2s;
 		}
 		.nav-menu > li > a:hover,
-		.nav-menu > li.active > a { color: var(--primary); background: rgba(139,26,46,0.06); }
+		.nav-menu > li.active > a { color: var(--primary); background: rgba(13,27,94,0.06); }
 		.nav-menu .dropdown {
 			position: absolute;
-			top: calc(100% + 6px);
+			top: 100%;
 			left: 0;
 			background: #fff;
 			min-width: 200px;
@@ -156,9 +153,19 @@
 			box-shadow: 0 8px 30px rgba(0,0,0,0.15);
 			opacity: 0;
 			pointer-events: none;
-			transform: translateY(-8px);
-			transition: all .25s;
+			transform: translateY(4px);
+			transition: opacity .22s ease, transform .22s ease;
 			border-top: 3px solid var(--primary);
+			padding-top: 6px;
+			/* invisible bridge so gap between nav link and dropdown doesn't break hover */
+		}
+		.nav-menu .dropdown::before {
+			content: '';
+			position: absolute;
+			top: -10px;
+			left: 0;
+			right: 0;
+			height: 10px;
 		}
 		.nav-menu li:hover .dropdown {
 			opacity: 1;
@@ -174,7 +181,7 @@
 			transition: all .2s;
 		}
 		.nav-menu .dropdown li:last-child a { border-bottom: none; }
-		.nav-menu .dropdown li a:hover { color: var(--primary); padding-left: 24px; background: #fdf5f6; }
+		.nav-menu .dropdown li a:hover { color: var(--primary); padding-left: 24px; background: #f0f2f8; }
 		.nav-apply-btn {
 			background: var(--primary);
 			color: #fff !important;
@@ -182,10 +189,10 @@
 			border-radius: 30px !important;
 			font-weight: 700 !important;
 			margin-left: 8px;
-			box-shadow: 0 4px 15px rgba(139,26,46,0.3);
+			box-shadow: 0 4px 15px rgba(13,27,94,0.3);
 			transition: all .2s !important;
 		}
-		.nav-apply-btn:hover { background: var(--gold) !important; color: #fff !important; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(200,150,42,0.4) !important; }
+		.nav-apply-btn:hover { background: var(--gold) !important; color: #fff !important; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,162,39,0.4) !important; }
 		.mobile-menu-toggle {
 			display: none;
 			flex-direction: column;
@@ -211,7 +218,7 @@
 			display: flex;
 			align-items: center;
 			overflow: hidden;
-			background: linear-gradient(135deg, #1a0a0e 0%, #3a1020 40%, #1a0a0e 100%);
+			background: linear-gradient(135deg, #060D2E 0%, #0D1B5E 40%, #091245 100%);
 		}
 		.hero-bg {
 			position: absolute;
@@ -223,8 +230,8 @@
 		.hero-pattern {
 			position: absolute;
 			inset: 0;
-			background-image: radial-gradient(circle at 25% 50%, rgba(200,150,42,0.12) 0%, transparent 60%),
-				radial-gradient(circle at 75% 30%, rgba(139,26,46,0.2) 0%, transparent 55%);
+			background-image: radial-gradient(circle at 25% 50%, rgba(201,162,39,0.12) 0%, transparent 60%),
+				radial-gradient(circle at 75% 30%, rgba(13,27,94,0.2) 0%, transparent 55%);
 		}
 		.hero-content {
 			position: relative;
@@ -241,8 +248,8 @@
 			display: inline-flex;
 			align-items: center;
 			gap: 10px;
-			background: rgba(200,150,42,0.15);
-			border: 1px solid rgba(200,150,42,0.4);
+			background: rgba(201,162,39,0.15);
+			border: 1px solid rgba(201,162,39,0.4);
 			color: var(--gold-l);
 			font-size: 12px;
 			letter-spacing: 3px;
@@ -277,12 +284,12 @@
 			font-size: 14px;
 			letter-spacing: .5px;
 			transition: all .25s;
-			box-shadow: 0 6px 20px rgba(139,26,46,0.4);
+			box-shadow: 0 6px 20px rgba(13,27,94,0.4);
 			display: inline-flex;
 			align-items: center;
 			gap: 8px;
 		}
-		.btn-primary:hover { background: var(--gold); transform: translateY(-2px); box-shadow: 0 10px 28px rgba(200,150,42,0.4); }
+		.btn-primary:hover { background: var(--gold); transform: translateY(-2px); box-shadow: 0 10px 28px rgba(201,162,39,0.4); }
 		.btn-outline {
 			border: 2px solid rgba(255,255,255,0.5);
 			color: #fff;
@@ -311,7 +318,7 @@
 			text-align: center;
 			transition: all .3s;
 		}
-		.hero-stat-card:hover { background: rgba(200,150,42,0.15); border-color: var(--gold); }
+		.hero-stat-card:hover { background: rgba(201,162,39,0.15); border-color: var(--gold); }
 		.hero-stat-num {
 			font-size: 34px;
 			font-weight: 800;
@@ -330,7 +337,7 @@
 			backdrop-filter: blur(12px);
 			border: 1px solid rgba(255,255,255,0.15);
 			border-radius: 20px;
-			padding: 30px;
+			padding: 18px;
 			text-align: center;
 			color: #fff;
 		}
@@ -344,7 +351,7 @@
 			align-items: center;
 			justify-content: center;
 			font-size: 40px;
-			box-shadow: 0 8px 30px rgba(139,26,46,0.5);
+			box-shadow: 0 8px 30px rgba(13,27,94,0.5);
 		}
 		.hero-card-main h3 {
 			font-family: 'Playfair Display', serif;
@@ -353,7 +360,7 @@
 		}
 		.hero-card-main p { font-size: 13px; color: rgba(255,255,255,0.65); }
 		.hero-motto {
-			background: linear-gradient(135deg, var(--primary) 0%, #a82035 100%);
+			background: linear-gradient(135deg, var(--primary) 0%, #0D1B5E 100%);
 			border-radius: 14px;
 			padding: 20px 24px;
 			color: #fff;
@@ -427,7 +434,7 @@
 		.section-header { text-align: center; margin-bottom: 60px; }
 		.section-tag {
 			display: inline-block;
-			background: rgba(139,26,46,0.1);
+			background: rgba(13,27,94,0.1);
 			color: var(--primary);
 			font-size: 11px;
 			font-weight: 700;
@@ -436,7 +443,7 @@
 			padding: 6px 18px;
 			border-radius: 30px;
 			margin-bottom: 16px;
-			border: 1px solid rgba(139,26,46,0.2);
+			border: 1px solid rgba(13,27,94,0.2);
 		}
 		.section-title {
 			font-family: 'Playfair Display', serif;
@@ -464,7 +471,7 @@
 		}
 		.about-visual { position: relative; }
 		.about-img-main {
-			background: linear-gradient(135deg, #8B1A2E 0%, #C8962A 100%);
+			background: linear-gradient(135deg, #091245 0%, #0D1B5E 100%);
 			border-radius: 20px;
 			height: 420px;
 			display: flex;
@@ -546,7 +553,7 @@
 		.program-card-header {
 			padding: 30px 24px 20px;
 			text-align: center;
-			background: linear-gradient(135deg, #fdf5f6 0%, #fff9f0 100%);
+			background: linear-gradient(135deg, #f0f2f8 0%, #fff9f0 100%);
 			border-bottom: 1px solid #f0eae8;
 		}
 		.program-icon {
@@ -560,12 +567,12 @@
 			margin: 0 auto 16px;
 			font-size: 26px;
 			color: #fff;
-			box-shadow: 0 6px 20px rgba(139,26,46,0.25);
+			box-shadow: 0 6px 20px rgba(13,27,94,0.25);
 		}
 		.program-card h3 { font-size: 18px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
 		.program-card .grade-tag {
 			display: inline-block;
-			background: rgba(139,26,46,0.1);
+			background: rgba(13,27,94,0.1);
 			color: var(--primary);
 			font-size: 11px;
 			font-weight: 600;
@@ -607,7 +614,7 @@
 
 		/* ===== STATS SECTION ===== */
 		.stats-section {
-			background: linear-gradient(135deg, var(--primary) 0%, #6a1322 50%, var(--dark) 100%);
+			background: linear-gradient(135deg, var(--primary) 0%, #091245 50%, var(--dark) 100%);
 			padding: 80px 0;
 			position: relative;
 			overflow: hidden;
@@ -662,7 +669,7 @@
 		.facility-icon {
 			width: 62px;
 			height: 62px;
-			background: linear-gradient(135deg, rgba(139,26,46,0.1), rgba(200,150,42,0.1));
+			background: linear-gradient(135deg, rgba(13,27,94,0.1), rgba(200,150,42,0.1));
 			border-radius: 12px;
 			display: flex;
 			align-items: center;
@@ -692,7 +699,7 @@
 		.news-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.12); }
 		.news-card-img {
 			height: 220px;
-			background: linear-gradient(135deg, var(--primary) 0%, var(--gold) 100%);
+			background: linear-gradient(135deg, var(--primary) 0%, #091245 100%);
 			display: flex;
 			align-items: center;
 			justify-content: center;
@@ -740,7 +747,7 @@
 		.testimonial-card::before {
 			content: '\201C';
 			font-size: 80px;
-			color: rgba(139,26,46,0.1);
+			color: rgba(13,27,94,0.1);
 			font-family: Georgia, serif;
 			position: absolute;
 			top: 10px;
@@ -775,7 +782,7 @@
 
 		/* ===== ADMISSIONS CTA ===== */
 		.admissions-cta {
-			background: linear-gradient(135deg, var(--dark) 0%, #2a0a16 100%);
+			background: linear-gradient(135deg, var(--dark) 0%, #091245 100%);
 			padding: 90px 0;
 			position: relative;
 			overflow: hidden;
@@ -905,7 +912,7 @@
 		.gallery-item {
 			border-radius: 10px;
 			overflow: hidden;
-			background: linear-gradient(135deg, var(--primary), var(--gold));
+			background: linear-gradient(135deg, var(--primary), #091245);
 			display: flex;
 			align-items: center;
 			justify-content: center;
@@ -921,7 +928,7 @@
 		.gallery-overlay {
 			position: absolute;
 			inset: 0;
-			background: rgba(139,26,46,0.7);
+			background: rgba(13,27,94,0.7);
 			display: flex;
 			align-items: center;
 			justify-content: center;
@@ -1063,7 +1070,7 @@
 			justify-content: center;
 			font-size: 18px;
 			cursor: pointer;
-			box-shadow: 0 4px 16px rgba(139,26,46,0.4);
+			box-shadow: 0 4px 16px rgba(13,27,94,0.4);
 			z-index: 999;
 			transition: all .3s;
 			border: none;
@@ -1072,38 +1079,103 @@
 		.scroll-top:hover { background: var(--gold); transform: translateY(-3px); }
 
 		/* ===== RESPONSIVE ===== */
+		/* ===== TABLET (max 1024px) ===== */
 		@media (max-width: 1024px) {
+			.hero-content { gap: 40px; padding: 60px 24px; }
 			.programs-grid { grid-template-columns: repeat(2, 1fr); }
 			.facilities-grid { grid-template-columns: repeat(2, 1fr); }
 			.stats-grid { grid-template-columns: repeat(2, 1fr); }
 			.footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
 			.contact-bar-grid { grid-template-columns: repeat(2, 1fr); }
+			.about-grid { gap: 40px; }
+			.hero-visual { gap: 12px; }
 		}
+
+		/* ===== MOBILE LANDSCAPE / SMALL TABLET (max 768px) ===== */
 		@media (max-width: 768px) {
-			.top-bar-left,
-			.top-bar-right { flex-wrap: wrap; gap: 8px; }
+			/* Top bar */
+			.top-bar-inner { flex-direction: column; gap: 6px; padding: 8px 16px; }
+			.top-bar-left { flex-wrap: wrap; gap: 8px; justify-content: center; font-size: 12px; }
+			.top-bar-right { flex-wrap: wrap; gap: 8px; justify-content: center; }
+
+			/* Nav */
+			.nav-inner { padding: 0 16px; }
 			.nav-menu { display: none; }
 			.mobile-menu-toggle { display: flex; }
-			.hero-content { grid-template-columns: 1fr; text-align: center; }
-			.hero-visual { display: none; }
-			.hero-buttons { justify-content: center; }
-			.hero-stats { grid-template-columns: repeat(2, 1fr); }
+			.logo-name { font-size: 15px; }
+			.logo-tagline { font-size: 9px; }
+
+			/* Hero */
+			.hero { min-height: auto; }
+			.hero-content {
+				grid-template-columns: 1fr;
+				text-align: center;
+				padding: 50px 20px 40px;
+				gap: 32px;
+			}
+			.hero-visual { display: flex; }
+			.hero-text h1 { font-size: clamp(28px, 7vw, 44px); }
+			.hero-text p { font-size: 15px; max-width: 100%; }
+			.hero-buttons { justify-content: center; flex-wrap: wrap; gap: 12px; }
+			.hero-stats { grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 28px; }
+			.hero-stat-num { font-size: 26px; }
+			.hero-card-main { padding: 20px 18px; }
+
+			/* Sections */
+			.section-inner { padding: 50px 20px; }
 			.about-grid { grid-template-columns: 1fr; }
-			.programs-grid { grid-template-columns: 1fr; }
+			.about-image-wrap { height: 240px; }
+			.about-pillars { grid-template-columns: repeat(2, 1fr); }
+			.programs-grid { grid-template-columns: repeat(2, 1fr); }
 			.news-grid { grid-template-columns: 1fr; }
 			.testimonials-grid { grid-template-columns: 1fr; }
-			.admissions-inner { grid-template-columns: 1fr; }
+			.admissions-inner { grid-template-columns: 1fr; text-align: center; }
+			.admissions-inner .checklist { text-align: left; display: inline-block; }
 			.gallery-grid { grid-template-columns: repeat(2, 1fr); }
 			.gallery-item:nth-child(1) { grid-column: span 2; height: 200px; }
-			.footer-grid { grid-template-columns: 1fr; }
+			.stats-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
 			.contact-bar-grid { grid-template-columns: 1fr 1fr; }
-			.footer-bottom { flex-direction: column; text-align: center; }
+			.facilities-grid { grid-template-columns: repeat(2, 1fr); }
+
+			/* Footer */
+			.footer-grid { grid-template-columns: 1fr 1fr; gap: 30px; }
+			.footer-bottom { flex-direction: column; text-align: center; gap: 8px; }
+
+			/* Section titles */
+			.section-title { font-size: clamp(22px, 5vw, 32px); }
 		}
+
+		/* ===== MOBILE PORTRAIT (max 480px) ===== */
 		@media (max-width: 480px) {
-			.stats-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
-			.contact-bar-grid { grid-template-columns: 1fr; }
+			/* Top bar hide location on very small screens */
+			.top-bar-left span:last-child { display: none; }
+
+			/* Nav */
+			.navbar { height: 64px; }
+			img.nav-logo-img { height: 52px; width: 52px; }
+
+			/* Hero */
+			.hero-content { padding: 40px 16px 32px; gap: 28px; }
+			.hero-text h1 { font-size: clamp(24px, 8vw, 36px); }
+			.hero-stats { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 20px; }
+			.hero-stat-num { font-size: 22px; }
+			.hero-card-main { padding: 18px 14px; }
+			.btn-primary, .btn-outline { padding: 12px 22px; font-size: 13px; width: 100%; justify-content: center; }
+
+			/* Sections */
+			.section-inner { padding: 40px 16px; }
+			.programs-grid { grid-template-columns: 1fr; }
 			.facilities-grid { grid-template-columns: 1fr; }
 			.about-pillars { grid-template-columns: 1fr; }
+			.stats-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+			.gallery-grid { grid-template-columns: 1fr; }
+			.gallery-item:nth-child(1) { grid-column: span 1; }
+			.contact-bar-grid { grid-template-columns: 1fr; }
+			.footer-grid { grid-template-columns: 1fr; gap: 24px; }
+			.hero-motto { padding: 14px 16px; }
+			.motto-text { font-size: 18px; }
+			.hero-badges { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+			.hero-badge { padding: 10px 6px; font-size: 11px; }
 		}
 
 		/* Mobile Nav Open State */
@@ -1111,14 +1183,19 @@
 			display: flex;
 			flex-direction: column;
 			position: absolute;
-			top: 80px;
+			top: 72px;
 			left: 0;
 			right: 0;
 			background: #fff;
-			padding: 20px;
+			padding: 16px 20px;
 			box-shadow: 0 8px 30px rgba(0,0,0,0.15);
 			gap: 0;
+			z-index: 1000;
+			max-height: 80vh;
+			overflow-y: auto;
 		}
+		.nav-open .nav-menu > li { border-bottom: 1px solid rgba(0,0,0,0.06); }
+		.nav-open .nav-menu > li > a { padding: 12px 0; display: block; }
 		.nav-open .nav-menu .dropdown {
 			position: static;
 			opacity: 1;
@@ -1126,7 +1203,8 @@
 			transform: none;
 			box-shadow: none;
 			border: none;
-			padding-left: 20px;
+			padding-left: 16px;
+			padding-top: 0;
 		}
 	</style>
 </head>
@@ -1137,18 +1215,18 @@
 <div class="top-bar">
 	<div class="top-bar-inner">
 		<div class="top-bar-left">
-			<a href="mailto:info@gurukulhighschool.edu.in">
-				<i class="fa fa-envelope"></i> info@gurukulhighschool.edu.in
+			<a href="mailto:info@gurukul.edu.in">
+				<i class="fa fa-envelope"></i> info@gurukul.edu.in
 			</a>
 			<a href="tel:+918212345678">
 				<i class="fa fa-phone"></i> +91 821-234-5678
 			</a>
-			<span><i class="fa fa-map-marker"></i> KRS Road, Mysore, Karnataka – 570010</span>
+			<span><i class="fa fa-map-marker"></i> K.R. Nagar, Mysuru(D), Karnataka</span>
 		</div>
 		<div class="top-bar-right">
 			<a href="#">Alumni</a>
 			<a href="#">Calendar</a>
-			<a href="#">Parent Portal</a>
+			<a href="portal/login.html" style="color:#E6C86A;font-weight:700;"><i class="fa fa-lock" style="margin-right:4px;"></i>Student Portal</a>
 			<a href="admission-form.html" class="top-bar-btn">Apply Now</a>
 		</div>
 	</div>
@@ -1158,10 +1236,10 @@
 <nav class="navbar" id="mainNav">
 	<div class="nav-inner">
 		<a href="#" class="logo-wrap">
-			<div class="logo-emblem">GH</div>
+			<img src="images/gurukul-logo.png" alt="The Gurukul High Logo" style="height:68px;width:68px;border-radius:8px;box-shadow:0 2px 14px rgba(13,27,94,0.3);flex-shrink:0;">
 			<div class="logo-text-wrap">
-				<span class="logo-name">Gurukul High School</span>
-				<span class="logo-tagline">Mysore · Est. 1965</span>
+				<span class="logo-name">The Gurukul High</span>
+				<span class="logo-tagline" style="color:#C9A227;">Gurukula Vidya Samsthe · K.R. Nagar, Mysuru(D)</span>
 			</div>
 		</a>
 
@@ -1171,9 +1249,9 @@
 				<a href="#about">About Us</a>
 				<ul class="dropdown">
 					<li><a href="#about">Our Story</a></li>
-					<li><a href="#about">Vision & Mission</a></li>
-					<li><a href="#about">Principal's Message</a></li>
-					<li><a href="#about">Our Faculty</a></li>
+					<li><a href="vision-mission.html">Vision &amp; Mission</a></li>
+					<li><a href="principals-message.html">Principal's Message</a></li>
+					<li><a href="our-faculty.html">Our Faculty</a></li>
 				</ul>
 			</li>
 			<li>
@@ -1182,7 +1260,7 @@
 					<li><a href="#programs">Primary School (I–V)</a></li>
 					<li><a href="#programs">Middle School (VI–VIII)</a></li>
 					<li><a href="#programs">High School (IX–X)</a></li>
-					<li><a href="#programs">Senior Secondary (XI–XII)</a></li>
+					
 					<li><a href="#programs">Curriculum Overview</a></li>
 				</ul>
 			</li>
@@ -1214,14 +1292,10 @@
 	<div class="hero-pattern"></div>
 	<div class="hero-content">
 		<div class="hero-text">
-			<div class="pre-title">
-				<i class="fa fa-star"></i>
-				CBSE Affiliated · Est. 1965 · Mysore, Karnataka
-			</div>
 			<h1>Shaping <span>Brilliant Minds</span>, Building Character</h1>
 			<p>
-				Gurukul High School, Mysore, offers a holistic education that harmonises modern learning with India's
-				rich cultural heritage — nurturing students in knowledge, virtue, and wisdom since 1965.
+				The Gurukul High, K.R. Nagar, Mysuru(D), offers a holistic education from Nursery to Class X —
+				nurturing students in knowledge, leadership, and wisdom since 1999. <em>Learn | Lead | Light.</em>
 			</p>
 			<div class="hero-buttons">
 				<a href="admission-form.html" class="btn-primary">
@@ -1234,7 +1308,7 @@
 
 			<div class="hero-stats">
 				<div class="hero-stat-card">
-					<div class="hero-stat-num">59+</div>
+					<div class="hero-stat-num">26+</div>
 					<div class="hero-stat-label">Years of Excellence</div>
 				</div>
 				<div class="hero-stat-card">
@@ -1253,23 +1327,27 @@
 		</div>
 
 		<div class="hero-visual">
-			<div class="hero-card-main">
-				<div class="school-crest">🏫</div>
-				<h3>Gurukul High School</h3>
-				<p>KRS Road, Mysore, Karnataka</p>
+			<div class="hero-card-main" style="padding:28px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:14px;">
+				<div style="background:#C9A227;border-radius:8px;padding:5px 14px;display:inline-flex;align-items:center;gap:6px;">
+					<i class="fa fa-bullhorn" style="color:#fff;font-size:12px;"></i>
+					<span style="color:#fff;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;">Admissions Open</span>
+				</div>
+				<div style="font-size:32px;font-weight:800;color:#fff;line-height:1.2;">2026 – 2027</div>
+				<div style="font-size:14px;color:rgba(255,255,255,0.65);">Nursery to Class X &nbsp;·&nbsp; Limited Seats Available</div>
+				<a href="admission-form.html" style="margin-top:4px;background:#C9A227;color:#fff;font-size:13px;font-weight:700;padding:11px 30px;border-radius:30px;text-decoration:none;letter-spacing:0.5px;box-shadow:0 4px 15px rgba(201,162,39,0.4);">Enrol Now &nbsp;→</a>
 			</div>
 			<div class="hero-motto">
 				<div class="motto-label">Our School Motto</div>
-				<div class="motto-text">"Sa Vidyā Yā Vimuktaye" — Knowledge that liberates</div>
+				<div class="motto-text">Learn | Lead | Light</div>
 			</div>
 			<div class="hero-badges">
 				<div class="hero-badge">
-					<i class="fa fa-certificate"></i>
-					<span>CBSE Affiliated</span>
+					<i class="fa fa-book"></i>
+					<span>Nursery to X</span>
 				</div>
 				<div class="hero-badge">
 					<i class="fa fa-trophy"></i>
-					<span>Award Winning</span>
+					<span>Est. 1999</span>
 				</div>
 				<div class="hero-badge">
 					<i class="fa fa-users"></i>
@@ -1286,12 +1364,12 @@
 		<div class="announcement-label">🔔 Latest</div>
 		<div class="announcement-scroll">
 			<div class="announcement-text">
-				📚 Admissions Open for Academic Year 2025–26 &nbsp;|&nbsp;
+				📚 Admissions Open for Academic Year 2026–27 &nbsp;|&nbsp;
 				🏆 Gurukul wins State Level Science Olympiad — First Place! &nbsp;|&nbsp;
 				🎉 Annual Day Celebrations scheduled for March 20, 2026 &nbsp;|&nbsp;
 				⚽ Inter-School Sports Meet – Registration Open &nbsp;|&nbsp;
-				📋 CBSE Board Exam Schedule Released – Check Notice Board &nbsp;|&nbsp;
-				🎓 Class XII results: 99% students scored above 85% &nbsp;|&nbsp;
+				📋 State Board Exam Schedule Released – Check Notice Board &nbsp;|&nbsp;
+				🎓 Class X SSLC: 99% students scored Distinction &nbsp;|&nbsp;
 				🏅 National Merit Scholarship Guidance Camp – April 5, 2026
 			</div>
 		</div>
@@ -1304,44 +1382,44 @@
 		<div class="about-grid">
 			<div class="about-visual">
 				<div class="about-img-main">
-					<img src="images/building-700x450.jpg" alt="Gurukul High School Campus, Mysore" onerror="this.style.display='none'">
+					<img src="images/building-700x450.jpg" alt="The Gurukul High Campus, Mysore" onerror="this.style.display='none'">
 					<span style="position:absolute;">🏫</span>
 				</div>
 				<div class="about-badge-card">
-					<div class="big-num">59+</div>
+					<div class="big-num">26+</div>
 					<div class="big-label">Years of Excellence</div>
 				</div>
 			</div>
 
 			<div class="about-text">
-				<span class="section-tag">About Gurukul High School</span>
-				<h2>A Legacy of <span>Learning & Leadership</span> in Mysore</h2>
+				<span class="section-tag">About The Gurukul High</span>
+				<h2>A Legacy of <span>Learning & Leadership</span> in K.R. Nagar, Mysuru</h2>
 				<p>
-					Founded in 1965, Gurukul High School in Mysore has been a beacon of quality education in Karnataka
-					for nearly six decades. Nestled in the culturally rich heritage city of Mysore, our school
-					blends the best of modern pedagogy with India's timeless Gurukul tradition.
+					Founded in 1999, The Gurukul High – Gurukula Vidya Samsthe has been a trusted institution
+					in K.R. Nagar, Mysuru(D), Karnataka. Our school offers Nursery through Secondary (Class X)
+					and blends modern pedagogy with India's timeless Gurukul tradition.
 				</p>
 				<p>
-					CBSE affiliated and fully equipped with world-class facilities, Gurukul High School prepares
-					students not just for academic success, but for a meaningful and purposeful life — grounded in
-					ethics, compassion, and intellectual curiosity.
+					With dedicated teachers, excellent infrastructure, and a nurturing environment, The Gurukul High
+					prepares students not just for academic success, but for a meaningful and purposeful life —
+					grounded in the motto: <strong>Learn | Lead | Light</strong>.
 				</p>
 
 				<div class="about-pillars">
 					<div class="pillar-card">
 						<i class="fa fa-book"></i>
-						<h4>Vidyā</h4>
-						<p>Modern academic excellence</p>
+						<h4>Learn</h4>
+						<p>Academic excellence & curiosity</p>
 					</div>
 					<div class="pillar-card">
-						<i class="fa fa-heart"></i>
-						<h4>Sadvidyā</h4>
-						<p>Values & ethical character</p>
+						<i class="fa fa-star"></i>
+						<h4>Lead</h4>
+						<p>Character, confidence & leadership</p>
 					</div>
 					<div class="pillar-card">
-						<i class="fa fa-sun-o"></i>
-						<h4>Brahmavidyā</h4>
-						<p>Spiritual wisdom & purpose</p>
+						<i class="fa fa-lightbulb-o"></i>
+						<h4>Light</h4>
+						<p>Inspiring communities & futures</p>
 					</div>
 				</div>
 
@@ -1386,24 +1464,44 @@
 	<div class="container">
 		<div class="section-header">
 			<span class="section-tag">Academic Programs</span>
-			<h2 class="section-title">Comprehensive Education for <span>Every Stage</span></h2>
-			<p class="section-desc">From foundational learning to competitive board preparation, we offer a structured and enriching curriculum aligned to CBSE standards and beyond.</p>
+			<h2 class="section-title">Nurturing Every Child from <span>Nursery to Class X</span></h2>
+			<p class="section-desc">The Gurukul High offers a complete schooling journey — Nursery, Elementary, and Secondary — building knowledge, character, and confidence at every stage.</p>
 			<div class="section-divider"></div>
 		</div>
 		<div class="programs-grid">
 			<div class="program-card">
 				<div class="program-card-header">
 					<div class="program-icon"><i class="fa fa-child"></i></div>
-					<h3>Primary School</h3>
-					<span class="grade-tag">Grades I – V</span>
+					<h3>Nursery &amp; Pre-Primary</h3>
+					<span class="grade-tag">Nursery · LKG · UKG</span>
 				</div>
 				<div class="program-card-body">
-					<p>A nurturing, activity-based learning environment that sparks curiosity, builds foundational literacy & numeracy, and develops social skills in young learners.</p>
+					<p>A warm, play-based learning environment that sparks curiosity, builds early language skills, and helps the youngest learners thrive with joy and confidence.</p>
 					<ul class="program-features">
-						<li>Activity-based learning</li>
-						<li>Vedic Mathematics introduction</li>
-						<li>Performing arts & yoga</li>
-						<li>Environmental awareness</li>
+						<li>Play-based &amp; activity learning</li>
+						<li>Early literacy &amp; numeracy</li>
+						<li>Rhymes, art &amp; storytelling</li>
+						<li>Social skills &amp; independence</li>
+					</ul>
+				</div>
+				<div class="program-card-footer">
+					<a href="#" class="program-learn-more">Learn More <i class="fa fa-arrow-right"></i></a>
+				</div>
+			</div>
+
+			<div class="program-card">
+				<div class="program-card-header">
+					<div class="program-icon"><i class="fa fa-star"></i></div>
+					<h3>Elementary School</h3>
+					<span class="grade-tag">Classes I – V</span>
+				</div>
+				<div class="program-card-body">
+					<p>A structured yet engaging curriculum that builds strong foundational skills in language, mathematics, science, and social studies through interactive learning methods.</p>
+					<ul class="program-features">
+						<li>English, Kannada &amp; Hindi</li>
+						<li>Mathematics &amp; EVS</li>
+						<li>Yoga, arts &amp; craft</li>
+						<li>Value education &amp; moral science</li>
 					</ul>
 				</div>
 				<div class="program-card-footer">
@@ -1414,16 +1512,16 @@
 			<div class="program-card">
 				<div class="program-card-header">
 					<div class="program-icon"><i class="fa fa-pencil"></i></div>
-					<h3>Middle School</h3>
-					<span class="grade-tag">Grades VI – VIII</span>
+					<h3>Upper Elementary</h3>
+					<span class="grade-tag">Classes VI – VIII</span>
 				</div>
 				<div class="program-card-body">
-					<p>A rigorous academic framework that bridges junior learning and high school, with a strong focus on conceptual understanding, critical thinking, and character development.</p>
+					<p>A rigorous academic framework building conceptual understanding, analytical thinking, and communication skills — the bridge from elementary to secondary.</p>
 					<ul class="program-features">
-						<li>CBSE integrated curriculum</li>
-						<li>Science & Maths enrichment labs</li>
-						<li>Leadership & debate programs</li>
-						<li>Hindi, Kannada & English proficiency</li>
+						<li>Science, Maths &amp; Social Science</li>
+						<li>Language enrichment programs</li>
+						<li>Leadership &amp; debate activities</li>
+						<li>Computer science basics</li>
 					</ul>
 				</div>
 				<div class="program-card-footer">
@@ -1434,15 +1532,15 @@
 			<div class="program-card">
 				<div class="program-card-header">
 					<div class="program-icon"><i class="fa fa-flask"></i></div>
-					<h3>High School</h3>
-					<span class="grade-tag">Grades IX – X (CBSE)</span>
+					<h3>Secondary School</h3>
+					<span class="grade-tag">Classes IX – X (SSLC)</span>
 				</div>
 				<div class="program-card-body">
-					<p>Board examination preparation with comprehensive subject coverage, expert coaching, and personalised mentoring to help every student excel at the Class X CBSE boards.</p>
+					<p>Comprehensive SSLC board preparation with expert coaching, mock exams, and personalised mentoring to help every student achieve their best in Class X.</p>
 					<ul class="program-features">
-						<li>Board exam practice & mock tests</li>
+						<li>Board exam practice &amp; mock tests</li>
 						<li>Personalised academic counselling</li>
-						<li>Science, Maths & Social Studies</li>
+						<li>All SSLC subjects covered</li>
 						<li>Career orientation workshops</li>
 					</ul>
 				</div>
@@ -1453,37 +1551,17 @@
 
 			<div class="program-card">
 				<div class="program-card-header">
-					<div class="program-icon"><i class="fa fa-university"></i></div>
-					<h3>Senior Secondary</h3>
-					<span class="grade-tag">Grades XI – XII (CBSE)</span>
-				</div>
-				<div class="program-card-body">
-					<p>Specialised streams in Science (PCM / PCB), Commerce, and Humanities. Focused preparation for JEE, NEET, and other competitive entrance examinations.</p>
-					<ul class="program-features">
-						<li>Science, Commerce & Humanities streams</li>
-						<li>JEE / NEET preparation support</li>
-						<li>Research projects & internships</li>
-						<li>College & career counselling</li>
-					</ul>
-				</div>
-				<div class="program-card-footer">
-					<a href="#" class="program-learn-more">Learn More <i class="fa fa-arrow-right"></i></a>
-				</div>
-			</div>
-
-			<div class="program-card">
-				<div class="program-card-header">
 					<div class="program-icon"><i class="fa fa-music"></i></div>
-					<h3>Co-Curricular Arts</h3>
-					<span class="grade-tag">All Grades</span>
+					<h3>Arts &amp; Cultural Programs</h3>
+					<span class="grade-tag">All Classes</span>
 				</div>
 				<div class="program-card-body">
-					<p>Comprehensive arts, music, dance, and drama programs that foster creativity and cultural appreciation — an integral part of the Gurukul experience.</p>
+					<p>Vibrant arts, music, dance, and drama programs that foster creativity, cultural pride, and self-expression — a cornerstone of the Gurukul experience.</p>
 					<ul class="program-features">
-						<li>Bharatanatyam & folk dance</li>
-						<li>Classical & Western music</li>
-						<li>Drawing, painting & sculpture</li>
-						<li>Theatre & public speaking</li>
+						<li>Bharatanatyam &amp; folk dance</li>
+						<li>Kannada &amp; classical music</li>
+						<li>Drawing, painting &amp; craft</li>
+						<li>Annual cultural fest &amp; drama</li>
 					</ul>
 				</div>
 				<div class="program-card-footer">
@@ -1494,16 +1572,16 @@
 			<div class="program-card">
 				<div class="program-card-header">
 					<div class="program-icon"><i class="fa fa-futbol-o"></i></div>
-					<h3>Sports & Athletics</h3>
-					<span class="grade-tag">All Grades</span>
+					<h3>Sports &amp; Physical Education</h3>
+					<span class="grade-tag">All Classes</span>
 				</div>
 				<div class="program-card-body">
-					<p>A full range of indoor and outdoor sports with professional coaching, regular inter-school tournaments, and a commitment to physical fitness and team spirit.</p>
+					<p>A full range of indoor and outdoor sports with dedicated PE coaching, regular inter-school tournaments, and a commitment to physical fitness and teamwork.</p>
 					<ul class="program-features">
-						<li>Cricket, Football, Basketball</li>
-						<li>Swimming & Athletics</li>
-						<li>Chess & Carrom clubs</li>
-						<li>Yoga & Martial Arts</li>
+						<li>Cricket, Football &amp; Kabaddi</li>
+						<li>Athletics &amp; track events</li>
+						<li>Chess, Carrom &amp; indoor games</li>
+						<li>Yoga &amp; physical fitness</li>
 					</ul>
 				</div>
 				<div class="program-card-footer">
@@ -1520,7 +1598,7 @@
 		<div class="section-header">
 			<span class="section-tag">Our Facilities</span>
 			<h2 class="section-title">World-Class Infrastructure for <span>Inspired Learning</span></h2>
-			<p class="section-desc">Our expansive campus in Mysore is designed to provide an ideal learning environment with state-of-the-art facilities across academics, arts, and athletics.</p>
+			<p class="section-desc">Our campus in K.R. Nagar, Mysuru is designed to provide an ideal learning environment with state-of-the-art facilities across academics, arts, and athletics.</p>
 			<div class="section-divider"></div>
 		</div>
 		<div class="facilities-grid">
@@ -1552,7 +1630,7 @@
 			<div class="facility-card">
 				<div class="facility-icon"><i class="fa fa-bus"></i></div>
 				<h4>Transport</h4>
-				<p>GPS-enabled school bus fleet covering major areas of Mysore city and surrounding districts.</p>
+				<p>GPS-enabled school bus fleet covering major areas of K.R. Nagar and surrounding areas of Mysuru.</p>
 			</div>
 			<div class="facility-card">
 				<div class="facility-icon"><i class="fa fa-heartbeat"></i></div>
@@ -1631,7 +1709,7 @@
 						</div>
 						<div class="event-info">
 							<h4>Open House & Campus Tour</h4>
-							<p>Prospective parents and students are invited to tour our campus, meet the faculty, and learn about our admission process for 2025-26.</p>
+							<p>Prospective parents and students are invited to tour our campus, meet the faculty, and learn about our admission process for 2026-27.</p>
 							<div class="event-meta">
 								<span><i class="fa fa-clock-o"></i> 10:00 AM – 1:00 PM</span>
 								<span><i class="fa fa-map-marker"></i> Main Campus</span>
@@ -1658,7 +1736,7 @@
 						</div>
 					</div>
 					<div class="news-card" style="display:flex; gap:0;">
-						<div class="news-card-img" style="height:auto; min-width:100px; width:100px; font-size:28px; flex-shrink:0; border-radius:14px 0 0 14px; background:linear-gradient(135deg,#C8962A,#e8b84b);">📚</div>
+						<div class="news-card-img" style="height:auto; min-width:100px; width:100px; font-size:28px; flex-shrink:0; border-radius:14px 0 0 14px; background:linear-gradient(135deg,#0D1B5E,#091245);">📚</div>
 						<div class="news-card-body" style="padding:16px 18px;">
 							<span class="news-cat">Academic</span>
 							<div class="news-date"><i class="fa fa-calendar"></i> Feb 20, 2026</div>
@@ -1667,11 +1745,11 @@
 						</div>
 					</div>
 					<div class="news-card" style="display:flex; gap:0;">
-						<div class="news-card-img" style="height:auto; min-width:100px; width:100px; font-size:28px; flex-shrink:0; border-radius:14px 0 0 14px; background:linear-gradient(135deg,#1a1a2e,#3a1020);">🎓</div>
+						<div class="news-card-img" style="height:auto; min-width:100px; width:100px; font-size:28px; flex-shrink:0; border-radius:14px 0 0 14px; background:linear-gradient(135deg,#091245,#0D1B5E);">🎓</div>
 						<div class="news-card-body" style="padding:16px 18px;">
 							<span class="news-cat">Results</span>
 							<div class="news-date"><i class="fa fa-calendar"></i> Jan 15, 2026</div>
-							<h3 style="font-size:14px;">Class XII Board 2025 – 99% students above 85%</h3>
+							<h3 style="font-size:14px;">Class X SSLC 2025 – 99% students scored Distinction</h3>
 							<a href="#" class="news-read-more" style="margin-top:8px;">Read More <i class="fa fa-arrow-right"></i></a>
 						</div>
 					</div>
@@ -1696,7 +1774,7 @@
 		<div class="section-header">
 			<span class="section-tag">Testimonials</span>
 			<h2 class="section-title">What Our <span>Community Says</span></h2>
-			<p class="section-desc">Hear from our students, parents, and alumni about the Gurukul High School experience.</p>
+			<p class="section-desc">Hear from our students, parents, and alumni about the The Gurukul High experience.</p>
 			<div class="section-divider"></div>
 		</div>
 		<div class="testimonials-grid">
@@ -1710,7 +1788,7 @@
 					<div class="author-avatar">RS</div>
 					<div class="author-info">
 						<div class="name">Rekha Srinivasan</div>
-						<div class="role">Parent — Class XII Student</div>
+						<div class="role">Parent — Class X Student</div>
 					</div>
 				</div>
 			</div>
@@ -1725,7 +1803,7 @@
 					<div class="author-avatar">AK</div>
 					<div class="author-info">
 						<div class="name">Arjun Kumar</div>
-						<div class="role">Alumni — IIT Bombay, 2024</div>
+						<div class="role">Alumni — Mysore Medical College, 2024</div>
 					</div>
 				</div>
 			</div>
@@ -1763,12 +1841,12 @@
 				<div class="gallery-overlay"><i class="fa fa-search-plus"></i></div>
 				🏫
 			</div>
-			<div class="gallery-item" style="background:linear-gradient(135deg,#C8962A,#e8b84b);">
+			<div class="gallery-item" style="background:linear-gradient(135deg,#0D1B5E,#091245);">
 				<img src="images/working-400x257.jpg" alt="Students in class" onerror="this.style.display='none'">
 				<div class="gallery-overlay"><i class="fa fa-search-plus"></i></div>
 				📚
 			</div>
-			<div class="gallery-item" style="background:linear-gradient(135deg,#1a1a2e,#3a1020);">
+			<div class="gallery-item" style="background:linear-gradient(135deg,#091245,#0D1B5E);">
 				<img src="images/business-man-400x257.jpg" alt="Faculty" onerror="this.style.display='none'">
 				<div class="gallery-overlay"><i class="fa fa-search-plus"></i></div>
 				👨‍🏫
@@ -1790,16 +1868,16 @@
 	<div class="container">
 		<div class="admissions-inner">
 			<div class="admissions-text">
-				<span class="section-tag" style="background:rgba(200,150,42,0.2); color:var(--gold-l); border-color:rgba(200,150,42,0.4);">
-					Admissions 2025–26
+				<span class="section-tag" style="background:rgba(201,162,39,0.2); color:var(--gold-l); border-color:rgba(201,162,39,0.4);">
+					Admissions 2026–27
 				</span>
-				<h2>Begin Your Child's Journey at <span>Gurukul High School</span></h2>
+				<h2>Begin Your Child's Journey at <span>The Gurukul High</span></h2>
 				<p>
-					Admissions are open for the academic year 2025–26. Secure your child's place at Mysore's most trusted school
+					Admissions are open for the academic year 2026–27. Secure your child's place at Mysore's most trusted school
 					for holistic education. Limited seats available — apply early.
 				</p>
 				<ul class="admissions-checklist">
-					<li><i class="fa fa-check-circle"></i> CBSE curriculum from Class I to XII</li>
+					<li><i class="fa fa-check-circle"></i> Nursery to Class X (SSLC) complete schooling</li>
 					<li><i class="fa fa-check-circle"></i> Scholarships available for meritorious students</li>
 					<li><i class="fa fa-check-circle"></i> Fully equipped campus with world-class facilities</li>
 					<li><i class="fa fa-check-circle"></i> Experienced and dedicated teaching faculty</li>
@@ -1824,16 +1902,16 @@
 					display:flex; align-items:center; justify-content:center; gap:10px;
 					background:var(--primary); color:#fff; padding:16px; border-radius:10px;
 					font-size:15px; font-weight:700; text-decoration:none; margin-bottom:14px;
-					transition:background .2s; box-shadow:0 4px 16px rgba(139,26,46,0.4);"
-					onmouseover="this.style.background='#6a1322'" onmouseout="this.style.background='var(--primary)'">
+					transition:background .2s; box-shadow:0 4px 16px rgba(13,27,94,0.4);"
+					onmouseover="this.style.background='#091245'" onmouseout="this.style.background='var(--primary)'">
 					<i class="fa fa-file-text-o" style="font-size:18px;"></i> Fill Application Form Online
 				</a>
 				<a href="admission-form.html" onclick="sessionStorage.setItem('dlBlank','1')" style="
 					display:flex; align-items:center; justify-content:center; gap:10px;
-					background:rgba(200,150,42,0.9); color:#fff; padding:14px; border-radius:10px;
+					background:rgba(201,162,39,0.9); color:#fff; padding:14px; border-radius:10px;
 					font-size:14px; font-weight:700; text-decoration:none; margin-bottom:20px;
 					transition:background .2s;"
-					onmouseover="this.style.background='var(--gold)'" onmouseout="this.style.background='rgba(200,150,42,0.9)'">
+					onmouseover="this.style.background='var(--gold)'" onmouseout="this.style.background='rgba(201,162,39,0.9)'">
 					<i class="fa fa-download" style="font-size:16px;"></i> Download Blank Form (PDF)
 				</a>
 				<div style="border-top:1px solid rgba(255,255,255,0.1); padding-top:16px;">
@@ -1854,21 +1932,21 @@
 				<div class="icon-wrap"><i class="fa fa-map-marker"></i></div>
 				<div>
 					<h4>Our Address</h4>
-					<p>KRS Road, Near Mysore Palace,<br>Mysore, Karnataka – 570010</p>
+					<p>K.R. Nagar, Mysuru(D),<br>Karnataka – 571 602</p>
 				</div>
 			</div>
 			<div class="contact-bar-item">
 				<div class="icon-wrap"><i class="fa fa-phone"></i></div>
 				<div>
 					<h4>Call Us</h4>
-					<p>+91 821-234-5678<br>+91 821-234-5679</p>
+					<p>+91 821-234-5678</p>
 				</div>
 			</div>
 			<div class="contact-bar-item">
 				<div class="icon-wrap"><i class="fa fa-envelope"></i></div>
 				<div>
 					<h4>Email Us</h4>
-					<p>info@gurukulhighschool.edu.in<br>admissions@gurukulhighschool.edu.in</p>
+					<p>info@gurukul.edu.in<br>admissions@gurukul.edu.in</p>
 				</div>
 			</div>
 			<div class="contact-bar-item">
@@ -1887,11 +1965,11 @@
 	<div class="container">
 		<div class="footer-grid">
 			<div class="footer-brand">
-				<div class="footer-logo-name">Gurukul High School</div>
-				<div class="footer-logo-tagline">Mysore · Est. 1965</div>
+				<div class="footer-logo-name">The Gurukul High</div>
+				<div class="footer-logo-tagline">K.R. Nagar, Mysuru · Est. 1999</div>
 				<p>
 					Committed to nurturing young minds through a perfect blend of modern academics, traditional
-					values, and holistic character development. Proudly serving Mysore since 1965.
+					values, and holistic character development. Proudly serving K.R. Nagar, Mysuru since 1999.
 				</p>
 				<div class="footer-social">
 					<a href="#" class="social-btn"><i class="fa fa-facebook"></i></a>
@@ -1911,7 +1989,7 @@
 					<li><a href="#events">Events & Calendar</a></li>
 					<li><a href="#admissions">Admissions</a></li>
 					<li><a href="#">Alumni Network</a></li>
-					<li><a href="#">Parent Portal</a></li>
+					<li><a href="portal/login.html" style="color:#E6C86A;font-weight:700;"><i class="fa fa-lock" style="margin-right:4px;"></i>Student Portal</a></li>
 				</ul>
 			</div>
 
@@ -1921,37 +1999,45 @@
 					<li><a href="#programs">Primary School (I–V)</a></li>
 					<li><a href="#programs">Middle School (VI–VIII)</a></li>
 					<li><a href="#programs">High School (IX–X)</a></li>
-					<li><a href="#programs">Senior Secondary (XI–XII)</a></li>
+					
 					<li><a href="#">Examination Schedule</a></li>
 					<li><a href="#">Holiday Calendar</a></li>
-					<li><a href="#">CBSE Affiliation Info</a></li>
+					<li><a href="#">State Board Affiliation Info</a></li>
 				</ul>
 			</div>
 
 			<div class="footer-col">
-				<h4>Contact Info</h4>
+				<h4>School Information</h4>
 				<div class="footer-contact-item">
-					<i class="fa fa-map-marker"></i>
-					<span>KRS Road, Near Mysore Palace,<br>Mysore, Karnataka – 570010</span>
+					<i class="fa fa-certificate"></i>
+					<span><strong>Affiliation:</strong> Karnataka State Board (KSEEB)</span>
 				</div>
 				<div class="footer-contact-item">
-					<i class="fa fa-phone"></i>
-					<span>+91 821-234-5678<br>+91 821-234-5679</span>
+					<i class="fa fa-hashtag"></i>
+					<span><strong>Board:</strong> Karnataka SSLC (Class X)</span>
 				</div>
 				<div class="footer-contact-item">
-					<i class="fa fa-envelope"></i>
-					<span>info@gurukulhighschool.edu.in</span>
+					<i class="fa fa-graduation-cap"></i>
+					<span><strong>Classes:</strong> Nursery to Class X</span>
 				</div>
 				<div class="footer-contact-item">
-					<i class="fa fa-clock-o"></i>
-					<span>Mon–Fri: 8:00 AM – 4:00 PM<br>Sat: 8:00 AM – 1:00 PM</span>
+					<i class="fa fa-language"></i>
+					<span><strong>Medium:</strong> English</span>
+				</div>
+				<div class="footer-contact-item">
+					<i class="fa fa-calendar"></i>
+					<span><strong>Established:</strong> 1999</span>
+				</div>
+				<div class="footer-contact-item">
+					<i class="fa fa-building"></i>
+					<span><strong>Trust:</strong> Gurukula Vidya Samsthe</span>
 				</div>
 			</div>
 		</div>
 
 		<div class="footer-bottom">
-			<p>© 2026 Gurukul High School, Mysore. All Rights Reserved.</p>
-			<p>CBSE Affiliation No. 930012 | <a href="#">Privacy Policy</a> | <a href="#">Terms of Use</a></p>
+			<p>© 2026 The Gurukul High, K.R. Nagar, Mysuru. All Rights Reserved.</p>
+			<p>Gurukula Vidya Samsthe, K.R. Nagar | <a href="#">Privacy Policy</a> | <a href="#">Terms of Use</a></p>
 		</div>
 	</div>
 </footer>
@@ -2028,6 +2114,344 @@
 	document.querySelectorAll('.stat-num, .hero-stat-num').forEach(function(el) {
 		observer.observe(el);
 	});
+
+	// Dropdown hover with delay — prevents menu vanishing when mouse briefly leaves
+	document.querySelectorAll('.nav-menu > li').forEach(function(li) {
+		var timer;
+		var dropdown = li.querySelector('.dropdown');
+		if (!dropdown) return;
+		li.addEventListener('mouseenter', function() {
+			clearTimeout(timer);
+			dropdown.style.opacity = '1';
+			dropdown.style.pointerEvents = 'all';
+			dropdown.style.transform = 'translateY(0)';
+		});
+		li.addEventListener('mouseleave', function() {
+			timer = setTimeout(function() {
+				dropdown.style.opacity = '0';
+				dropdown.style.pointerEvents = 'none';
+				dropdown.style.transform = 'translateY(4px)';
+			}, 180);
+		});
+	});
+</script>
+
+<!-- ===== ENQUIRY POPUP ===== -->
+<style>
+#enq-overlay{
+  position:fixed;inset:0;z-index:99999;
+  background:rgba(9,18,69,0.82);
+  backdrop-filter:blur(4px);
+  display:flex;align-items:center;justify-content:center;
+  padding:16px;
+  opacity:0;transition:opacity .35s ease;
+  pointer-events:none;
+}
+#enq-overlay.enq-show{opacity:1;pointer-events:all;}
+#enq-modal{
+  display:flex;max-width:820px;width:100%;
+  border-radius:18px;overflow:hidden;
+  box-shadow:0 32px 80px rgba(0,0,0,0.55),0 0 0 1px rgba(201,162,39,0.18);
+  transform:translateY(28px) scale(0.97);
+  transition:transform .35s cubic-bezier(.22,.68,0,1.2);
+  max-height:calc(100vh - 40px);
+}
+#enq-overlay.enq-show #enq-modal{transform:translateY(0) scale(1);}
+
+/* Left panel */
+.enq-left{
+  width:260px;flex-shrink:0;
+  background:linear-gradient(160deg,#091245 0%,#0D1B5E 60%,#0a1650 100%);
+  padding:36px 28px;
+  display:flex;flex-direction:column;justify-content:space-between;
+  position:relative;overflow:hidden;
+}
+.enq-left::before{
+  content:'';position:absolute;
+  top:-60px;right:-60px;
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,162,39,0.15) 0%,transparent 70%);
+}
+.enq-left::after{
+  content:'';position:absolute;
+  bottom:-40px;left:-40px;
+  width:180px;height:180px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,162,39,0.08) 0%,transparent 70%);
+}
+.enq-left-top{position:relative;z-index:2;}
+.enq-school-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(201,162,39,0.12);
+  border:1px solid rgba(201,162,39,0.25);
+  color:#E6C86A;
+  font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;
+  padding:4px 12px;border-radius:20px;
+  margin-bottom:18px;
+}
+.enq-left h2{
+  font-family:'Poppins',sans-serif;
+  font-size:22px;font-weight:900;line-height:1.25;
+  color:#fff;margin-bottom:12px;letter-spacing:-0.3px;
+}
+.enq-left h2 span{
+  background:linear-gradient(135deg,#C9A227,#E6C86A);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.enq-left p{font-size:11.5px;color:rgba(255,255,255,0.4);line-height:1.75;}
+.enq-benefits{list-style:none;margin-top:20px;display:flex;flex-direction:column;gap:9px;}
+.enq-benefits li{
+  display:flex;align-items:flex-start;gap:8px;
+  font-size:11px;color:rgba(255,255,255,0.55);line-height:1.5;
+}
+.enq-benefits li::before{
+  content:'✦';color:#C9A227;font-size:8px;margin-top:3px;flex-shrink:0;
+}
+.enq-left-bottom{position:relative;z-index:2;}
+.enq-year-badge{
+  background:rgba(201,162,39,0.1);
+  border:1px solid rgba(201,162,39,0.2);
+  border-radius:10px;padding:10px 14px;
+}
+.enq-year-badge .eyb-label{font-size:9px;color:rgba(201,162,39,0.6);text-transform:uppercase;letter-spacing:1px;font-weight:600;}
+.enq-year-badge .eyb-val{font-size:16px;font-weight:800;color:#C9A227;margin-top:2px;}
+
+/* Right panel */
+.enq-right{
+  flex:1;background:#ffffff;
+  padding:28px 28px 22px;
+  overflow-y:auto;
+  position:relative;
+}
+.enq-right-head{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:20px;
+}
+.enq-right-head h3{
+  font-family:'Poppins',sans-serif;
+  font-size:17px;font-weight:800;color:#091245;
+}
+.enq-right-head p{font-size:11px;color:#888;margin-top:3px;}
+#enq-close{
+  width:30px;height:30px;border-radius:50%;
+  background:#f1f3f8;border:none;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:13px;color:#555;
+  transition:all .2s;flex-shrink:0;margin-left:10px;margin-top:2px;
+}
+#enq-close:hover{background:#e2e6ef;color:#091245;}
+.enq-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.enq-grid .enq-full{grid-column:1/-1;}
+.enq-field{display:flex;flex-direction:column;gap:4px;}
+.enq-field label{
+  font-size:10px;font-weight:700;color:#091245;
+  text-transform:uppercase;letter-spacing:0.8px;
+}
+.enq-field input,.enq-field select{
+  height:40px;
+  border:1.5px solid #e2e6ef;
+  border-radius:8px;
+  padding:0 12px;
+  font-family:'Poppins',sans-serif;
+  font-size:13px;color:#1a1a2e;
+  background:#fafbff;
+  outline:none;transition:border-color .2s,box-shadow .2s;
+  width:100%;
+}
+.enq-field input:focus,.enq-field select:focus{
+  border-color:#C9A227;
+  box-shadow:0 0 0 3px rgba(201,162,39,0.1);
+  background:#fffdf4;
+}
+.enq-field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23999'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;}
+#enq-submit{
+  width:100%;height:46px;margin-top:14px;
+  background:linear-gradient(135deg,#C9A227 0%,#E6C86A 100%);
+  color:#1a1200;
+  border:none;border-radius:10px;
+  font-family:'Poppins',sans-serif;
+  font-size:13px;font-weight:800;
+  letter-spacing:0.8px;text-transform:uppercase;
+  cursor:pointer;transition:all .2s;
+  box-shadow:0 6px 20px rgba(201,162,39,0.3);
+}
+#enq-submit:hover{background:linear-gradient(135deg,#b8911f,#C9A227);box-shadow:0 8px 28px rgba(201,162,39,0.45);transform:translateY(-1px);}
+.enq-later{
+  display:block;text-align:center;
+  margin-top:11px;
+  color:#aaa;font-size:11px;cursor:pointer;
+  text-decoration:none;transition:color .2s;
+}
+.enq-later:hover{color:#555;}
+.enq-success{
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:20px;min-height:220px;
+}
+.enq-success .es-icon{
+  width:60px;height:60px;border-radius:50%;
+  background:linear-gradient(135deg,#C9A227,#E6C86A);
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;color:#1a1200;margin:0 auto 14px;
+}
+.enq-success h4{font-size:18px;font-weight:800;color:#091245;margin-bottom:6px;}
+.enq-success p{font-size:12.5px;color:#666;line-height:1.7;}
+
+@media(max-width:640px){
+  #enq-modal{flex-direction:column;max-height:92vh;}
+  .enq-left{width:100%;padding:20px 20px 16px;}
+  .enq-benefits,.enq-year-badge,.enq-left p{display:none;}
+  .enq-left::before,.enq-left::after{display:none;}
+  .enq-left h2{font-size:17px;margin-bottom:0;}
+  .enq-right{padding:18px 16px 14px;}
+  .enq-grid{grid-template-columns:1fr;}
+}
+</style>
+
+<div id="enq-overlay">
+  <div id="enq-modal">
+
+    <!-- Left decorative panel -->
+    <div class="enq-left">
+      <div class="enq-left-top">
+        <div class="enq-school-badge">&#10022; Admissions Open</div>
+        <h2>Begin Your<br><span>Gurukul</span><br>Journey</h2>
+        <p>Join a community of young learners shaped by values, curiosity, and excellence.</p>
+        <ul class="enq-benefits">
+          <li>Karnataka State Syllabus (KSEEB)</li>
+          <li>Expert faculty &amp; personalised attention</li>
+          <li>Holistic development programmes</li>
+          <li>Modern infrastructure &amp; labs</li>
+        </ul>
+      </div>
+      <div class="enq-left-bottom">
+        <div class="enq-year-badge">
+          <div class="eyb-label">Academic Year</div>
+          <div class="eyb-val">2026 – 2027</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right form panel -->
+    <div class="enq-right">
+      <div class="enq-right-head">
+        <div>
+          <h3>Enquire Now</h3>
+          <p>Fill in your details and we'll get back to you within 24 hours.</p>
+        </div>
+        <button id="enq-close" title="Close">&#10005;</button>
+      </div>
+
+      <div id="enq-form-body">
+        <div class="enq-grid">
+          <div class="enq-field">
+            <label>Student Name *</label>
+            <input type="text" id="enq-student" placeholder="Full name of student">
+          </div>
+          <div class="enq-field">
+            <label>Parent / Guardian Name *</label>
+            <input type="text" id="enq-parent" placeholder="Full name of parent">
+          </div>
+          <div class="enq-field">
+            <label>Mobile Number *</label>
+            <input type="tel" id="enq-phone" placeholder="+91 98765 43210">
+          </div>
+          <div class="enq-field">
+            <label>Email Address</label>
+            <input type="email" id="enq-email" placeholder="your@email.com">
+          </div>
+          <div class="enq-field">
+            <label>Class Applying For *</label>
+            <select id="enq-class">
+              <option value="">-- Select Class --</option>
+              <option>Nursery / KG</option>
+              <option>Class 1</option><option>Class 2</option><option>Class 3</option>
+              <option>Class 4</option><option>Class 5</option><option>Class 6</option>
+              <option>Class 7</option><option>Class 8</option><option>Class 9</option>
+              <option>Class 10</option><option>Class 11</option><option>Class 12</option>
+            </select>
+          </div>
+          <div class="enq-field">
+            <label>Current School (optional)</label>
+            <input type="text" id="enq-school" placeholder="Name of current school">
+          </div>
+        </div>
+        <button id="enq-submit">&#9654;&nbsp; Submit Enquiry</button>
+        <a class="enq-later" id="enq-later">Maybe Later — I'll come back</a>
+      </div>
+
+      <div class="enq-success" id="enq-success">
+        <div class="es-icon">&#10003;</div>
+        <h4>Thank You!</h4>
+        <p>Your enquiry has been received.<br>Our admissions team will contact you within <strong>24 hours</strong>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var overlay = document.getElementById('enq-overlay');
+  var modal   = document.getElementById('enq-modal');
+
+  // Show after 1.8s unless already dismissed this session
+  if(!sessionStorage.getItem('enq_dismissed')){
+    setTimeout(function(){ overlay.classList.add('enq-show'); }, 1800);
+  }
+
+  function closeEnq(){
+    overlay.classList.remove('enq-show');
+    sessionStorage.setItem('enq_dismissed','1');
+  }
+
+  document.getElementById('enq-close').addEventListener('click', closeEnq);
+  document.getElementById('enq-later').addEventListener('click', closeEnq);
+
+  // Close on backdrop click
+  overlay.addEventListener('click', function(e){
+    if(e.target === overlay) closeEnq();
+  });
+
+  // ESC key
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeEnq();
+  });
+
+  // Submit
+  document.getElementById('enq-submit').addEventListener('click', function(){
+    var student = document.getElementById('enq-student').value.trim();
+    var parent  = document.getElementById('enq-parent').value.trim();
+    var phone   = document.getElementById('enq-phone').value.trim();
+    var cls     = document.getElementById('enq-class').value;
+
+    if(!student){ alert('Please enter the student name.'); return; }
+    if(!parent){  alert('Please enter the parent/guardian name.'); return; }
+    if(!phone){   alert('Please enter a mobile number.'); return; }
+    if(!cls){     alert('Please select the class applying for.'); return; }
+
+    var payload = {
+      student_name: student,
+      parent_name:  parent,
+      parent_phone: phone,
+      parent_email: document.getElementById('enq-email').value.trim(),
+      class_applying: cls,
+      current_school: document.getElementById('enq-school').value.trim(),
+      source: 'Website Popup'
+    };
+
+    // Try to submit to admissions API; gracefully continue either way
+    fetch('/api/admissions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).catch(function(){});  // swallow errors silently
+
+    document.getElementById('enq-form-body').style.display = 'none';
+    var suc = document.getElementById('enq-success');
+    suc.style.display = 'flex';
+
+    setTimeout(function(){ closeEnq(); }, 3500);
+    sessionStorage.setItem('enq_dismissed','1');
+  });
+})();
 </script>
 
 </body>
