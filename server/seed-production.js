@@ -831,18 +831,20 @@ async function main() {
   //         mother_name, mother_mobile, address, city, pin, hear_about, reason_admission, status
   const existingAdm = await q(`SELECT COUNT(*) AS c FROM admissions`);
   if (!existingAdm || parseInt(existingAdm.rows[0].c) === 0) {
+    // id is TEXT PRIMARY KEY — must be explicitly provided (format APP0001)
+    // status must match: 'Pending Review' | 'Under Review' | 'Accepted' | 'Rejected'
     const admissions = [
-      ['Ishaan','Mehta','2014-05-10','Male','B+','6','St. Joseph School','5','88.0','Rakesh Mehta','9845201001','rakesh@gmail.com','Sunita Mehta','9845201002','12 MG Road','Bengaluru','560001','Google Search','Better academic environment','Pending'],
-      ['Shreya','Nanda','2013-11-20','Female','O+','7','The International School','6','92.5','Praveen Nanda','9845201003','praveen@gmail.com','Deepa Nanda','9845201004','45 Residency Road','Bengaluru','560025','Referral','Recommended by neighbour','Under Review'],
-      ['Aditya','Kulkarni','2012-03-15','Male','A+','8','DPS North','7','79.0','Sanjeev Kulkarni','9845201005','sanjeev@gmail.com','Priya Kulkarni','9845201006','23 Sadashivanagar','Bengaluru','560080','Social Media','Excellent sports facilities','Accepted'],
-      ['Pooja','Hegde','2011-07-04','Female','B-','9','Baldwin Girls','8','85.5','Sudhir Hegde','9845201007','sudhir@gmail.com','Kavitha Hegde','9845201008','67 Basavanagudi','Bengaluru','560004','Walk-in Visit','Close to home','Pending'],
-      ['Nikhil','Shetty','2010-09-30','Male','AB+','10','Kendriya Vidyalaya','9','91.0','Dinesh Shetty','9845201009','dinesh@gmail.com','Usha Shetty','9845201010','89 Jayanagar','Bengaluru','560041','Newspaper Ad','Quality education and discipline','Rejected'],
-      ['Tanvi','Rao','2014-01-25','Female','O-','6','Government School','5','76.0','Venkat Rao','9845201011','venkat@gmail.com','Latha Rao','9845201012','5 BTM Layout','Bengaluru','560076','Friend Referral','Affordable fee structure','Accepted'],
+      ['APP0001','Ishaan','Mehta','2014-05-10','Male','B+','6','St. Joseph School','5','88.0','Rakesh Mehta','Business Owner','9845201001','rakesh@gmail.com','Sunita Mehta','9845201002','12 MG Road','Bengaluru','560001','Google Search','Better academic environment','Pending Review'],
+      ['APP0002','Shreya','Nanda','2013-11-20','Female','O+','7','The International School','6','92.5','Praveen Nanda','IT Engineer','9845201003','praveen@gmail.com','Deepa Nanda','9845201004','45 Residency Road','Bengaluru','560025','Referral','Recommended by neighbour','Under Review'],
+      ['APP0003','Aditya','Kulkarni','2012-03-15','Male','A+','8','DPS North','7','79.0','Sanjeev Kulkarni','Doctor','9845201005','sanjeev@gmail.com','Priya Kulkarni','9845201006','23 Sadashivanagar','Bengaluru','560080','Social Media','Excellent sports facilities','Accepted'],
+      ['APP0004','Pooja','Hegde','2011-07-04','Female','B-','9','Baldwin Girls','8','85.5','Sudhir Hegde','Govt Employee','9845201007','sudhir@gmail.com','Kavitha Hegde','9845201008','67 Basavanagudi','Bengaluru','560004','Walk-in Visit','Close to home','Pending Review'],
+      ['APP0005','Nikhil','Shetty','2010-09-30','Male','AB+','10','Kendriya Vidyalaya','9','91.0','Dinesh Shetty','Banker','9845201009','dinesh@gmail.com','Usha Shetty','9845201010','89 Jayanagar','Bengaluru','560041','Newspaper Ad','Quality education and discipline','Rejected'],
+      ['APP0006','Tanvi','Rao','2014-01-25','Female','O-','6','Government School','5','76.0','Venkat Rao','Teacher','9845201011','venkat@gmail.com','Latha Rao','9845201012','5 BTM Layout','Bengaluru','560076','Friend Referral','Affordable fee structure','Accepted'],
     ];
-    for (const [fn,ln,dob,gender,bg,grade,prev,lg,lp,fname,fmob,femail,mname,mmob,addr,city,pin,hear,reason,status] of admissions) {
-      await q(`INSERT INTO admissions (first_name,last_name,dob,gender,blood_group,grade_applying,prev_school,last_grade,last_percentage,father_name,father_mobile,father_email,mother_name,mother_mobile,address,city,pin,hear_about,reason_admission,status,submitted_at)
-               VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,NOW()) ON CONFLICT DO NOTHING`,
-        [fn,ln,dob,gender,bg,grade,prev,lg,parseFloat(lp),fname,fmob,femail,mname,mmob,addr,city,pin,hear,reason,status]);
+    for (const [id,fn,ln,dob,gender,bg,grade,prev,lg,lp,fname,focc,fmob,femail,mname,mmob,addr,city,pin,hear,reason,status] of admissions) {
+      await q(`INSERT INTO admissions (id,submitted_at,status,first_name,last_name,dob,gender,blood_group,grade_applying,prev_school,last_grade,last_percentage,father_name,father_occupation,father_mobile,father_email,mother_name,mother_mobile,address,city,pin,hear_about,reason_admission)
+               VALUES ($1,NOW(),$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22) ON CONFLICT (id) DO NOTHING`,
+        [id,status,fn,ln,dob,gender,bg,grade,prev,lg,lp,fname,focc,fmob,femail,mname,mmob,addr,city,pin,hear,reason]);
     }
     console.log('✅ Admissions seeded');
   } else {
